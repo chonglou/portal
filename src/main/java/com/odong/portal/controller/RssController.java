@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class RssController {
     @RequestMapping(value = "/rss.xml", method = RequestMethod.GET)
     ModelAndView getRss() {
-        return null;
+        Map<String,Object> map = new HashMap<>();
+        return new ModelAndView("rssView", map);
     }
 }

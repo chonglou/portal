@@ -1,4 +1,5 @@
 基于spring+hibernate+bootstrap构建的网站系统
 
 注意：
-验证码部分直接引用kaptcha 详见：http://code.google.com/p/kaptcha/ 版权归原作者所有
+验证码部分直接引用kaptcha源码 详见：http://code.google.com/p/kaptcha/  此部分版权归原作者所有
+模板使用httl 

@@ -15,8 +15,11 @@
         <property name="basename" value="messages"/>
     </bean>
 
-    <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
-    <bean class="com.odong.portal.rss.RssViewer"/>
+    <bean id="viewResolver" class="httl.web.springmvc.HttlViewResolver">
+        <property name="contentType" value="text/html; charset=UTF-8" />
+    </bean>
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+    <bean id="rssView" class="com.odong.portal.rss.RssView"/>
 
     <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
         <property name="exceptionMappings">

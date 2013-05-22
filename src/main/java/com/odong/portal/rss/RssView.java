@@ -17,7 +17,7 @@ import java.util.Map;
  * Date: 12-5-16
  * Time: 下午8:53
  */
-public class RssViewer extends AbstractRssFeedView {
+public class RssView extends AbstractRssFeedView {
     @Override
     protected List<Item> buildFeedItems(Map<String, Object> model, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         @SuppressWarnings("unchecked")
