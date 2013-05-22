@@ -1,6 +1,5 @@
 package com.odong.portal.rss;
 
-import com.odong.portal.model.RssContent;
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Item;
@@ -33,7 +32,7 @@ public class RssViewer extends AbstractRssFeedView {
 
             i.setTitle(c.getTitle());
             i.setLink(c.getUrl());
-            i.setPubDate(c.getCreated());
+            i.setPubDate(c.getPublish());
 
             items.add(i);
         }

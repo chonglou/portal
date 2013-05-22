@@ -7,5 +7,9 @@ package com.odong.portal.service;
  * Time: 下午2:28
  */
 public interface SiteService {
-    String getKey();
+    String getEncryptKey();
+
+    void set(String key, Object value);
+
+    String get(String key);
 }

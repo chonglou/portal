@@ -22,13 +22,14 @@ import java.util.Properties;
 @Configuration
 public class Database {
     @Bean(name = "txManager")
-    public HibernateTransactionManager getHibernateTransactionManager(@Qualifier SessionFactory sessionFactory){
+    public HibernateTransactionManager getHibernateTransactionManager(@Qualifier SessionFactory sessionFactory) {
         HibernateTransactionManager tm = new HibernateTransactionManager();
         tm.setSessionFactory(sessionFactory);
         return tm;
     }
+
     @Bean
-    LocalSessionFactoryBean getSessionFactory(@Qualifier DataSource dataSource){
+    LocalSessionFactoryBean getSessionFactory(@Qualifier DataSource dataSource) {
         Properties props = new Properties();
         props.setProperty("hibernate.dialect", hibernateDialect);
         props.setProperty("hibernate.show_sql", Boolean.toString(hibernateShowSql));
@@ -53,7 +54,7 @@ public class Database {
     }
 
     @Bean(destroyMethod = "close")
-    BoneCPDataSource getDataSource(){
+    BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);
         ds.setUsername(jdbcUsername);
@@ -149,4 +150,5 @@ public class Database {
     public void setPoolStatementsCacheSize(int poolStatementsCacheSize) {
         this.poolStatementsCacheSize = poolStatementsCacheSize;
     }
+
 }

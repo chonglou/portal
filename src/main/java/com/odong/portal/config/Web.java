@@ -8,12 +8,11 @@ import org.springframework.web.servlet.config.annotation.*;
  * User: flamen
  * Date: 13-5-22
  * Time: 下午2:26
- *
  */
- @EnableWebMvc
+@EnableWebMvc
 @Configuration
 public class Web extends WebMvcConfigurerAdapter {
-     @Override
+    @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/main");
     }

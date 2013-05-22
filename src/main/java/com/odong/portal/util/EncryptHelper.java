@@ -17,33 +17,37 @@ import java.util.Random;
  */
 @Component
 public class EncryptHelper {
-    public String random(int len){
-        String base="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public String random(int len) {
+        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i<len; i++){
-               sb.append(base.charAt(random.nextInt(base.length())));
+        for (int i = 0; i < len; i++) {
+            sb.append(base.charAt(random.nextInt(base.length())));
         }
         return sb.toString();
     }
-    public String encode(String plain){
+
+    public String encode(String plain) {
         return ste.encrypt(plain);
     }
-    public String decode(String encrypt){
+
+    public String decode(String encrypt) {
         return ste.decrypt(encrypt);
     }
-    public String encrypt(String plain){
+
+    public String encrypt(String plain) {
         return spe.encryptPassword(plain);
     }
-    public boolean check(String plain, String encrypt){
+
+    public boolean check(String plain, String encrypt) {
         return spe.checkPassword(plain, encrypt);
     }
 
     @PostConstruct
-    void init(){
+    void init() {
         spe = new StrongPasswordEncryptor();
         ste = new StrongTextEncryptor();
-        ste.setPassword(siteService.getKey());
+        ste.setPassword(siteService.getEncryptKey());
         random = new Random();
     }
 
