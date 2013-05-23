@@ -29,7 +29,7 @@ public class User implements Serializable {
     private String password;
     @Column(nullable = false, updatable = false)
     private Date created;
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String details;
     private Date lastLogin;
 

@@ -1,7 +1,6 @@
 package com.odong.portal.util;
 
 import com.odong.portal.service.SiteService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

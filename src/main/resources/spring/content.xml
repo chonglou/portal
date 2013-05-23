@@ -24,36 +24,39 @@
     </bean>
 
 
+    <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
 
+
+<!--
 <aop:aspectj-autoproxy expose-proxy="true"/>
     <tx:annotation-driven transaction-manager="db.txManager"/>
 
     <tx:advice id="txAdvice" transaction-manager="db.txManager">
         <tx:attributes>
-            <tx:method name="save*" propagation="REQUIRED"/>
-            <tx:method name="add*" propagation="REQUIRED"/>
-            <tx:method name="create*" propagation="REQUIRED"/>
-            <tx:method name="insert*" propagation="REQUIRED"/>
-            <tx:method name="update*" propagation="REQUIRED"/>
-            <tx:method name="merge*" propagation="REQUIRED"/>
-            <tx:method name="del*" propagation="REQUIRED"/>
-            <tx:method name="set*" propagation="REQUIRED"/>
-            <tx:method name="remove*" propagation="REQUIRED"/>
-            <tx:method name="put*" propagation="REQUIRED"/>
-            <tx:method name="use*" propagation="REQUIRED"/>
-            <!--hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到-->
-            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
-            <tx:method name="count*" propagation="REQUIRED" read-only="true"/>
-            <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
-            <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="save*" />
+            <tx:method name="add*" />
+            <tx:method name="create*" />
+            <tx:method name="insert*" />
+            <tx:method name="update*" />
+            <tx:method name="merge*" />
+            <tx:method name="del*" />
+            <tx:method name="set*" />
+            <tx:method name="remove*" />
+            <tx:method name="put*" />
+            <tx:method name="use*" />
+
+            <tx:method name="get*"    read-only="true"/>
+            <tx:method name="count*"   read-only="true"/>
+            <tx:method name="find*"   read-only="true"/>
+            <tx:method name="list*"  read-only="true"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>
     <aop:config expose-proxy="true">
-        <!-- 只对业务逻辑层实施事务 -->
-        <aop:pointcut id="txPointcut" expression="execution(* com.odong..service..*.*(..))"/>
+        <aop:pointcut id="txPointcut" expression="execution(* com.odong.portal..service.*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
     </aop:config>
+    -->
 
     <bean id="memcachedClient" class="net.rubyeye.xmemcached.MemcachedClient" factory-bean="cache.clientBuilder" factory-method="build" destroy-method="shutdown"/>
 

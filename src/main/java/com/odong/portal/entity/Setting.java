@@ -18,10 +18,12 @@ import java.io.Serializable;
 public class Setting implements Serializable {
     private static final long serialVersionUID = 2722519175265573466L;
     @Id
-    @Column(name = "kkk")
+    @Column(name = "kkk", nullable = false, updatable = false, unique = true)
     private String key;
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Lob
+    @Column(nullable = false)
     private String value;
+
     @Version
     private int version;
 
@@ -32,6 +34,7 @@ public class Setting implements Serializable {
     public void setVersion(int version) {
         this.version = version;
     }
+
 
     public String getKey() {
         return key;

@@ -24,7 +24,8 @@ public class Log implements Serializable {
     private static final long serialVersionUID = -3691580318696379338L;
     @Id
     private Long id;
-    @Column(nullable = false, columnDefinition = "TEXT", updatable = false)
+    @Lob
+    @Column(nullable = false, updatable = false)
     private String message;
     @Column(updatable = false)
     private Long user;

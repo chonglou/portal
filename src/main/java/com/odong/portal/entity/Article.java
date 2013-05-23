@@ -24,7 +24,8 @@ public class Article implements Serializable{
     private String title;
     @Column(length = 500)
     private String summary;
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Lob
+    @Column(nullable = false)
     private String body;
     @Column(nullable = false, updatable = false)
     private Long author;

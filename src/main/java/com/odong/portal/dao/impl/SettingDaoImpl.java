@@ -12,12 +12,6 @@ import org.springframework.stereotype.Repository;
  * Time: 下午3:43
  */
 @Repository("settingDao")
-public class SettingDaoImpl extends BaseHibernate4DaoImpl<Setting,String> implements SettingDao {
-    @Override
-    public Setting get(String key) {
-        Query query = getSession().createQuery("from  Setting as s where s.key=:id");
-        query.setString("id", key);
-        return (Setting)query.uniqueResult();
-        //return (Setting)getSession().get(Setting.class, key);
-    }
+public class SettingDaoImpl extends BaseDaoJpa2Impl<Setting,String> implements SettingDao {
+
 }

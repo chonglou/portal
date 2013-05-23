@@ -22,24 +22,23 @@ public class SiteServiceImpl implements SiteService {
     @Override
     public void set(String key, Object value) {
         Setting s = settingDao.select(key);
-
+        String val = jsonHelper.object2json(value);
         if (s == null) {
             s = new Setting();
             s.setKey(key);
+            s.setValue(val);
+            settingDao.insert(s);
         }
-        s.setValue(jsonHelper.object2json(value));
-
-        settingDao.saveOrUpdate(s);
+        else {
+            s.setValue(val);
+            settingDao.update(s);
+        }
     }
 
     @Override
     public <T> T get(String key, Class<T> clazz) {
-        Setting s = settingDao.get(key);
-        for(Setting obj : settingDao.list()){
-            logger.error("#### "+jsonHelper.object2json(obj));
-        }
+        Setting s = settingDao.select(key);
         if(s == null){
-            logger.error("FUCK "+key + settingDao.count());
             return null;
         }
         return jsonHelper.json2object(s.getValue(), clazz);  //

@@ -24,7 +24,8 @@ public class Comment implements Serializable {
     private Long user;
     @Column(nullable = false, updatable = false)
     private Long article;
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Lob
+    @Column(nullable = false)
     private String content;
     @Column(nullable = false, updatable = false)
     private Date created;

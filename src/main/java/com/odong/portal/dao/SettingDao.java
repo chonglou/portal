@@ -10,5 +10,5 @@ import com.odong.portal.entity.Setting;
  */
 
 public interface SettingDao extends BaseDao<Setting,String> {
-    Setting get(String key);
+
 }

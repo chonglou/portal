@@ -1,65 +1,97 @@
 package com.odong.portal.config;
 
-
 import com.jolbox.bonecp.BoneCPDataSource;
-import org.hibernate.SessionFactory;
-import org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
+import org.springframework.instrument.classloading.LoadTimeWeaver;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaDialect;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-5-22
- * Time: 下午2:55
+ * Date: 13-5-23
+ * Time: 下午8:27
  */
-@Configuration("portal.database")
-public class Database {
-    @Bean(name = "db.txManager")
-    @Autowired
-    public HibernateTransactionManager getHibernateTransactionManager(@Qualifier("db.sessionFactory") SessionFactory sessionFactory) {
-        HibernateTransactionManager tm = new HibernateTransactionManager();
-        tm.setSessionFactory(sessionFactory);
-        return tm;
-    }
+@Configuration("portal.jpa")
+@EnableTransactionManagement
+public class Jpa {
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(){
 
-    @Bean(name = "db.sessionFactory")
-    @Autowired
-    LocalSessionFactoryBean getSessionFactory(
-            @Qualifier("db.dataSource") DataSource dataSource){
-           // @Qualifier("db.namingStrategy")NamingStrategy namingStrategy) {
         Properties props = new Properties();
         props.setProperty("hibernate.dialect", hibernateDialect);
         props.setProperty("hibernate.show_sql", Boolean.toString(hibernateShowSql));
         props.setProperty("hibernate.format_sql", "true");
         props.setProperty("hibernate.hbm2ddl.auto", "create");
+        /*
         props.setProperty("hibernate.query.substitutions", "true 1, false 0");
         props.setProperty("hibernate.default_batch_fetch_size", Integer.toString(hibernateDefaultBatchFetchSize));
         props.setProperty("hibernate.max_fetch_depth", Integer.toString(hibernateMaxFetchDepth));
         props.setProperty("hibernate.generate_statistics", "true");
         props.setProperty("hibernate.bytecode.use_reflection_optimizer", "true");
 
+        */
+        props.setProperty("hibernate.query.factory_class", "org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory");
         props.setProperty("hibernate.cache.use_second_level_cache", "true");
         props.setProperty("hibernate.cache.use_query_cache", "true");
         props.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
 
-        LocalSessionFactoryBean sf = new LocalSessionFactoryBean();
-        sf.setDataSource(dataSource);
-        sf.setPackagesToScan("com.odong.portal.entity");
-        sf.setHibernateProperties(props);
-        //sf.setNamingStrategy(namingStrategy);
-        return sf;
+
+
+        LocalContainerEntityManagerFactoryBean factoryBean
+                = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setDataSource( getDataSource() );
+        factoryBean.setPackagesToScan( "com.odong.portal.entity" );
+
+
+
+        factoryBean.setJpaVendorAdapter( jpaVendorAdapter );
+        factoryBean.setJpaProperties(props);
+        factoryBean.setLoadTimeWeaver(getLoadTimeWeaver());
+        factoryBean.setJpaDialect(getJpaDialect());
+
+        return factoryBean;
     }
 
-    @Bean(name="db.dataSource",destroyMethod = "close")
+
+
+    @Bean
+    JpaDialect getJpaDialect(){
+        return new HibernateExtendedJpaDialect();
+    }
+
+
+    @Bean
+    LoadTimeWeaver getLoadTimeWeaver(){
+        return new InstrumentationLoadTimeWeaver();
+    }
+    @Bean
+    DataSource getDataSource(){
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName( jdbcDriver );
+        dataSource.setUrl( jdbcUrl );
+        dataSource.setUsername( jdbcUsername );
+        dataSource.setPassword(jdbcPassword );
+        return dataSource;
+    }
+    /*
+    @Bean(destroyMethod = "close")
     BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);
@@ -75,6 +107,22 @@ public class Database {
         ds.setStatementsCacheSize(poolStatementsCacheSize);
         ds.setReleaseHelperThreads(3);
         return ds;
+    }
+    */
+
+
+    @Bean(name = "db.txManager")
+    public PlatformTransactionManager transactionManager(){
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(
+                entityManagerFactoryBean().getObject() );
+
+        return transactionManager;
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 
     @Value("${jdbc.driver}")
@@ -105,6 +153,14 @@ public class Database {
     private int poolPartitionCount;
     @Value("${pool.statements_cache_size}")
     private int poolStatementsCacheSize;
+
+    @Resource
+    private JpaVendorAdapter jpaVendorAdapter;
+
+    public void setJpaVendorAdapter(JpaVendorAdapter jpaVendorAdapter) {
+        this.jpaVendorAdapter = jpaVendorAdapter;
+    }
+
 
     public void setJdbcDriver(String jdbcDriver) {
         this.jdbcDriver = jdbcDriver;
@@ -157,5 +213,4 @@ public class Database {
     public void setPoolStatementsCacheSize(int poolStatementsCacheSize) {
         this.poolStatementsCacheSize = poolStatementsCacheSize;
     }
-
 }

@@ -1,6 +1,5 @@
 package com.odong.portal.util;
 
-import com.odong.portal.entity.Setting;
 import com.odong.portal.service.SiteService;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.

@@ -9,12 +9,11 @@ import java.util.List;
  * Date: 13-5-22
  * Time: 下午2:30
  */
-public interface BaseDao<V extends Serializable, K extends Serializable> {
-    V select(K k);
-    K insert(V v);
-    void delete(K k);
-    List<V> list();
+public interface BaseDao<T extends Serializable, PK extends Serializable> {
+    T select(PK id);
+    void insert(T t);
+    void delete(PK id);
+    List<T> list();
     long count();
-    void update(V v);
-    void saveOrUpdate(V v);
+    void update(T t);
 }
