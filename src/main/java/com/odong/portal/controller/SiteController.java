@@ -30,10 +30,11 @@ public class SiteController {
     @ResponseBody
     Map<String, Object> getStatus() {
         Map<String, Object> map = new HashMap<>();
-        map.put("site.startup", siteService.get("site.startup", Date.class));
+        map.put("site.startup", siteService.getObject("site.startup", Date.class));
         map.put("created", new Date());
         return map;
     }
+
     @Resource
     private SiteService siteService;
 

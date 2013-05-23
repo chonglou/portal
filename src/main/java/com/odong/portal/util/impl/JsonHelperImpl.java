@@ -3,8 +3,6 @@ package com.odong.portal.util.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.odong.portal.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +37,7 @@ public class JsonHelperImpl implements JsonHelper {
     @Override
     public <T> T json2object(String json, Class<T> clazz) {
         try {
-            mapper.readValue(json, clazz);
+            return mapper.readValue(json, clazz);
         } catch (IOException e) {
             logger.debug("解析JSON出错", e);
         }

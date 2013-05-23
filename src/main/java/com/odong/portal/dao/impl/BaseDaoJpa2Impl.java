@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
@@ -19,62 +18,72 @@ import java.util.List;
  * Date: 13-5-23
  * Time: 下午9:27
  */
-public class BaseDaoJpa2Impl<T extends Serializable, PK extends Serializable> implements BaseDao<T,PK> {
+public class BaseDaoJpa2Impl<T extends Serializable, PK extends Serializable> implements BaseDao<T, PK> {
     @Override
     public T select(PK id) {
-        return entityManager.find(clazz, id );  //
+        return entityManager.find(clazz, id);  //
     }
 
     @Override
     public void insert(T t) {
-         entityManager.persist(t);  //
+        entityManager.persist(t);  //
     }
 
     @Override
     public void delete(PK id) {
-        entityManager.createQuery("DELETE FROM "+getTableName()+" AS i WHERE i."+pkName+"=:id").setParameter("id", id).executeUpdate();
+        entityManager.createQuery("DELETE FROM " + tablename() + " AS i WHERE i." + pkName + "=:id").setParameter("id", id).executeUpdate();
     }
 
     @Override
     public List<T> list() {
-        return entityManager.createQuery("FROM "+getTableName() +" as i ORDER BY i."+pkName+" DESC", clazz).getResultList();  //
+        return entityManager.createQuery("FROM " + tablename() + " as i ORDER BY i." + pkName + " DESC", clazz).getResultList();  //
     }
 
     @Override
     public long count() {
-        return entityManager.createQuery("SELECT COUNT(*) FROM "+getTableName(), Long.class).getSingleResult();  //
+        return entityManager.createQuery("SELECT COUNT(*) FROM " + tablename(), Long.class).getSingleResult();  //
     }
 
     @Override
     public void update(T t) {
         entityManager.merge(t);
     }
-    protected void remove(T t){
+
+    protected void remove(T t) {
         entityManager.remove(t);
     }
-     @SuppressWarnings("unchecked")
-    public BaseDaoJpa2Impl(){
+
+    @SuppressWarnings("unchecked")
+    public BaseDaoJpa2Impl() {
         this.clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         Field[] fields = this.clazz.getDeclaredFields();
         String pk = null;
-        for(Field f : fields) {
-            if(f.isAnnotationPresent(Id.class)) {
+        for (Field f : fields) {
+            if (f.isAnnotationPresent(Id.class)) {
                 pk = f.getName();
             }
         }
-        if (pk == null){
-            throw new IllegalArgumentException("类["+clazz.getSimpleName()+"]没有定义主键"
-);
+        if (pk == null) {
+            throw new IllegalArgumentException("类[" + clazz.getSimpleName() + "]没有定义主键"
+            );
         }
         this.pkName = pk;
 
     }
 
 
+    /*
+    public BaseDaoJpa2Impl(Class<T> clazz, String pkName){
+        this.clazz = clazz;
+        this.pkName = pkName;
+    }
+    */
 
-    protected String getTableName(){
+
+    protected String tablename() {
         return clazz.getSimpleName();
     }
+
     @PersistenceContext
     protected EntityManager entityManager;
     protected final Class<T> clazz;

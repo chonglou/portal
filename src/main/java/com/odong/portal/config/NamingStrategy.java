@@ -1,13 +1,10 @@
 package com.odong.portal.config;
 
 import com.odong.portal.util.StringHelper;
-import org.hibernate.cfg.DefaultNamingStrategy;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,14 +12,18 @@ import javax.annotation.Resource;
  * Date: 13-5-22
  * Time: 下午4:05
  */
-//@Component("db.namingStrategy")
+
 public class NamingStrategy extends ImprovedNamingStrategy {
     private static final long serialVersionUID = 3022396147085580172L;
 
+    public NamingStrategy() {
+        super();
+        this.stringHelper = new StringHelper();
+    }
+
     @Override
     public String classToTableName(String className) {
-        //return "PORTAL_"+encode(stringHelper.camelCase2Underscore(className));
-        return "PORTAL_"+tableName(className);
+        return "PORTAL_"+encode(stringHelper.camelCase2Underscore(className));
     }
 
     @Override
@@ -32,8 +33,7 @@ public class NamingStrategy extends ImprovedNamingStrategy {
 
     @Override
     public String propertyToColumnName(String propertyName) {
-        //return encode(propertyName);    //
-        return "T_"+columnName(propertyName);
+        return encode(propertyName);
     }
 
     @Override
@@ -56,13 +56,10 @@ public class NamingStrategy extends ImprovedNamingStrategy {
         return sb.toString();
     }
 
+
     private final static Logger logger = LoggerFactory.getLogger(NamingStrategy.class);
-    /*
-    @Resource
+
     private StringHelper stringHelper;
 
-    public void setStringHelper(StringHelper stringHelper) {
-        this.stringHelper = stringHelper;
-    }
-    */
+
 }

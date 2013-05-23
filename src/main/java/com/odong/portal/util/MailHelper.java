@@ -16,9 +16,9 @@ import javax.annotation.Resource;
 public class MailHelper {
 
     @PostConstruct
-    void init(){
-
+    void init() {
     }
+
     @Resource
     private SiteService siteService;
 

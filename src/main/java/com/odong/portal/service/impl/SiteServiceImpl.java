@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 public class SiteServiceImpl implements SiteService {
 
     @Override
-    public void set(String key, Object value) {
+    public void setObject(String key, Object value) {
         Setting s = settingDao.select(key);
         String val = jsonHelper.object2json(value);
         if (s == null) {
@@ -28,17 +28,16 @@ public class SiteServiceImpl implements SiteService {
             s.setKey(key);
             s.setValue(val);
             settingDao.insert(s);
-        }
-        else {
+        } else {
             s.setValue(val);
             settingDao.update(s);
         }
     }
 
     @Override
-    public <T> T get(String key, Class<T> clazz) {
+    public <T> T getObject(String key, Class<T> clazz) {
         Setting s = settingDao.select(key);
-        if(s == null){
+        if (s == null) {
             return null;
         }
         return jsonHelper.json2object(s.getValue(), clazz);  //

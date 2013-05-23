@@ -1,7 +1,5 @@
 package com.odong.portal.config;
 
-import com.jolbox.bonecp.BoneCPDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +11,6 @@ import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -32,36 +28,32 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class Jpa {
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(){
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
 
         Properties props = new Properties();
         props.setProperty("hibernate.dialect", hibernateDialect);
         props.setProperty("hibernate.show_sql", Boolean.toString(hibernateShowSql));
         props.setProperty("hibernate.format_sql", "true");
-        props.setProperty("hibernate.hbm2ddl.auto", "create");
-        /*
+        props.setProperty("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
+
         props.setProperty("hibernate.query.substitutions", "true 1, false 0");
         props.setProperty("hibernate.default_batch_fetch_size", Integer.toString(hibernateDefaultBatchFetchSize));
         props.setProperty("hibernate.max_fetch_depth", Integer.toString(hibernateMaxFetchDepth));
         props.setProperty("hibernate.generate_statistics", "true");
         props.setProperty("hibernate.bytecode.use_reflection_optimizer", "true");
 
-        */
-        props.setProperty("hibernate.query.factory_class", "org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory");
         props.setProperty("hibernate.cache.use_second_level_cache", "true");
         props.setProperty("hibernate.cache.use_query_cache", "true");
         props.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
+        props.setProperty("hibernate.ejb.naming_strategy", "com.odong.portal.config.NamingStrategy");
 
 
-
-        LocalContainerEntityManagerFactoryBean factoryBean
-                = new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setDataSource( getDataSource() );
-        factoryBean.setPackagesToScan( "com.odong.portal.entity" );
+        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setDataSource(getDataSource());
+        factoryBean.setPackagesToScan("com.odong.portal.entity");
 
 
-
-        factoryBean.setJpaVendorAdapter( jpaVendorAdapter );
+        factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
         factoryBean.setJpaProperties(props);
         factoryBean.setLoadTimeWeaver(getLoadTimeWeaver());
         factoryBean.setJpaDialect(getJpaDialect());
@@ -70,24 +62,24 @@ public class Jpa {
     }
 
 
-
     @Bean
-    JpaDialect getJpaDialect(){
+    JpaDialect getJpaDialect() {
         return new HibernateExtendedJpaDialect();
     }
 
 
     @Bean
-    LoadTimeWeaver getLoadTimeWeaver(){
+    LoadTimeWeaver getLoadTimeWeaver() {
         return new InstrumentationLoadTimeWeaver();
     }
+
     @Bean
-    DataSource getDataSource(){
+    DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName( jdbcDriver );
-        dataSource.setUrl( jdbcUrl );
-        dataSource.setUsername( jdbcUsername );
-        dataSource.setPassword(jdbcPassword );
+        dataSource.setDriverClassName(jdbcDriver);
+        dataSource.setUrl(jdbcUrl);
+        dataSource.setUsername(jdbcUsername);
+        dataSource.setPassword(jdbcPassword);
         return dataSource;
     }
     /*
@@ -112,16 +104,16 @@ public class Jpa {
 
 
     @Bean(name = "db.txManager")
-    public PlatformTransactionManager transactionManager(){
+    public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(
-                entityManagerFactoryBean().getObject() );
+                entityManagerFactoryBean().getObject());
 
         return transactionManager;
     }
 
     @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 

@@ -14,11 +14,11 @@ import java.util.Date;
  * Time: 下午2:30
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Article implements Serializable{
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Article implements Serializable {
     private static final long serialVersionUID = 9130835572844462147L;
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
     private String title;

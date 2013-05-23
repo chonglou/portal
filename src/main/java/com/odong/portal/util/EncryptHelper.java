@@ -38,7 +38,7 @@ public class EncryptHelper {
     void init() {
         spe = new StrongPasswordEncryptor();
         ste = new StrongTextEncryptor();
-        ste.setPassword(siteService.get("site.key", String.class).substring(27, 39));
+        ste.setPassword(siteService.getObject("site.key", String.class).substring(27, 39));
     }
 
     private StrongPasswordEncryptor spe;

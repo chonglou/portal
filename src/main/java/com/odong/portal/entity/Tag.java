@@ -14,11 +14,11 @@ import java.io.Serializable;
  * Time: 下午2:30
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Tag implements Serializable{
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Tag implements Serializable {
     private static final long serialVersionUID = -2365008447006155462L;
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false, unique = true)
     private String name;

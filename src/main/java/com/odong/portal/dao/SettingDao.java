@@ -9,6 +9,7 @@ import com.odong.portal.entity.Setting;
  * Time: 下午3:43
  */
 
-public interface SettingDao extends BaseDao<Setting,String> {
+public interface SettingDao extends BaseDao<Setting, String> {
+
 
 }

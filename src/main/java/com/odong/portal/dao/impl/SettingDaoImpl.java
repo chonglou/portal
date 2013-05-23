@@ -2,8 +2,9 @@ package com.odong.portal.dao.impl;
 
 import com.odong.portal.dao.SettingDao;
 import com.odong.portal.entity.Setting;
-import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.NoResultException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * Time: 下午3:43
  */
 @Repository("settingDao")
-public class SettingDaoImpl extends BaseDaoJpa2Impl<Setting,String> implements SettingDao {
+public class SettingDaoImpl extends BaseDaoJpa2Impl<Setting, String> implements SettingDao {
 
 }

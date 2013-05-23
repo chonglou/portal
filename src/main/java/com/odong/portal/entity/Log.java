@@ -23,6 +23,7 @@ public class Log implements Serializable {
 
     private static final long serialVersionUID = -3691580318696379338L;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Lob
     @Column(nullable = false, updatable = false)

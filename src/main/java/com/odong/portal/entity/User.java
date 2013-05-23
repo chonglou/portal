@@ -15,11 +15,11 @@ import java.util.Date;
  * Time: 下午2:29
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
     private static final long serialVersionUID = 6854757082522535497L;
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false, unique = true)
     private String email;

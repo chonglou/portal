@@ -11,9 +11,14 @@ import java.util.List;
  */
 public interface BaseDao<T extends Serializable, PK extends Serializable> {
     T select(PK id);
+
     void insert(T t);
+
     void delete(PK id);
+
     List<T> list();
+
     long count();
+
     void update(T t);
 }

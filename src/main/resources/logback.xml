@@ -41,6 +41,8 @@
     <logger name="net.rubyeye.xmemcached" level="WARN"/>
     <logger name="com.google.code.yanf4j" level="WARN"/>
 
+    <logger name="net.sf.ehcache" level="WARN"/>
+
 
     <root level="DEBUG">
         <appender-ref ref="stdout"/>

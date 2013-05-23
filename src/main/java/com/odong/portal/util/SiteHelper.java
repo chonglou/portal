@@ -1,6 +1,8 @@
 package com.odong.portal.util;
 
 import com.odong.portal.service.SiteService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,27 +20,28 @@ import java.util.Date;
 public class SiteHelper {
     @PostConstruct
     void init() {
-        siteService.set("site.startup", new Date());
-        if (siteService.get("site.init", Date.class) == null) {
-            siteService.set("site.init", new Date());
-            siteService.set("site.version", "v20130522");
-            siteService.set("site.key", stringHelper.random(512));
-            siteService.set("site.title", "门户网站系统");
-            siteService.set("site.copy_right", "");
-            siteService.set("site.allow_register", true);
-            siteService.set("site.allow_login", true);
+        siteService.setObject("site.startup", new Date());
+        if (siteService.getObject("site.init", Date.class) == null) {
+            siteService.setObject("site.init", new Date());
+            siteService.setObject("site.version", "v20130522");
+            siteService.setObject("site.key", stringHelper.random(512));
+            siteService.setObject("site.title", "门户网站系统");
+            siteService.setObject("site.copy_right", "");
+            siteService.setObject("site.allow_register", true);
+            siteService.setObject("site.allow_login", true);
         }
     }
 
     @PreDestroy
     void destroy() {
-        siteService.set("site.shutdown", new Date());
+        siteService.setObject("site.shutdown", new Date());
     }
 
     @Resource
     private StringHelper stringHelper;
     @Resource
     private SiteService siteService;
+    private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
 
     public void setStringHelper(StringHelper stringHelper) {
         this.stringHelper = stringHelper;

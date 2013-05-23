@@ -19,9 +19,9 @@ import javax.annotation.Resource;
 @EnableAsync
 @EnableScheduling
 public class Job {
-    @Scheduled(cron="*/1 * * * * *")
+    @Scheduled(cron = "*/1 * * * * *")
     @Async
-    void runTask(){
+    void runTask() {
 
     }
 

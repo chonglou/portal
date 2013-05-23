@@ -18,7 +18,7 @@ import java.util.Map;
 public class RssController {
     @RequestMapping(value = "/rss.xml", method = RequestMethod.GET)
     ModelAndView getRss() {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         return new ModelAndView("rssView", map);
     }
 }

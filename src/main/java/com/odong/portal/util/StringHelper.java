@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 @Component
 public class StringHelper {
 
-    public  String underScore2CamelCase(String strs) {
+    public String underScore2CamelCase(String strs) {
         String[] elems = strs.split("_");
-        for ( int i = 0 ; i < elems.length ; i++ ) {
+        for (int i = 0; i < elems.length; i++) {
             elems[i] = elems[i].toLowerCase();
             if (i != 0) {
                 String elem = elems[i];
@@ -26,28 +26,29 @@ public class StringHelper {
                 elems[i] = "" + (char) (first - 32) + elem.substring(1);
             }
         }
-        for ( String e : elems ) {
-            System.out.print(e);
+        StringBuilder sb = new StringBuilder();
+        for (String e : elems) {
+            sb.append(e);
         }
-        return elems.toString();
+        return sb.toString();
     }
 
-    public  String camelCase2Underscore(String param) {
+    public String camelCase2Underscore(String param) {
         Pattern p = Pattern.compile("[A-Z]");
         if (param == null || param.equals("")) {
             return "";
         }
-        StringBuilder builder = new StringBuilder(param);
+        StringBuilder sb = new StringBuilder(param);
         Matcher mc = p.matcher(param);
         int i = 0;
         while (mc.find()) {
-            builder.replace(mc.start() + i,mc.end() + i,"_" + mc.group().toLowerCase());
+            sb.replace(mc.start() + i, mc.end() + i, "_" + mc.group().toLowerCase());
             i++;
         }
-        if ('_' == builder.charAt(0)) {
-            builder.deleteCharAt(0);
+        if ('_' == sb.charAt(0)) {
+            sb.deleteCharAt(0);
         }
-        return builder.toString();
+        return sb.toString();
     }
 
     public String random(int len) {
@@ -61,7 +62,7 @@ public class StringHelper {
     }
 
     @PostConstruct
-    void init(){
+    void init() {
         random = new Random();
     }
 

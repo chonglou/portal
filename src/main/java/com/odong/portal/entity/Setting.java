@@ -14,11 +14,11 @@ import java.io.Serializable;
  * Time: 下午2:55
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Setting implements Serializable {
     private static final long serialVersionUID = 2722519175265573466L;
     @Id
-    @Column(name = "kkk", nullable = false, updatable = false, unique = true)
+    @Column( nullable = false, updatable = false, unique = true)
     private String key;
     @Lob
     @Column(nullable = false)
@@ -39,6 +39,7 @@ public class Setting implements Serializable {
     public String getKey() {
         return key;
     }
+
 
     public void setKey(String key) {
         this.key = key;

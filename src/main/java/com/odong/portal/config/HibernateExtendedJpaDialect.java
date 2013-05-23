@@ -1,6 +1,5 @@
 package com.odong.portal.config;
 
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.ConnectionHandle;
@@ -36,7 +35,7 @@ public class HibernateExtendedJpaDialect extends HibernateJpaDialect {
         if (logger.isDebugEnabled()) {
             logger.debug(
                     "Transaction Info: IsolationLevel={} , PropagationBehavior={} , Timeout={} , Name={}",
-                    new Object[] { definition.getIsolationLevel(),
+                    new Object[]{definition.getIsolationLevel(),
                             definition.getPropagationBehavior(),
                             definition.getTimeout(), definition.getName()});
         }
