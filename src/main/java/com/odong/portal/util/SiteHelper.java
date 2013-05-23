@@ -1,5 +1,6 @@
 package com.odong.portal.util;
 
+import com.odong.portal.model.SmtpProfile;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,10 @@ public class SiteHelper {
             siteService.setObject("site.version", "v20130522");
             siteService.setObject("site.key", stringHelper.random(512));
             siteService.setObject("site.title", "门户网站系统");
-            siteService.setObject("site.copy_right", "");
+            siteService.setObject("site.copy_right", "版权信息");
             siteService.setObject("site.allow_register", true);
             siteService.setObject("site.allow_login", true);
+
         }
     }
 

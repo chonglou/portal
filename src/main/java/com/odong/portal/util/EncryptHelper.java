@@ -18,6 +18,12 @@ import javax.annotation.Resource;
 @Component
 @DependsOn("siteHelper")
 public class EncryptHelper {
+    public String encode(Object plain){
+        return plain == null ? null:ste.encrypt(jsonHelper.object2json(plain));
+    }
+    public <T> T decode(String encrypt, Class<T> clazz){
+        return encrypt == null ? null :jsonHelper.json2object(ste.decrypt(encrypt),clazz);
+    }
     public String encode(String plain) {
         return ste.encrypt(plain);
     }
@@ -45,7 +51,12 @@ public class EncryptHelper {
     private StrongTextEncryptor ste;
     @Resource
     private SiteService siteService;
+    @Resource
+    private JsonHelper jsonHelper;
 
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

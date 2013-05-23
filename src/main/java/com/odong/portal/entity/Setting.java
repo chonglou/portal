@@ -21,7 +21,6 @@ public class Setting implements Serializable {
     @Column( nullable = false, updatable = false, unique = true)
     private String key;
     @Lob
-    @Column(nullable = false)
     private String value;
 
     @Version

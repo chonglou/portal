@@ -1,5 +1,6 @@
 package com.odong.portal.config;
 
+import com.jolbox.bonecp.BoneCPDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,6 +74,7 @@ public class Jpa {
         return new InstrumentationLoadTimeWeaver();
     }
 
+    /*
     @Bean
     DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -82,7 +84,8 @@ public class Jpa {
         dataSource.setPassword(jdbcPassword);
         return dataSource;
     }
-    /*
+    */
+
     @Bean(destroyMethod = "close")
     BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
@@ -100,7 +103,7 @@ public class Jpa {
         ds.setReleaseHelperThreads(3);
         return ds;
     }
-    */
+
 
 
     @Bean(name = "db.txManager")

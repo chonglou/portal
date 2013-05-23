@@ -7,6 +7,8 @@ package com.odong.portal.service;
  * Time: 下午2:28
  */
 public interface SiteService {
+    void setString(String key, String value);
+    String getString(String key);
 
     void setObject(String key, Object value);
 
