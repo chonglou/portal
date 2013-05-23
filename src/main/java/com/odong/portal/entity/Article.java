@@ -13,7 +13,8 @@ import java.util.Date;
  * Date: 13-5-22
  * Time: 下午2:30
  */
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Article implements Serializable{
     private static final long serialVersionUID = 9130835572844462147L;
     @Id

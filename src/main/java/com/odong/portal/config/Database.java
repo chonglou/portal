@@ -34,8 +34,8 @@ public class Database {
     @Bean(name = "db.sessionFactory")
     @Autowired
     LocalSessionFactoryBean getSessionFactory(
-            @Qualifier("db.dataSource") DataSource dataSource,
-            @Qualifier("db.namingStrategy")NamingStrategy namingStrategy) {
+            @Qualifier("db.dataSource") DataSource dataSource){
+           // @Qualifier("db.namingStrategy")NamingStrategy namingStrategy) {
         Properties props = new Properties();
         props.setProperty("hibernate.dialect", hibernateDialect);
         props.setProperty("hibernate.show_sql", Boolean.toString(hibernateShowSql));

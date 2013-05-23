@@ -34,9 +34,12 @@ public class SiteServiceImpl implements SiteService {
 
     @Override
     public <T> T get(String key, Class<T> clazz) {
-        Setting s = settingDao.select(key);
+        Setting s = settingDao.get(key);
+        for(Setting obj : settingDao.list()){
+            logger.error("#### "+jsonHelper.object2json(obj));
+        }
         if(s == null){
-            logger.error("FUCK "+key);
+            logger.error("FUCK "+key + settingDao.count());
             return null;
         }
         return jsonHelper.json2object(s.getValue(), clazz);  //

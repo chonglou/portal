@@ -1,5 +1,8 @@
 package com.odong.portal.entity;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +14,7 @@ import java.util.Date;
  * Time: 下午3:13
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Comment implements Serializable {
     private static final long serialVersionUID = -9089422699866112475L;
     @Id

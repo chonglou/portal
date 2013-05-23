@@ -1,5 +1,9 @@
 package com.odong.portal.entity;
 
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +15,7 @@ import java.util.Date;
  * Time: 下午2:29
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class User implements Serializable {
     private static final long serialVersionUID = 6854757082522535497L;
     @Id

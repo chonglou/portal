@@ -1,6 +1,10 @@
 package com.odong.portal.util;
 
+import com.odong.portal.service.SiteService;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,4 +14,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MailHelper {
+
+    @PostConstruct
+    void init(){
+
+    }
+    @Resource
+    private SiteService siteService;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
 }

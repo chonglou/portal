@@ -14,7 +14,7 @@ public interface BaseDao<V extends Serializable, K extends Serializable> {
     K insert(V v);
     void delete(K k);
     List<V> list();
-    int count();
+    long count();
     void update(V v);
     void saveOrUpdate(V v);
 }

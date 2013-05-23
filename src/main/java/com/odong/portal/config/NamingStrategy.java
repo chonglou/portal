@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  * Date: 13-5-22
  * Time: 下午4:05
  */
-@Component("db.namingStrategy")
+//@Component("db.namingStrategy")
 public class NamingStrategy extends ImprovedNamingStrategy {
     private static final long serialVersionUID = 3022396147085580172L;
 

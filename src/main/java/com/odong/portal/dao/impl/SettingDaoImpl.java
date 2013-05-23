@@ -2,6 +2,7 @@ package com.odong.portal.dao.impl;
 
 import com.odong.portal.dao.SettingDao;
 import com.odong.portal.entity.Setting;
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,4 +13,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("settingDao")
 public class SettingDaoImpl extends BaseHibernate4DaoImpl<Setting,String> implements SettingDao {
+    @Override
+    public Setting get(String key) {
+        Query query = getSession().createQuery("from  Setting as s where s.key=:id");
+        query.setString("id", key);
+        return (Setting)query.uniqueResult();
+        //return (Setting)getSession().get(Setting.class, key);
+    }
 }

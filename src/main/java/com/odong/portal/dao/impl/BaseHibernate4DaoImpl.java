@@ -1,6 +1,8 @@
 package com.odong.portal.dao.impl;
 
+import aj.org.objectweb.asm.Type;
 import com.odong.portal.dao.BaseDao;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -25,10 +27,10 @@ public class BaseHibernate4DaoImpl<V extends Serializable, K extends Serializabl
     @Override
     @SuppressWarnings("unchecked")
     public V select(K k) {
-        return (V)getSession().get(clazz, k);
-        //String hql = " FROM "+clazz.getSimpleName()+" AS i WHERE i."+pkName+"=:id";
-        //logger.debug(hql);
-        //return (V)getSession().createQuery(hql).setParameter("id", k).uniqueResult();
+        //return (V)getSession().get(clazz, k);
+        String hql = " FROM "+clazz.getSimpleName()+" AS i WHERE i."+pkName+"=:id";
+        logger.debug(hql);
+        return (V)getSession().createQuery(hql).setParameter("id", k).uniqueResult();
     }
 
     @Override
@@ -49,8 +51,13 @@ public class BaseHibernate4DaoImpl<V extends Serializable, K extends Serializabl
     }
 
     @Override
-    public int count() {
-        return (int)getSession().createQuery("SELECT COUNT(*) FROM " + clazz.getName()).uniqueResult();  //
+    public long count() {
+
+        String hql = "SELECT COUNT(c) FROM " + clazz.getSimpleName()+" AS c";
+        logger.debug(hql);
+        return (long)getSession().createQuery(hql).uniqueResult();  //
+
+
     }
 
     @SuppressWarnings("unchecked")
