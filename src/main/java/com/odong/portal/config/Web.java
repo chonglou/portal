@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.*;
  * Time: 下午2:26
  */
 @EnableWebMvc
-@Configuration
+@Configuration("portal.web")
 public class Web extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {

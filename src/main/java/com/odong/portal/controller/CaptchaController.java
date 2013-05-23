@@ -28,7 +28,7 @@ import java.io.IOException;
 @Controller
 public class CaptchaController {
     @RequestMapping(value = "/captcha.jpg", method = RequestMethod.GET)
-    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView getCaptcha(HttpServletRequest request, HttpServletResponse response) {
         // Set to expire far in the past.
         response.setDateHeader("Expires", 0);
         // Set standard HTTP/1.1 no-cache headers.

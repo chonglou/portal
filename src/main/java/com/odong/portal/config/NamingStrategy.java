@@ -9,6 +9,8 @@ import org.hibernate.cfg.DefaultNamingStrategy;
  * Time: 下午4:05
  */
 public class NamingStrategy extends DefaultNamingStrategy {
+    private static final long serialVersionUID = 3022396147085580172L;
+
     @Override
     public String classToTableName(String className) {
         String[] ss = className.split(".");

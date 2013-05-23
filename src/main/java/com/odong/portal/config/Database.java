@@ -3,6 +3,8 @@ package com.odong.portal.config;
 
 import com.jolbox.bonecp.BoneCPDataSource;
 import org.hibernate.SessionFactory;
+import org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,17 +21,19 @@ import java.util.Properties;
  * Date: 13-5-22
  * Time: 下午2:55
  */
-@Configuration
+@Configuration("portal.database")
 public class Database {
-    @Bean(name = "txManager")
-    public HibernateTransactionManager getHibernateTransactionManager(@Qualifier SessionFactory sessionFactory) {
+    @Bean(name = "db.txManager")
+    @Autowired
+    public HibernateTransactionManager getHibernateTransactionManager(@Qualifier("db.sessionFactory") SessionFactory sessionFactory) {
         HibernateTransactionManager tm = new HibernateTransactionManager();
         tm.setSessionFactory(sessionFactory);
         return tm;
     }
 
-    @Bean
-    LocalSessionFactoryBean getSessionFactory(@Qualifier DataSource dataSource) {
+    @Bean(name = "db.sessionFactory")
+    @Autowired
+    LocalSessionFactoryBean getSessionFactory(@Qualifier("db.dataSource") DataSource dataSource) {
         Properties props = new Properties();
         props.setProperty("hibernate.dialect", hibernateDialect);
         props.setProperty("hibernate.show_sql", Boolean.toString(hibernateShowSql));
@@ -43,7 +47,7 @@ public class Database {
 
         props.setProperty("hibernate.cache.use_second_level_cache", "true");
         props.setProperty("hibernate.cache.use_query_cache", "true");
-        props.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory");
+        props.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
 
         LocalSessionFactoryBean sf = new LocalSessionFactoryBean();
         sf.setDataSource(dataSource);
@@ -53,10 +57,11 @@ public class Database {
         return sf;
     }
 
-    @Bean(destroyMethod = "close")
+    @Bean(name="db.dataSource",destroyMethod = "close")
     BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);
+        ds.setJdbcUrl(jdbcUrl);
         ds.setUsername(jdbcUsername);
         ds.setPassword(jdbcPassword);
         ds.setIdleConnectionTestPeriodInSeconds(60);
