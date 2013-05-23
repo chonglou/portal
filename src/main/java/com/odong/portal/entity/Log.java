@@ -1,5 +1,6 @@
 package com.odong.portal.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,16 +10,23 @@ import java.util.Date;
  * Date: 13-5-22
  * Time: 下午11:43
  */
+@Entity
 public class Log implements Serializable {
     public enum Type {
         INFO, DEBUG, ERROR
     }
 
     private static final long serialVersionUID = -3691580318696379338L;
+    @Id
     private Long id;
+    @Column(nullable = false, columnDefinition = "TEXT", updatable = false)
     private String message;
+    @Column(updatable = false)
     private Long user;
+    @Column(nullable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
     private Type type;
+    @Column(nullable = false, updatable = false)
     private Date created;
 
 

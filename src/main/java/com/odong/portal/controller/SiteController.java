@@ -1,10 +1,12 @@
 package com.odong.portal.controller;
 
+import com.odong.portal.service.SiteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +30,14 @@ public class SiteController {
     @ResponseBody
     Map<String, Object> getStatus() {
         Map<String, Object> map = new HashMap<>();
+        map.put("site.startup", siteService.get("site.startup", Date.class));
         map.put("created", new Date());
         return map;
+    }
+    @Resource
+    private SiteService siteService;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
     }
 }

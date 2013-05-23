@@ -1,8 +1,10 @@
 package com.odong.portal.util;
 
+import com.odong.portal.entity.Setting;
 import com.odong.portal.service.SiteService;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,17 +18,8 @@ import java.util.Random;
  * Time: 下午2:28
  */
 @Component
+@DependsOn("siteHelper")
 public class EncryptHelper {
-    public String random(int len) {
-        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            sb.append(base.charAt(random.nextInt(base.length())));
-        }
-        return sb.toString();
-    }
-
     public String encode(String plain) {
         return ste.encrypt(plain);
     }
@@ -47,15 +40,14 @@ public class EncryptHelper {
     void init() {
         spe = new StrongPasswordEncryptor();
         ste = new StrongTextEncryptor();
-        ste.setPassword(siteService.getEncryptKey());
-        random = new Random();
+        ste.setPassword(siteService.get("site.key", String.class).substring(27, 39));
     }
 
     private StrongPasswordEncryptor spe;
     private StrongTextEncryptor ste;
-    private Random random;
     @Resource
     private SiteService siteService;
+
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

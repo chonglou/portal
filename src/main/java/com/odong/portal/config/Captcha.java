@@ -29,13 +29,13 @@ public class Captcha {
         return kaptcha;
     }
 
-    @Value("kaptcha.image_width")
+    @Value("${kaptcha.image_width}")
     private int imgWidth;
-    @Value("kaptcha.image_height")
+    @Value("${kaptcha.image_height}")
     private int imgHeight;
-    @Value("kaptcha.char_string")
+    @Value("${kaptcha.char_string}")
     private String charString;
-    @Value("kaptcha.char_length")
+    @Value("${kaptcha.char_length}")
     private int charLength;
 
     public void setImgWidth(int imgWidth) {

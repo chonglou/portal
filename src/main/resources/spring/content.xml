@@ -31,6 +31,7 @@
             <tx:method name="update*" propagation="REQUIRED"/>
             <tx:method name="merge*" propagation="REQUIRED"/>
             <tx:method name="del*" propagation="REQUIRED"/>
+            <tx:method name="set*" propagation="REQUIRED"/>
             <tx:method name="remove*" propagation="REQUIRED"/>
             <tx:method name="put*" propagation="REQUIRED"/>
             <tx:method name="use*" propagation="REQUIRED"/>

@@ -1,6 +1,7 @@
 package com.odong.portal.util;
 
 import com.odong.portal.service.SiteService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,20 +15,19 @@ import java.util.Date;
  * Date: 13-5-22
  * Time: 下午11:41
  */
-@Component
+@Component("siteHelper")
 public class SiteHelper {
     @PostConstruct
     void init() {
         siteService.set("site.startup", new Date());
-        if (siteService.get("site.init") == null) {
+        if (siteService.get("site.init", Date.class) == null) {
             siteService.set("site.init", new Date());
             siteService.set("site.version", "v20130522");
-            siteService.set("site.key", encryptHelper.random(512));
+            siteService.set("site.key", stringHelper.random(512));
             siteService.set("site.title", "门户网站系统");
             siteService.set("site.copy_right", "");
             siteService.set("site.allow_register", true);
             siteService.set("site.allow_login", true);
-
         }
     }
 
@@ -37,12 +37,12 @@ public class SiteHelper {
     }
 
     @Resource
-    private EncryptHelper encryptHelper;
+    private StringHelper stringHelper;
     @Resource
     private SiteService siteService;
 
-    public void setEncryptHelper(EncryptHelper encryptHelper) {
-        this.encryptHelper = encryptHelper;
+    public void setStringHelper(StringHelper stringHelper) {
+        this.stringHelper = stringHelper;
     }
 
     public void setSiteService(SiteService siteService) {

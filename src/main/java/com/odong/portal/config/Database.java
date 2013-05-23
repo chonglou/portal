@@ -33,7 +33,9 @@ public class Database {
 
     @Bean(name = "db.sessionFactory")
     @Autowired
-    LocalSessionFactoryBean getSessionFactory(@Qualifier("db.dataSource") DataSource dataSource) {
+    LocalSessionFactoryBean getSessionFactory(
+            @Qualifier("db.dataSource") DataSource dataSource,
+            @Qualifier("db.namingStrategy")NamingStrategy namingStrategy) {
         Properties props = new Properties();
         props.setProperty("hibernate.dialect", hibernateDialect);
         props.setProperty("hibernate.show_sql", Boolean.toString(hibernateShowSql));
@@ -53,7 +55,7 @@ public class Database {
         sf.setDataSource(dataSource);
         sf.setPackagesToScan("com.odong.portal.entity");
         sf.setHibernateProperties(props);
-        sf.setNamingStrategy(NamingStrategy.INSTANCE);
+        //sf.setNamingStrategy(namingStrategy);
         return sf;
     }
 

@@ -1,5 +1,6 @@
 package com.odong;
 
+import com.odong.portal.entity.User;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -9,8 +10,9 @@ import org.testng.annotations.Test;
  */
 public class AppTest{
     @Test
-    public void testStr(){
-
+    public void testName(){
+        Class<User> clazz = User.class;
+        log(clazz.toString(), clazz.getName(), clazz.getSimpleName());
     }
     public void testEntity(){
         StrongTextEncryptor ste = new StrongTextEncryptor();

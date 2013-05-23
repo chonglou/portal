@@ -1,5 +1,6 @@
 package com.odong.portal.util.impl;
 
+import com.google.code.yanf4j.core.impl.AbstractSession;
 import com.odong.portal.util.CacheHelper;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;

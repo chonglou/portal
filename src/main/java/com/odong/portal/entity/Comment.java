@@ -1,8 +1,5 @@
 package com.odong.portal.entity;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -10,23 +7,21 @@ import java.util.Date;
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-5-22
- * Time: 下午2:30
+ * Date: 13-5-23
+ * Time: 下午3:13
  */
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Article implements Serializable{
-    private static final long serialVersionUID = 9130835572844462147L;
+@Entity
+public class Comment implements Serializable {
+    private static final long serialVersionUID = -9089422699866112475L;
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false)
-    private String title;
-    @Column(length = 500)
-    private String summary;
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String body;
     @Column(nullable = false, updatable = false)
-    private Long author;
+    private Long user;
+    @Column(nullable = false, updatable = false)
+    private Long article;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
     @Column(nullable = false, updatable = false)
     private Date created;
     private Date lastEdit;
@@ -49,36 +44,28 @@ public class Article implements Serializable{
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public Long getUser() {
+        return user;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUser(Long user) {
+        this.user = user;
     }
 
-    public String getSummary() {
-        return summary;
+    public Long getArticle() {
+        return article;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setArticle(Long article) {
+        this.article = article;
     }
 
-    public String getBody() {
-        return body;
+    public String getContent() {
+        return content;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public Long getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Long author) {
-        this.author = author;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Date getCreated() {
