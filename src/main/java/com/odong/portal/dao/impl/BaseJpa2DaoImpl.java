@@ -48,7 +48,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
     public void delete(PK id) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
-        update("DELETE FROM " + tableName() + " AS i WHERE i." + pkName + "=:id",map);
+        update("DELETE FROM " + tableName() + " AS i WHERE i." + pkName + "=:id", map);
     }
 
     @Override
@@ -128,6 +128,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
         }
         query.executeUpdate();
     }
+
     @Override
     public String hqlListAll() {
         return "From " + tableName() + " AS i ORDER BY i." + pkName + " DESC";

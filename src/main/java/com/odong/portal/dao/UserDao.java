@@ -9,5 +9,4 @@ import com.odong.portal.entity.User;
  * Time: 上午3:22
  */
 public interface UserDao extends BaseDao<User, Long> {
-    User select(String email);
 }

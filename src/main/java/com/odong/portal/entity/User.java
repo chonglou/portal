@@ -17,6 +17,10 @@ import java.util.Date;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
+    public enum State {
+        ENABLE, DISABLE
+    }
+
     private static final long serialVersionUID = 6854757082522535497L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,6 +36,13 @@ public class User implements Serializable {
     @Lob
     private String details;
     private Date lastLogin;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private State state;
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     public String getDetails() {
         return details;

@@ -15,5 +15,7 @@ public interface LogService {
 
     List<Log> list(int no, int size);
 
+    List<Log> list(Long user);
+
     void delete(Long id);
 }

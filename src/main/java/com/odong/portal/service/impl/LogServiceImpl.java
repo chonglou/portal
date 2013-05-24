@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +33,12 @@ public class LogServiceImpl implements LogService {
     @Override
     public List<Log> list(int no, int size) {
         return logDao.list(no, size, logDao.hqlListAll(), null);
+    }
+
+    @Override
+    public List<Log> list(Long user) {
+        Map<String, Object> map = new HashMap<>();
+        return logDao.list("FROM User AS i WHERE i.user=:user", map);
     }
 
     @Override

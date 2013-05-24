@@ -1,5 +1,7 @@
 package com.odong.portal.service;
 
+import com.odong.portal.entity.User;
+
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
@@ -7,4 +9,19 @@ package com.odong.portal.service;
  * Time: 下午2:28
  */
 public interface AccountService {
+    User getUser(long id);
+
+    User getUser(String email);
+
+    void addUser(String email, String username, String password);
+
+    void setUserInfo(long user, String username, String details);
+
+    void setUserPassword(long user, String password);
+
+    void setUserState(long user, User.State state);
+
+    User auth(String email, String password);
+
+
 }

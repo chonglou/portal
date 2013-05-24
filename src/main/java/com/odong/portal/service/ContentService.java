@@ -18,6 +18,7 @@ public interface ContentService {
     int countTag(long article);
 
     List<Tag> topTag(int count);
+
     List<Tag> hotTag(int count);
 
     List<Tag> listTag();
@@ -31,6 +32,7 @@ public interface ContentService {
     void addTag(String name);
 
     void setTagName(long id, String name);
+
     void setTagVisit(long tag);
 
     void delTag(long id);
@@ -40,6 +42,8 @@ public interface ContentService {
     int countCommentByUser(long user);
 
     int countCommentByArticle(long article);
+
+    Comment getComment(long comment);
 
     List<Comment> listComment(int no, int size);
 
@@ -60,6 +64,10 @@ public interface ContentService {
     int countArticleByAuthor(long author);
 
     int countArticleByTag(long tag);
+
+    Article getArticle(long article);
+
+    void delArticle(long article);
 
     List<Article> latestArticle(int count);
 

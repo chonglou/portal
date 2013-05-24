@@ -36,7 +36,7 @@ public class Article implements Serializable {
     @Column(nullable = false, updatable = false)
     private Date created;
     private Date lastEdit;
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private State state;
     @Column(nullable = false)

@@ -15,7 +15,8 @@ public class MapIntegerValueComparator<K> implements Comparator<K> {
         this.base = base;
     }
 
-    private Map<K,Integer> base;
+    private Map<K, Integer> base;
+
     @Override
     public int compare(K o1, K o2) {
 
