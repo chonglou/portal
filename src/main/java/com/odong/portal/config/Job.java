@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  * Date: 13-5-23
  * Time: 下午7:47
  */
-@Configuration
+@Configuration("portal.job")
 @EnableAsync
 @EnableScheduling
 public class Job {

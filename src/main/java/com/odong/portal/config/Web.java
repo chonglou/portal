@@ -19,8 +19,10 @@ public class Web extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/bootstrap-2.3.2/**").addResourceLocations("/WEB-INF/bootstrap/");
+        registry.addResourceHandler("/jquery/**").addResourceLocations("/WEB-INF/jquery/");
+        registry.addResourceHandler("/bootstrap/**").addResourceLocations("/WEB-INF/bootstrap-2.3.2/");
         registry.addResourceHandler("/kindeditor/**").addResourceLocations("/WEB-INF/kindeditor-4.1.7/");
+        registry.addResourceHandler("/jcloud/**").addResourceLocations("/WEB-INF/jcloud/");
         registry.addResourceHandler("/style/**").addResourceLocations("/WEB-INF/style/");
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
 

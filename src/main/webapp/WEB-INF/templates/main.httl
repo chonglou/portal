@@ -1,4 +1,9 @@
+#set(top_nav_key="main")
 $!{extends("/layout.httl")}
-<!--#macro(title)-->
-        $!{title}
+
+<!--#macro(left)-->
+    ${include("/widgets/3d_tag.httl")}
+<!--#end-->
+<!--#macro(main)-->
+        中间
 <!--#end-->

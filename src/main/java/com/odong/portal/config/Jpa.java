@@ -12,6 +12,7 @@ import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -65,7 +66,7 @@ public class Jpa {
 
     @Bean
     JpaDialect getJpaDialect() {
-        return new HibernateExtendedJpaDialect();
+        return new HibernateJpaDialect();
     }
 
 

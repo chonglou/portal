@@ -24,13 +24,13 @@ public class SiteHelper {
         siteService.setObject("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
             siteService.setObject("site.init", new Date());
-            siteService.setObject("site.version", "v20130522");
-            siteService.setObject("site.key", stringHelper.random(512));
-            siteService.setObject("site.title", "门户网站系统");
-            siteService.setObject("site.copy_right", "版权信息");
-            siteService.setObject("site.allow_register", true);
-            siteService.setObject("site.allow_login", true);
-
+            siteService.setString("site.version", "v20130522");
+            siteService.setString("site.key", stringHelper.random(512));
+            siteService.setString("site.title", "门户网站系统");
+            siteService.setString("site.copyright", "&copy;2013");
+            siteService.setObject("site.allowRegister", true);
+            siteService.setObject("site.allowLogin", true);
+            siteService.setString("site.author", "zhengjitang@gmail.com");
         }
     }
 

@@ -1,12 +1,45 @@
-<html>
-<head>
-    <title>
-        <!--#macro($!title)-->
-        门户网站系统
-        <!--#end-->
-    </title>
-</head>
-<body>
+$!{extends("/frame.httl")}
 
-</body>
-</html>
+#macro(personal_bar)
+    #if(session.aaa)
+        #set(personal_bar_items=["/personal/self":"个人信息", "/personal/article":"文章管理", "/personal/logout":"安全退出"])
+        #set(personal_bar_name="用户中心")
+    #else
+        #set(personal_bar_items=["/personal/login":"用户登录", "/personal/register":"账户注册", "/personal/reset_password":"找回密码"])
+        #set(personal_bar_name="登录/注册")
+    #end
+
+    <div class="btn-group pull-right">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="icon-user">&nbsp;</i> ${personal_bar_name}
+        <span class="caret">&nbsp;</span>
+    </a>
+    <ul class="dropdown-menu">
+        #for(i : personal_bar_items)
+            <li><a href="${i.key}">${i.value}</a></li>
+            #if(!for.last)
+            <li class="divider">&nbsp;</li>
+            #end
+        #end
+    </ul>
+    </div>
+#end
+
+#macro(top_nav_bar(String top_nav_key))
+    #set(top_nav_bar_items=["/main":"网站首页","/personal":"用户中心","/sitemap":"网站地图","/contact_us":"联系我们"])
+    #set(top_nav_bar_sorts=["main", "personal", "sitemap", "contact_us"])
+    <div class="nav-collapse">
+        <ul class="nav">
+            #for(i : ["main", "personal", "sitemap", "contact_us"])
+                <li
+                #if(top_nav_key == i)
+                class="active"
+                #end
+                ><a href="/${i}">${top_nav_bar_items.get("/"+i)}</a><li>
+            #end
+        </ul>
+        <form method="post" target="_blank" action="/search" class="navbar-search pull-left">
+            <input type="text" name="keyword" class="search-query" placeholder="点击此处进行搜索">
+        </form>
+    </div>
+#end
