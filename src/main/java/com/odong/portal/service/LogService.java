@@ -2,6 +2,8 @@ package com.odong.portal.service;
 
 import com.odong.portal.entity.Log;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
@@ -9,7 +11,9 @@ import com.odong.portal.entity.Log;
  * Time: 下午11:42
  */
 public interface LogService {
-    void log(String message, Log.Type type);
+    void add(Long user, String message, Log.Type type);
 
-    void log(long user, String message, Log.Type type);
+    List<Log> list(int no, int size);
+
+    void delete(Long id);
 }

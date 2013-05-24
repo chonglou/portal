@@ -16,6 +16,10 @@ import java.util.Date;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Article implements Serializable {
+    public enum State {
+        PRIVATE, PUBLIC, PROTECTED
+    }
+
     private static final long serialVersionUID = 9130835572844462147L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,8 +36,29 @@ public class Article implements Serializable {
     @Column(nullable = false, updatable = false)
     private Date created;
     private Date lastEdit;
+    @Column(nullable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
+    private State state;
+    @Column(nullable = false)
+    private Long visits;
     @Version
     private int version;
+
+    public Long getVisits() {
+        return visits;
+    }
+
+    public void setVisits(Long visits) {
+        this.visits = visits;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     public int getVersion() {
         return version;

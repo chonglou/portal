@@ -22,8 +22,18 @@ public class Tag implements Serializable {
     private Long id;
     @Column(nullable = false, unique = true)
     private String name;
+    @Column(nullable = false)
+    private Long visits;
     @Version
     private int version;
+
+    public Long getVisits() {
+        return visits;
+    }
+
+    public void setVisits(Long visits) {
+        this.visits = visits;
+    }
 
     public int getVersion() {
         return version;

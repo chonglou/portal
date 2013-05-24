@@ -2,6 +2,7 @@ package com.odong.portal.dao;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,13 +13,29 @@ import java.util.List;
 public interface BaseDao<T extends Serializable, PK extends Serializable> {
     T select(PK id);
 
+    T select(String hql, Map<String,Object> map);
+
     void insert(T t);
 
     void delete(PK id);
 
+    void delete(String hql, Map<String,Object> map);
+
     List<T> list();
 
-    long count();
+    List<T> list(String hql, Map<String,Object> map, int count);
+
+    List<T> list(String hql, Map<String,Object> map);
+
+    List<T> list(int pageNo, int pageSize, String hql, Map<String, Object> map);
+
+    int count();
+
+    int count(String hql, Map<String,Object> map);
 
     void update(T t);
+
+    void update(String hql, Map<String,Object> map);
+
+    String hqlListAll();
 }

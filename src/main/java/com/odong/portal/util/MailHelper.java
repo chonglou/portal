@@ -15,16 +15,16 @@ import javax.annotation.Resource;
  */
 @Component
 public class MailHelper {
-    public void send(String to, String title, String body, boolean html){
+    public void send(String to, String title, String body, boolean html) {
 
     }
 
-    public boolean isAvailable(){
+    public boolean isAvailable() {
         return profile != null;
     }
 
-    public void setup(SmtpProfile profile){
-        siteService.setString("site.smtp", encryptHelper.encode(profile));
+    public void setup(SmtpProfile profile) {
+        siteService.set("site.smtp", encryptHelper.encode(profile));
         this.profile = profile;
     }
 

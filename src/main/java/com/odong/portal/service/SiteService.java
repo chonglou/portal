@@ -1,5 +1,7 @@
 package com.odong.portal.service;
 
+import java.util.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
@@ -7,10 +9,17 @@ package com.odong.portal.service;
  * Time: 下午2:28
  */
 public interface SiteService {
-    void setString(String key, String value);
+    Boolean getBoolean(String key);
+
+    Date getDate(String key);
+
+    Long getLong(String key);
+
+    Integer getInteger(String key);
+
     String getString(String key);
 
-    void setObject(String key, Object value);
+    void set(String key, Object value);
 
     <T> T getObject(String key, Class<T> clazz);
 }

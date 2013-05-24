@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class Setting implements Serializable {
     private static final long serialVersionUID = 2722519175265573466L;
     @Id
-    @Column( nullable = false, updatable = false, unique = true)
+    @Column(nullable = false, updatable = false, unique = true)
     private String key;
     @Lob
     private String value;

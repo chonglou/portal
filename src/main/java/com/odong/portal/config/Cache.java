@@ -8,12 +8,10 @@ import net.rubyeye.xmemcached.command.BinaryCommandFactory;
 import net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator;
 import net.rubyeye.xmemcached.transcoders.SerializingTranscoder;
 import net.rubyeye.xmemcached.transcoders.Transcoder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.inject.Qualifier;
 import java.io.IOException;
 
 /**
@@ -25,9 +23,10 @@ import java.io.IOException;
 @Configuration("portal.cache")
 public class Cache {
     @Bean(destroyMethod = "shutdown")
-    MemcachedClient getClient() throws IOException{
+    MemcachedClient getClient() throws IOException {
         return getClientBuilder().build();
     }
+
     @Bean
     XMemcachedClientBuilder getClientBuilder() {
         XMemcachedClientBuilder builder = new XMemcachedClientBuilder(servers);

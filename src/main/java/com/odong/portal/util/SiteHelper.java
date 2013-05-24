@@ -1,6 +1,5 @@
 package com.odong.portal.util;
 
-import com.odong.portal.model.SmtpProfile;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,22 +20,22 @@ import java.util.Date;
 public class SiteHelper {
     @PostConstruct
     void init() {
-        siteService.setObject("site.startup", new Date());
+        siteService.set("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
-            siteService.setObject("site.init", new Date());
-            siteService.setString("site.version", "v20130522");
-            siteService.setString("site.key", stringHelper.random(512));
-            siteService.setString("site.title", "门户网站系统");
-            siteService.setString("site.copyright", "&copy;2013");
-            siteService.setObject("site.allowRegister", true);
-            siteService.setObject("site.allowLogin", true);
-            siteService.setString("site.author", "zhengjitang@gmail.com");
+            siteService.set("site.init", new Date());
+            siteService.set("site.version", "v20130522");
+            siteService.set("site.key", stringHelper.random(512));
+            siteService.set("site.title", "门户网站系统");
+            siteService.set("site.copyright", "&copy;2013");
+            siteService.set("site.allowRegister", true);
+            siteService.set("site.allowLogin", true);
+            siteService.set("site.author", "zhengjitang@gmail.com");
         }
     }
 
     @PreDestroy
     void destroy() {
-        siteService.setObject("site.shutdown", new Date());
+        siteService.set("site.shutdown", new Date());
     }
 
     @Resource

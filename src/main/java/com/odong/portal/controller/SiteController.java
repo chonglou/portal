@@ -21,9 +21,9 @@ import java.util.Map;
 public class SiteController {
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     String getMain(Map<String, Object> map) {
-        Map<String,String> site = new HashMap<>();
-        for(String s : new String[]{"title", "description", "copyright", "keywords", "author"}){
-            site.put(s, siteService.getString("site."+s));
+        Map<String, String> site = new HashMap<>();
+        for (String s : new String[]{"title", "description", "copyright", "keywords", "author"}) {
+            site.put(s, siteService.getString("site." + s));
         }
         map.put("gl_site", site);
         return "main.httl";

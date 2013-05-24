@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,39 +17,55 @@ import javax.annotation.Resource;
  * Date: 13-5-22
  * Time: 下午2:29
  */
-@Service
+@Service("siteService")
 public class SiteServiceImpl implements SiteService {
 
+
     @Override
-    public void setString(String key, String value) {
+    public Boolean getBoolean(String key) {
+        return getObject(key, Boolean.class);
+    }
+
+    @Override
+    public Date getDate(String key) {
+        return getObject(key, Date.class);  //
+    }
+
+    @Override
+    public Long getLong(String key) {
+        return getObject(key, Long.class);  //
+    }
+
+    @Override
+    public Integer getInteger(String key) {
+        return getObject(key, Integer.class);  //
+    }
+
+    @Override
+    public String getString(String key) {
+        return getObject(key, String.class);
+    }
+
+    @Override
+    public void set(String key, Object value) {
         Setting s = settingDao.select(key);
+        String val = jsonHelper.object2json(value);
         if (s == null) {
             s = new Setting();
             s.setKey(key);
-            s.setValue(value);
+            s.setValue(val);
             settingDao.insert(s);
         } else {
-            s.setValue(value);
+            s.setValue(val);
             settingDao.update(s);
         }
     }
 
     @Override
-    public String getString(String key) {
+    public <T> T getObject(String key, Class<T> clazz) {
 
         Setting s = settingDao.select(key);
-        return s == null ? null : s.getValue();
-    }
-
-    @Override
-    public void setObject(String key, Object value) {
-        setString(key, jsonHelper.object2json(value));
-    }
-
-    @Override
-    public <T> T getObject(String key, Class<T> clazz) {
-        String s = getString(key);
-        return s == null ? null : jsonHelper.json2object(s, clazz);  //
+        return s == null ? null : jsonHelper.json2object(s.getValue(), clazz);  //
     }
 
     @Resource

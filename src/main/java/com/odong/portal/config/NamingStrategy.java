@@ -4,7 +4,6 @@ import com.odong.portal.util.StringHelper;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +22,7 @@ public class NamingStrategy extends ImprovedNamingStrategy {
 
     @Override
     public String classToTableName(String className) {
-        return "PORTAL_"+encode(stringHelper.camelCase2Underscore(className));
+        return "PORTAL_" + encode(stringHelper.camelCase2Underscore(className));
     }
 
     @Override
