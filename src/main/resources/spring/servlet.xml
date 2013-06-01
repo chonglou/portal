@@ -15,6 +15,11 @@
         <property name="basename" value="messages"/>
     </bean>
 
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+    <mvc:annotation-driven validator="validator" />
+
     <bean id="viewResolver" class="httl.web.springmvc.HttlViewResolver">
         <property name="contentType" value="text/html; charset=UTF-8" />
     </bean>

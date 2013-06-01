@@ -11,6 +11,12 @@ import java.util.List;
  * Time: 下午5:25
  */
 public class Form implements Serializable {
+    public void addField(Field field){
+        this.fields.add(field);
+    }
+    public void addButton(Button button){
+        this.buttons.add(button);
+    }
     public Form(String id, String title, String action) {
         this.id = id;
         this.title = title;

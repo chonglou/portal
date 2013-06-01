@@ -45,7 +45,7 @@ public class JsonHelperImpl implements JsonHelper {
     }
 
     @Override
-    public <K, V> Map<K, V> json2list(String json, Class<K> kClazz, Class<V> vClazz) {
+    public <K, V> Map<K, V> json2map(String json, Class<K> kClazz, Class<V> vClazz) {
         try {
             return mapper.readValue(json, new TypeReference<Map<K, V>>() {
             });

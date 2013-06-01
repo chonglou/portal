@@ -1,6 +1,7 @@
 package com.odong.portal.service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,4 +23,5 @@ public interface SiteService {
     void set(String key, Object value);
 
     <T> T getObject(String key, Class<T> clazz);
+    <T> List<T> getList(String key, Class<T> clazz);
 }

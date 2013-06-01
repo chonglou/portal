@@ -14,7 +14,7 @@ public interface JsonHelper {
 
     <T> T json2object(String json, Class<T> clazz);
 
-    <K, V> Map<K, V> json2list(String json, Class<K> kClazz, Class<V> vClazz);
+    <K, V> Map<K, V> json2map(String json, Class<K> kClazz, Class<V> vClazz);
 
     <T> List<T> json2List(String json, Class<T> clazz);
 

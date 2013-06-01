@@ -12,6 +12,7 @@ import java.util.List;
  * Time: 上午12:04
  */
 public class ResponseItem implements Serializable {
+
     public ResponseItem() {
         this.ok = false;
         this.created = new Date();

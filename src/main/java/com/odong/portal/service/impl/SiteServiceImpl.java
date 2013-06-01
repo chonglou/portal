@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -66,6 +67,12 @@ public class SiteServiceImpl implements SiteService {
 
         Setting s = settingDao.select(key);
         return s == null ? null : jsonHelper.json2object(s.getValue(), clazz);  //
+    }
+
+    @Override
+    public <T> List<T> getList(String key, Class<T> clazz) {
+        Setting s = settingDao.select(key);
+        return s == null ? null: jsonHelper.json2List(s.getValue(), clazz);
     }
 
     @Resource
