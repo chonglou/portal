@@ -10,6 +10,6 @@ public class HiddenField<T> extends Field<T> {
     private static final long serialVersionUID = -441623698916913644L;
 
     public HiddenField(String id, T value) {
-        super(id, null, "hidden", value);
+        super(id, null, "hidden", value, false, null);
     }
 }

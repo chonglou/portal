@@ -9,11 +9,13 @@ import java.io.Serializable;
  * Time: 下午5:29
  */
 public abstract class Field<T> implements Serializable {
-    protected Field(String id, String label, String type, T value) {
+    protected Field(String id, String label, String type, T value, boolean required, String tooltip) {
         this.id = id;
         this.label = label;
         this.type = type;
         this.value = value;
+        this.tooltip = tooltip;
+        this.required = required;
 
     }
 
@@ -21,7 +23,33 @@ public abstract class Field<T> implements Serializable {
     private String id;
     private String type;
     private String label;
-    private T value;
+    private boolean readonly;
+    private boolean required;
+    private T value; private String tooltip;
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
+
+    public String getTooltip() {
+        return tooltip;
+    }
+
+    public void setTooltip(String tooltip) {
+        this.tooltip = tooltip;
+    }
 
     public String getId() {
         return id;

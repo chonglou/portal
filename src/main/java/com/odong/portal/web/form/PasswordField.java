@@ -10,6 +10,9 @@ public class PasswordField extends Field<String> {
     private static final long serialVersionUID = 4601649521987736108L;
 
     public PasswordField(String id, String label, String value) {
-        super(id, label, "password", value);
+        this(id, label,  value,  null);
+    }
+    public PasswordField(String id, String label, String value, String tooltip) {
+        super(id, label, "password", value, true, tooltip);
     }
 }

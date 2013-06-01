@@ -12,7 +12,11 @@ import java.util.List;
  */
 public class SelectField<T> extends Field<T> {
     public SelectField(String id, String name, T value) {
-        super(id, name, "select", value);
+        this(id, name, value, null);
+        this.options = new ArrayList<>();
+    }
+    public SelectField(String id, String name, T value, String tooltip) {
+        super(id, name, "select", value, true, tooltip);
         this.options = new ArrayList<>();
     }
 

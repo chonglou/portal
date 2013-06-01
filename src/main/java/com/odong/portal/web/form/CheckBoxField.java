@@ -11,8 +11,8 @@ import java.util.List;
  * Time: 下午5:45
  */
 public class CheckBoxField<T> extends Field<T> {
-    public CheckBoxField(String id, String label) {
-        super(id, label, "checkbox", null);
+    public CheckBoxField(String id, String label, String tooltip) {
+        super(id, label, "checkbox", null, true, tooltip);
         this.options = new ArrayList<>();
     }
 

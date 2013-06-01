@@ -13,14 +13,18 @@ import java.util.List;
 public class RadioField<T> extends Field<T> {
 
     public RadioField(String id, String label, T value) {
-        super(id, label, "radio", value);
+        super(id, label, "radio", value, true, null);
         this.options = new ArrayList<>();
     }
 
     public void addOption(String label, T value) {
+        addOption(label, value, null);
+    }
+    public void addOption(String label, T value, String tooltip) {
         Option option = new Option();
         option.setValue(value);
         option.setLabel(label);
+        option.setTooltip(tooltip);
         this.options.add(option);
     }
 
@@ -31,6 +35,15 @@ public class RadioField<T> extends Field<T> {
         private static final long serialVersionUID = -2068326659499622098L;
         private T value;
         private String label;
+        private String tooltip;
+
+        public String getTooltip() {
+            return tooltip;
+        }
+
+        public void setTooltip(String tooltip) {
+            this.tooltip = tooltip;
+        }
 
         public T getValue() {
             return value;

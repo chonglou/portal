@@ -32,8 +32,17 @@ public class Form implements Serializable {
     private String title;
     private List<Field> fields;
     private List<Button> buttons;
+    private boolean captcha;
     private boolean ok;
     private List<String> data;
+
+    public boolean isCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(boolean captcha) {
+        this.captcha = captcha;
+    }
 
     public String getTitle() {
         return title;

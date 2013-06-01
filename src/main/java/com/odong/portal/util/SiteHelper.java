@@ -26,6 +26,8 @@ public class SiteHelper {
             siteService.set("site.version", "v20130522");
             siteService.set("site.key", stringHelper.random(512));
             siteService.set("site.title", "门户网站系统");
+            siteService.set("site.description", "站点说明信息");
+            siteService.set("site.keywords", "站点关键字");
             siteService.set("site.copyright", "&copy;2013");
             siteService.set("site.allowRegister", true);
             siteService.set("site.allowLogin", true);
