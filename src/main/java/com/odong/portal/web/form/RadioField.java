@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:41
  */
-public class RadioField<T> extends Field<T> {
+public final class RadioField<T> extends Field<T> {
 
     public RadioField(String id, String label, T value) {
         super(id, label, "radio", value, true, null);
@@ -30,7 +30,7 @@ public class RadioField<T> extends Field<T> {
 
     private static final long serialVersionUID = 8218621869957653686L;
 
-    public class Option implements Serializable {
+    public final class Option implements Serializable {
 
         private static final long serialVersionUID = -2068326659499622098L;
         private T value;

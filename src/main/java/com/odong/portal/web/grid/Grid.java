@@ -1,5 +1,7 @@
 package com.odong.portal.web.grid;
 
+import com.odong.portal.web.ResponseItem;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,12 +13,13 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:26
  */
-public class Grid implements Serializable {
+public class Grid extends ResponseItem {
     public Grid(String id, int columnSize) {
         this(id, columnSize, 0);
     }
 
     public Grid(String id, int columnSize, int pageSize) {
+        super(Type.grid);
         this.id = id;
         this.pageSize = pageSize;
         this.columns = new Column[columnSize];

@@ -10,15 +10,17 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:45
  */
-public class CheckBoxField<T> extends Field<T> {
+public final class CheckBoxField<T> extends Field<T> {
     public CheckBoxField(String id, String label, String tooltip) {
         super(id, label, "checkbox", null, true, tooltip);
         this.options = new ArrayList<>();
     }
 
-    public void addOption(String id, String label, T value, boolean select) {
+    public CheckBoxField(String id, String label) {
+        this(id, label, null);
+    }
+    public void addOption( String label, T value, boolean select) {
         Option option = new Option();
-        option.setId(id);
         option.setLabel(label);
         option.setValue(value);
         option.setSelect(select);
@@ -36,20 +38,11 @@ public class CheckBoxField<T> extends Field<T> {
         this.options = options;
     }
 
-    public class Option implements Serializable {
+    public final class Option implements Serializable {
         private static final long serialVersionUID = 6959337352835147535L;
-        private String id;
         private T value;
         private String label;
         private boolean select;
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
 
         public T getValue() {
             return value;

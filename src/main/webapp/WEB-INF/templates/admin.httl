@@ -2,7 +2,7 @@
 $!{extends("/layout.httl")}
 
 <!--#macro(left)-->
-   <!-- ${left_3d_tag_zone} -->
+    ${left_nav_bar}
 <!--#end-->
 <!--#macro(main)-->
         中间

@@ -1,5 +1,7 @@
 package com.odong.portal.web.form;
 
+import com.odong.portal.web.ResponseItem;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:25
  */
-public class Form implements Serializable {
+public final class Form extends ResponseItem {
     public void addField(Field field){
         this.fields.add(field);
     }
@@ -18,12 +20,17 @@ public class Form implements Serializable {
         this.buttons.add(button);
     }
     public Form(String id, String title, String action) {
+        super(Type.form);
         this.id = id;
         this.title = title;
         this.action = action;
+        this.method = Method.POST;
         this.fields = new ArrayList<>();
         this.buttons = new ArrayList<>();
-        this.data = new ArrayList<>();
+    }
+
+    public enum Method{
+        GET,POST,PUT,DELETE
     }
 
     private static final long serialVersionUID = -3941326971007776611L;
@@ -32,9 +39,16 @@ public class Form implements Serializable {
     private String title;
     private List<Field> fields;
     private List<Button> buttons;
+    private Method method;
     private boolean captcha;
-    private boolean ok;
-    private List<String> data;
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
 
     public boolean isCaptcha() {
         return captcha;
@@ -77,21 +91,6 @@ public class Form implements Serializable {
         this.fields = fields;
     }
 
-    public boolean isOk() {
-        return ok;
-    }
-
-    public void setOk(boolean ok) {
-        this.ok = ok;
-    }
-
-    public List<String> getData() {
-        return data;
-    }
-
-    public void setData(List<String> data) {
-        this.data = data;
-    }
 
     public List<Button> getButtons() {
         return buttons;

@@ -1,4 +1,4 @@
-package com.odong.portal.model;
+package com.odong.portal.web;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,20 +13,38 @@ import java.util.List;
  */
 public class ResponseItem implements Serializable {
 
-    public ResponseItem() {
+    public ResponseItem(){
+        this(Type.message);
+    }
+
+    public ResponseItem(Type type) {
         this.ok = false;
+        this.type = type;
         this.created = new Date();
         this.data = new ArrayList<>();
     }
 
-    public void add(Object o) {
+    public void addMessage(Object o) {
         this.data.add(o);
+    }
+
+    public enum Type{
+        list,form,grid,chart,message,redirect
     }
 
     private static final long serialVersionUID = 2746215318151397733L;
     private Date created;
     private boolean ok;
+    private Type type;
     private List<Object> data;
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
 
     public Date getCreated() {
         return created;

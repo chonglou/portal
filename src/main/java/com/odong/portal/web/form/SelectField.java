@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:52
  */
-public class SelectField<T> extends Field<T> {
+public final class SelectField<T> extends Field<T> {
     public SelectField(String id, String name, T value) {
         this(id, name, value, null);
         this.options = new ArrayList<>();
@@ -30,7 +30,7 @@ public class SelectField<T> extends Field<T> {
     private static final long serialVersionUID = 1148063126960688562L;
     private List<Option> options;
 
-    public class Option implements Serializable {
+    public final class Option implements Serializable {
         private static final long serialVersionUID = -4564819177779094836L;
         private T value;
         private String label;

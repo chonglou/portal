@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.util.Date;
+import httl.spi.resolvers.GlobalResolver;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,6 +34,8 @@ public class SiteHelper {
             siteService.set("site.allowLogin", true);
             siteService.set("site.author", "zhengjitang@gmail.com");
         }
+
+        GlobalResolver.put("gl_debug", true);
     }
 
     @PreDestroy

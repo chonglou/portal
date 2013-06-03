@@ -1,5 +1,50 @@
 $!{extends("/frame.httl")}
 
+#macro(left_nav_bar(List<NavBar> navBars))
+<div class="well sidebar-nav">
+    <ul class="nav nav-list">
+        #for(NavBar i:navBars)
+            <li class="nav-header">${i.title}</li>
+            #if(i.ajax)
+                #for(Page j: i.pages)
+                    <li><a href="#" id="left_nav-${i.title}-${j.url}">${j.name}</a></li>
+                #end
+            #else
+                #for(Page j: i.pages)
+                <li><a href="${j.url}">${j.name}</a></li>
+                #end
+            #end
+        #end
+    </ul>
+</div>
+#end
+
+#macro(left_3d_tag_zone(List tags))
+<link href="/jcloud/jcloud.css" rel="stylesheet"/>
+<script type="text/javascript" src="/jcloud/jcloud.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+    $('ul#jcloud-tags').jcloud({
+        radius: 150,
+        size: 30,
+        step: 2,
+        speed: 50,
+        flats: 2,
+        clock: 10,
+        areal: 100,
+        splitX: 100,
+        splitY: 100,
+        colors: ['#000000', '#DD2222', '#2267DD', '#2A872B', '#872A7B', '#CAC641']
+    });
+});
+</script>
+<ul id="jcloud-tags">
+#for(i:tags)
+    <li><a href="/tag/${i}">${i}</a></li>
+#end
+</ul>
+#end
+
 #macro(personal_bar)
     #if(session.aaa)
         #set(personal_bar_items=["/personal/self":"个人信息", "/personal/article":"文章管理", "/personal/logout":"安全退出"])

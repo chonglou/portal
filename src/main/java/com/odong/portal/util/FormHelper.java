@@ -1,7 +1,7 @@
 package com.odong.portal.util;
 
 import com.google.code.kaptcha.Constants;
-import com.odong.portal.model.ResponseItem;
+import com.odong.portal.web.ResponseItem;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -26,12 +26,12 @@ return check(result, null, false);
             String captchaS = (String) request.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
             String captchaR = request.getParameter("captcha");
             if (!StringUtils.equals(captchaS, captchaR)) {
-                ri.add("验证码输入不正确");
+                ri.addMessage("验证码输入不正确");
             }
         }
 
         for (ObjectError error : result.getAllErrors()) {
-            ri.add(error.getDefaultMessage());
+            ri.addMessage(error.getDefaultMessage());
         }
         if (ri.getData().size() == 0) {
             ri.setOk(true);

@@ -4,7 +4,8 @@ import com.odong.portal.entity.Tag;
 import com.odong.portal.form.site.AllowForm;
 import com.odong.portal.form.site.InfoForm;
 import com.odong.portal.form.site.TagForm;
-import com.odong.portal.model.ResponseItem;
+import com.odong.portal.web.NavBar;
+import com.odong.portal.web.ResponseItem;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,6 +33,22 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    String getMain(Map<String, Object> map) {
+        NavBar nb = new NavBar("控制面板");
+        nb.add("用户管理", "/admin/user");
+        nb.add("标签管理", "/admin/tag");
+        nb.add("版面管理", "/admin/board");
+        nb.add("友情链接", "/admin/friend_link");
+        nb.add("站点信息", "/admin/site");
+        nb.add("日志管理", "/admin/log");
+        nb.setAjax(true);
+        List<NavBar> navBars = new ArrayList<>();
+        navBars.add(nb);
+        map.put("navBars", navBars);
+        return "admin.httl";
+    }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
@@ -85,7 +105,7 @@ public class AdminController {
     @ResponseBody
     ResponseItem getTagList(){
         ResponseItem ri = new ResponseItem();
-        ri.add(contentService.listTag());
+        ri.addMessage(contentService.listTag());
         ri.setOk(true);
         return ri;
     }
@@ -93,7 +113,7 @@ public class AdminController {
     @ResponseBody
     Form getTagForm(){
         Form fm = new Form("tag", "标签", "/admin/tag");
-        fm.addField(new TextField<>("name", "名称", ""));
+        fm.addField(new TextField<>("name", "名称", null));
         fm.setOk(true);
         return fm;
     }
@@ -117,14 +137,14 @@ public class AdminController {
                     contentService.addTag(form.getName());
                 }
                 {
-                    ri.add("标签[" + form.getId() + "]已存在");
+                    ri.addMessage("标签[" + form.getId() + "]已存在");
                     ri.setOk(false);
                 }
             }
             else {
                 Tag tag = contentService.getTag(form.getId());
                 if(tag == null){
-                    ri.add("标签["+form.getId()+"]不存在");
+                    ri.addMessage("标签[" + form.getId() + "]不存在");
                     ri.setOk(false);
                 }
                 else {
@@ -132,7 +152,7 @@ public class AdminController {
                         contentService.setTagName(form.getId(), form.getName());
                     }
                     else {
-                        ri.add("标签[" + form.getId() + "]已存在");
+                        ri.addMessage("标签[" + form.getId() + "]已存在");
                         ri.setOk(false);
                     }
                 }

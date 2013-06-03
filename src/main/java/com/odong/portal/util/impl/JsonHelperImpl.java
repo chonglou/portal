@@ -67,7 +67,7 @@ public class JsonHelperImpl implements JsonHelper {
     }
 
     @PostConstruct
-    void init() {
+    public void init() {
         mapper = new ObjectMapper();
         //mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
