@@ -25,6 +25,7 @@
     </bean>
     <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
     <bean id="rssView" class="com.odong.portal.rss.RssView"/>
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
 
     <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
         <property name="exceptionMappings">

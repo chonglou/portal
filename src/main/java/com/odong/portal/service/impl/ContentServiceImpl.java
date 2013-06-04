@@ -245,6 +245,11 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public List<Article> listArticle() {
+        return articleDao.list();  //
+    }
+
+    @Override
     public List<Article> latestArticle(int count) {
         return articleDao.list(articleDao.hqlListAll(), null, count);  //
     }

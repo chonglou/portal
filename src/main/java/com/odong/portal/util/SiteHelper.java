@@ -3,11 +3,13 @@ package com.odong.portal.util;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.Date;
 import httl.spi.resolvers.GlobalResolver;
 
@@ -29,13 +31,33 @@ public class SiteHelper {
             siteService.set("site.title", "门户网站系统");
             siteService.set("site.description", "站点说明信息");
             siteService.set("site.keywords", "站点关键字");
+            siteService.set("site.domain", "www.0-dong.com");
             siteService.set("site.copyright", "&copy;2013");
             siteService.set("site.allowRegister", true);
             siteService.set("site.allowLogin", true);
+            siteService.set("site.aboutMe", "关于我们");
+            siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
         }
 
-        GlobalResolver.put("gl_debug", true);
+        GlobalResolver.put("gl_debug", appDebug);
+
+        File f = new File(appStoreDir);
+        if(f.exists()){
+            if(!f.isDirectory() || f.canWrite()){
+                throw new RuntimeException("数据存储目录["+appStoreDir+"]不可用");
+            }
+        }
+        if(!f.exists()){
+            logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
+            if(f.mkdirs()){
+                logger.info("创建数据目录[{}]成功", appStoreDir);
+            }
+            else
+            {
+                throw new IllegalArgumentException("数据存储目录["+appStoreDir+"]创建失败");
+            }
+        }
     }
 
     @PreDestroy
@@ -47,7 +69,19 @@ public class SiteHelper {
     private StringHelper stringHelper;
     @Resource
     private SiteService siteService;
+    @Value("${app.store}")
+    private String appStoreDir;
+    @Value("${app.debug}")
+    private boolean appDebug;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setAppDebug(boolean appDebug) {
+        this.appDebug = appDebug;
+    }
+
+    public void setAppStoreDir(String appStoreDir) {
+        this.appStoreDir = appStoreDir;
+    }
 
     public void setStringHelper(StringHelper stringHelper) {
         this.stringHelper = stringHelper;

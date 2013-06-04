@@ -20,6 +20,10 @@ public class Article implements Serializable {
         PRIVATE, PUBLIC, PROTECTED
     }
 
+    public Date getPublishDate(){
+        return lastEdit == null ? created : lastEdit;
+    }
+
     private static final long serialVersionUID = 9130835572844462147L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

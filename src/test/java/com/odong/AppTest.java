@@ -5,10 +5,12 @@ import com.odong.portal.util.JsonHelper;
 import com.odong.portal.util.impl.JsonHelperImpl;
 import com.odong.portal.web.form.*;
 import com.odong.portal.web.grid.Grid;
+import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +18,18 @@ import java.util.Map;
  * Unit test for  App.
  */
 public class AppTest{
+    @Test
+    public void testSitemap(){
+        try{
+
+        WebSitemapGenerator wsg = WebSitemapGenerator.builder("http://www.0-dong.com", new File("/tmp")).gzip(true).build();
+        wsg.addUrl("http://www.0-dong.com/index.html");
+        wsg.write();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     @Test
     public void testGrid(){
         Grid grid = new Grid("test",5, 15);

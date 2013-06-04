@@ -69,6 +69,8 @@ public interface ContentService {
 
     void delArticle(long article);
 
+    List<Article> listArticle();
+
     List<Article> latestArticle(int count);
 
     List<Article> hotArticle(int count);

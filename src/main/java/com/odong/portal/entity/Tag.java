@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +17,9 @@ import java.io.Serializable;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Tag implements Serializable {
+    public Date getPublishDate(){
+        return lastEdit == null ? created : lastEdit;
+    }
     private static final long serialVersionUID = -2365008447006155462L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +30,25 @@ public class Tag implements Serializable {
     private Long visits;
     @Version
     private int version;
+    private Date created;
+    @Column(nullable = false, updatable = false)
+    private Date lastEdit;
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getLastEdit() {
+        return lastEdit;
+    }
+
+    public void setLastEdit(Date lastEdit) {
+        this.lastEdit = lastEdit;
+    }
 
     public Long getVisits() {
         return visits;
