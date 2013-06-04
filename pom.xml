@@ -31,11 +31,10 @@
             <version>1.4.7</version>
         </dependency>
         <dependency>
-            <groupId>jaf</groupId>
+            <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
-            <version>1.0.2</version>
+            <version>1.1.1</version>
         </dependency>
-
 
         <dependency>
             <groupId>cglib</groupId>
@@ -381,6 +380,7 @@
 
 
     <repositories>
+
         <repository>
             <id>httl-repository</id>
             <name>Httl Repository</name>
@@ -391,6 +391,7 @@
             <name>Repository hosting the jboss artifacts</name>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
         </repository>
+
     </repositories>
 
 </project>
