@@ -2,7 +2,6 @@ package com.odong.portal.web.grid;
 
 import com.odong.portal.web.ResponseItem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,20 +13,20 @@ import java.util.List;
  * Time: 下午5:26
  */
 public class Grid extends ResponseItem {
-    public Grid(String id, int columnSize) {
-        this(id, columnSize, 0);
+    public Grid(String id, int cols) {
+        this(id, cols, 0);
     }
 
-    public Grid(String id, int columnSize, int pageSize) {
+    public Grid(String id, int cols, int pages) {
         super(Type.grid);
         this.id = id;
-        this.pageSize = pageSize;
-        this.columns = new Column[columnSize];
+        this.pages = pages;
+        this.cols = new Column[cols];
         this.items = new ArrayList<>();
     }
 
     public void addRow(Object... items){
-        if(items.length != columns.length){
+        if(items.length != cols.length){
             throw new IllegalArgumentException("单元格个数不对");
         }
         Collections.addAll(this.items, items);
@@ -35,8 +34,8 @@ public class Grid extends ResponseItem {
 
     private static final long serialVersionUID = -4735460726311781464L;
     private String id;
-    private int pageSize;
-    private Column[] columns;
+    private int pages;
+    private Column[] cols;
     private List<Object> items;
 
     public String getId() {
@@ -47,20 +46,20 @@ public class Grid extends ResponseItem {
         this.id = id;
     }
 
-    public int getPageSize() {
-        return pageSize;
+    public int getPages() {
+        return pages;
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public void setPages(int pages) {
+        this.pages = pages;
     }
 
-    public Column[] getColumns() {
-        return columns;
+    public Column[] getCols() {
+        return cols;
     }
 
-    public void setColumns(Column[] columns) {
-        this.columns = columns;
+    public void setCols(Column[] cols) {
+        this.cols = cols;
     }
 
     public List<Object> getItems() {

@@ -14,6 +14,7 @@ function Ajax(url, type, data, success, async) {
                             new FormWindow(result);
                             break;
                         case "grid":
+                            new GridWindow(result);
                             break;
                         case "list":
                             break;
@@ -45,99 +46,169 @@ function Ajax(url, type, data, success, async) {
     _init();
 }
 
+function GridWindow(grid) {
+
+}
+
 function FormWindow(form) {
     var _form;
-    var _label_td = function(id, label){
-        return "<td class='form-label'><label for='fm-"+_form.id+"-"+id+"'>"+label+"：</label></td>";
-    };
-    var _input_id = function(id){
-        return "fm-"+form.id+"-"+id;
-    };
-    var _hidden_td = function(id, value){
-        return  "<td colspan='2'><input type='hidden' id='"+_input_id(id)+"' value='" + value + "'/></td>";
-    };
-    var _button = function(id,label, type){
-        var btn = "<button id='"+_input_id(id)+"' class='btn ";
-        if(type != undefined){
-            btn += "btn-"+type;
+    var _field = function (id, label, input) {
+        if(label == undefined){
+            return input;
         }
-        btn+="'>"+label+"</button> ";
+        var content = "<div class='control-group'>";
+        content += "<label class='control-label' ";
+        if (id != undefined) {
+            content += " for='fm-" + _form.id + "-" + id + "'";
+        }
+        content += ">" + label + "：</label>";
+        content += "<div class='controls'>";
+        content += input;
+        content += "</div>";
+        content += "</div>";
+        return content;
+    };
+
+    var _id = function (id) {
+        return "fm-" + form.id + "-" + id;
+    };
+    var _hidden_field = function (id, value) {
+        return  "<input type='hidden' id='" + _id(id) + "' value='" + value + "'/>";
+    };
+
+    var _button = function (id, label, type) {
+        var btn = "<button id='" + _id(id) + "' class='btn ";
+        if (type != undefined) {
+            btn += "btn-" + type;
+        }
+        btn += "'>" + label + "</button> ";
         return btn;
     };
-    var _button_tr = function(buttons){
-        var bg = "<tr><td colspan='2'><div class='btn-group'>";
-        bg += _button("submit", "提交", "danger");
-        bg += _button("reset", "重写", "info");
-        for(var i in buttons){
+    var _button_group = function (buttons) {
+        var content = "<div class='form-actions'>";
+        content += _button("submit", "提交", "danger");
+        content += _button("reset", "重写", "info");
+        for (var i in buttons) {
             var btn = form.buttons[i];
-            bg += _button(btn.id, btn.label, btn.type);
+            content += _button(btn.id, btn.label, btn.type);
         }
-        bg += "</div></td></tr>";
-        return bg;
+        content += "</div>";
+        return content;
     };
     var _init = function () {
         _form = form;
 
-        var content = "<fieldset><legend>"+form.title+"</legend>";
-        content+="<form id='fm-" + form.id + "' method='" + form.method + "'  action='" + form.action + "'>";
-        content +="<table class='form-table'>";
-        content += "<tr>"+ _hidden_td("created", form.created)+"</tr>";
+        var content = "<form class='form-horizontal' method='" + form.method + "'  action='" + form.action + "'>";
+        content += "<fieldset><legend>" + form.title + "</legend>";
+        content += _hidden_field("created", form.created);
         for (var i in form.fields) {
             var field = form.fields[i];
-            content += "<tr>";
+            var input;
             switch (field.type) {
                 case "text":
-                    content += _label_td(field.id, field.label);
-                    content+="<td><input type='text' id='"+_input_id(field.id)+"' ";
+                    input = "<input class='input-xlarge focused' style='width: "+field.width+"px' type='text' id='" + _id(field.id) + "' ";
                     if (field.value != undefined) {
-                        content += "value='" + field.value + "' ";
+                        input += "value='" + field.value + "' ";
                     }
-                    if(field.readonly){
-                        content += "readonly ";
+                    if (field.readonly) {
+                        input += "readonly ";
                     }
-                    content += " />";
-                    if(field.required){
-                        content += " *";
+                    input += " />";
+                    if (field.required) {
+                        input += " *";
                     }
-                    content += "</td>";
                     break;
                 case "textarea":
-                    content += _label_td(field.id, field.label);
-                    content+="<td><textarea id='"+_input_id(field.id)+"' cols='"+field.cols+"' role='"+field.rows+"' ";
-
-                    if(field.readonly){
-                        content += "readonly ";
+                    input = "<textarea id='" + _id(field.id) + "' style='width: "+field.width+"px;height: "+field.height+"px;' ";
+                    if (field.readonly) {
+                        input += "readonly ";
                     }
-                    content += ">";
+                    input += ">";
                     if (field.value != undefined) {
-                        content += field.value;
+                        input += field.value;
                     }
-                    content +="</textarea>";
-                    if(field.required){
-                        content += " *";
+                    input += "</textarea>";
+                    if (field.required) {
+                        input += " *";
                     }
-                    content += "</td>";
+                    break;
+                case "select":
+                    input = "<select style='width: "+field.width+"px' id='" + _id(field.id) + "' ";
+                    if (field.readonly) {
+                        input += "disabled "
+                    }
+                    input += ">";
+                    for (var j in field.options) {
+                        var item = field.options[j];
+
+                        input += "<option value='" + item.value + "' ";
+                        if (item.value == field.value) {
+                            input += "selected='selected'"
+                        }
+                        input += ">" + item.label + "</option>";
+
+                    }
+                    input += "</select>";
                     break;
                 case "password":
-                    content += _label_td(field.id, field.label);
-                    content+="<td><input type='password' id='"+_input_id(field.id)+"' ";
+                    input = "<input type='password' id='" + _id(field.id) + "' ";
                     if (field.value != undefined) {
-                        content += "value='" + field.value + "' ";
+                        input += "value='" + field.value + "' ";
                     }
-                    content += " /> *";
-                    content += "</td>";
+                    input += " /> *";
                     break;
+                case "radio":
+                    input = _hidden_field(field.id, field.value);
+                    var k=1;
+                    for (var j in field.options) {
+                        var item = field.options[j];
+                        input += "<input type='radio' name='" + _id(field.id) + "'  value='" + item.value + "' ";
+                        if (item.value == field.value) {
+                            input += "checked='true' ";
+                        }
+                        input += "/>" + item.label + " &nbsp;"
+
+                        if(k%field.cols==0){
+                            input += "<br/>"
+                        }
+                        k++;
+                    }
+                    break;
+
+                case  "checkbox":
+                    input = _hidden_field(field.id, field.value);
+                    var k = 1;
+                    for (var j in field.options) {
+                        var item = field.options[j];
+                        input += "<input type='checkbox' name='" + _id(field.id) + "' value='" + item.value + "' ";
+                        if (item.selected) {
+                            input += "checked='true' ";
+                        }
+                        input += "/>" + item.label + " &nbsp;";
+
+                        if(k%field.cols==0){
+                            input += "<br/>"
+                        }
+                        k++;
+                    }
+                    break;
+
                 default:
-                    content += _hidden_td(field.id, field.value);
+                    input = _hidden_field(field.id, field.value);
                     break;
             }
-            content += "</tr>";
+            content += _field(field.id, field.label, input);
         }
 
+        if (form.captcha) {
+            var input = "<input type='text'  style='width: 80px;' id='" + _id("captcha") + "'/>* &nbsp;";
+            input += "<img src='/captcha.jpg?_=" + Math.random() + "' alt='点击更换验证码'/>";
+            content += _field("captcha", "验证码", input);
 
-        content += _button_tr(form.buttons);
-        content += "</table></form></fieldset>";
+        }
 
+        content += _button_group(form.buttons);
+        content += "</fieldset></form>";
         alert(content);
         $("div#gl_root").html(content);
     };

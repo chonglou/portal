@@ -15,6 +15,7 @@ public final class RadioField<T> extends Field<T> {
     public RadioField(String id, String label, T value) {
         super(id, label, "radio", value, true, null);
         this.options = new ArrayList<>();
+        this.cols = 5;
     }
 
     public void addOption(String label, T value) {
@@ -63,6 +64,15 @@ public final class RadioField<T> extends Field<T> {
     }
 
     private List<Option> options;
+    private int cols;
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
 
     public List<Option> getOptions() {
         return options;

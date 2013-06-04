@@ -14,28 +14,28 @@ public final class TextAreaField extends Field<String> {
     }
     public TextAreaField(String id, String label, String value, String tooltip) {
         super(id, label, "textarea", value, false, tooltip);
-        this.rows = 5;
-        this.cols=80;
+        this.width = 600;
+        this.height=350;
     }
 
     private boolean html;
-    private int rows;
-    private int cols;
+    private int width;
+    private int height;
 
-    public int getRows() {
-        return rows;
+    public int getWidth() {
+        return width;
     }
 
-    public void setRows(int rows) {
-        this.rows = rows;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
-    public int getCols() {
-        return cols;
+    public int getHeight() {
+        return height;
     }
 
-    public void setCols(int cols) {
-        this.cols = cols;
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public boolean isHtml() {

@@ -1,0 +1,66 @@
+<form class='form-horizontal' method='get' action='/test'>
+    <fieldset>
+        <legend>测试表单</legend>
+        <input type='hidden' id='fm-test-created' value='1370309248218'/>
+
+        <div class='control-group'><label class='control-label' for='fm-test-checkbox'>多选框：</label>
+
+            <div class='controls'><input type='hidden' id='fm-test-checkbox' value='null'/><input type='checkbox'
+                                                                                                  name='fm-test-checkbox'
+                                                                                                  value='0'/>值0
+                &nbsp;<input type='checkbox' name='fm-test-checkbox' value='1' checked='true'/>值1 &nbsp;<input
+                        type='checkbox' name='fm-test-checkbox' value='2'/>值2 &nbsp;<input type='checkbox'
+                                                                                           name='fm-test-checkbox'
+                                                                                           value='3' checked='true'/>值3
+                &nbsp;<input type='checkbox' name='fm-test-checkbox' value='4'/>值4 &nbsp;</div>
+        </div>
+        <input type='hidden' id='fm-test-hidden' value='隐藏数据'/>
+
+        <div class='control-group'><label class='control-label' for='fm-test-password'>密码框：</label>
+
+            <div class='controls'><input type='password' id='fm-test-password'/> *</div>
+        </div>
+        <div class='control-group'><label class='control-label' for='fm-test-radio'>单选框：</label>
+
+            <div class='controls'><input type='hidden' id='fm-test-radio' value='2'/><input type='radio'
+                                                                                            name='fm-test-radio'
+                                                                                            value='0'/>值0 &nbsp;<input
+                    type='radio' name='fm-test-radio' value='1'/>值1 &nbsp;<input type='radio' name='fm-test-radio'
+                                                                                 value='2' checked='true'/>值2
+                &nbsp;<input type='radio' name='fm-test-radio' value='3'/>值3 &nbsp;<input type='radio'
+                                                                                          name='fm-test-radio'
+                                                                                          value='4'/>值4 &nbsp;</div>
+        </div>
+        <div class='control-group'><label class='control-label' for='fm-test-select'>下拉框：</label>
+
+            <div class='controls'><select id='fm-test-select'>
+                <option value='0'>值0</option>
+                <option value='1'>值1</option>
+                <option value='2' selected='selected'>值2</option>
+                <option value='3'>值3</option>
+                <option value='4'>值4</option>
+            </select></div>
+        </div>
+        <div class='control-group'><label class='control-label' for='fm-test-textarea'>多行文本：</label>
+
+            <div class='controls'><textarea id='fm-test-textarea' style='width: 600px;height: 350px;'><br/><h4>多行文本</h4>
+            </textarea></div>
+        </div>
+        <div class='control-group'><label class='control-label' for='fm-test-text'>文本：</label>
+
+            <div class='controls'><input class='input-xlarge focused' style='width: 300px' type='text' id='fm-test-text'
+                                         value='测试数据'/> *
+            </div>
+        </div>
+        <div class='control-group'><label class='control-label' for='fm-test-captcha'>验证码：</label>
+
+            <div class='controls'><input type='text' style='width: 80px;' id='fm-test-captcha'/>* &nbsp;<img
+                    src='/captcha.jpg?_=0.5604714615533916' alt='点击更换验证码'/></div>
+        </div>
+        <div class='form-actions'>
+            <button id='fm-test-submit' class='btn btn-danger'>提交</button>
+            <button id='fm-test-reset' class='btn btn-info'>重写</button>
+            <button id='fm-test-button' class='btn '>按钮</button>
+        </div>
+    </fieldset>
+</form>

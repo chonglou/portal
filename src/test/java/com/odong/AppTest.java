@@ -4,6 +4,7 @@ import com.odong.portal.entity.User;
 import com.odong.portal.util.JsonHelper;
 import com.odong.portal.util.impl.JsonHelperImpl;
 import com.odong.portal.web.form.*;
+import com.odong.portal.web.grid.Grid;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -16,19 +17,34 @@ import java.util.Map;
  */
 public class AppTest{
     @Test
+    public void testGrid(){
+        Grid grid = new Grid("test",5, 15);
+        for(int i=0; i<100; i++){
+            String[] items = new String[5];
+            for(int j=0; j<5;j++){
+                items[j]="("+i+","+j+")";
+            }
+            grid.addRow(items);
+        }
+        grid.setOk(true);
+        log(grid);
+    }
+    @Test
     public void testForm(){
         Form form = new Form("test", "测试表单", "/test");
-        form.setMethod(Form.Method.PUT);
+        form.setMethod(Form.Method.get);
         form.setOk(true);
         form.addButton(new Button("button", "按钮", "按钮提示信息"));
         CheckBoxField<Integer> cbf = new CheckBoxField<>("checkbox", "多选框", "多选框提示信息");
-        for(int i=0; i<5; i++){
+        for(int i=0; i<23; i++){
             cbf.addOption("值"+i, i, i%2==1);
         }
+        form.addField(cbf);
+
         form.addField(new HiddenField<>("hidden", "隐藏数据"));
         form.addField(new PasswordField("password", "密码框", "密码提示信息"));
         RadioField<Integer> rf = new RadioField<Integer>("radio", "单选框", 2);
-        for(int i=0; i<5; i++){
+        for(int i=0; i<31; i++){
             rf.addOption("值"+i, i);
         }
         form.addField(rf);

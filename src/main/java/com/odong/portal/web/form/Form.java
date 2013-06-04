@@ -24,13 +24,13 @@ public final class Form extends ResponseItem {
         this.id = id;
         this.title = title;
         this.action = action;
-        this.method = Method.POST;
+        this.method = Method.post;
         this.fields = new ArrayList<>();
         this.buttons = new ArrayList<>();
     }
 
     public enum Method{
-        GET,POST,PUT,DELETE
+        get,post
     }
 
     private static final long serialVersionUID = -3941326971007776611L;

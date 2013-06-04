@@ -18,6 +18,7 @@ public final class SelectField<T> extends Field<T> {
     public SelectField(String id, String name, T value, String tooltip) {
         super(id, name, "select", value, true, tooltip);
         this.options = new ArrayList<>();
+        this.width = 80;
     }
 
     public void addOption(String label, T value) {
@@ -29,6 +30,7 @@ public final class SelectField<T> extends Field<T> {
 
     private static final long serialVersionUID = 1148063126960688562L;
     private List<Option> options;
+    private int width;
 
     public final class Option implements Serializable {
         private static final long serialVersionUID = -4564819177779094836L;
@@ -58,5 +60,13 @@ public final class SelectField<T> extends Field<T> {
 
     public void setOptions(List<Option> options) {
         this.options = options;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
 }
