@@ -2,7 +2,6 @@ package com.odong.portal.web.form;
 
 import com.odong.portal.web.ResponseItem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +12,14 @@ import java.util.List;
  * Time: 下午5:25
  */
 public final class Form extends ResponseItem {
-    public void addField(Field field){
+    public void addField(Field field) {
         this.fields.add(field);
     }
-    public void addButton(Button button){
+
+    public void addButton(Button button) {
         this.buttons.add(button);
     }
+
     public Form(String id, String title, String action) {
         super(Type.form);
         this.id = id;
@@ -29,8 +30,8 @@ public final class Form extends ResponseItem {
         this.buttons = new ArrayList<>();
     }
 
-    public enum Method{
-        get,post
+    public enum Method {
+        get, post
     }
 
     private static final long serialVersionUID = -3941326971007776611L;

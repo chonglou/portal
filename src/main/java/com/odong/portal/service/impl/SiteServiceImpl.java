@@ -72,7 +72,7 @@ public class SiteServiceImpl implements SiteService {
     @Override
     public <T> List<T> getList(String key, Class<T> clazz) {
         Setting s = settingDao.select(key);
-        return s == null ? null: jsonHelper.json2List(s.getValue(), clazz);
+        return s == null ? null : jsonHelper.json2List(s.getValue(), clazz);
     }
 
     @Resource

@@ -11,12 +11,13 @@ import java.util.List;
  * Time: 上午11:21
  */
 public class NavBar implements Serializable {
-    public void add(String name, String url){
+    public void add(String name, String url) {
         Page p = new Page();
         p.setName(name);
         p.setUrl(url);
         this.pages.add(p);
     }
+
     public NavBar(String title) {
         this.title = title;
         this.pages = new ArrayList<>();

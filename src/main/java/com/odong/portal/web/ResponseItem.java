@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class ResponseItem implements Serializable {
 
-    public ResponseItem(){
+    public ResponseItem() {
         this(Type.message);
     }
 
@@ -28,8 +28,8 @@ public class ResponseItem implements Serializable {
         this.data.add(o);
     }
 
-    public enum Type{
-        list,form,grid,chart,message,redirect
+    public enum Type {
+        list, form, grid, chart, message, redirect
     }
 
     private static final long serialVersionUID = 2746215318151397733L;

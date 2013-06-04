@@ -1,6 +1,7 @@
 package com.odong.portal.util;
 
 import com.odong.portal.service.SiteService;
+import httl.spi.resolvers.GlobalResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,6 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
-import httl.spi.resolvers.GlobalResolver;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,20 +42,22 @@ public class SiteHelper {
 
         GlobalResolver.put("gl_debug", appDebug);
 
-        File f = new File(appStoreDir);
-        if(f.exists()){
-            if(!f.isDirectory() || f.canWrite()){
-                throw new RuntimeException("数据存储目录["+appStoreDir+"]不可用");
+        File base = new File(appStoreDir);
+        if (base.exists()) {
+            if (!base.isDirectory() || base.canWrite()) {
+                throw new RuntimeException("数据存储目录[" + appStoreDir + "]不可用");
             }
         }
-        if(!f.exists()){
+        if (!base.exists()) {
             logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
-            if(f.mkdirs()){
-                logger.info("创建数据目录[{}]成功", appStoreDir);
-            }
-            else
-            {
-                throw new IllegalArgumentException("数据存储目录["+appStoreDir+"]创建失败");
+            for (String s : new String[]{"backup", "seo", "attach"}) {
+                String dir = appStoreDir + "/" + s;
+                File f = new File(dir);
+                if (f.mkdirs()) {
+                    logger.info("创建数据目录[{}]成功", dir);
+                } else {
+                    throw new IllegalArgumentException("数据存储目录[" + dir + "]创建失败");
+                }
             }
         }
     }

@@ -18,18 +18,7 @@ import java.util.Map;
  * Unit test for  App.
  */
 public class AppTest{
-    @Test
-    public void testSitemap(){
-        try{
 
-        WebSitemapGenerator wsg = WebSitemapGenerator.builder("http://www.0-dong.com", new File("/tmp")).gzip(true).build();
-        wsg.addUrl("http://www.0-dong.com/index.html");
-        wsg.write();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
     @Test
     public void testGrid(){
         Grid grid = new Grid("test",5, 15);

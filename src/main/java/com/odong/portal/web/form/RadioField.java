@@ -21,6 +21,7 @@ public final class RadioField<T> extends Field<T> {
     public void addOption(String label, T value) {
         addOption(label, value, null);
     }
+
     public void addOption(String label, T value, String tooltip) {
         Option option = new Option();
         option.setValue(value);

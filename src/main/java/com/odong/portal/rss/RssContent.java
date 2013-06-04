@@ -13,7 +13,7 @@ public class RssContent implements Serializable {
     public RssContent() {
     }
 
-    public RssContent(String title,String summary,  String url, String author, Date publish) {
+    public RssContent(String title, String summary, String url, String author, Date publish) {
         this.summary = summary;
         this.title = title;
         this.url = url;

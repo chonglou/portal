@@ -11,12 +11,12 @@ public final class TextField<T> extends Field<T> {
 
 
     public TextField(String id, String label, T value) {
-        this(id, label, value,  null);
+        this(id, label, value, null);
     }
 
     public TextField(String id, String label, T value, String tooltip) {
         super(id, label, "text", value, true, tooltip);
-        this.width=300;
+        this.width = 300;
     }
 
 

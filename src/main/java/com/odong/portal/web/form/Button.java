@@ -19,8 +19,8 @@ public final class Button implements Serializable {
         this.tooltip = tooltip;
     }
 
-    public enum Type{
-        primary, danger, warning, success, info,inverse
+    public enum Type {
+        primary, danger, warning, success, info, inverse
     }
 
     private static final long serialVersionUID = 5406159836300711112L;

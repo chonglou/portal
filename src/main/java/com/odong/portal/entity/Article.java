@@ -20,7 +20,7 @@ public class Article implements Serializable {
         PRIVATE, PUBLIC, PROTECTED
     }
 
-    public Date getPublishDate(){
+    public Date getPublishDate() {
         return lastEdit == null ? created : lastEdit;
     }
 

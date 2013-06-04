@@ -18,14 +18,14 @@
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
-    <mvc:annotation-driven validator="validator" />
+    <mvc:annotation-driven validator="validator"/>
 
     <bean id="viewResolver" class="httl.web.springmvc.HttlViewResolver">
-        <property name="contentType" value="text/html; charset=UTF-8" />
+        <property name="contentType" value="text/html; charset=UTF-8"/>
     </bean>
-    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
     <bean id="rssView" class="com.odong.portal.rss.RssView"/>
-    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
     <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
         <property name="exceptionMappings">

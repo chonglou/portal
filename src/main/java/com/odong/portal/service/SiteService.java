@@ -23,5 +23,6 @@ public interface SiteService {
     void set(String key, Object value);
 
     <T> T getObject(String key, Class<T> clazz);
+
     <T> List<T> getList(String key, Class<T> clazz);
 }

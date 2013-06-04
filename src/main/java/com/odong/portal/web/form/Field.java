@@ -25,7 +25,8 @@ public abstract class Field<T> implements Serializable {
     private String label;
     private boolean readonly;
     private boolean required;
-    private T value; private String tooltip;
+    private T value;
+    private String tooltip;
 
     public boolean isRequired() {
         return required;

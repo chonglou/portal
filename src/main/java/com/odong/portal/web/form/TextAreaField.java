@@ -9,13 +9,14 @@ package com.odong.portal.web.form;
 public final class TextAreaField extends Field<String> {
     private static final long serialVersionUID = 2811328119954932042L;
 
-    public TextAreaField(String id, String label,  String value) {
-        this(id, label, value,  null);
+    public TextAreaField(String id, String label, String value) {
+        this(id, label, value, null);
     }
+
     public TextAreaField(String id, String label, String value, String tooltip) {
         super(id, label, "textarea", value, false, tooltip);
         this.width = 600;
-        this.height=350;
+        this.height = 350;
     }
 
     private boolean html;

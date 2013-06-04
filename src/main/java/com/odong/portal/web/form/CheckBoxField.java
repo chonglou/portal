@@ -21,7 +21,8 @@ public final class CheckBoxField<T> extends Field<T> {
     public CheckBoxField(String id, String label) {
         this(id, label, null);
     }
-    public void addOption( String label, T value, boolean selected) {
+
+    public void addOption(String label, T value, boolean selected) {
         Option option = new Option();
         option.setLabel(label);
         option.setValue(value);

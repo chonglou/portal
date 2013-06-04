@@ -15,6 +15,7 @@ public final class SelectField<T> extends Field<T> {
         this(id, name, value, null);
         this.options = new ArrayList<>();
     }
+
     public SelectField(String id, String name, T value, String tooltip) {
         super(id, name, "select", value, true, tooltip);
         this.options = new ArrayList<>();

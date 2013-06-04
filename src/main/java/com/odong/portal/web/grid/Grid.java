@@ -25,8 +25,8 @@ public class Grid extends ResponseItem {
         this.items = new ArrayList<>();
     }
 
-    public void addRow(Object... items){
-        if(items.length != cols.length){
+    public void addRow(Object... items) {
+        if (items.length != cols.length) {
             throw new IllegalArgumentException("单元格个数不对");
         }
         Collections.addAll(this.items, items);

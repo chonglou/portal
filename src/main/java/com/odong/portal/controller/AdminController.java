@@ -4,11 +4,11 @@ import com.odong.portal.entity.Tag;
 import com.odong.portal.form.site.AllowForm;
 import com.odong.portal.form.site.InfoForm;
 import com.odong.portal.form.site.TagForm;
-import com.odong.portal.web.NavBar;
-import com.odong.portal.web.ResponseItem;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
+import com.odong.portal.web.NavBar;
+import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -52,7 +52,7 @@ public class AdminController {
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
-    Form getTitleForm(){
+    Form getTitleForm() {
         Form fm = new Form("title", "站点信息编辑", "/admin/title");
         fm.addField(new TextField<>("title", "名称", siteService.getString("site.title")));
         fm.addField(new TextField<>("keywords", "关键字", siteService.getString("site.keywords"), "用空格隔开"));
@@ -65,9 +65,9 @@ public class AdminController {
 
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem psotInfoForm(@Valid InfoForm form, BindingResult result){
+    ResponseItem psotInfoForm(@Valid InfoForm form, BindingResult result) {
         ResponseItem ri = formHelper.check(result);
-        if(ri.isOk()){
+        if (ri.isOk()) {
             siteService.set("site.title", form.getTitle());
             siteService.set("site.keywords", form.getKeywords());
             siteService.set("site.description", form.getDescription());
@@ -79,7 +79,7 @@ public class AdminController {
 
     @RequestMapping(value = "/allow", method = RequestMethod.GET)
     @ResponseBody
-    Form getAllowForm(){
+    Form getAllowForm() {
         Form fm = new Form("title", "站点权限编辑", "/admin/copyright");
         fm.addField(new RadioField<>("allowRegister", "新用户注册", siteService.getBoolean("site.allowRegister")));
         fm.addField(new RadioField<>("allowLogin", "普通用户登录", siteService.getBoolean("site.allowLogin")));
@@ -91,9 +91,9 @@ public class AdminController {
 
     @RequestMapping(value = "/allow", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postAllowForm(@Valid AllowForm form, BindingResult result, HttpServletRequest request){
+    ResponseItem postAllowForm(@Valid AllowForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(ri.isOk()){
+        if (ri.isOk()) {
             siteService.set("site.allowRegister", form.isAllowRegister());
             siteService.set("site.allowLogin", form.isAllowLogin());
         }
@@ -103,23 +103,25 @@ public class AdminController {
 
     @RequestMapping(value = "/tag/list", method = RequestMethod.GET)
     @ResponseBody
-    ResponseItem getTagList(){
+    ResponseItem getTagList() {
         ResponseItem ri = new ResponseItem();
         ri.addMessage(contentService.listTag());
         ri.setOk(true);
         return ri;
     }
+
     @RequestMapping(value = "/tag", method = RequestMethod.GET)
     @ResponseBody
-    Form getTagForm(){
+    Form getTagForm() {
         Form fm = new Form("tag", "标签", "/admin/tag");
         fm.addField(new TextField<>("name", "名称", null));
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/tag/{tagId}", method = RequestMethod.GET)
     @ResponseBody
-    Form getTagForm(@PathVariable long tagId){
+    Form getTagForm(@PathVariable long tagId) {
         Tag t = contentService.getTag(tagId);
         Form fm = new Form("tag", "标签", "/admin/tag");
         fm.addField(new HiddenField<>("id", t.getId()));
@@ -127,31 +129,29 @@ public class AdminController {
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/tag", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postTagForm(@Valid TagForm form, BindingResult result){
+    ResponseItem postTagForm(@Valid TagForm form, BindingResult result) {
         ResponseItem ri = formHelper.check(result);
-        if(ri.isOk()){
-            if(form.getId() == null){
-                if(contentService.getTag(form.getName()) == null){
+        if (ri.isOk()) {
+            if (form.getId() == null) {
+                if (contentService.getTag(form.getName()) == null) {
                     contentService.addTag(form.getName());
                 }
                 {
                     ri.addMessage("标签[" + form.getId() + "]已存在");
                     ri.setOk(false);
                 }
-            }
-            else {
+            } else {
                 Tag tag = contentService.getTag(form.getId());
-                if(tag == null){
+                if (tag == null) {
                     ri.addMessage("标签[" + form.getId() + "]不存在");
                     ri.setOk(false);
-                }
-                else {
-                    if(contentService.getTag(form.getName()) == null){
+                } else {
+                    if (contentService.getTag(form.getName()) == null) {
                         contentService.setTagName(form.getId(), form.getName());
-                    }
-                    else {
+                    } else {
                         ri.addMessage("标签[" + form.getId() + "]已存在");
                         ri.setOk(false);
                     }

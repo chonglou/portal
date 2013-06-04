@@ -17,9 +17,10 @@ import java.util.Date;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Tag implements Serializable {
-    public Date getPublishDate(){
+    public Date getPublishDate() {
         return lastEdit == null ? created : lastEdit;
     }
+
     private static final long serialVersionUID = -2365008447006155462L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

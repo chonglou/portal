@@ -17,9 +17,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class FormHelper {
-    public ResponseItem check(BindingResult result){
-return check(result, null, false);
+    public ResponseItem check(BindingResult result) {
+        return check(result, null, false);
     }
+
     public ResponseItem check(BindingResult result, HttpServletRequest request, boolean captcha) {
         ResponseItem ri = new ResponseItem();
         if (captcha) {
