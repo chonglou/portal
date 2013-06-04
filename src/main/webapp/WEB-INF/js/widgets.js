@@ -47,7 +47,10 @@ function Ajax(url, type, data, success, async) {
 }
 
 function GridWindow(grid) {
-
+    var _init=function(){
+        //var content =
+    };
+    _init();
 }
 
 function FormWindow(form) {
@@ -77,7 +80,7 @@ function FormWindow(form) {
     };
 
     var _button = function (id, label, type) {
-        var btn = "<button id='" + _id(id) + "' class='btn ";
+        var btn = "<button type='button' id='" + _id(id) + "' class='btn ";
         if (type != undefined) {
             btn += "btn-" + type;
         }
@@ -100,6 +103,7 @@ function FormWindow(form) {
 
         var content = "<form class='form-horizontal' method='" + form.method + "'  action='" + form.action + "'>";
         content += "<fieldset><legend>" + form.title + "</legend>";
+        content+="<div id='"+_id("alert")+"'></div>";
         content += _hidden_field("created", form.created);
         for (var i in form.fields) {
             var field = form.fields[i];
@@ -209,10 +213,22 @@ function FormWindow(form) {
 
         content += _button_group(form.buttons);
         content += "</fieldset></form>";
-        alert(content);
-        $("div#gl_root").html(content);
+        //alert(content);
+        new HtmlDiv("fm-"+form.id, content);
+
     };
 
+    _init();
+}
+
+function HtmlDiv(id, content){
+    var _init = function(){
+        var root ="div#"+id;
+        if($(root).length == 0){
+            $("div#gl_root").append("<div id='"+id+"'></div>");
+        }
+        $(root).html(content);
+    };
     _init();
 }
 function MessageDialog(messages, type) {
