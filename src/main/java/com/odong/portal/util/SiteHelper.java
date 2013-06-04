@@ -44,7 +44,7 @@ public class SiteHelper {
 
         File base = new File(appStoreDir);
         if (base.exists()) {
-            if (!base.isDirectory() || base.canWrite()) {
+            if (!base.isDirectory() || !base.canWrite()) {
                 throw new RuntimeException("数据存储目录[" + appStoreDir + "]不可用");
             }
         }

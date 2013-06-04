@@ -4,6 +4,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
@@ -86,6 +87,7 @@ public class Jpa {
     */
 
     @Bean(destroyMethod = "close")
+    @DependsOn("database.init")
     BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);
