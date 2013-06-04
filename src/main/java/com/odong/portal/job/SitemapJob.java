@@ -30,7 +30,7 @@ public class SitemapJob {
 
         try {
             String domain = "http://" + siteService.getString("site.domain");
-            WebSitemapGenerator wsg = WebSitemapGenerator.builder(domain, new File(appStoreDir + "/seo")).gzip(true).build();
+            WebSitemapGenerator wsg = WebSitemapGenerator.builder(domain, new File(appStoreDir + "/seo/" + "sitemap.xml.gz")).gzip(true).build();
             wsg.addUrl(new WebSitemapUrl.Options(domain + "/main").lastMod(new Date()).priority(1.0).changeFreq(ChangeFreq.HOURLY).build());
             wsg.addUrl(new WebSitemapUrl.Options(domain + "/about_me").lastMod(siteService.getDate("site.init")).priority(0.9).changeFreq(ChangeFreq.WEEKLY).build());
             for (Article a : contentService.listArticle()) {
@@ -47,7 +47,6 @@ public class SitemapJob {
 
     @PostConstruct
     void init() {
-
     }
 
     @Value("${app.store}")

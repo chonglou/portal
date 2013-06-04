@@ -22,26 +22,35 @@ public class Database {
 
     @PostConstruct
     void init() throws ClassNotFoundException, SQLException {
-        if ("com.mysql.jdbc.Driver".equals(driver)) {
-            String db = driver.split("/")[3];
-            logger.info("使用mysql jdbc驱动，如果数据库[{}]不存在，将会自动创建", db);
+        dbName = url.split("/")[3];
+        if (isMysql()) {
+
+            logger.info("使用mysql jdbc驱动，如果数据库[{}]不存在，将会自动创建", dbName);
             Class.forName(driver);
-            try (Connection conn = DriverManager.getConnection(url, usernam, password);
+            try (Connection conn = DriverManager.getConnection(url, username, password);
                  Statement stat = conn.createStatement()) {
-                stat.executeUpdate("CREATE DATABASE IF NOT EXISTS " + db + " CHARACTER SET  utf8");
+                stat.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName + " CHARACTER SET  utf8");
             }
+            return;
         }
+        logger.warn("尚不支持[{}]自动创建,请自行确保数据库[{}]存在", driver, dbName);
 
     }
+
+    public boolean isMysql() {
+        return "com.mysql.jdbc.Driver".equals(driver);
+    }
+
 
     @Value("${jdbc.driver}")
     private String driver;
     @Value("${jdbc.url}")
     private String url;
     @Value("${jdbc.username}")
-    private String usernam;
+    private String username;
     @Value("${jdbc.password}")
     private String password;
+    private String dbName;
     private final static Logger logger = LoggerFactory.getLogger(Database.class);
 
     public void setDriver(String driver) {
@@ -52,11 +61,23 @@ public class Database {
         this.url = url;
     }
 
-    public void setUsernam(String usernam) {
-        this.usernam = usernam;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
