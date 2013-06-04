@@ -26,6 +26,15 @@ public class SmtpProfile implements Serializable {
     private String password;
     private int port;
     private String bcc;
+    private String from;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     public String getHost() {
         return host;
