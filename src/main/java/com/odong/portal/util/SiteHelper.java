@@ -1,5 +1,8 @@
 package com.odong.portal.util;
 
+import com.odong.portal.entity.User;
+import com.odong.portal.service.AccountService;
+import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
 import httl.spi.resolvers.GlobalResolver;
 import org.slf4j.Logger;
@@ -27,7 +30,6 @@ public class SiteHelper {
         if (siteService.getObject("site.init", Date.class) == null) {
             siteService.set("site.init", new Date());
             siteService.set("site.version", "v20130522");
-            siteService.set("site.key", stringHelper.random(512));
             siteService.set("site.title", "门户网站系统");
             siteService.set("site.description", "站点说明信息");
             siteService.set("site.keywords", "站点关键字");
@@ -38,6 +40,12 @@ public class SiteHelper {
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
+
+            String email = "flamen@0-dong.com";
+            accountService.addUser(email, "管理员", "123456");
+            User admin = accountService.getUser(email);
+            accountService.setUserState(admin.getId(), User.State.ENABLE);
+            rbacService.setAdmin(admin.getId());
         }
 
         GlobalResolver.put("gl_debug", appDebug);
@@ -68,6 +76,10 @@ public class SiteHelper {
     }
 
     @Resource
+    private RbacService rbacService;
+    @Resource
+    private AccountService accountService;
+    @Resource
     private StringHelper stringHelper;
     @Resource
     private SiteService siteService;
@@ -76,6 +88,14 @@ public class SiteHelper {
     @Value("${app.debug}")
     private boolean appDebug;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setRbacService(RbacService rbacService) {
+        this.rbacService = rbacService;
+    }
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     public void setAppDebug(boolean appDebug) {
         this.appDebug = appDebug;

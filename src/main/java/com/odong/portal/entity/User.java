@@ -18,7 +18,7 @@ import java.util.Date;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
     public enum State {
-        ENABLE, DISABLE
+        ENABLE, DISABLE, SUBMIT
     }
 
     private static final long serialVersionUID = 6854757082522535497L;
@@ -42,6 +42,10 @@ public class User implements Serializable {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public State getState() {
+        return state;
     }
 
     public String getDetails() {

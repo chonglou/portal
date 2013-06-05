@@ -20,6 +20,16 @@ import java.util.Map;
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
     @Override
+    public void setUserEmail(long user, String email) {
+        if(getUser(email) != null){
+            throw new IllegalArgumentException("邮箱["+email+"]已存在");
+        }
+        User u = userDao.select(user);
+        u.setEmail(email);
+        userDao.update(u);
+    }
+
+    @Override
     public User getUser(long id) {
         return userDao.select(id);
     }
@@ -27,6 +37,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public User getUser(String email) {
         Map<String, Object> map = new HashMap<>();
+        map.put("email", email);
         return userDao.select("FROM User as i WHERE i.email=:email", map);
     }
 
@@ -37,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
         u.setUsername(username);
         u.setPassword(encryptHelper.encrypt(password));
         u.setCreated(new Date());
-        u.setState(User.State.ENABLE);
+        u.setState(User.State.SUBMIT);
         userDao.insert(u);
     }
 

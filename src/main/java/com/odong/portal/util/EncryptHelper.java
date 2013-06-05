@@ -16,7 +16,6 @@ import javax.annotation.Resource;
  * Time: 下午2:28
  */
 @Component
-@DependsOn("siteHelper")
 public class EncryptHelper {
     public String encode(Object plain) {
         return plain == null ? null : ste.encrypt(jsonHelper.object2json(plain));
@@ -43,10 +42,17 @@ public class EncryptHelper {
     }
 
     @PostConstruct
-    void init() {
+    synchronized void init() {
+        String key = "site.key";
+        String val = siteService.getString(key);
+        if(val == null){
+            val = stringHelper.random(512);
+            siteService.set(key, val);
+        }
+
         spe = new StrongPasswordEncryptor();
         ste = new StrongTextEncryptor();
-        ste.setPassword(siteService.getString("site.key").substring(27, 39));
+        ste.setPassword(val.substring(27, 39));
     }
 
     private StrongPasswordEncryptor spe;
@@ -55,6 +61,12 @@ public class EncryptHelper {
     private SiteService siteService;
     @Resource
     private JsonHelper jsonHelper;
+    @Resource
+    private StringHelper stringHelper;
+
+    public void setStringHelper(StringHelper stringHelper) {
+        this.stringHelper = stringHelper;
+    }
 
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;

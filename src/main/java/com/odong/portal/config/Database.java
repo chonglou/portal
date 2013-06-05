@@ -24,10 +24,9 @@ public class Database {
     void init() throws ClassNotFoundException, SQLException {
         dbName = url.split("/")[3];
         if (isMysql()) {
-
             logger.info("使用mysql jdbc驱动，如果数据库[{}]不存在，将会自动创建", dbName);
             Class.forName(driver);
-            try (Connection conn = DriverManager.getConnection(url, username, password);
+            try (Connection conn = DriverManager.getConnection(url.substring(0, url.lastIndexOf('/')), username, password);
                  Statement stat = conn.createStatement()) {
                 stat.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName + " CHARACTER SET  utf8");
             }
