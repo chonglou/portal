@@ -14,13 +14,13 @@
         <property name="cronExpression" value="0 */1 * * * ?"/>
     </bean>
 
-    <bean id="sitemapJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="sitemapJobTarget"/>
+    <bean id="seoJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="seoJobTarget"/>
         <property name="targetMethod" value="execute"/>
         <property name="concurrent" value="false"/>
     </bean>
-    <bean id="sitemapTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="sitemapJobDetail"/>
+    <bean id="seoTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="seoJobDetail"/>
         <property name="cronExpression" value="0 0 */${sitemap.space} * * ?"/>
     </bean>
 
@@ -38,7 +38,7 @@
         <property name="triggers">
             <list>
                 <ref bean="taskTrigger"/>
-                <ref bean="sitemapTrigger"/>
+                <ref bean="seoTrigger"/>
                 <ref bean="backupTrigger"/>
             </list>
         </property>

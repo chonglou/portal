@@ -6,15 +6,19 @@ import com.odong.portal.rss.RssContent;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +31,30 @@ import java.util.List;
 @Controller
 public class SeoController {
     @RequestMapping(value = "/sitemap.xml.gz", method = RequestMethod.GET)
-    void getSitemap(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-
+    @ResponseBody
+    FileSystemResource sitemap() {
+        return new FileSystemResource(appStoreDir + "/seo/sitemap.xml.gz");
     }
 
     @RequestMapping(value = "/rss.xml", method = RequestMethod.GET)
+    @ResponseBody
+    FileSystemResource rss() {
+        return new FileSystemResource(appStoreDir + "/seo/rss.xml");
+    }
+
+    /*
+    void getRss(HttpServletResponse response){
+
+        try{
+            IOUtils.copy(new FileInputStream(appStoreDir + "/seo/rss.xml"), response.getOutputStream());
+
+            response.flushBuffer();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     ModelAndView getRss() {
 
         ModelAndView mav = new ModelAndView();
@@ -73,16 +95,12 @@ public class SeoController {
     private SiteService siteService;
     @Resource
     private AccountService accountService;
+    */
+    @Value("${app.store}")
+    private String appStoreDir;
 
-    public void setAccountService(AccountService accountService) {
-        this.accountService = accountService;
+    public void setAppStoreDir(String appStoreDir) {
+        this.appStoreDir = appStoreDir;
     }
 
-    public void setContentService(ContentService contentService) {
-        this.contentService = contentService;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 }
