@@ -14,6 +14,7 @@ import java.io.Serializable;
  * Time: 下午2:55
  */
 @Entity
+@Table(name = "siteEnv")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Setting implements Serializable {
     private static final long serialVersionUID = 2722519175265573466L;

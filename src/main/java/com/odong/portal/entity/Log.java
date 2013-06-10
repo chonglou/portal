@@ -15,16 +15,14 @@ import java.util.Date;
  * Time: 下午11:43
  */
 @Entity
+@Table(name = "ucLog")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Log implements Serializable {
+public class Log extends IdEntity {
     public enum Type {
         INFO, DEBUG, ERROR
     }
 
     private static final long serialVersionUID = -3691580318696379338L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     @Lob
     @Column(nullable = false, updatable = false)
     private String message;
@@ -45,13 +43,6 @@ public class Log implements Serializable {
         this.type = type;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getMessage() {
         return message;

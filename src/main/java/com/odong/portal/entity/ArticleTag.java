@@ -13,12 +13,11 @@ import java.io.Serializable;
  * Time: 下午2:30
  */
 @Entity
+@Table(name = "cmsArticleTag")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ArticleTag implements Serializable {
+public class ArticleTag extends IdEntity {
     private static final long serialVersionUID = 4989475576131553738L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+
     @Column(nullable = false)
     private Long article;
     @Column(nullable = false)
@@ -28,13 +27,6 @@ public class ArticleTag implements Serializable {
         return article;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public void setArticle(Long article) {
         this.article = article;

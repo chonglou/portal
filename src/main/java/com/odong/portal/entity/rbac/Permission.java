@@ -1,5 +1,6 @@
 package com.odong.portal.entity.rbac;
 
+import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -14,12 +15,11 @@ import java.util.Date;
  * Time: 上午10:21
  */
 @Entity
+@Table(name = "rbacPermission")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Permission implements Serializable {
+public class Permission extends IdEntity {
     private static final long serialVersionUID = 4521456318207452459L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+
     @Column(nullable = false, updatable = false)
     private long role;
     @Column(nullable = false, updatable = false)
@@ -33,13 +33,7 @@ public class Permission implements Serializable {
     @Column(nullable = false, updatable = false)
     private Date created;
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public long getRole() {
         return role;

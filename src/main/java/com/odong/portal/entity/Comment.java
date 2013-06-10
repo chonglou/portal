@@ -14,12 +14,11 @@ import java.util.Date;
  * Time: 下午3:13
  */
 @Entity
+@Table(name = "cmsComment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Comment implements Serializable {
+public class Comment extends IdEntity{
     private static final long serialVersionUID = -9089422699866112475L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+
     @Column(nullable = false, updatable = false)
     private Long user;
     @Column(nullable = false, updatable = false)
@@ -41,13 +40,7 @@ public class Comment implements Serializable {
         this.version = version;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getUser() {
         return user;

@@ -15,16 +15,15 @@ import java.util.Date;
  * Time: 下午2:29
  */
 @Entity
+@Table(name = "ucAccount")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class User implements Serializable {
+public class User extends IdEntity {
     public enum State {
         ENABLE, DISABLE, SUBMIT
     }
 
     private static final long serialVersionUID = 6854757082522535497L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
@@ -56,13 +55,7 @@ public class User implements Serializable {
         this.details = details;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getEmail() {
         return email;

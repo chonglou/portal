@@ -150,11 +150,10 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
             }
         }
         if (pk == null) {
-            throw new IllegalArgumentException("类[" + clazz.getSimpleName() + "]没有定义主键"
-            );
+            //throw new IllegalArgumentException("类[" + clazz.getSimpleName() + "]没有定义主键");
+            pk = "id";
         }
         this.pkName = pk;
-
     }
 
 
