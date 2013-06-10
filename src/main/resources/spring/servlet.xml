@@ -36,13 +36,5 @@
     <bean id="rssView" class="com.odong.portal.rss.RssView"/>
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
-    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-        <property name="exceptionMappings">
-            <props>
-                <prop key="java.lang.Exception">
-                    error_all
-                </prop>
-            </props>
-        </property>
-    </bean>
+    <bean id="exceptionHandler" class="com.odong.portal.aop.MyExceptionHandler"/>
 </beans>
