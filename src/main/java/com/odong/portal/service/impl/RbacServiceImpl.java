@@ -26,12 +26,22 @@ import java.util.Map;
 public class RbacServiceImpl implements RbacService {
     @Override
     public void setAdmin(long user) {
-        bindPermission(getRole(user), getOperation(OperationType.MANAGER), getSiteResource(), true);
+        bindPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()), true);
     }
 
     @Override
-    public boolean isAdmin(long user) {
-        return checkPermission(getRole(user), getOperation(OperationType.MANAGER), getSiteResource());  //
+    public boolean authAdmin(long user) {
+        return checkPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()));  //
+    }
+
+    @Override
+    public String getArticleResourceName(long article) {
+        return "rbac://resource/article/" + article;  //
+    }
+
+    @Override
+    public String getSiteResourceName() {
+        return "rbac://resource/site";
     }
 
     private Permission getPermission(long role, long operation, long resource){
@@ -69,13 +79,7 @@ public class RbacServiceImpl implements RbacService {
         }
     }
 
-    private long getSiteResource(){
-        return getResource("rbac://resource/site");
-    }
-    private long getArticleResource(long article) {
 
-        return getResource("rbac://resource/article/" + article);
-    }
 
     private long getResource(String name){
         Map<String, Object> map = new HashMap<>();
