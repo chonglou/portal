@@ -34,17 +34,17 @@ public class RbacServiceImpl implements RbacService {
         return checkPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()));  //
     }
 
-    @Override
-    public String getArticleResourceName(long article) {
+
+    private String getArticleResourceName(long article) {
         return "rbac://resource/article/" + article;  //
     }
 
-    @Override
-    public String getSiteResourceName() {
+
+    private String getSiteResourceName() {
         return "rbac://resource/site";
     }
 
-    private Permission getPermission(long role, long operation, long resource){
+    private Permission getPermission(long role, long operation, long resource) {
         Map<String, Object> map = new HashMap<>();
         map.put("role", role);
         map.put("operation", operation);
@@ -52,10 +52,12 @@ public class RbacServiceImpl implements RbacService {
         return permissionDao.select("FROM Permission AS i WHERE i.role=:role AND i.operation=:operation AND i.resource=:resource", map);
 
     }
-    private boolean checkPermission(long role, long operation, long resource){
+
+    private boolean checkPermission(long role, long operation, long resource) {
         Permission p = getPermission(role, operation, resource);
         return p != null;
     }
+
     private void bindPermission(long role, long operation, long resource, boolean bind) {
         Permission p = getPermission(role, operation, resource);
         if (bind) {
@@ -80,8 +82,7 @@ public class RbacServiceImpl implements RbacService {
     }
 
 
-
-    private long getResource(String name){
+    private long getResource(String name) {
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
         Resource r = resourceDao.select("FROM Resource AS i WHERE i.name=:name", map);

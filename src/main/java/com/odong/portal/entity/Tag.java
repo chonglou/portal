@@ -4,8 +4,10 @@ package com.odong.portal.entity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import java.util.Date;
 
 /**
@@ -65,7 +67,6 @@ public class Tag extends IdEntity {
     public void setVersion(int version) {
         this.version = version;
     }
-
 
 
     public String getName() {

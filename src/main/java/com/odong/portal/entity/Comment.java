@@ -4,7 +4,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,7 +15,7 @@ import java.util.Date;
 @Entity
 @Table(name = "cmsComment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Comment extends IdEntity{
+public class Comment extends IdEntity {
     private static final long serialVersionUID = -9089422699866112475L;
 
     @Column(nullable = false, updatable = false)
@@ -39,7 +38,6 @@ public class Comment extends IdEntity{
     public void setVersion(int version) {
         this.version = version;
     }
-
 
 
     public Long getUser() {

@@ -11,6 +11,7 @@ import com.odong.portal.entity.User;
 public interface AccountService {
 
     void setUserEmail(long user, String email);
+
     User getUser(long id);
 
     User getUser(String email);

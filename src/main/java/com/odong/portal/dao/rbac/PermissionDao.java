@@ -9,5 +9,5 @@ import com.odong.portal.entity.rbac.Permission;
  * Date: 13-6-5
  * Time: 上午10:28
  */
-public interface PermissionDao extends BaseDao<Permission,Long> {
+public interface PermissionDao extends BaseDao<Permission, Long> {
 }

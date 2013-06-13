@@ -9,5 +9,5 @@ import com.odong.portal.entity.rbac.Operation;
  * Date: 13-6-5
  * Time: 上午10:28
  */
-public interface OperationDao extends BaseDao<Operation,Long>{
+public interface OperationDao extends BaseDao<Operation, Long> {
 }

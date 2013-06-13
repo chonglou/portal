@@ -20,6 +20,10 @@
 
     <mvc:default-servlet-handler/>
 
+    <mvc:interceptors>
+        <bean class="com.odong.portal.aop.SecurityInterceptor"/>
+    </mvc:interceptors>
+
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages"/>
     </bean>
@@ -36,5 +40,5 @@
     <bean id="rssView" class="com.odong.portal.rss.RssView"/>
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
-    <bean id="exceptionHandler" class="com.odong.portal.aop.MyExceptionHandler"/>
+    <bean id="exceptionHandler" class="com.odong.portal.aop.ExceptionHandler"/>
 </beans>

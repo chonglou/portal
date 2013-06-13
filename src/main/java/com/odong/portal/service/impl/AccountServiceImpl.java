@@ -21,8 +21,8 @@ import java.util.Map;
 public class AccountServiceImpl implements AccountService {
     @Override
     public void setUserEmail(long user, String email) {
-        if(getUser(email) != null){
-            throw new IllegalArgumentException("邮箱["+email+"]已存在");
+        if (getUser(email) != null) {
+            throw new IllegalArgumentException("邮箱[" + email + "]已存在");
         }
         User u = userDao.select(user);
         u.setEmail(email);

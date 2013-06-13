@@ -4,8 +4,9 @@ import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -32,7 +33,6 @@ public class Role extends IdEntity {
     public void setCreated(Date created) {
         this.created = created;
     }
-
 
 
     public String getName() {

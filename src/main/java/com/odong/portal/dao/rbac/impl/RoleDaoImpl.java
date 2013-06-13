@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 上午10:28
  */
 @Repository("rbac.roleDao")
-public class RoleDaoImpl extends BaseJpa2DaoImpl<Role,Long> implements RoleDao{
+public class RoleDaoImpl extends BaseJpa2DaoImpl<Role, Long> implements RoleDao {
 }

@@ -9,5 +9,5 @@ import com.odong.portal.entity.rbac.Resource;
  * Date: 13-6-5
  * Time: 上午10:28
  */
-public interface ResourceDao extends BaseDao<Resource,Long> {
+public interface ResourceDao extends BaseDao<Resource, Long> {
 }

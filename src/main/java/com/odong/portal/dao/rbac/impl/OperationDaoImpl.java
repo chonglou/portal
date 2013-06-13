@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 上午10:29
  */
 @Repository("rbac.operationDao")
-public class OperationDaoImpl extends BaseJpa2DaoImpl<Operation,Long> implements OperationDao {
+public class OperationDaoImpl extends BaseJpa2DaoImpl<Operation, Long> implements OperationDao {
 }

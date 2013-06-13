@@ -10,5 +10,6 @@ public final class Constants {
     private Constants() {
     }
 
+    public final static String SESSION_KEY = "d1s7e0wp";
 
 }

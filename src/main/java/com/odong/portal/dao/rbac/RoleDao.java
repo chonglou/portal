@@ -9,5 +9,5 @@ import com.odong.portal.entity.rbac.Role;
  * Date: 13-6-5
  * Time: 上午10:28
  */
-public interface RoleDao extends BaseDao<Role,Long>{
+public interface RoleDao extends BaseDao<Role, Long> {
 }

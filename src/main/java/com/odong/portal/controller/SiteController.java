@@ -1,7 +1,6 @@
 package com.odong.portal.controller;
 
 import com.odong.portal.service.SiteService;
-import com.odong.portal.web.ResponseItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.ws.rs.Path;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,10 +41,10 @@ public class SiteController {
 
     @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)
     @ResponseBody
-    Map<String,Object> getError(@PathVariable int code){
-        Map<String,Object> map = new HashMap<>();
+    Map<String, Object> getError(@PathVariable int code) {
+        Map<String, Object> map = new HashMap<>();
         map.put("code", code);
-        switch (code){
+        switch (code) {
             case 404:
                 map.put("message", "找不到文件");
                 break;

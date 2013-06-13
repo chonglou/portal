@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 上午10:29
  */
 @Repository("rbac.permissionDao")
-public class PermissionDaoImpl extends BaseJpa2DaoImpl<Permission,Long> implements PermissionDao {
+public class PermissionDaoImpl extends BaseJpa2DaoImpl<Permission, Long> implements PermissionDao {
 }

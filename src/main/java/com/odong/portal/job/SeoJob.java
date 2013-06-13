@@ -50,7 +50,7 @@ public class SeoJob {
 
             SyndEntry about = new SyndEntryImpl();
             about.setTitle("关于我们");
-            about.setLink(domain+"/about_me");
+            about.setLink(domain + "/about_me");
             about.setPublishedDate(siteService.getDate("site.init"));
             SyndContent aboutDesc = new SyndContentImpl();
             aboutDesc.setType("text/html");

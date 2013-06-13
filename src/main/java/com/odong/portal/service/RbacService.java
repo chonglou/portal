@@ -1,10 +1,5 @@
 package com.odong.portal.service;
 
-import com.odong.portal.entity.rbac.Resource;
-import com.odong.portal.entity.rbac.Role;
-
-import java.util.List;
-
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
@@ -13,15 +8,11 @@ import java.util.List;
  */
 public interface RbacService {
 
-    List<Role> listRole(long user);
-    List<Resource> listResource(long role);
-
     void setAdmin(long user);
+
     boolean authAdmin(long user);
 
-    String getArticleResourceName(long article);
-    String getSiteResourceName();
-    public enum OperationType{
+    public enum OperationType {
         MANAGER
     }
 }

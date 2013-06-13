@@ -3,7 +3,6 @@ package com.odong.portal.util;
 import com.odong.portal.service.SiteService;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -45,7 +44,7 @@ public class EncryptHelper {
     synchronized void init() {
         String key = "site.key";
         String val = siteService.getString(key);
-        if(val == null){
+        if (val == null) {
             val = stringHelper.random(512);
             siteService.set(key, val);
         }

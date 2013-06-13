@@ -4,7 +4,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -70,7 +69,6 @@ public class Article extends IdEntity {
     public void setVersion(int version) {
         this.version = version;
     }
-
 
 
     public String getTitle() {

@@ -27,7 +27,7 @@ public class NamingStrategy extends ImprovedNamingStrategy {
 
     @Override
     public String tableName(String tableName) {
-        return "PORTAL_"+encode(stringHelper.camelCase2Underscore(tableName));
+        return "PORTAL_" + encode(stringHelper.camelCase2Underscore(tableName));
         //return tableName.toUpperCase();
     }
 

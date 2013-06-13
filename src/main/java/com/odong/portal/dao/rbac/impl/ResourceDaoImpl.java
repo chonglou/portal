@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 上午10:29
  */
 @Repository("rbac.resourceDao")
-public class ResourceDaoImpl extends BaseJpa2DaoImpl<Resource,Long> implements ResourceDao {
+public class ResourceDaoImpl extends BaseJpa2DaoImpl<Resource, Long> implements ResourceDao {
 }
