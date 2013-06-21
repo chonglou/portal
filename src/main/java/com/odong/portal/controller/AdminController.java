@@ -104,7 +104,7 @@ public class AdminController {
     @RequestMapping(value = "/tag/list", method = RequestMethod.GET)
     @ResponseBody
     ResponseItem getTagList() {
-        ResponseItem ri = new ResponseItem();
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         ri.addMessage(contentService.listTag());
         ri.setOk(true);
         return ri;

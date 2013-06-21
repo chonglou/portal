@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -23,7 +24,10 @@ import java.util.Properties;
  * Time: 下午5:08
  */
 @Component
-public class MailHelper {
+public class EmailHelper {
+    public void send(String to, String title, String body, boolean html){
+        send(to, title, body, html, new HashMap<String, String>());
+    }
     public void send(String to, String title, String body, boolean html, Map<String, String> attachs) {
         try {
             MimeMessage message = sender.createMimeMessage();
@@ -84,7 +88,7 @@ public class MailHelper {
     @Resource
     private EncryptHelper encryptHelper;
     private SmtpProfile profile;
-    private final static Logger logger = LoggerFactory.getLogger(MailHelper.class);
+    private final static Logger logger = LoggerFactory.getLogger(EmailHelper.class);
 
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {

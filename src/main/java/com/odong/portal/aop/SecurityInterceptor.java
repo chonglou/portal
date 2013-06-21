@@ -24,27 +24,34 @@ public class SecurityInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         String url = request.getRequestURI();
         //logger.debug("路径{}", url);
-        SessionItem si = (SessionItem) request.getSession().getAttribute(Constants.SESSION_KEY);
+        SessionItem si = (SessionItem) request.getSession().getAttribute(SessionItem.KEY);
         if (url.startsWith("/admin/") || url.equals("/js/admin.js")) {
             if (si == null) {
                 login(response);
+                return false;
 
             } else if (rbacService.authAdmin(si.getUserId())) {
-
                 notFound(response);
+                return false;
             }
+            return true;
         }
 
         if (url.startsWith("/personal/")) {
-            if (url.equals("/personal/login")) {
-                if (si != null) {
-                    notFound(response);
+            boolean notNeedLogin = false;
+            for(String s : new String[]{"login", "register", "reset_pwd"}){
+                if(url.startsWith("/personal/"+s)){
+                    notNeedLogin = true;
+                    break;
                 }
-
-            } else {
-                if (si == null) {
-                    login(response);
-                }
+            }
+            if(si == null && !notNeedLogin){
+                login(response);
+                return false;
+            }
+            if(si != null && notNeedLogin){
+                notFound(response);
+                return false;
             }
         }
 

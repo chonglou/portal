@@ -26,5 +26,4 @@ public interface AccountService {
 
     User auth(String email, String password);
 
-
 }

@@ -10,6 +10,9 @@ public final class TextField<T> extends Field<T> {
     private static final long serialVersionUID = 5436830171467555708L;
 
 
+    public TextField(String id, String label){
+        this(id, label, null, null);
+    }
     public TextField(String id, String label, T value) {
         this(id, label, value, null);
     }

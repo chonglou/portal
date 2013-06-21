@@ -4,6 +4,7 @@ import com.odong.portal.dao.UserDao;
 import com.odong.portal.entity.User;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.util.EncryptHelper;
+import com.odong.portal.util.StringHelper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -48,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
         u.setUsername(username);
         u.setPassword(encryptHelper.encrypt(password));
         u.setCreated(new Date());
-        u.setState(User.State.SUBMIT);
+        u.setState(User.State.ENABLE);
         userDao.insert(u);
     }
 
@@ -80,6 +81,8 @@ public class AccountServiceImpl implements AccountService {
         User u = getUser(email);
         return u != null && encryptHelper.check(password, u.getPassword()) ? u : null;  //
     }
+
+
 
     @Resource
     private UserDao userDao;

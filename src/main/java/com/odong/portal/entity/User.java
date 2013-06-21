@@ -17,8 +17,13 @@ import java.util.Date;
 @Table(name = "ucAccount")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
+
+    public User() {
+    }
+
+
     public enum State {
-        ENABLE, DISABLE, SUBMIT
+        ENABLE, DISABLE, LOCK
     }
 
     private static final long serialVersionUID = 6854757082522535497L;
@@ -37,6 +42,7 @@ public class User extends IdEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private State state;
+
 
     public void setState(State state) {
         this.state = state;

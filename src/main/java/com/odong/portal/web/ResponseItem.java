@@ -13,10 +13,6 @@ import java.util.List;
  */
 public class ResponseItem implements Serializable {
 
-    public ResponseItem() {
-        this(Type.message);
-    }
-
     public ResponseItem(Type type) {
         this.ok = false;
         this.type = type;

@@ -13,7 +13,28 @@ public class SessionItem implements Serializable {
     private static final long serialVersionUID = -1606662743090417130L;
     private Long userId;
     private String username;
+    private String email;
     private Date created;
+    public final static String KEY = "d1s7e0wp";
+
+
+    public SessionItem(Long userId, String username, String email) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.created = new Date();
+    }
+
+    public SessionItem() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public Long getUserId() {
         return userId;

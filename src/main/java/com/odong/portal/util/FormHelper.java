@@ -29,7 +29,7 @@ public class FormHelper {
     }
 
     public ResponseItem check(BindingResult result, HttpServletRequest request, boolean captcha) {
-        ResponseItem ri = new ResponseItem();
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         if (captcha && !checkCaptcha(request)) {
             ri.addMessage("验证码输入不正确");
         }
