@@ -1,4 +1,4 @@
-package com.odong.portal.form.site;
+package com.odong.portal.form.admin;
 
 import org.hibernate.validator.constraints.NotEmpty;
 

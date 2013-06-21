@@ -27,7 +27,7 @@ public class SiteController {
             site.put(s, siteService.getString("site." + s));
         }
         map.put("gl_site", site);
-        return "main.httl";
+        return "main";
     }
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)

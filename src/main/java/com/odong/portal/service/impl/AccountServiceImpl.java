@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +21,11 @@ import java.util.Map;
  */
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
+    @Override
+    public List<User> listUser() {
+        return userDao.list();
+    }
+
     @Override
     public void setUserEmail(long user, String email) {
         if (getUser(email) != null) {

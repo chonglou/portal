@@ -18,6 +18,11 @@
     #if(gl_debug)
     <script type="text/javascript" src="/js/test.js?_=${random()}"></script>
     #end
+    #if(session.d1s7e0wp)
+    <script type="text/javascript" src="/js/personal.js#if(gl_debug)?_=${random()}#end"></script>
+    #else
+    <script type="text/javascript" src="/js/non-login.js#if(gl_debug)?_=${random()}#end"></script>
+    #end
     <!--#macro($!head)-->
     <!--#end-->
 </head>

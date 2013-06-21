@@ -8,7 +8,7 @@ package com.odong.portal.service;
  */
 public interface RbacService {
 
-    void setAdmin(long user);
+    void bindAdmin(long user, boolean bind);
 
     boolean authAdmin(long user);
 

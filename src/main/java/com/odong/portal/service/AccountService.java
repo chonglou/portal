@@ -2,6 +2,8 @@ package com.odong.portal.service;
 
 import com.odong.portal.entity.User;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
@@ -10,6 +12,7 @@ import com.odong.portal.entity.User;
  */
 public interface AccountService {
 
+    List<User> listUser();
     void setUserEmail(long user, String email);
 
     User getUser(long id);

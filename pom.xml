@@ -24,6 +24,7 @@
         <hibernate.version>4.2.2.Final</hibernate.version>
         <jackson.version>2.2.1</jackson.version>
         <antlr.version>3.5</antlr.version>
+        <httl.version>1.0.10</httl.version>
     </properties>
 
     <dependencies>
@@ -59,7 +60,12 @@
         <dependency>
             <groupId>httl</groupId>
             <artifactId>httl</artifactId>
-            <version>1.0.9</version>
+            <version>${httl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>httl</groupId>
+            <artifactId>httl-springmvc</artifactId>
+            <version>${httl.version}</version>
         </dependency>
 
 

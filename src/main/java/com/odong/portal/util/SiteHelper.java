@@ -44,7 +44,7 @@ public class SiteHelper {
             String email = "flamen@0-dong.com";
             accountService.addUser(email, "管理员", "123456");
             User admin = accountService.getUser(email);
-            rbacService.setAdmin(admin.getId());
+            rbacService.bindAdmin(admin.getId(), true);
         }
 
         GlobalResolver.put("gl_debug", appDebug);

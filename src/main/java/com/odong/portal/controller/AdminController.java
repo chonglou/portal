@@ -1,10 +1,14 @@
 package com.odong.portal.controller;
 
 import com.odong.portal.entity.Tag;
-import com.odong.portal.form.site.AllowForm;
-import com.odong.portal.form.site.InfoForm;
-import com.odong.portal.form.site.TagForm;
+import com.odong.portal.entity.User;
+import com.odong.portal.form.admin.AllowForm;
+import com.odong.portal.form.admin.InfoForm;
+import com.odong.portal.form.admin.ManagerForm;
+import com.odong.portal.form.admin.TagForm;
+import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
+import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.NavBar;
@@ -50,7 +54,8 @@ public class AdminController {
         return "admin.httl";
     }
 
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
+
+    @RequestMapping(value = "/site", method = RequestMethod.GET)
     @ResponseBody
     Form getTitleForm() {
         Form fm = new Form("title", "站点信息编辑", "/admin/title");
@@ -63,9 +68,9 @@ public class AdminController {
         return fm;
     }
 
-    @RequestMapping(value = "/info", method = RequestMethod.POST)
+    @RequestMapping(value = "/site", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem psotInfoForm(@Valid InfoForm form, BindingResult result) {
+    ResponseItem postInfoForm(@Valid InfoForm form, BindingResult result) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.title", form.getTitle());
@@ -77,10 +82,42 @@ public class AdminController {
     }
 
 
-    @RequestMapping(value = "/allow", method = RequestMethod.GET)
+
+    @RequestMapping(value = "/manager", method = RequestMethod.GET)
+    @ResponseBody
+    Form getManagerForm(){
+        Form fm = new Form("manager", "站点管理员", "/admin/manager");
+        SelectField<Long> users = new SelectField<>("userId", "用户");
+        for(User u : accountService.listUser()){
+            users.addOption(u.getUsername()+"["+u.getEmail()+"]", u.getId());
+        }
+        fm.addField(users);
+        RadioField<Boolean> bind = new RadioField<>("bind", "绑定", false);
+        bind.addOption("是", true);
+        bind.addOption("否", false);
+        fm.addField(bind);
+        fm.setCaptcha(true);
+        return fm;
+    }
+
+
+
+    @RequestMapping(value = "/manager", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postManager(@Valid ManagerForm form, BindingResult result, HttpServletRequest request) {
+        ResponseItem ri = formHelper.check(result, request, true);
+        if(ri.isOk()){
+            rbacService.bindAdmin(form.getUserId(), form.isBind());
+        }
+        return ri;
+    }
+
+
+
+        @RequestMapping(value = "/allow", method = RequestMethod.GET)
     @ResponseBody
     Form getAllowForm() {
-        Form fm = new Form("title", "站点权限编辑", "/admin/copyright");
+        Form fm = new Form("allow", "站点权限编辑", "/admin/allow");
         fm.addField(new RadioField<>("allowRegister", "新用户注册", siteService.getBoolean("site.allowRegister")));
         fm.addField(new RadioField<>("allowLogin", "普通用户登录", siteService.getBoolean("site.allowLogin")));
         fm.setCaptcha(true);
@@ -100,6 +137,8 @@ public class AdminController {
         return ri;
 
     }
+
+
 
     @RequestMapping(value = "/tag/list", method = RequestMethod.GET)
     @ResponseBody
@@ -162,11 +201,23 @@ public class AdminController {
     }
 
     @Resource
+    private RbacService rbacService;
+    @Resource
+    private AccountService accountService;
+    @Resource
     private SiteService siteService;
     @Resource
     private FormHelper formHelper;
     @Resource
     private ContentService contentService;
+
+    public void setRbacService(RbacService rbacService) {
+        this.rbacService = rbacService;
+    }
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

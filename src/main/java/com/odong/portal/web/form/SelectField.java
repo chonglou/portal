@@ -11,9 +11,11 @@ import java.util.List;
  * Time: 下午5:52
  */
 public final class SelectField<T> extends Field<T> {
+    public SelectField(String id, String name) {
+        this(id, name, null, null);
+    }
     public SelectField(String id, String name, T value) {
         this(id, name, value, null);
-        this.options = new ArrayList<>();
     }
 
     public SelectField(String id, String name, T value, String tooltip) {

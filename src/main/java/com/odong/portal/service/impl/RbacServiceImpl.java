@@ -25,8 +25,8 @@ import java.util.Map;
 @Service("rbacService")
 public class RbacServiceImpl implements RbacService {
     @Override
-    public void setAdmin(long user) {
-        bindPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()), true);
+    public void bindAdmin(long user, boolean bind) {
+        bindPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()), bind);
     }
 
     @Override

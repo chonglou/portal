@@ -29,6 +29,9 @@ public class EmailHelper {
         send(to, title, body, html, new HashMap<String, String>());
     }
     public void send(String to, String title, String body, boolean html, Map<String, String> attachs) {
+        if(sender == null){
+            throw new IllegalArgumentException("SMTP信息未配置");
+        }
         try {
             MimeMessage message = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -51,9 +54,6 @@ public class EmailHelper {
 
     }
 
-    public boolean isAvailable() {
-        return sender != null;
-    }
 
     public void setup(SmtpProfile profile) {
         siteService.set("site.smtp", encryptHelper.encode(profile));
