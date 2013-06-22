@@ -30,7 +30,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 login(response);
                 return false;
 
-            } else if (rbacService.authAdmin(si.getUserId())) {
+            } else if (si.isAdmin()) {
                 notFound(response);
                 return false;
             }
@@ -78,11 +78,5 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
     private final static Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
-    @Resource
-    private RbacService rbacService;
 
-
-    public void setRbacService(RbacService rbacService) {
-        this.rbacService = rbacService;
-    }
 }

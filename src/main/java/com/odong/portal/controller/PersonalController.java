@@ -6,6 +6,7 @@ import com.odong.portal.form.personal.RegisterForm;
 import com.odong.portal.form.personal.ResetPwdForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
+import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.*;
 import com.odong.portal.web.ResponseItem;
@@ -111,8 +112,8 @@ public class PersonalController {
     @ResponseBody
     Form getRegister() {
         Form fm = new Form("register", "欢迎注册", "/personal/register");
-        fm.addField(new TextField<String>("username", "用户名"));
         fm.addField(new TextField<String>("email", "邮箱地址"));
+        fm.addField(new TextField<String>("username", "用户名"));
         fm.addField(new PasswordField("password", "登录密码"));
         fm.addField(new PasswordField("rePassword", "再次输入"));
         fm.setCaptcha(true);
@@ -223,8 +224,11 @@ public class PersonalController {
                 ri.setType(ResponseItem.Type.message);
             } else {
                 SessionItem si = new SessionItem(user.getId(), user.getUsername(), user.getEmail());
+                if(rbacService.authAdmin(user.getId())){
+                    si.setAdmin(true);
+                }
                 session.setAttribute(SessionItem.KEY, si);
-                ri.addMessage("/personal/self");
+                ri.addMessage("/");
                 ri.setType(ResponseItem.Type.redirect);
             }
         }
@@ -232,7 +236,7 @@ public class PersonalController {
         return ri;
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ResponseBody
     ResponseItem logout(HttpSession session) {
         session.invalidate();
@@ -247,8 +251,6 @@ public class PersonalController {
     @Resource
     private JsonHelper jsonHelper;
     @Resource
-    private StringHelper stringHelper;
-    @Resource
     private EmailHelper emailHelper;
     @Resource
     private EncryptHelper encryptHelper;
@@ -258,7 +260,13 @@ public class PersonalController {
     private SiteService siteService;
     @Resource
     private AccountService accountService;
+    @Resource
+    private RbacService rbacService;
     private final static Logger logger = LoggerFactory.getLogger(PersonalController.class);
+
+    public void setRbacService(RbacService rbacService) {
+        this.rbacService = rbacService;
+    }
 
     public void setTimeHelper(TimeHelper timeHelper) {
         this.timeHelper = timeHelper;
@@ -272,9 +280,6 @@ public class PersonalController {
         this.siteService = siteService;
     }
 
-    public void setStringHelper(StringHelper stringHelper) {
-        this.stringHelper = stringHelper;
-    }
 
     public void setEmailHelper(EmailHelper emailHelper) {
         this.emailHelper = emailHelper;

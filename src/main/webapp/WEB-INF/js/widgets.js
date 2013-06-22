@@ -13,10 +13,8 @@ function Ajax(url, type, data, success, async) {
                         case "form":
                             new FormWindow(result);
                             break;
-                        case "grid":
-                            new GridWindow(result);
-                            break;
-                        case "list":
+                        case "redirect":
+                            window.location.href = result.data[0];
                             break;
                         default:
                             new MessageDialog("尚未支持");
@@ -206,15 +204,58 @@ function FormWindow(form) {
 
         if (form.captcha) {
             var input = "<input type='text'  style='width: 80px;' id='" + _id("captcha") + "'/>* &nbsp;";
-            input += "<img src='/captcha.jpg?_=" + Math.random() + "' alt='点击更换验证码'/>";
+            input += "<img id='"+_id('captcha_img')+"' src='/captcha.jpg?_=" + Math.random() + "' alt='点击更换验证码'/>";
             content += _field("captcha", "验证码", input);
 
         }
+
+        var reload_captcha = function(){
+            $('img#'+_id('captcha_img')).attr("src", "/captcha.jpg?_="+Math.random());
+        };
 
         content += _button_group(form.buttons);
         content += "</fieldset></form>";
         //alert(content);
         new HtmlDiv("fm-"+form.id, content);
+        $('img#'+_id('captcha_img')).click(reload_captcha);
+        $('button#'+_id("reset")).click(function(){
+            for (var i in form.fields) {
+                var field = form.fields[i];
+                switch (field.type){
+                    case "text":
+                    case "password":
+                    case "textarea":
+                        $("input#"+_id(field.id)).val(field.value == undefined ? "":field.value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if(form.captcha){
+                $("input#"+_id("captcha")).val('');
+                reload_captcha();
+            }
+        });
+
+        $('button#'+_id("submit")).click(function(){
+            var data = {};
+            for (var i in form.fields) {
+                var field = form.fields[i];
+                switch (field.type){
+                    case "text":
+                    case "textarea":
+                    case "password":
+                        data[field.id] = $('input#'+_id(field.id)).val();
+                    default:
+                        break;
+                }
+            }
+            if(form.captcha){
+                data['captcha'] = $('input#'+_id('captcha')).val();
+            }
+            new Ajax(form.action, "POST", data);
+            reload_captcha();
+        });
 
     };
 

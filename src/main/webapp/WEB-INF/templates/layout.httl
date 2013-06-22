@@ -46,11 +46,14 @@ $(document).ready(function () {
 #end
 
 #macro(personal_bar)
-    #if(session.aaa)
-        #set(personal_bar_items=["self":"个人信息", "article":"文章管理", "logout":"安全退出"])
+    #set(SessionItem gl_session)
+    #if(gl_session)
+        #set(personal_bar_items=["self":"个人信息", "article":"文章管理","logout":"安全退出"])
+        #set(personal_bar_sort=["self", "article", "logout"])
         #set(personal_bar_name="用户中心")
     #else
         #set(personal_bar_items=["login":"用户登录", "register":"账户注册", "reset_pwd":"重置密码"])
+        #set(personal_bar_sort=["login", "register", "reset_pwd"]);
         #set(personal_bar_name="登录/注册")
     #end
 
@@ -60,8 +63,13 @@ $(document).ready(function () {
         <span class="caret">&nbsp;</span>
     </a>
     <ul class="dropdown-menu">
-        #for(i : personal_bar_items)
-            <li><a id="personal_bar-${i.key}">${i.value}</a></li>
+        #if(gl_session)
+
+            <li><a id="personal_bar-site">站点管理</a></li>
+            <li class="divider">&nbsp;</li>
+        #end
+        #for(i : personal_bar_sort)
+            <li><a id="personal_bar-${i}">${personal_bar_items[i]}</a></li>
             #if(!for.last)
             <li class="divider">&nbsp;</li>
             #end

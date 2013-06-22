@@ -15,7 +15,9 @@ public class SessionItem implements Serializable {
     private String username;
     private String email;
     private Date created;
+    private boolean isAdmin;
     public final static String KEY = "d1s7e0wp";
+
 
 
     public SessionItem(Long userId, String username, String email) {
@@ -26,6 +28,14 @@ public class SessionItem implements Serializable {
     }
 
     public SessionItem() {
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public String getEmail() {

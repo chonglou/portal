@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 #set(Map<String,String> gl_site)
+#set(gl_session=session.d1s7e0wp)
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -18,7 +19,7 @@
     #if(gl_debug)
     <script type="text/javascript" src="/js/test.js?_=${random()}"></script>
     #end
-    #if(session.d1s7e0wp)
+    #if(gl_session)
     <script type="text/javascript" src="/js/personal.js#if(gl_debug)?_=${random()}#end"></script>
     #else
     <script type="text/javascript" src="/js/non-login.js#if(gl_debug)?_=${random()}#end"></script>
