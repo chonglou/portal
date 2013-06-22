@@ -38,23 +38,6 @@ import java.util.Map;
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    String getMain(Map<String, Object> map) {
-        NavBar nb = new NavBar("控制面板");
-        nb.add("用户管理", "/admin/user");
-        nb.add("标签管理", "/admin/tag");
-        nb.add("版面管理", "/admin/board");
-        nb.add("友情链接", "/admin/friend_link");
-        nb.add("站点信息", "/admin/site");
-        nb.add("日志管理", "/admin/log");
-        nb.setAjax(true);
-        List<NavBar> navBars = new ArrayList<>();
-        navBars.add(nb);
-        map.put("navBars", navBars);
-        return "admin.httl";
-    }
-
-
     @RequestMapping(value = "/site", method = RequestMethod.GET)
     @ResponseBody
     Form getTitleForm() {
@@ -82,14 +65,13 @@ public class AdminController {
     }
 
 
-
     @RequestMapping(value = "/manager", method = RequestMethod.GET)
     @ResponseBody
-    Form getManagerForm(){
+    Form getManagerForm() {
         Form fm = new Form("manager", "站点管理员", "/admin/manager");
         SelectField<Long> users = new SelectField<>("userId", "用户");
-        for(User u : accountService.listUser()){
-            users.addOption(u.getUsername()+"["+u.getEmail()+"]", u.getId());
+        for (User u : accountService.listUser()) {
+            users.addOption(u.getUsername() + "[" + u.getEmail() + "]", u.getId());
         }
         fm.addField(users);
         RadioField<Boolean> bind = new RadioField<>("bind", "绑定", false);
@@ -101,20 +83,18 @@ public class AdminController {
     }
 
 
-
     @RequestMapping(value = "/manager", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postManager(@Valid ManagerForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(ri.isOk()){
+        if (ri.isOk()) {
             rbacService.bindAdmin(form.getUserId(), form.isBind());
         }
         return ri;
     }
 
 
-
-        @RequestMapping(value = "/allow", method = RequestMethod.GET)
+    @RequestMapping(value = "/allow", method = RequestMethod.GET)
     @ResponseBody
     Form getAllowForm() {
         Form fm = new Form("allow", "站点权限编辑", "/admin/allow");
@@ -137,7 +117,6 @@ public class AdminController {
         return ri;
 
     }
-
 
 
     @RequestMapping(value = "/tag/list", method = RequestMethod.GET)

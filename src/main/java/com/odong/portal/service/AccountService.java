@@ -13,6 +13,7 @@ import java.util.List;
 public interface AccountService {
 
     List<User> listUser();
+
     void setUserEmail(long user, String email);
 
     User getUser(long id);

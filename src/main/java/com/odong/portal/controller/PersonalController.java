@@ -9,6 +9,7 @@ import com.odong.portal.service.AccountService;
 import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.*;
+import com.odong.portal.web.NavBar;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.PasswordField;
@@ -17,10 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -36,59 +35,58 @@ import java.util.*;
  */
 @Controller
 @RequestMapping(value = "/personal")
+@SessionAttributes(SessionItem.KEY)
 public class PersonalController {
 
-        @RequestMapping(value = "/reset_pwd/active", method = RequestMethod.GET)
-        @ResponseBody
-        ResponseItem getResetPwdActive(@RequestParam("code") String code){
-            ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-            try{
-                Map<String,String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
 
-                if(timeHelper.plus(new Date(), -30*60).getTime() > Long.parseLong(map.get("created"))){
-                    ri.addMessage("找回密码链接失效");
-                }
-                else {
-                    accountService.setUserPassword(Long.parseLong(map.get("userId")), map.get("password"));
-                    ri.setOk(true);
-                }
+
+    @RequestMapping(value = "/reset_pwd/active", method = RequestMethod.GET)
+    @ResponseBody
+    ResponseItem getResetPwdActive(@RequestParam("code") String code) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        try {
+            Map<String, String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
+
+            if (timeHelper.plus(new Date(), -30 * 60).getTime() > Long.parseLong(map.get("created"))) {
+                ri.addMessage("找回密码链接失效");
+            } else {
+                accountService.setUserPassword(Long.parseLong(map.get("userId")), map.get("password"));
+                ri.setOk(true);
             }
-            catch (Exception e){
-                ri.addMessage("找回密码失败");
-            }
-            return ri;
+        } catch (Exception e) {
+            ri.addMessage("找回密码失败");
         }
+        return ri;
+    }
 
     @RequestMapping(value = "/reset_pwd", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postResetPwd(@Valid ResetPwdForm form, BindingResult result, HttpServletRequest request){
+    ResponseItem postResetPwd(@Valid ResetPwdForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
 
-        if(ri.isOk()){
-            if(form.getNewPassword().equals(form.getRePassword())){
-            User user = accountService.getUser(form.getEmail());
-            if(user == null){
-                ri.setOk(false);
-                ri.addMessage("账户"+form.getEmail()+"]不存在");
-            }
-            else {
-                Map<String, String> map = new HashMap<>();
-                map.put("userId", Long.toString(user.getId()));
-                map.put("password", form.getNewPassword());
-                map.put("created", Long.toString(new Date().getTime()));
+        if (ri.isOk()) {
+            if (form.getNewPassword().equals(form.getRePassword())) {
+                User user = accountService.getUser(form.getEmail());
+                if (user == null) {
+                    ri.setOk(false);
+                    ri.addMessage("账户" + form.getEmail() + "]不存在");
+                } else {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("userId", Long.toString(user.getId()));
+                    map.put("password", form.getNewPassword());
+                    map.put("created", Long.toString(new Date().getTime()));
 
-                String code = encryptHelper.encode(jsonHelper.object2json(map));
-                String title = siteService.getString("site.title");
-                String domain = siteService.getString("site.domain");
+                    String code = encryptHelper.encode(jsonHelper.object2json(map));
+                    String title = siteService.getString("site.title");
+                    String domain = siteService.getString("site.domain");
 
-                emailHelper.send(form.getEmail(), "重置密码-"+title,
-                        "亲爱的"+form.getEmail()+
-                                "<br> &nbsp;&nbsp; 您好，<a href='http://"+domain+"/personal/reset_pwd/active?code="+code+"' target='_blank'>请点击此链接重置密码</a>，三十分钟内有效。"+
-                                "<p>&nbsp;</p> &nbsp; 谢谢"
-                        ,true);
-            }
-            }
-            else {
+                    emailHelper.send(form.getEmail(), "重置密码-" + title,
+                            "亲爱的" + form.getEmail() +
+                                    "<br> &nbsp;&nbsp; 您好，<a href='http://" + domain + "/personal/reset_pwd/active?code=" + code + "' target='_blank'>请点击此链接重置密码</a>，三十分钟内有效。" +
+                                    "<p>&nbsp;</p> &nbsp; 谢谢"
+                            , true);
+                }
+            } else {
                 ri.setOk(false);
                 ri.addMessage("两次密码输入不一致");
             }
@@ -126,25 +124,22 @@ public class PersonalController {
     ResponseItem getActive(@RequestParam("code") String code) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         try {
-            Map<String,String> map  = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
+            Map<String, String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
             String email = map.get("email");
             User user = accountService.getUser(email);
 
-            if(user == null){
-                if(timeHelper.plus(new Date(), -30*60).getTime() > Long.parseLong(map.get("created"))){
+            if (user == null) {
+                if (timeHelper.plus(new Date(), -30 * 60).getTime() > Long.parseLong(map.get("created"))) {
                     ri.addMessage("注册链接超时[30分钟]失效，请重新注册");
-                }
-                else {
+                } else {
                     accountService.addUser(map.get("email"), map.get("username"), map.get("password"));
                     ri.addMessage("/");
                     ri.setType(ResponseItem.Type.redirect);
                     ri.setOk(true);
                 }
+            } else {
+                ri.addMessage("邮箱[" + map.get("email") + "]已存在");
             }
-            else {
-                ri.addMessage("邮箱["+map.get("email")+"]已存在");
-            }
-
 
 
         } catch (Exception e) {
@@ -162,7 +157,7 @@ public class PersonalController {
             User user = accountService.getUser(form.getEmail());
             if (user == null) {
 
-                Map<String,String> map = new HashMap<>();
+                Map<String, String> map = new HashMap<>();
                 map.put("email", form.getEmail());
                 map.put("username", form.getUsername());
                 map.put("password", form.getPassword());
@@ -183,8 +178,8 @@ public class PersonalController {
                 ri.addMessage("已经发送注册邮件，请打开邮箱点击链接激活账户。");
             } else {
 
-                    ri.setOk(false);
-                    ri.addMessage("邮箱[" + form.getEmail() + "]已存在");
+                ri.setOk(false);
+                ri.addMessage("邮箱[" + form.getEmail() + "]已存在");
 
             }
         }
@@ -224,11 +219,11 @@ public class PersonalController {
                 ri.setType(ResponseItem.Type.message);
             } else {
                 SessionItem si = new SessionItem(user.getId(), user.getUsername(), user.getEmail());
-                if(rbacService.authAdmin(user.getId())){
+                if (rbacService.authAdmin(user.getId())) {
                     si.setAdmin(true);
                 }
                 session.setAttribute(SessionItem.KEY, si);
-                ri.addMessage("/");
+                ri.addMessage("/personal/self");
                 ri.setType(ResponseItem.Type.redirect);
             }
         }
@@ -238,8 +233,10 @@ public class PersonalController {
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ResponseBody
-    ResponseItem logout(HttpSession session) {
-        session.invalidate();
+    ResponseItem logout(SessionStatus status) {
+
+        //session.invalidate();
+        status.setComplete();
         ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
         ri.addMessage("/");
         ri.setOk(true);

@@ -1,9 +1,0 @@
-#set(top_nav_key="main")
-$!{extends("/layout.httl")}
-
-<!--#macro(left)-->
-    ${left_nav_bar}
-<!--#end-->
-<!--#macro(main)-->
-        中间
-<!--#end-->

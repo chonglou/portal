@@ -19,7 +19,6 @@ public class SessionItem implements Serializable {
     public final static String KEY = "d1s7e0wp";
 
 
-
     public SessionItem(Long userId, String username, String email) {
         this.userId = userId;
         this.username = username;

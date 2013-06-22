@@ -25,11 +25,12 @@ import java.util.Properties;
  */
 @Component
 public class EmailHelper {
-    public void send(String to, String title, String body, boolean html){
+    public void send(String to, String title, String body, boolean html) {
         send(to, title, body, html, new HashMap<String, String>());
     }
+
     public void send(String to, String title, String body, boolean html, Map<String, String> attachs) {
-        if(sender == null){
+        if (sender == null) {
             throw new IllegalArgumentException("SMTP信息未配置");
         }
         try {

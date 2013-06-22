@@ -1,14 +1,11 @@
 package com.odong.portal.aop;
 
-import com.odong.portal.Constants;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.RbacService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,35 +28,45 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 return false;
 
             } else if (si.isAdmin()) {
+                return true;
+            }
+            notFound(response);
+            return false;
+        }
+
+
+        if (url.startsWith("/personal/")) {
+            boolean notNeedLogin = false;
+            for (String s : new String[]{"login", "register", "reset_pwd"}) {
+                if (url.startsWith("/personal/" + s)) {
+                    notNeedLogin = true;
+                    break;
+                }
+            }
+            if (si == null && !notNeedLogin) {
+                login(response);
+                return false;
+            }
+            if (si != null && notNeedLogin) {
                 notFound(response);
                 return false;
             }
             return true;
         }
-
-        if (url.startsWith("/personal/")) {
-            boolean notNeedLogin = false;
-            for(String s : new String[]{"login", "register", "reset_pwd"}){
-                if(url.startsWith("/personal/"+s)){
-                    notNeedLogin = true;
-                    break;
-                }
-            }
-            if(si == null && !notNeedLogin){
-                login(response);
-                return false;
-            }
-            if(si != null && notNeedLogin){
-                notFound(response);
-                return false;
-            }
+        if(si == null && url.equals("/js/personal.js")){
+            notFound(response);
+            return false;
+        }
+        if(si != null && url.equals("/js/non-login.js")){
+            notFound(response);
+            return false;
         }
 
         return true;  //
     }
 
     private void login(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/personal/login");
+        response.sendRedirect("/");
     }
 
     private void notFound(HttpServletResponse response) throws IOException {

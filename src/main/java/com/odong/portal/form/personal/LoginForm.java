@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Date: 13-5-22
  * Time: 下午2:29
  */
-public class LoginForm implements Serializable{
+public class LoginForm implements Serializable {
     private static final long serialVersionUID = -4511768565186220813L;
     @Email
     @NotNull
