@@ -13,6 +13,9 @@ import java.util.List;
 public class NavBar implements Serializable {
     public void add(String name, String url) {
         Page p = new Page();
+        if (name.length() > 100) {
+            name = name.substring(0, 97);
+        }
         p.setName(name);
         p.setUrl(url);
         this.pages.add(p);

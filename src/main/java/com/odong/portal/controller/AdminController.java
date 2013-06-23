@@ -11,7 +11,6 @@ import com.odong.portal.service.ContentService;
 import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.NavBar;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
 import org.springframework.stereotype.Controller;
@@ -24,9 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

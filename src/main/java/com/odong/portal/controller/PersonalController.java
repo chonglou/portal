@@ -9,7 +9,6 @@ import com.odong.portal.service.AccountService;
 import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.*;
-import com.odong.portal.web.NavBar;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.PasswordField;
@@ -25,7 +24,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,8 +38,6 @@ import java.util.*;
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
 public class PersonalController {
-
-
 
     @RequestMapping(value = "/reset_pwd/active", method = RequestMethod.GET)
     @ResponseBody

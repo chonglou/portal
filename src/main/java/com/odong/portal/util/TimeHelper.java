@@ -14,6 +14,7 @@ import java.util.Date;
 @Component
 public class TimeHelper {
 
+
     public Date plus(Date date, int second) {
         return new DateTime(date).plusSeconds(second).toDate();
     }

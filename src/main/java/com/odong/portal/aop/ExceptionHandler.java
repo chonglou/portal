@@ -1,5 +1,7 @@
 package com.odong.portal.aop;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,9 +20,12 @@ import java.util.Map;
 public class ExceptionHandler implements HandlerExceptionResolver {
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object o, Exception ex) {
+        logger.error("servlet异常", ex);
         Map<String, Object> map = new HashMap<>();
         map.put("message", ex.getMessage());
         map.put("created", new Date());
         return new ModelAndView("jsonView", map);
     }
+
+    private final static Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);
 }

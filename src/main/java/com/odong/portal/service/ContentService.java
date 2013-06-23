@@ -23,7 +23,7 @@ public interface ContentService {
 
     List<Tag> listTag();
 
-    List<Tag> listByArticle(long article);
+    List<Tag> listTagByArticle(long article);
 
     Tag getTag(long id);
 
@@ -76,6 +76,8 @@ public interface ContentService {
     List<Article> hotArticle(int count);
 
     List<Article> listArticle(int no, int size);
+
+    List<Article> listArticleByMonth(int year, int month);
 
     List<Article> listArticleByAuthor(long author);
 

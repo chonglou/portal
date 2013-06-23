@@ -10,6 +10,7 @@ import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.util.MapIntegerValueComparator;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -76,7 +77,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public List<Tag> listByArticle(long article) {
+    public List<Tag> listTagByArticle(long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
 
@@ -262,6 +263,14 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public List<Article> listArticle(int no, int size) {
         return articleDao.list(no, size, articleDao.hqlListAll(), null);  //
+    }
+
+    @Override
+    public List<Article> listArticleByMonth(int year, int month) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("begin", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMinimumValue().secondOfDay().withMinimumValue().toDate());
+        map.put("end", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMaximumValue().secondOfDay().withMaximumValue().toDate());
+        return articleDao.list("FROM Article AS i WHERE i.created>=:begin AND i.created <=:end", map);
     }
 
     @Override

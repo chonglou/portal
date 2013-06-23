@@ -1,4 +1,3 @@
-
 $!{extends("/layout.httl")}
 
 <!--#macro(left)-->
@@ -6,5 +5,7 @@ $!{extends("/layout.httl")}
    ${left_3d_tag_zone}
 <!--#end-->
 <!--#macro(main)-->
-        中间
+   #set(List<Article> articles)
+   <h4>${title} [${articles.size}]</h4><hr/>
+   ${about_me}
 <!--#end-->

@@ -12,7 +12,7 @@ $!{extends("/frame.httl")}
                 #end
             #else
                 #for(Page j: i.pages)
-                <li><a href="${j.url}">${j.name}</a></li>
+                <li><a href="${j.url}" target="_blank">${j.name}</a></li>
                 #end
             #end
         #end
@@ -75,17 +75,17 @@ $(document).ready(function () {
     </div>
 #end
 
-#macro(top_nav_bar(String top_nav_key))
-    #set(top_nav_bar_items=["/main":"网站首页","/personal":"用户中心","/sitemap":"网站地图","/contact_us":"联系我们"])
-    #set(top_nav_bar_sorts=["main", "personal", "sitemap", "contact_us"])
+#macro(top_nav_bar(String top_nav_key, Map<String,Object> gl_site))
+    #set(top_nav_bar_sorts=["main", "personal", "sitemap", "about_me"])
     <div class="nav-collapse">
         <ul class="nav">
-            #for(i : ["main", "personal", "sitemap", "contact_us"])
+            #set(Map<String,String> topNavs=gl_site.topNavs)
+            #for(i : ["main", "personal", "sitemap", "about_me"])
                 <li
                 #if(top_nav_key == i)
                 class="active"
                 #end
-                ><a href="/${i}">${top_nav_bar_items.get("/"+i)}</a><li>
+                ><a href="/${i}">${topNavs.get(i)}</a><li>
             #end
         </ul>
         <form method="post" target="_blank" action="/search" class="navbar-search pull-left">

@@ -1,0 +1,16 @@
+$!{extends("/layout.httl")}
+
+<!--#macro(left)-->
+   ${left_nav_bar}
+   ${left_3d_tag_zone}
+<!--#end-->
+<!--#macro(main)-->
+   #set(List<Article> articles)
+   <h4>${title} (${articles.size})</h4><hr/>
+   //TODO 分页
+   <ol>
+   #for(Article a : articles)
+   <li><a href="/article/${a.id}" target="_blank">${a.title}</a></li>
+   #end
+   </ol>
+<!--#end-->

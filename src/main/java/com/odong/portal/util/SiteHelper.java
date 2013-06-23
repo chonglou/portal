@@ -41,6 +41,12 @@ public class SiteHelper {
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
 
+            siteService.set("site.hotTagCount", 20);
+            siteService.set("site.hotArticleCount", 10);
+            siteService.set("site.latestCommentCount", 10);
+            siteService.set("site.archiveCount", 6);
+            siteService.set("site.articlePageSize", 50);
+
             String email = "flamen@0-dong.com";
             accountService.addUser(email, "管理员", "123456");
             User admin = accountService.getUser(email);

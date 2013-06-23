@@ -1,0 +1,17 @@
+$!{extends("/layout.httl")}
+
+<!--#macro(left)-->
+   ${left_nav_bar}
+   ${left_3d_tag_zone}
+<!--#end-->
+<!--#macro(main)-->
+   #set(List<Article> articles)
+   <h4>${article.title} (${articles.size})</h4><hr/>
+   ${body}
+   //TODO 分页 样式表 添加评论 锚点
+   <ol>
+   #for(Comment a : article.comments)
+   <li><a href="/article/${a.id}" target="_blank">${a.title}</a></li>
+   #end
+   </ol>
+<!--#end-->

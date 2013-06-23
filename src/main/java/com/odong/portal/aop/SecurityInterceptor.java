@@ -53,11 +53,11 @@ public class SecurityInterceptor implements HandlerInterceptor {
             }
             return true;
         }
-        if(si == null && url.equals("/js/personal.js")){
+        if (si == null && url.equals("/js/personal.js")) {
             notFound(response);
             return false;
         }
-        if(si != null && url.equals("/js/non-login.js")){
+        if (si != null && url.equals("/js/non-login.js")) {
             notFound(response);
             return false;
         }
