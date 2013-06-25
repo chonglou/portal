@@ -9,7 +9,7 @@ import com.odong.portal.entity.ArticleTag;
 import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.service.ContentService;
-import com.odong.portal.util.MapIntegerValueComparator;
+import com.odong.portal.util.MapLongValueComparator;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +25,12 @@ import java.util.*;
 @Service("contentService")
 public class ContentServiceImpl implements ContentService {
     @Override
-    public int countTag() {
+    public long countTag() {
         return tagDao.count();  //
     }
 
     @Override
-    public int countTag(long article) {
+    public long countTag(long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         return tagDao.count("FROM ArticleTag AS i WHERE i.article=:article", map);  //
@@ -39,7 +39,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public List<Tag> topTag(int count) {
-        Map<Long, Integer> map = new HashMap<>();
+        Map<Long, Long> map = new HashMap<>();
         for (Tag t : tagDao.list()) {
             Map<String, Object> params = new HashMap<>();
             params.put("id", t.getId());
@@ -49,8 +49,8 @@ public class ContentServiceImpl implements ContentService {
         }
 
 
-        MapIntegerValueComparator<Long> vc = new MapIntegerValueComparator<>(map);
-        Map<Long, Integer> sorted = new TreeMap<>(vc);
+        MapLongValueComparator<Long> vc = new MapLongValueComparator<>(map);
+        Map<Long, Long> sorted = new TreeMap<>(vc);
         sorted.putAll(map);
 
         List<Tag> tags = new ArrayList<>();
@@ -139,19 +139,19 @@ public class ContentServiceImpl implements ContentService {
 
 
     @Override
-    public int countComment() {
+    public long countComment() {
         return commentDao.count();  //
     }
 
     @Override
-    public int countCommentByUser(long user) {
+    public long countCommentByUser(long user) {
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);
         return commentDao.count("SELECT COUNT(*) FROM Comment AS i WHERE i.user=:user", map);  //
     }
 
     @Override
-    public int countCommentByArticle(long article) {
+    public long countCommentByArticle(long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         return commentDao.count("SELECT COUNT(*) FROM Comment AS i WHERE i.article=:article", map);  //
@@ -213,19 +213,19 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public int countArticle() {
+    public long countArticle() {
         return articleDao.count();  //
     }
 
     @Override
-    public int countArticleByAuthor(long author) {
+    public long countArticleByAuthor(long author) {
         Map<String, Object> map = new HashMap<>();
         map.put("author", author);
         return articleDao.count("SELECT COUNT(*) FROM Article AS i WHERE i.author=:author", map);  //
     }
 
     @Override
-    public int countArticleByTag(long tag) {
+    public long countArticleByTag(long tag) {
         Map<String, Object> map = new HashMap<>();
         map.put("tag", tag);
         return articleTagDao.count("SELECT COUNT(*) FROM ArticleTag AS i WHERE i.tag=:tag", map);  //

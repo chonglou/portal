@@ -99,12 +99,12 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
     }
 
     @Override
-    public int count() {
+    public long count() {
         return count("SELECT COUNT(*) FROM " + tableName(), null);
     }
 
     @Override
-    public int count(String hql, Map<String, Object> map) {
+    public long count(String hql, Map<String, Object> map) {
         TypedQuery<Integer> query = entityManager.createQuery(hql, Integer.class);
         if (map != null) {
             for (String key : map.keySet()) {

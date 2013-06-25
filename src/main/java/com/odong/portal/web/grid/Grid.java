@@ -13,30 +13,70 @@ import java.util.List;
  * Time: 下午5:26
  */
 public class Grid extends ResponseItem {
-    public Grid(String id, int cols) {
-        this(id, cols, 0);
-    }
-
-    public Grid(String id, int cols, int pages) {
+    public Grid(String id, String name, Column... columns) {
         super(Type.grid);
         this.id = id;
-        this.pages = pages;
-        this.cols = new Column[cols];
+        this.name = name;
+        this.columns = columns;
         this.items = new ArrayList<>();
     }
 
-    public void addRow(Object... items) {
-        if (items.length != cols.length) {
-            throw new IllegalArgumentException("单元格个数不对");
-        }
-        Collections.addAll(this.items, items);
+    public void addCell(String text) {
+        this.items.add(text);
     }
+
 
     private static final long serialVersionUID = -4735460726311781464L;
     private String id;
-    private int pages;
-    private Column[] cols;
-    private List<Object> items;
+    private String name;
+    private Integer pageSize;
+    private Column[] columns;
+    private List<String> items;
+    private String action;
+    private boolean add;
+    private boolean edit;
+    private boolean view;
+    private boolean delete;
+
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
+    }
+
+    public boolean isView() {
+        return view;
+    }
+
+    public void setView(boolean view) {
+        this.view = view;
+    }
+
+    public boolean isDelete() {
+        return delete;
+    }
+
+    public void setDelete(boolean delete) {
+        this.delete = delete;
+    }
+
+    public boolean isAdd() {
+        return add;
+    }
+
+    public void setAdd(boolean add) {
+        this.add = add;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public String getId() {
         return id;
@@ -46,27 +86,35 @@ public class Grid extends ResponseItem {
         this.id = id;
     }
 
-    public int getPages() {
-        return pages;
+    public Integer getPageSize() {
+        return pageSize;
     }
 
-    public void setPages(int pages) {
-        this.pages = pages;
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 
-    public Column[] getCols() {
-        return cols;
+    public String getName() {
+        return name;
     }
 
-    public void setCols(Column[] cols) {
-        this.cols = cols;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public List<Object> getItems() {
+    public Column[] getColumns() {
+        return columns;
+    }
+
+    public void setColumns(Column[] columns) {
+        this.columns = columns;
+    }
+
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(List<Object> items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
 }

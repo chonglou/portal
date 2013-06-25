@@ -9,13 +9,13 @@ import java.util.Map;
  * Date: 13-5-25
  * Time: 上午12:59
  */
-public class MapIntegerValueComparator<K> implements Comparator<K> {
+public class MapLongValueComparator<K> implements Comparator<K> {
 
-    public MapIntegerValueComparator(Map<K, Integer> base) {
+    public MapLongValueComparator(Map<K, Long> base) {
         this.base = base;
     }
 
-    private Map<K, Integer> base;
+    private Map<K, Long> base;
 
     @Override
     public int compare(K o1, K o2) {

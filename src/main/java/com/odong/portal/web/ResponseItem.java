@@ -20,7 +20,7 @@ public class ResponseItem implements Serializable {
         this.data = new ArrayList<>();
     }
 
-    public void addMessage(Object o) {
+    public void addData(Object o) {
         this.data.add(o);
     }
 

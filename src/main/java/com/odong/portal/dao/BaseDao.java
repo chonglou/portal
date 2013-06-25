@@ -29,9 +29,9 @@ public interface BaseDao<T extends Serializable, PK extends Serializable> {
 
     List<T> list(int pageNo, int pageSize, String hql, Map<String, Object> map);
 
-    int count();
+    long count();
 
-    int count(String hql, Map<String, Object> map);
+    long count(String hql, Map<String, Object> map);
 
     void update(T t);
 

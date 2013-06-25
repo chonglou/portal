@@ -41,4 +41,5 @@
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
     <bean id="exceptionHandler" class="com.odong.portal.aop.ExceptionHandler"/>
+
 </beans>

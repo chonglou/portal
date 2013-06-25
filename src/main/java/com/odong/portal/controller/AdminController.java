@@ -13,6 +13,8 @@ import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
+import com.odong.portal.web.grid.Column;
+import com.odong.portal.web.grid.Grid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +35,22 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    @ResponseBody
+    Grid getUser(){
+        Grid userG = new Grid("users", "用户列表", new Column("ID"), new Column("邮箱"), new Column("用户名"), new Column("状态"), new Column("上次登录"));
+        for(User u : accountService.listUser()){
+            userG.addCell(u.getEmail());
+            userG.addCell(u.getUsername());
+            userG.addCell(u.getState().toString());
+            userG.addCell(u.getLastLogin().toString());
+        }
+        userG.setAction("/admin/user/");
+        userG.setAdd(true);
+        userG.setOk(true);
+        return userG;
+    }
+
 
     @RequestMapping(value = "/site", method = RequestMethod.GET)
     @ResponseBody
@@ -119,7 +137,7 @@ public class AdminController {
     @ResponseBody
     ResponseItem getTagList() {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        ri.addMessage(contentService.listTag());
+        ri.addData(contentService.listTag());
         ri.setOk(true);
         return ri;
     }
@@ -154,19 +172,19 @@ public class AdminController {
                     contentService.addTag(form.getName());
                 }
                 {
-                    ri.addMessage("标签[" + form.getId() + "]已存在");
+                    ri.addData("标签[" + form.getId() + "]已存在");
                     ri.setOk(false);
                 }
             } else {
                 Tag tag = contentService.getTag(form.getId());
                 if (tag == null) {
-                    ri.addMessage("标签[" + form.getId() + "]不存在");
+                    ri.addData("标签[" + form.getId() + "]不存在");
                     ri.setOk(false);
                 } else {
                     if (contentService.getTag(form.getName()) == null) {
                         contentService.setTagName(form.getId(), form.getName());
                     } else {
-                        ri.addMessage("标签[" + form.getId() + "]已存在");
+                        ri.addData("标签[" + form.getId() + "]已存在");
                         ri.setOk(false);
                     }
                 }

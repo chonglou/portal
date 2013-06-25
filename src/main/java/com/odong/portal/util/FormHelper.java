@@ -31,11 +31,11 @@ public class FormHelper {
     public ResponseItem check(BindingResult result, HttpServletRequest request, boolean captcha) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         if (captcha && !checkCaptcha(request)) {
-            ri.addMessage("验证码输入不正确");
+            ri.addData("验证码输入不正确");
         }
 
         for (ObjectError error : result.getAllErrors()) {
-            ri.addMessage(error.getDefaultMessage());
+            ri.addData(error.getDefaultMessage());
         }
         if (ri.getData().size() == 0) {
             ri.setOk(true);

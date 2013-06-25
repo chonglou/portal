@@ -13,6 +13,9 @@ function Ajax(url, type, data, success, async) {
                         case "form":
                             new FormWindow(result);
                             break;
+                        case "grid":
+                            new GridWindow(result);
+                            break;
                         case "redirect":
                             window.location.href = result.data[0];
                             break;
@@ -45,14 +48,64 @@ function Ajax(url, type, data, success, async) {
 }
 
 function GridWindow(grid) {
+    var _grid_id;
+    var _id = function(id){
+        return "grid-"+_grid_id+"-"+id;
+        };
     var _init=function(){
-        //var content =
+        _grid_id = grid.id;
+        var content = "<h5>"+grid.name;
+        if(content.add){
+            content += "[<button id='"+_id("add")+"'></button>]";
+        }
+        content += "</h5><table><thead><tr>";
+
+        for(var i in grid.columns){
+            var col = grid.columns[i];
+            content += "<td";
+            if(col.width != undefined){
+                content += " width='"+col.width+"'";
+            }
+            content += ">"+col.label+"</td>"
+        }
+        if(grid.action){
+            content += "<td>操作</td>";
+        }
+        content += "</tr></thead><tbody>";
+        for(var i=0; i<grid.items.length;){
+            if(i%grid.columns.length == 0){
+                content += "<tr>";
+            }
+            content += "<td>"+grid.items[i]+"</td>";
+            i++;
+            if(i%grid.columns.length == 0){
+                if(grid.action){
+                    content += "<td>";
+                    if(grid.edit){
+                        //TODO id 冲突
+                        content += "<button id='"+_id("edit")+"'>编辑</button>";
+                    }
+                    if(grid.delete){
+                        content += "<button id='"+_id("del")+"'>删除</button>";
+                    }
+                    content += "</td>";
+                }
+                content += "</tr>";
+            }
+        }
+        content += "</tbody></table>";
+
+        new HtmlDiv("grid-"+grid.id, content);
+        //TODO 绑定编辑事件
+        $("button#"+_id("add")).click("");
+        $("button#"+_id("edit")).click("");
+        $("button#"+_id("del")).click("");
     };
     _init();
 }
 
 function FormWindow(form) {
-    var _form;
+    var _form_id;
     var _field = function (id, label, input) {
         if(label == undefined){
             return input;
@@ -60,7 +113,7 @@ function FormWindow(form) {
         var content = "<div class='control-group'>";
         content += "<label class='control-label' ";
         if (id != undefined) {
-            content += " for='fm-" + _form.id + "-" + id + "'";
+            content += " for='fm-" + _form_id + "-" + id + "'";
         }
         content += ">" + label + "：</label>";
         content += "<div class='controls'>";
@@ -71,7 +124,7 @@ function FormWindow(form) {
     };
 
     var _id = function (id) {
-        return "fm-" + form.id + "-" + id;
+        return "fm-" + _form_id + "-" + id;
     };
     var _hidden_field = function (id, value) {
         return  "<input type='hidden' id='" + _id(id) + "' value='" + value + "'/>";
@@ -97,7 +150,7 @@ function FormWindow(form) {
         return content;
     };
     var _init = function () {
-        _form = form;
+        _form_id = form.id;
 
         var content = "<form class='form-horizontal' method='" + form.method + "'  action='" + form.action + "'>";
         content += "<fieldset><legend>" + form.title + "</legend>";

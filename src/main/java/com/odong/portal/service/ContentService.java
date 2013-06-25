@@ -13,9 +13,9 @@ import java.util.List;
  * Time: 下午2:28
  */
 public interface ContentService {
-    int countTag();
+    long countTag();
 
-    int countTag(long article);
+    long countTag(long article);
 
     List<Tag> topTag(int count);
 
@@ -37,11 +37,11 @@ public interface ContentService {
 
     void delTag(long id);
 
-    int countComment();
+    long countComment();
 
-    int countCommentByUser(long user);
+    long countCommentByUser(long user);
 
-    int countCommentByArticle(long article);
+    long countCommentByArticle(long article);
 
     Comment getComment(long comment);
 
@@ -59,11 +59,11 @@ public interface ContentService {
 
     void delComment(long id);
 
-    int countArticle();
+    long countArticle();
 
-    int countArticleByAuthor(long author);
+    long countArticleByAuthor(long author);
 
-    int countArticleByTag(long tag);
+    long countArticleByTag(long tag);
 
     Article getArticle(long article);
 

@@ -47,13 +47,13 @@ public class PersonalController {
             Map<String, String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
 
             if (timeHelper.plus(new Date(), -30 * 60).getTime() > Long.parseLong(map.get("created"))) {
-                ri.addMessage("找回密码链接失效");
+                ri.addData("找回密码链接失效");
             } else {
                 accountService.setUserPassword(Long.parseLong(map.get("userId")), map.get("password"));
                 ri.setOk(true);
             }
         } catch (Exception e) {
-            ri.addMessage("找回密码失败");
+            ri.addData("找回密码失败");
         }
         return ri;
     }
@@ -68,7 +68,7 @@ public class PersonalController {
                 User user = accountService.getUser(form.getEmail());
                 if (user == null) {
                     ri.setOk(false);
-                    ri.addMessage("账户" + form.getEmail() + "]不存在");
+                    ri.addData("账户" + form.getEmail() + "]不存在");
                 } else {
                     Map<String, String> map = new HashMap<>();
                     map.put("userId", Long.toString(user.getId()));
@@ -87,7 +87,7 @@ public class PersonalController {
                 }
             } else {
                 ri.setOk(false);
-                ri.addMessage("两次密码输入不一致");
+                ri.addData("两次密码输入不一致");
             }
         }
         return ri;
@@ -129,21 +129,21 @@ public class PersonalController {
 
             if (user == null) {
                 if (timeHelper.plus(new Date(), -30 * 60).getTime() > Long.parseLong(map.get("created"))) {
-                    ri.addMessage("注册链接超时[30分钟]失效，请重新注册");
+                    ri.addData("注册链接超时[30分钟]失效，请重新注册");
                 } else {
                     accountService.addUser(map.get("email"), map.get("username"), map.get("password"));
-                    ri.addMessage("/");
+                    ri.addData("/");
                     ri.setType(ResponseItem.Type.redirect);
                     ri.setOk(true);
                 }
             } else {
-                ri.addMessage("邮箱[" + map.get("email") + "]已存在");
+                ri.addData("邮箱[" + map.get("email") + "]已存在");
             }
 
 
         } catch (Exception e) {
             logger.error("激活账户", e);
-            ri.addMessage("激活账户失败");
+            ri.addData("激活账户失败");
         }
         return ri;
     }
@@ -174,11 +174,11 @@ public class PersonalController {
                                 "<p>&nbsp;</p> &nbsp; 谢谢"
                         , true);
 
-                ri.addMessage("已经发送注册邮件，请打开邮箱点击链接激活账户。");
+                ri.addData("已经发送注册邮件，请打开邮箱点击链接激活账户。");
             } else {
 
                 ri.setOk(false);
-                ri.addMessage("邮箱[" + form.getEmail() + "]已存在");
+                ri.addData("邮箱[" + form.getEmail() + "]已存在");
 
             }
         }
@@ -206,15 +206,15 @@ public class PersonalController {
             User user = accountService.auth(form.getEmail(), form.getPassword());
             if (user == null) {
                 ri.setOk(false);
-                ri.addMessage("邮箱与密码不匹配");
+                ri.addData("邮箱与密码不匹配");
                 ri.setType(ResponseItem.Type.message);
             } else if (user.getState() == User.State.LOCK) {
                 ri.setOk(false);
-                ri.addMessage("账户被锁定，请联系管理员解决");
+                ri.addData("账户被锁定，请联系管理员解决");
                 ri.setType(ResponseItem.Type.message);
             } else if (user.getState() == User.State.DISABLE) {
                 ri.setOk(false);
-                ri.addMessage("账户被禁用");
+                ri.addData("账户被禁用");
                 ri.setType(ResponseItem.Type.message);
             } else {
                 SessionItem si = new SessionItem(user.getId(), user.getUsername(), user.getEmail());
@@ -222,7 +222,7 @@ public class PersonalController {
                     si.setAdmin(true);
                 }
                 session.setAttribute(SessionItem.KEY, si);
-                ri.addMessage("/personal/self");
+                ri.addData("/personal/self");
                 ri.setType(ResponseItem.Type.redirect);
             }
         }
@@ -237,7 +237,7 @@ public class PersonalController {
         //session.invalidate();
         status.setComplete();
         ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
-        ri.addMessage("/");
+        ri.addData("/");
         ri.setOk(true);
         return ri;
     }
