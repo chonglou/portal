@@ -8,7 +8,7 @@ $!{extends("/frame.httl")}
             <li class="nav-header">${i.title}</li>
             #if(i.ajax)
                 #for(Page j: i.pages)
-                    <li><a id="left_nav-${i.title}-${j.url}">${j.name}</a></li>
+                    <li><a id="left_nav-${j.url}">${j.name}</a></li>
                 #end
             #else
                 #for(Page j: i.pages)

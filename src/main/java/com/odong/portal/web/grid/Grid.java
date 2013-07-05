@@ -13,24 +13,36 @@ import java.util.List;
  * Time: 下午5:26
  */
 public class Grid extends ResponseItem {
-    public Grid(String id, String name, Column... columns) {
+    public Grid(String id, String name, Column... cols) {
         super(Type.grid);
         this.id = id;
         this.name = name;
-        this.columns = columns;
+        this.cols = cols;
         this.items = new ArrayList<>();
     }
 
-    public void addCell(String text) {
-        this.items.add(text);
+    public void addRow(String... texts) {
+        if((action== null && texts.length == cols.length) ||
+                (action!=null && texts.length== cols.length+1)){
+            Collections.addAll(items, texts);
+        }
+        else{
+        throw new IllegalArgumentException("参数个数不对");
+        }
     }
 
+    public void able(boolean view, boolean add, boolean edit, boolean delete){
+        this.view = view;
+        this.add = add;
+        this.edit = edit;
+        this.delete = delete;
+    }
 
     private static final long serialVersionUID = -4735460726311781464L;
     private String id;
     private String name;
     private Integer pageSize;
-    private Column[] columns;
+    private Column[] cols;
     private List<String> items;
     private String action;
     private boolean add;
@@ -102,12 +114,12 @@ public class Grid extends ResponseItem {
         this.name = name;
     }
 
-    public Column[] getColumns() {
-        return columns;
+    public Column[] getCols() {
+        return cols;
     }
 
-    public void setColumns(Column[] columns) {
-        this.columns = columns;
+    public void setCols(Column[] cols) {
+        this.cols = cols;
     }
 
     public List<String> getItems() {

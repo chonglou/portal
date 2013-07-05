@@ -39,14 +39,11 @@ public class AdminController {
     @ResponseBody
     Grid getUser(){
         Grid userG = new Grid("users", "用户列表", new Column("ID"), new Column("邮箱"), new Column("用户名"), new Column("状态"), new Column("上次登录"));
-        for(User u : accountService.listUser()){
-            userG.addCell(u.getEmail());
-            userG.addCell(u.getUsername());
-            userG.addCell(u.getState().toString());
-            userG.addCell(u.getLastLogin().toString());
-        }
         userG.setAction("/admin/user/");
-        userG.setAdd(true);
+        for(User u : accountService.listUser()){
+            userG.addRow(u.getEmail(), u.getUsername(), u.getState().toString(), u.getLastLogin().toString(), u.getId().toString());
+        }
+        userG.able(true, true, true, true);
         userG.setOk(true);
         return userG;
     }

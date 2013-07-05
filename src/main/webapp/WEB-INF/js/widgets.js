@@ -49,57 +49,101 @@ function Ajax(url, type, data, success, async) {
 
 function GridWindow(grid) {
     var _grid_id;
-    var _id = function(id){
-        return "grid-"+_grid_id+"-"+id;
-        };
-    var _init=function(){
+    var _id = function (id) {
+        return "grid-" + _grid_id + "-" + id;
+    };
+    var _init = function () {
         _grid_id = grid.id;
-        var content = "<h5>"+grid.name;
-        if(content.add){
-            content += "[<button id='"+_id("add")+"'></button>]";
+        var content = "<h4>" + grid.name;
+        if (grid.add) {
+            content += "[<button id='" + _id("add") + "'>新增</button>]";
         }
-        content += "</h5><table><thead><tr>";
+        content += "</h4><hr/><table width='98%' align='center'><thead><tr>";
 
-        for(var i in grid.columns){
-            var col = grid.columns[i];
+        for (var i in grid.cols) {
+            var col = grid.cols[i];
             content += "<td";
-            if(col.width != undefined){
-                content += " width='"+col.width+"'";
+            if (col.width != undefined) {
+                content += " width='" + col.width + "'";
             }
-            content += ">"+col.label+"</td>"
+            content += ">" + col.label + "</td>"
         }
-        if(grid.action){
+        if (grid.action) {
             content += "<td>操作</td>";
         }
         content += "</tr></thead><tbody>";
-        for(var i=0; i<grid.items.length;){
-            if(i%grid.columns.length == 0){
-                content += "<tr>";
+        for (var i = 0; i < grid.items.length;) {
+            if(grid.action){
+                if (i % (grid.cols.length+1) == 0) {
+                    content += "<tr>";
+                }
             }
-            content += "<td>"+grid.items[i]+"</td>";
+            else{
+
+                if (i % grid.cols.length == 0) {
+                    content += "<tr>";
+                }
+            }
+            content += "<td>" + grid.items[i] + "</td>";
             i++;
-            if(i%grid.columns.length == 0){
-                if(grid.action){
+            if (grid.action) {
+                if ((i+1) % (grid.cols.length+1) == 0) {
                     content += "<td>";
-                    if(grid.edit){
-                        //TODO id 冲突
-                        content += "<button id='"+_id("edit")+"'>编辑</button>";
+                    if (grid.view) {
+                        content += "<button id='" + _id("view") +"-"+grid.items[i]+ "'>查看</button>";
                     }
-                    if(grid.delete){
-                        content += "<button id='"+_id("del")+"'>删除</button>";
+                    if (grid.edit) {
+                        content += "<button id='" + _id("edit") +"-"+grid.items[i]+ "'>编辑</button>";
+                    }
+                    if (grid.delete) {
+                        content += "<button id='" + _id("delete") +"-"+grid.items[i]+ "'>删除</button>";
                     }
                     content += "</td>";
+                    content += "</tr>";
+                    i++;
                 }
-                content += "</tr>";
+            }
+            else{
+                if (i % (grid.cols.length) == 0) {
+                    content += "</tr>";
+                }
             }
         }
         content += "</tbody></table>";
 
-        new HtmlDiv("grid-"+grid.id, content);
-        //TODO 绑定编辑事件
-        $("button#"+_id("add")).click("");
-        $("button#"+_id("edit")).click("");
-        $("button#"+_id("del")).click("");
+        new HtmlDiv("grid-" + grid.id, content);
+
+        if (grid.action != undefined) {
+            if (grid.add) {
+                $("button#" + _id("add")).click(function () {
+                    new Ajax(grid.action + "/add");
+                });
+            }
+            if(grid.view){
+                $("button[id^='"+_id("view")+"']").each(function(){
+                    $(this).click(function(){
+                        clear_root_div();
+                        new Ajax(grid.action+"/view");
+                    });
+                });
+            }
+            if (grid.edit) {
+                $("button[id^='"+_id("edit")+"']").each(function(){
+                    $(this).click(function(){
+                        clear_root_div();
+                        new Ajax(grid.action+"/add"+$(this).attr("id").split('-')[3]);
+                    });
+                });
+            }
+            if (grid.delete) {
+                $("button[id^='"+_id("delete")+"']").each(function(){
+                    $(this).click(function(){
+                        clear_root_div();
+                        new Ajax(grid.action+"/add"+$(this).attr("id").split('-')[3], "DELETE");
+                    });
+                });
+            }
+        }
     };
     _init();
 }
@@ -107,7 +151,7 @@ function GridWindow(grid) {
 function FormWindow(form) {
     var _form_id;
     var _field = function (id, label, input) {
-        if(label == undefined){
+        if (label == undefined) {
             return input;
         }
         var content = "<div class='control-group'>";
@@ -154,14 +198,14 @@ function FormWindow(form) {
 
         var content = "<form class='form-horizontal' method='" + form.method + "'  action='" + form.action + "'>";
         content += "<fieldset><legend>" + form.title + "</legend>";
-        content+="<div id='"+_id("alert")+"'></div>";
+        content += "<div id='" + _id("alert") + "'></div>";
         content += _hidden_field("created", form.created);
         for (var i in form.fields) {
             var field = form.fields[i];
             var input;
             switch (field.type) {
                 case "text":
-                    input = "<input class='input-xlarge focused' style='width: "+field.width+"px' type='text' id='" + _id(field.id) + "' ";
+                    input = "<input class='input-xlarge focused' style='width: " + field.width + "px' type='text' id='" + _id(field.id) + "' ";
                     if (field.value != undefined) {
                         input += "value='" + field.value + "' ";
                     }
@@ -174,7 +218,7 @@ function FormWindow(form) {
                     }
                     break;
                 case "textarea":
-                    input = "<textarea id='" + _id(field.id) + "' style='width: "+field.width+"px;height: "+field.height+"px;' ";
+                    input = "<textarea id='" + _id(field.id) + "' style='width: " + field.width + "px;height: " + field.height + "px;' ";
                     if (field.readonly) {
                         input += "readonly ";
                     }
@@ -188,7 +232,7 @@ function FormWindow(form) {
                     }
                     break;
                 case "select":
-                    input = "<select style='width: "+field.width+"px' id='" + _id(field.id) + "' ";
+                    input = "<select style='width: " + field.width + "px' id='" + _id(field.id) + "' ";
                     if (field.readonly) {
                         input += "disabled "
                     }
@@ -214,7 +258,7 @@ function FormWindow(form) {
                     break;
                 case "radio":
                     input = _hidden_field(field.id, field.value);
-                    var k=1;
+                    var k = 1;
                     for (var j in field.options) {
                         var item = field.options[j];
                         input += "<input type='radio' name='" + _id(field.id) + "'  value='" + item.value + "' ";
@@ -223,7 +267,7 @@ function FormWindow(form) {
                         }
                         input += "/>" + item.label + " &nbsp;"
 
-                        if(k%field.cols==0){
+                        if (k % field.cols == 0) {
                             input += "<br/>"
                         }
                         k++;
@@ -241,7 +285,7 @@ function FormWindow(form) {
                         }
                         input += "/>" + item.label + " &nbsp;";
 
-                        if(k%field.cols==0){
+                        if (k % field.cols == 0) {
                             input += "<br/>"
                         }
                         k++;
@@ -257,54 +301,54 @@ function FormWindow(form) {
 
         if (form.captcha) {
             var input = "<input type='text'  style='width: 80px;' id='" + _id("captcha") + "'/>* &nbsp;";
-            input += "<img id='"+_id('captcha_img')+"' src='/captcha.jpg?_=" + Math.random() + "' alt='点击更换验证码'/>";
+            input += "<img id='" + _id('captcha_img') + "' src='/captcha.jpg?_=" + Math.random() + "' alt='点击更换验证码'/>";
             content += _field("captcha", "验证码", input);
 
         }
 
-        var reload_captcha = function(){
-            $('img#'+_id('captcha_img')).attr("src", "/captcha.jpg?_="+Math.random());
+        var reload_captcha = function () {
+            $('img#' + _id('captcha_img')).attr("src", "/captcha.jpg?_=" + Math.random());
         };
 
         content += _button_group(form.buttons);
         content += "</fieldset></form>";
         //alert(content);
-        new HtmlDiv("fm-"+form.id, content);
-        $('img#'+_id('captcha_img')).click(reload_captcha);
-        $('button#'+_id("reset")).click(function(){
+        new HtmlDiv("fm-" + form.id, content);
+        $('img#' + _id('captcha_img')).click(reload_captcha);
+        $('button#' + _id("reset")).click(function () {
             for (var i in form.fields) {
                 var field = form.fields[i];
-                switch (field.type){
+                switch (field.type) {
                     case "text":
                     case "password":
                     case "textarea":
-                        $("input#"+_id(field.id)).val(field.value == undefined ? "":field.value);
+                        $("input#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
                         break;
                     default:
                         break;
                 }
             }
-            if(form.captcha){
-                $("input#"+_id("captcha")).val('');
+            if (form.captcha) {
+                $("input#" + _id("captcha")).val('');
                 reload_captcha();
             }
         });
 
-        $('button#'+_id("submit")).click(function(){
+        $('button#' + _id("submit")).click(function () {
             var data = {};
             for (var i in form.fields) {
                 var field = form.fields[i];
-                switch (field.type){
+                switch (field.type) {
                     case "text":
                     case "textarea":
                     case "password":
-                        data[field.id] = $('input#'+_id(field.id)).val();
+                        data[field.id] = $('input#' + _id(field.id)).val();
                     default:
                         break;
                 }
             }
-            if(form.captcha){
-                data['captcha'] = $('input#'+_id('captcha')).val();
+            if (form.captcha) {
+                data['captcha'] = $('input#' + _id('captcha')).val();
             }
             new Ajax(form.action, "POST", data);
             reload_captcha();
@@ -315,11 +359,11 @@ function FormWindow(form) {
     _init();
 }
 
-function HtmlDiv(id, content){
-    var _init = function(){
-        var root ="div#"+id;
-        if($(root).length == 0){
-            $("div#gl_root").append("<div id='"+id+"'></div>");
+function HtmlDiv(id, content) {
+    var _init = function () {
+        var root = "div#" + id;
+        if ($(root).length == 0) {
+            $("div#gl_root").append("<div id='" + id + "'></div>");
         }
         $(root).html(content);
     };

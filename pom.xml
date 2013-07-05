@@ -58,12 +58,12 @@
         </dependency>
 
         <dependency>
-            <groupId>httl</groupId>
+            <groupId>com.github.httl</groupId>
             <artifactId>httl</artifactId>
             <version>${httl.version}</version>
         </dependency>
         <dependency>
-            <groupId>httl</groupId>
+            <groupId>com.github.httl</groupId>
             <artifactId>httl-springmvc</artifactId>
             <version>${httl.version}</version>
         </dependency>

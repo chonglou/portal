@@ -24,8 +24,7 @@
     #else
     <script type="text/javascript" src="/js/non-login.js#if(gl_debug)?_=${random()}#end"></script>
     #end
-    <!--#macro($!head)-->
-    <!--#end-->
+    #macro($!head)#end
 </head>
 <body>
 <div class="navbar navbar-fixed-top  navbar-inverse">
@@ -37,10 +36,8 @@
                 <span class="icon-bar">&nbsp;</span>
             </a>
             <a class="brand" href="/">${gl_site.title}</a>
-            <!--#macro($!personal_bar)-->
-            <!--#end-->
-            <!--#macro($!top_nav_bar)-->
-            <!--#end-->
+            #macro($!personal_bar)#end
+            #macro($!top_nav_bar)#end
         </div>
     </div>
 </div>

@@ -4,6 +4,7 @@ import com.odong.portal.entity.User;
 import com.odong.portal.util.JsonHelper;
 import com.odong.portal.util.impl.JsonHelperImpl;
 import com.odong.portal.web.form.*;
+import com.odong.portal.web.grid.Column;
 import com.odong.portal.web.grid.Grid;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import org.jasypt.util.text.StrongTextEncryptor;
@@ -22,16 +23,16 @@ public class AppTest{
 
     @Test
     public void testGrid(){
-        Grid grid = new Grid("test",5, 15);
+        Grid grid1 = new Grid("test1","测试表1", new Column("aaa"), new Column("bbb"), new Column("ccc"));
+        Grid grid2 = new Grid("test2","测试表2", new Column("aaa"), new Column("bbb"), new Column("ccc"));
+        grid1.setAction("/aaa");
         for(int i=0; i<100; i++){
-            String[] items = new String[5];
-            for(int j=0; j<5;j++){
-                items[j]="("+i+","+j+")";
-            }
-            grid.addRow(items);
+            grid1.addRow("a,"+i, "b,"+i,"c,"+i,""+i);
+            grid2.addRow("a,"+i, "b,"+i,"c,"+i);
         }
-        grid.setOk(true);
-        log(grid);
+        grid1.able(true,true,true,true);
+        grid1.setOk(true);
+        log(grid1, grid2);
     }
     @Test
     public void testForm(){

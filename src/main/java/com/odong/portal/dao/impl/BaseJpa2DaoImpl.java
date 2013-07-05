@@ -105,7 +105,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
 
     @Override
     public long count(String hql, Map<String, Object> map) {
-        TypedQuery<Integer> query = entityManager.createQuery(hql, Integer.class);
+        TypedQuery<Long> query = entityManager.createQuery(hql, Long.class);
         if (map != null) {
             for (String key : map.keySet()) {
                 query.setParameter(key, map.get(key));
