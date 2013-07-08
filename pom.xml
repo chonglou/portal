@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <logback.version>1.0.13</logback.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <aspectj.version>1.7.2</aspectj.version>
+        <aspectj.version>1.7.3</aspectj.version>
         <spring.version>4.0.0.M1</spring.version>
         <!--
         <spring.security.version>3.1.4.RELEASE</spring.security.version>
@@ -22,7 +22,7 @@
         <mysql.version>5.1.25</mysql.version>
         <derby.version>10.10.1.1</derby.version>
         <hibernate.version>4.2.2.Final</hibernate.version>
-        <jackson.version>2.2.1</jackson.version>
+        <jackson.version>2.2.2</jackson.version>
         <antlr.version>3.5</antlr.version>
         <httl.version>1.0.10</httl.version>
     </properties>
@@ -291,10 +291,16 @@
             <artifactId>hibernate-ehcache</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.3.1.Final</version>
+            <version>5.0.1.Final</version>
         </dependency>
 
 

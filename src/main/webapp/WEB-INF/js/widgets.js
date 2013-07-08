@@ -52,13 +52,16 @@ function GridWindow(grid) {
     var _id = function (id) {
         return "grid-" + _grid_id + "-" + id;
     };
+    var _c_id = function(id){
+        return id.split('-')[3];
+    };
     var _init = function () {
         _grid_id = grid.id;
         var content = "<h4>" + grid.name;
         if (grid.add) {
-            content += "[<button id='" + _id("add") + "'>新增</button>]";
+            content += "[<button title='新增' id='" + _id("add") + "'>新增</button>]";
         }
-        content += "</h4><hr/><table width='98%' align='center'><thead><tr>";
+        content += "</h4><hr/><table width='98%' align='center'><thead><tr class='grid-tr'>";
 
         for (var i in grid.cols) {
             var col = grid.cols[i];
@@ -66,7 +69,7 @@ function GridWindow(grid) {
             if (col.width != undefined) {
                 content += " width='" + col.width + "'";
             }
-            content += ">" + col.label + "</td>"
+            content += "><b>" + col.label + "</b></td>"
         }
         if (grid.action) {
             content += "<td>操作</td>";
@@ -75,28 +78,28 @@ function GridWindow(grid) {
         for (var i = 0; i < grid.items.length;) {
             if(grid.action){
                 if (i % (grid.cols.length+1) == 0) {
-                    content += "<tr>";
+                    content += "<tr class='grid-tr'>";
                 }
             }
             else{
 
                 if (i % grid.cols.length == 0) {
-                    content += "<tr>";
+                    content += "<tr class='grid-tr'>";
                 }
             }
             content += "<td>" + grid.items[i] + "</td>";
             i++;
             if (grid.action) {
                 if ((i+1) % (grid.cols.length+1) == 0) {
-                    content += "<td>";
+                    content += "<td class='grid-td-opt'>";
                     if (grid.view) {
-                        content += "<button id='" + _id("view") +"-"+grid.items[i]+ "'>查看</button>";
+                        content += "<button title='查看' id='" + _id("view") +"-"+grid.items[i]+ "'>查看</button>";
                     }
                     if (grid.edit) {
-                        content += "<button id='" + _id("edit") +"-"+grid.items[i]+ "'>编辑</button>";
+                        content += "<button title='编辑' id='" + _id("edit") +"-"+grid.items[i]+ "'>编辑</button>";
                     }
                     if (grid.delete) {
-                        content += "<button id='" + _id("delete") +"-"+grid.items[i]+ "'>删除</button>";
+                        content += "<button title='删除' id='" + _id("delete") +"-"+grid.items[i]+ "'>删除</button>";
                     }
                     content += "</td>";
                     content += "</tr>";
@@ -115,31 +118,34 @@ function GridWindow(grid) {
 
         if (grid.action != undefined) {
             if (grid.add) {
-                $("button#" + _id("add")).click(function () {
+                var addBtn=$("button#" + _id("add"));
+                addBtn.addClass("btn btn-primary btn-mini");
+                addBtn.click(function () {
                     new Ajax(grid.action + "/add");
                 });
             }
             if(grid.view){
+
                 $("button[id^='"+_id("view")+"']").each(function(){
+                    $(this).addClass("btn btn-info btn-mini");
                     $(this).click(function(){
-                        clear_root_div();
-                        new Ajax(grid.action+"/view");
+                        new Ajax(grid.action+"/"+_c_id($(this).attr("id")), "PUT");
                     });
                 });
             }
             if (grid.edit) {
                 $("button[id^='"+_id("edit")+"']").each(function(){
+                    $(this).addClass("btn btn-warning btn-mini");
                     $(this).click(function(){
-                        clear_root_div();
-                        new Ajax(grid.action+"/add"+$(this).attr("id").split('-')[3]);
+                        new Ajax(grid.action+"/"+_c_id($(this).attr("id")));
                     });
                 });
             }
             if (grid.delete) {
                 $("button[id^='"+_id("delete")+"']").each(function(){
+                    $(this).addClass("btn btn-danger btn-mini");
                     $(this).click(function(){
-                        clear_root_div();
-                        new Ajax(grid.action+"/add"+$(this).attr("id").split('-')[3], "DELETE");
+                        new Ajax(grid.action+"/"+_c_id($(this).attr("id")), "DELETE");
                     });
                 });
             }

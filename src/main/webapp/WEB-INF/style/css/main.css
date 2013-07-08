@@ -21,3 +21,14 @@ body {
 .form-label{
     width: 80px;
 }
+
+.grid-tr{
+    border-bottom:1px dashed #ccc;
+}
+.grid-tr:hover {
+    background-color: #cccccc;
+}
+.grid-td-opt{
+    text-align: center;
+    width: 120px;
+}
