@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public class Contact implements Serializable {
     private static final long serialVersionUID = 1391125114268901080L;
-     private String qq;
+    private String qq;
     private String fax;
     private String tel;
     private String address;

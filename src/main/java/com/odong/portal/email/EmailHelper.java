@@ -6,6 +6,7 @@ import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.Map;
  * Time: 下午5:08
  */
 @Component("emailHelper")
+@DependsOn("siteHelper")
 public class EmailHelper {
     public void send(String to, String title, String body, boolean html) {
         send(to, title, body, html, new HashMap<String, String>());

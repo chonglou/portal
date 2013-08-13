@@ -20,7 +20,7 @@ import java.util.Map;
  * Date: 13-8-13
  * Time: 下午2:29
  */
-public class EmailController {
+public abstract class EmailController {
     public enum Type {
         REGISTER, RESET_PWD
     }

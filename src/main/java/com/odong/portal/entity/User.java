@@ -60,8 +60,6 @@ public class User extends IdEntity {
     }
 
 
-
-
     public String getEmail() {
         return email;
     }

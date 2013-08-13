@@ -38,7 +38,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public List<Log> list(Long user, int size) {
         Map<String, Object> map = new HashMap<>();
-        return logDao.list(0, size,"FROM User i WHERE i.user=:user", map);
+        return logDao.list(0, size, "FROM User i WHERE i.user=:user", map);
     }
 
     @Override

@@ -28,26 +28,26 @@ import java.text.SimpleDateFormat;
 public class DBHelper {
     public String getSize() {
         switch (databaseProductName) {
-            case "Mysql":
-                return jdbcTemplate.queryForObject(String.format("SELECT concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data FROM TABLES WHERE table_schema='%s'", databaseSchema), String.class);
+            case "MySQL":
+                return jdbcTemplate.queryForObject(String.format("SELECT concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data FROM TABLES WHERE table_schema='%s'", dbName), String.class);
 
         }
         return "未知大小";
     }
 
-    /*
-  mysqldump -u user -p database | gzip -9 > database.sql.gz
-  gunzip < database.sql.gz | mysql -u user -p database
+    /**
+     * mysqldump -u user -p database | gzip -9 > database.sql.gz
+     * gunzip < database.sql.gz | mysql -u user -p database
      */
     public void backup() {
         switch (databaseProductName) {
-            case "Mysql":
-                logger.info("开始备份数据库{}@mysql", databaseSchema);
+            case "MySQL":
+                logger.info("开始备份数据库{}@mysql", dbName);
                 try {
-                    String fileName = appStoreDir + "/backup/" + databaseSchema + "_" + format.format(new java.util.Date()) + ".sql";
+                    String fileName = appStoreDir + "/backup/" + dbName + "_" + format.format(new java.util.Date()) + ".sql";
 
                     Process p = Runtime.getRuntime().exec("mysqldump -u " + username
-                            + " -p" + password + " " + databaseSchema
+                            + " -p" + password + " " + dbName
                             + " -r " + fileName);
 
 
@@ -59,7 +59,7 @@ public class DBHelper {
                     }
 
                 } catch (IOException | InterruptedException e) {
-                    logger.error("备份数据库{}@mysql出错", databaseSchema, e);
+                    logger.error("备份数据库{}@mysql出错", dbName, e);
                 }
                 return;
         }
@@ -73,7 +73,7 @@ public class DBHelper {
             public Boolean doInConnection(Connection connection) throws SQLException, DataAccessException {
 
                 DatabaseMetaData dmd = connection.getMetaData();
-                ResultSet rs = dmd.getTables(null, databaseSchema, tableName, new String[]{"TABLE", "VIEW"});
+                ResultSet rs = dmd.getTables(null, dbName, tableName, new String[]{"TABLE", "VIEW"});
                 boolean exist = rs.next();
                 rs.close();
                 return exist;
@@ -83,14 +83,14 @@ public class DBHelper {
 
     @PostConstruct
     void init() {
+        dbName = url.split("/")[3];
         jdbcTemplate.execute(new ConnectionCallback<Object>() {
             @Override
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
                 DatabaseMetaData dmd = connection.getMetaData();
                 databaseProductName = dmd.getDatabaseProductName();
                 databaseProductVersion = dmd.getDatabaseProductVersion();
-                databaseSchema = connection.getSchema();
-                logger.info("使用数据库[{},{},{}]", databaseProductName, databaseProductVersion, databaseSchema);
+                logger.info("使用数据库[{},{},{}]", databaseProductName, databaseProductVersion, dbName);
                 return null;  //
             }
         });
@@ -100,7 +100,7 @@ public class DBHelper {
 
     private String databaseProductName;
     private String databaseProductVersion;
-    private String databaseSchema;
+    private String dbName;
 
     private DateFormat format;
     @Resource
@@ -113,8 +113,15 @@ public class DBHelper {
     private String username;
     @Value("${jdbc.password}")
     private String password;
+    @Value("${jdbc.url}")
+    private String url;
+
 
     private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public void setUsername(String username) {
         this.username = username;

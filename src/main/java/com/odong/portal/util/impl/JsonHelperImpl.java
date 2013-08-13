@@ -36,10 +36,12 @@ public class JsonHelperImpl implements JsonHelper {
 
     @Override
     public <T> T json2object(String json, Class<T> clazz) {
-        try {
-            return mapper.readValue(json, clazz);
-        } catch (IOException e) {
-            logger.debug("解析JSON出错", e);
+        if (json != null) {
+            try {
+                return mapper.readValue(json, clazz);
+            } catch (IOException e) {
+                logger.debug("解析JSON出错", e);
+            }
         }
         return null;
     }

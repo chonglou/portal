@@ -1,37 +1,32 @@
 package com.odong.portal.controller.personal;
 
+import com.odong.portal.controller.PageController;
 import com.odong.portal.email.EmailHelper;
 import com.odong.portal.entity.Log;
 import com.odong.portal.entity.User;
-import com.odong.portal.form.personal.*;
+import com.odong.portal.form.personal.ContactForm;
+import com.odong.portal.form.personal.SetPwdForm;
 import com.odong.portal.model.Contact;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.LogService;
-import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.util.JsonHelper;
-import com.odong.portal.util.TimeHelper;
+import com.odong.portal.web.NavBar;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.PasswordField;
 import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +38,44 @@ import java.util.Map;
 @Controller("c.personal.self")
 @RequestMapping(value = "/personal/self")
 @SessionAttributes(SessionItem.KEY)
-public class SelfController {
+public class SelfController extends PageController {
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    String getIndex(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        List<NavBar> navBars = new ArrayList<>();
+
+        NavBar nbInfo = new NavBar("个人信息");
+        nbInfo.add("基本信息", "/personal/info");
+        nbInfo.add("日志管理", "/personal/log");
+        nbInfo.setAjax(true);
+        navBars.add(nbInfo);
+
+
+        NavBar nbCms = new NavBar("内容管理");
+        nbCms.add("新增文章", "/personal/article/add");
+        nbCms.add("文章管理", "/personal/article");
+        nbCms.add("评论管理", "/personal/comment");
+        nbCms.setAjax(true);
+        navBars.add(nbCms);
+
+        if (si.isSsAdmin()) {
+            NavBar nbSite = new NavBar("站点管理");
+            nbSite.add("用户管理", "/admin/user");
+            nbSite.add("标签管理", "/admin/tag");
+            nbSite.add("版面管理", "/admin/board");
+            nbSite.add("友情链接", "/admin/friend_link");
+            nbSite.add("站点信息", "/admin/site");
+            nbSite.add("日志管理", "/admin/log");
+            nbSite.setAjax(true);
+            navBars.add(nbSite);
+        }
+        map.put("navBars", navBars);
+        fillSiteInfo(map);
+        map.put("title", "用户中心");
+        map.put("top_nav_key", "personal");
+        return "main";
+    }
+
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody

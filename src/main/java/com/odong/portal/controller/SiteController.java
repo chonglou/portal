@@ -1,6 +1,8 @@
 package com.odong.portal.controller;
 
+import com.odong.portal.entity.Tag;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.web.NavBar;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +19,54 @@ import java.util.Map;
  * Time: 下午12:14
  */
 @Controller("c.site")
-public class SiteController {
+public class SiteController extends PageController {
+
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    String getMain(Map<String, Object> map) {
+
+        map.put("navBars", navBars());
+        fillSiteInfo(map);
+        map.put("title", "首页");
+        map.put("top_nav_key", "main");
+        //TODO 分页
+        map.put("articles", contentService.latestArticle(siteService.getInteger("site.articlePageSize")));
+        map.put("articlesSize", contentService.countArticle());
+        return "main";
+    }
+
+
+    @RequestMapping(value = "sitemap", method = RequestMethod.GET)
+    String getSitemap(Map<String, Object> map) {
+
+        List<NavBar> navBars = new ArrayList<>();
+        NavBar nbTag = new NavBar("标签列表");
+        int i = 0;
+        for (Tag t : contentService.listTag()) {
+            nbTag.add(t.getName(), "/tag/" + t.getId());
+            i++;
+        }
+        nbTag.setTitle(nbTag.getTitle() + " [" + i + "]");
+        navBars.add(nbTag);
+
+
+        map.put("navBars", navBars);
+        //TODO 分页
+        map.put("articles", contentService.listArticle());
+        fillSiteInfo(map);
+        map.put("title", "网站地图");
+        map.put("top_nav_key", "sitemap");
+        return "sitemap";
+    }
+
+    @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
+    String getAboutMe(Map<String, Object> map) {
+
+        map.put("navBars", navBars());
+        fillSiteInfo(map);
+        map.put("title", "关于我们");
+        map.put("top_nav_key", "about_me");
+        return "about_me";
+    }
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     @ResponseBody
