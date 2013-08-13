@@ -27,6 +27,15 @@ public class SmtpProfile implements Serializable {
     private int port;
     private String bcc;
     private String from;
+    private boolean ssl;
+
+    public boolean isSsl() {
+        return ssl;
+    }
+
+    public void setSsl(boolean ssl) {
+        this.ssl = ssl;
+    }
 
     public String getFrom() {
         return from;

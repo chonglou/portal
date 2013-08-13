@@ -19,9 +19,18 @@ public class RegisterForm implements Serializable {
     @NotNull
     private String email;
     @NotNull
-    private String password;
+    private String newPwd;
     @NotNull
-    private String rePassword;
+    private String rePwd;
+    private boolean agree;
+
+    public boolean isAgree() {
+        return agree;
+    }
+
+    public void setAgree(boolean agree) {
+        this.agree = agree;
+    }
 
     public String getUsername() {
         return username;
@@ -39,19 +48,19 @@ public class RegisterForm implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getNewPwd() {
+        return newPwd;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setNewPwd(String newPwd) {
+        this.newPwd = newPwd;
     }
 
-    public String getRePassword() {
-        return rePassword;
+    public String getRePwd() {
+        return rePwd;
     }
 
-    public void setRePassword(String rePassword) {
-        this.rePassword = rePassword;
+    public void setRePwd(String rePwd) {
+        this.rePwd = rePwd;
     }
 }

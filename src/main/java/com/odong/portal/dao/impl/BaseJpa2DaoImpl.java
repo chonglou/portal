@@ -41,15 +41,14 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
 
     @Override
     public void insert(T t) {
-        entityManager.persist(t);  //
-        // entityManager.refresh(t);
+        entityManager.persist(t);
     }
 
     @Override
     public void delete(PK id) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
-        update("DELETE FROM " + tableName() + " AS i WHERE i." + pkName + "=:id", map);
+        update("DELETE " + tableName() + " i WHERE i." + pkName + "=:id", map);
     }
 
     @Override
@@ -121,7 +120,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
 
     @Override
     public void update(String hql, Map<String, Object> map) {
-        TypedQuery<T> query = entityManager.createQuery(hql, clazz);
+        Query query = entityManager.createQuery(hql);
         if (map != null) {
             for (String key : map.keySet()) {
                 query.setParameter(key, map.get(key));
@@ -132,7 +131,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
 
     @Override
     public String hqlListAll() {
-        return "From " + tableName() + " AS i ORDER BY i." + pkName + " DESC";
+        return "SELECT i FROM " + tableName() + " i ORDER BY i." + pkName + " DESC";
     }
 
     protected void remove(T t) {
@@ -150,10 +149,20 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
             }
         }
         if (pk == null) {
+            //throw new IllegalArgumentException("类[" + clazz.getSimpleName() + "]没有定义主键");
             pk = "id";
         }
         this.pkName = pk;
     }
+
+
+    /*
+    public BaseDaoJpa2Impl(Class<T> clazz, String pkName){
+        this.clazz = clazz;
+        this.pkName = pkName;
+    }
+    */
+
 
     protected String tableName() {
         return clazz.getSimpleName();

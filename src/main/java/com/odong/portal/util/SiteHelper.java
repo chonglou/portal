@@ -1,6 +1,10 @@
 package com.odong.portal.util;
 
+import com.odong.portal.email.EmailHelper;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.KaptchaProfile;
+import com.odong.portal.model.ReCaptchaProfile;
+import com.odong.portal.model.SmtpProfile;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
@@ -40,6 +44,24 @@ public class SiteHelper {
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
+
+            //SMTP
+            SmtpProfile smtp = new SmtpProfile();
+            smtp.setPort(25);
+            emailHelper.setup(smtp);
+            emailHelper.reload();
+
+            //KAPTCHA
+            KaptchaProfile kaptcha = new KaptchaProfile();
+            kaptcha.setLength(4);
+            kaptcha.setChars("0123456789");
+            kaptcha.setHeight(56);
+            kaptcha.setWidth(100);
+            siteService.set("site.kaptcha", kaptcha);
+            //RECAPTCHA
+            siteService.set("site.reCaptcha", new ReCaptchaProfile());
+            siteService.set("site.captcha", "kaptcha");
+
 
             siteService.set("site.hotTagCount", 20);
             siteService.set("site.hotArticleCount", 10);
@@ -92,7 +114,13 @@ public class SiteHelper {
     private String appStoreDir;
     @Value("${app.debug}")
     private boolean appDebug;
+    @Resource
+    private EmailHelper emailHelper;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setEmailHelper(EmailHelper emailHelper) {
+        this.emailHelper = emailHelper;
+    }
 
     public void setRbacService(RbacService rbacService) {
         this.rbacService = rbacService;

@@ -1,6 +1,7 @@
 package com.odong.portal.service;
 
 import com.odong.portal.entity.Article;
+import com.odong.portal.entity.ArticleTag;
 import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Tag;
 
@@ -45,6 +46,8 @@ public interface ContentService {
 
     Comment getComment(long comment);
 
+    List<Comment> listComment();
+
     List<Comment> listComment(int no, int size);
 
     List<Comment> listCommentByArticle(long article);
@@ -82,6 +85,8 @@ public interface ContentService {
     List<Article> listArticleByAuthor(long author);
 
     List<Article> listArticleByTag(long tag);
+
+    List<ArticleTag> listArticleTag();
 
     void addArticle(long author, String title, String summary, String body);
 

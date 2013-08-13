@@ -14,6 +14,8 @@ public interface AccountService {
 
     List<User> listUser();
 
+    void setUserLastLogin(long user);
+
     void setUserEmail(long user, String email);
 
     User getUser(long id);
@@ -22,7 +24,7 @@ public interface AccountService {
 
     void addUser(String email, String username, String password);
 
-    void setUserInfo(long user, String username, String details);
+    void setUserInfo(long user, String username, String contact);
 
     void setUserPassword(long user, String password);
 

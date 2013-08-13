@@ -27,7 +27,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 login(response);
                 return false;
 
-            } else if (si.isAdmin()) {
+            } else if (si.isSsAdmin()) {
                 return true;
             }
             notFound(response);
@@ -37,7 +37,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
         if (url.startsWith("/personal/")) {
             boolean notNeedLogin = false;
-            for (String s : new String[]{"login", "register", "reset_pwd"}) {
+            for (String s : new String[]{"login", "register", "resetPwd", "valid"}) {
                 if (url.startsWith("/personal/" + s)) {
                     notNeedLogin = true;
                     break;

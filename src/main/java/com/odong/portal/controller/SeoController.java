@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Date: 13-5-22
  * Time: 下午11:59
  */
-@Controller
+@Controller("c.seo")
 public class SeoController {
     @RequestMapping(value = "/sitemap.xml.gz", method = RequestMethod.GET)
     @ResponseBody
@@ -27,60 +27,6 @@ public class SeoController {
         return new FileSystemResource(appStoreDir + "/seo/rss.xml");
     }
 
-    /*
-    void getRss(HttpServletResponse response){
-
-        try{
-            IOUtils.copy(new FileInputStream(appStoreDir + "/seo/rss.xml"), response.getOutputStream());
-
-            response.flushBuffer();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    ModelAndView getRss() {
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("rssView");
-        mav.addObject("feedTitle", siteService.getString("site.title"));
-        mav.addObject("feedDesc", siteService.getString("site.description"));
-        String domain = "http://" + siteService.getString("site.domain");
-        mav.addObject("feedLink", domain);
-
-        List<RssContent> items = new ArrayList<>();
-        items.add(new RssContent("关于我们", siteService.getString("site.aboutMe"), domain + "/about_me", null, siteService.getDate("site.init")));
-
-        for (Tag t : contentService.listTag()) {
-            RssContent rc = new RssContent();
-            rc.setPublish(t.getPublishDate());
-            rc.setTitle("标签-" + t.getName());
-            rc.setSummary("标签[" + t.getName() + "]的文章列表");
-            rc.setUrl(domain + "/tag/" + t.getId());
-            items.add(rc);
-        }
-        for (Article a : contentService.listArticle()) {
-            RssContent rc = new RssContent();
-            rc.setPublish(a.getPublishDate());
-            rc.setTitle(a.getTitle());
-            rc.setSummary(a.getSummary());
-            rc.setUrl(domain + "/article/" + a.getId());
-            rc.setAuthor(accountService.getUser(rc.getAuthor()).getEmail());
-            items.add(rc);
-        }
-
-        mav.addObject("feedContent", items);
-        return mav;
-    }
-
-    @Resource
-    private ContentService contentService;
-    @Resource
-    private SiteService siteService;
-    @Resource
-    private AccountService accountService;
-    */
     @Value("${app.store}")
     private String appStoreDir;
 

@@ -25,15 +25,10 @@ import java.util.Map;
  * Date: 13-6-21
  * Time: 下午7:07
  */
-@Controller
+@Controller("c.personal")
 @SessionAttributes(SessionItem.KEY)
 public class PageController {
 
-
-    @RequestMapping(value = "/personal", method = RequestMethod.GET)
-    void getIndex(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/personal/self");
-    }
 
     @RequestMapping(value = "/personal/self", method = RequestMethod.GET)
     String getSelf(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
@@ -53,7 +48,7 @@ public class PageController {
         nbCms.setAjax(true);
         navBars.add(nbCms);
 
-        if (si.isAdmin()) {
+        if (si.isSsAdmin()) {
             NavBar nbSite = new NavBar("站点管理");
             nbSite.add("用户管理", "/admin/user");
             nbSite.add("标签管理", "/admin/tag");

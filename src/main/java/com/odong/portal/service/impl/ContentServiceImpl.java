@@ -9,7 +9,6 @@ import com.odong.portal.entity.ArticleTag;
 import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.service.ContentService;
-import com.odong.portal.util.MapLongValueComparator;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
@@ -39,30 +38,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public List<Tag> topTag(int count) {
-        Map<Long, Long> map = new HashMap<>();
-        for (Tag t : tagDao.list()) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("id", t.getId());
-            map.put(t.getId(),
-                    articleTagDao.count("SELECT COUNT(*) FROM ArticleTag AS i WHERE i.tag=:id", params)
-            );
-        }
-
-
-        MapLongValueComparator<Long> vc = new MapLongValueComparator<>(map);
-        Map<Long, Long> sorted = new TreeMap<>(vc);
-        sorted.putAll(map);
-
-        List<Tag> tags = new ArrayList<>();
-        int i = 0;
-        for (long id : sorted.keySet()) {
-            if (i >= count) {
-                break;
-            }
-            tags.add(tagDao.select(id));
-            i++;
-        }
-        return tags;  //
+        return tagDao.list(0, count, "SELECT i FROM Tag i ORDER BY i.visits DESC", new HashMap<String, Object>());
     }
 
 
@@ -160,6 +136,11 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public Comment getComment(long comment) {
         return commentDao.select(comment);
+    }
+
+    @Override
+    public List<Comment> listComment() {
+        return commentDao.list();
     }
 
     @Override
@@ -290,6 +271,11 @@ public class ContentServiceImpl implements ContentService {
             articles.add(articleDao.select(at.getArticle()));
         }
         return articles;  //
+    }
+
+    @Override
+    public List<ArticleTag> listArticleTag() {
+        return articleTagDao.list();
     }
 
     @Override

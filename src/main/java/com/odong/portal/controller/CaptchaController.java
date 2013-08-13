@@ -2,13 +2,13 @@ package com.odong.portal.controller;
 
 
 import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.Producer;
+import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CaptchaHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -25,10 +25,37 @@ import java.io.IOException;
  * Time: 下午11:30
  */
 
-@Controller
+@Controller("captcha")
 public class CaptchaController {
-    @RequestMapping(value = "/captcha.jpg", method = RequestMethod.GET)
-    ModelAndView getCaptcha(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/captcha", method = RequestMethod.GET)
+    void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        switch (siteService.getString("site.captcha")) {
+            case "reCaptcha":
+                buildReCaptcha(request, response);
+                break;
+            case "kaptcha":
+                buildKaptcha(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                break;
+        }
+    }
+
+    private void buildReCaptcha(HttpServletRequest request, HttpServletResponse response) {
+
+        try (
+                ServletOutputStream out = response.getOutputStream()
+        ) {
+            out.print(captchaHelper.getReCaptcha().createRecaptchaHtml(request.getParameter("error"), null));
+            out.flush();
+        } catch (IOException e) {
+            logger.error("生成验证码出错", e);
+        }
+    }
+
+
+    private void buildKaptcha(HttpServletRequest request, HttpServletResponse response) {
         // Set to expire far in the past.
         response.setDateHeader("Expires", 0);
         // Set standard HTTP/1.1 no-cache headers.
@@ -42,13 +69,13 @@ public class CaptchaController {
         response.setContentType("image/jpeg");
 
         // create the text for the image
-        String capText = captchaProducer.createText();
+        String capText = captchaHelper.getKaptcha().createText();
 
         // store the text in the session
         request.getSession().setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
 
         // create the image with the text
-        BufferedImage bi = captchaProducer.createImage(capText);
+        BufferedImage bi = captchaHelper.getKaptcha().createImage(capText);
 
         try {
             ServletOutputStream out = response.getOutputStream();
@@ -63,15 +90,21 @@ public class CaptchaController {
         } catch (IOException e) {
             logger.error("生成验证码出错", e);
         }
-        return null;
+
     }
 
     @Resource
-    private Producer captchaProducer;
+    private SiteService siteService;
+    @Resource
+    private CaptchaHelper captchaHelper;
     private final static Logger logger = LoggerFactory.getLogger(CaptchaController.class);
 
-
-    public void setCaptchaProducer(Producer captchaProducer) {
-        this.captchaProducer = captchaProducer;
+    public void setCaptchaHelper(CaptchaHelper captchaHelper) {
+        this.captchaHelper = captchaHelper;
     }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
 }

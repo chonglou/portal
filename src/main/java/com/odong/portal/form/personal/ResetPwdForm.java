@@ -17,9 +17,9 @@ public class ResetPwdForm implements Serializable {
     @NotNull
     private String email;
     @NotNull
-    private String newPassword;
+    private String newPwd;
     @NotNull
-    private String rePassword;
+    private String rePwd;
     @NotNull
     private String captcha;
 
@@ -31,20 +31,20 @@ public class ResetPwdForm implements Serializable {
         this.email = email;
     }
 
-    public String getNewPassword() {
-        return newPassword;
+    public String getNewPwd() {
+        return newPwd;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setNewPwd(String newPwd) {
+        this.newPwd = newPwd;
     }
 
-    public String getRePassword() {
-        return rePassword;
+    public String getRePwd() {
+        return rePwd;
     }
 
-    public void setRePassword(String rePassword) {
-        this.rePassword = rePassword;
+    public void setRePwd(String rePwd) {
+        this.rePwd = rePwd;
     }
 
     public String getCaptcha() {

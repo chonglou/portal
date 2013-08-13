@@ -23,7 +23,7 @@ public class User extends IdEntity {
 
 
     public enum State {
-        ENABLE, DISABLE, LOCK
+        SUBMIT, ENABLE, DISABLE, LOCK
     }
 
     private static final long serialVersionUID = 6854757082522535497L;
@@ -36,13 +36,20 @@ public class User extends IdEntity {
     private String password;
     @Column(nullable = false, updatable = false)
     private Date created;
-    @Lob
-    private String details;
     private Date lastLogin;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private State state;
+    @Lob
+    private String contact;
 
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 
     public void setState(State state) {
         this.state = state;
@@ -52,13 +59,7 @@ public class User extends IdEntity {
         return state;
     }
 
-    public String getDetails() {
-        return details;
-    }
 
-    public void setDetails(String details) {
-        this.details = details;
-    }
 
 
     public String getEmail() {

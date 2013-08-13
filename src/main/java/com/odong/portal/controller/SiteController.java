@@ -18,7 +18,7 @@ import java.util.Map;
  * Date: 13-5-23
  * Time: 下午12:14
  */
-@Controller
+@Controller("c.site")
 public class SiteController {
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)

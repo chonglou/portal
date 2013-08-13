@@ -8,6 +8,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -25,7 +26,7 @@ import java.util.Properties;
  * Date: 13-5-23
  * Time: 下午8:27
  */
-@Configuration("portal.jpa")
+@Configuration("config.jpa")
 @EnableTransactionManagement
 public class Jpa {
     @Bean
@@ -87,7 +88,7 @@ public class Jpa {
     */
 
     @Bean(destroyMethod = "close")
-    @DependsOn("database.init")
+    @DependsOn("config.database")
     BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);
@@ -103,6 +104,11 @@ public class Jpa {
         ds.setStatementsCacheSize(poolStatementsCacheSize);
         ds.setReleaseHelperThreads(3);
         return ds;
+    }
+
+    @Bean(name = "db.jdbcTemplate")
+    JdbcTemplate getJdbcTemplate() {
+        return new JdbcTemplate(getDataSource());
     }
 
 

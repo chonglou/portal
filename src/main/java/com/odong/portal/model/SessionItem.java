@@ -11,61 +11,53 @@ import java.util.Date;
  */
 public class SessionItem implements Serializable {
     private static final long serialVersionUID = -1606662743090417130L;
-    private Long userId;
-    private String username;
-    private String email;
-    private Date created;
-    private boolean isAdmin;
+    private Long ssUserId;
+    private String ssUsername;
+    private String ssEmail;
+    private Date ssCreated;
+    private boolean ssAdmin;
     public final static String KEY = "d1s7e0wp";
-
-
-    public SessionItem(Long userId, String username, String email) {
-        this.userId = userId;
-        this.username = username;
-        this.email = email;
-        this.created = new Date();
-    }
 
     public SessionItem() {
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public Long getSsUserId() {
+        return ssUserId;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setSsUserId(Long ssUserId) {
+        this.ssUserId = ssUserId;
     }
 
-    public String getEmail() {
-        return email;
+    public String getSsUsername() {
+        return ssUsername;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSsUsername(String ssUsername) {
+        this.ssUsername = ssUsername;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getSsEmail() {
+        return ssEmail;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setSsEmail(String ssEmail) {
+        this.ssEmail = ssEmail;
     }
 
-    public String getUsername() {
-        return username;
+    public Date getSsCreated() {
+        return ssCreated;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSsCreated(Date ssCreated) {
+        this.ssCreated = ssCreated;
     }
 
-    public Date getCreated() {
-        return created;
+    public boolean isSsAdmin() {
+        return ssAdmin;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setSsAdmin(boolean ssAdmin) {
+        this.ssAdmin = ssAdmin;
     }
 }

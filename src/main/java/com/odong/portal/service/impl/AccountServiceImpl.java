@@ -26,6 +26,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void setUserLastLogin(long user) {
+        User u = userDao.select(user);
+        u.setLastLogin(new Date());
+        userDao.update(u);
+    }
+
+    @Override
     public void setUserEmail(long user, String email) {
         if (getUser(email) != null) {
             throw new IllegalArgumentException("邮箱[" + email + "]已存在");
@@ -59,10 +66,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void setUserInfo(long user, String username, String details) {
+    public void setUserInfo(long user, String username, String contact) {
         User u = userDao.select(user);
         u.setUsername(username);
-        u.setDetails(details);
+        u.setContact(contact);
         userDao.update(u);
     }
 

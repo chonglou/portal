@@ -20,7 +20,7 @@ import java.io.IOException;
  * Date: 13-5-24
  * Time: 上午3:45
  */
-@Configuration("portal.cache")
+@Configuration("config.cache")
 public class Cache {
     @Bean(destroyMethod = "shutdown")
     MemcachedClient getClient() throws IOException {
