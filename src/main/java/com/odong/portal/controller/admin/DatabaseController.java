@@ -62,6 +62,7 @@ public class DatabaseController {
         map.put("tagList", contentService.listTag());
         map.put("commentList", contentService.listComment());
         map.put("articleTagList", contentService.listArticleTag());
+        map.put("friendLinkList", siteService.listFriendLink());
         Date now = new Date();
         map.put("created", now);
         siteService.set("site.lastExport", now);

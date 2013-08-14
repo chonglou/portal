@@ -1,11 +1,27 @@
 $!{extends("/layout.httl")}
 
-<!--#macro(left)-->
-   ${left_nav_bar}
-   ${left_3d_tag_zone}
-<!--#end-->
-<!--#macro(main)-->
-   #set(List<Article> articles)
-   <h4>${title} [${articles.size}]</h4><hr/>
-   ${about_me}
-<!--#end-->
+#macro(main)
+<div class="col-lg-12">
+    ${mainGL}
+    <br/>
+    <fieldset>
+        <legend>关于我们</legend>
+        $!{aboutMe}
+    </fieldset>
+    <br/>
+    <!--#set(List<String> logList) -->
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <td>大事记[${logList.size}]</td>
+        </tr>
+        </thead>
+        <tbody>
+        #for(i : logList)
+        <tr><td>${i}</td></tr>
+        #end
+        </tbody>
+</table>
+    <br/>
+</div>
+#end

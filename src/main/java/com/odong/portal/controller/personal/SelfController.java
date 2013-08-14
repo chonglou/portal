@@ -36,11 +36,11 @@ import java.util.Map;
  * Time: 下午2:31
  */
 @Controller("c.personal.self")
-@RequestMapping(value = "/personal/self")
+@RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
 public class SelfController extends PageController {
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/self", method = RequestMethod.GET)
     String getIndex(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         List<NavBar> navBars = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class SelfController extends PageController {
 
 
         NavBar nbCms = new NavBar("内容管理");
-        nbCms.add("新增文章", "/personal/article/add");
+        nbCms.add("新增文章", "/article/add");
         nbCms.add("文章管理", "/personal/article");
         nbCms.add("评论管理", "/personal/comment");
         nbCms.setAjax(true);
@@ -60,11 +60,13 @@ public class SelfController extends PageController {
 
         if (si.isSsAdmin()) {
             NavBar nbSite = new NavBar("站点管理");
-            nbSite.add("用户管理", "/admin/user");
-            nbSite.add("标签管理", "/admin/tag");
-            nbSite.add("版面管理", "/admin/board");
-            nbSite.add("友情链接", "/admin/friend_link");
+            nbSite.add("用户管理", "/admin/user/");
+            nbSite.add("标签管理", "/admin/tag/");
             nbSite.add("站点信息", "/admin/site");
+            nbSite.add("站点状态", "/admin/state/");
+            nbSite.add("友情链接", "/admin/friendLink/");
+            nbSite.add("验证码", "/admin/captcha/");
+            nbSite.add("数据库", "/admin/database/");
             nbSite.add("日志管理", "/admin/log");
             nbSite.setAjax(true);
             navBars.add(nbSite);

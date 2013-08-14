@@ -1,5 +1,6 @@
 package com.odong.portal.form.admin;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public class RegProtocolForm implements Serializable {
     private static final long serialVersionUID = -8581738603651826461L;
+    @NotNull
     private String protocol;
 
     public String getProtocol() {

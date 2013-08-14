@@ -3,6 +3,8 @@ package com.odong.portal.controller;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.web.NavBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -63,6 +68,17 @@ public class SiteController extends PageController {
         fillSiteInfo(map);
         map.put("title", "关于我们");
         map.put("top_nav_key", "aboutMe");
+        List<String> logList = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                logList.add(line);
+            }
+        } catch (IOException e) {
+            logger.error("加载大事记文件出错", e);
+        }
+        map.put("logList", logList);
+        map.put("aboutMe", siteService.getString("site.aboutMe"));
         return "aboutMe";
     }
 
@@ -94,6 +110,7 @@ public class SiteController extends PageController {
 
     @Resource
     private SiteService siteService;
+    private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

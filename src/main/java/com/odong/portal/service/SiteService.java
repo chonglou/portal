@@ -1,5 +1,7 @@
 package com.odong.portal.service;
 
+import com.odong.portal.entity.FriendLink;
+
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +12,11 @@ import java.util.List;
  * Time: 下午2:28
  */
 public interface SiteService {
+    FriendLink getFriendLink(long id);
+    void addFriendLink(String name,String url,  String logo);
+    void setFriendLink(long id, String name,String url,  String logo);
+    List<FriendLink> listFriendLink();
+    void delFriendLink(long id);
     Boolean getBoolean(String key);
 
     Date getDate(String key);

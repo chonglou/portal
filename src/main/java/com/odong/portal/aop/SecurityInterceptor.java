@@ -37,7 +37,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
         if (url.startsWith("/personal/")) {
             boolean notNeedLogin = false;
-            for (String s : new String[]{"login", "register", "resetPwd", "valid"}) {
+            for (String s : new String[]{"login", "register", "resetPwd", "valid", "active"}) {
                 if (url.startsWith("/personal/" + s)) {
                     notNeedLogin = true;
                     break;

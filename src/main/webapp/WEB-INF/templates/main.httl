@@ -1,10 +1,16 @@
-
 $!{extends("/layout.httl")}
+#macro(main)
+<div class="col-lg-12">
+    ${mainGL}
+    <!--#set(List<String> logList) -->
+    <br/>
 
-<!--#macro(left)-->
-   ${left_nav_bar}
-   ${left_3d_tag_zone}
-<!--#end-->
-<!--#macro(main)-->
-        中间
-<!--#end-->
+    <div class="jumbotron">
+        <h2>大事记[${logList.size}]</h2>
+        #for(i : logList)
+        <p>${i}</p>
+        #end
+        <p><a href="/aboutMe" class="btn btn-primary btn-large">更多信息 &raquo;</a></p>
+    </div>
+</div>
+#end

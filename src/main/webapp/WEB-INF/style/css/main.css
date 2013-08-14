@@ -1,34 +1,29 @@
 body {
-    padding-top: 60px;
-    padding-bottom: 40px;
-}
-.sidebar-nav {
-    padding: 9px 0;
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
-@media (max-width: 980px) {
-    .navbar-text.pull-right {
-        float: none;
-        padding-left: 5px;
-        padding-right: 5px;
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+@media screen and (min-width: 768px) {
+    .jumbotron {
+        margin-top: 20px;
+    }
+    .body-content {
+        padding: 0;
     }
 }
 
-.form-table{
-    width: 98%;
-    text-align: left;
+.lbl-submit{
+    color:black;
 }
-.form-label{
-    width: 80px;
+.lbl-disable{
+    color: red;
 }
-
-.grid-tr{
-    border-bottom:1px dashed #ccc;
-}
-.grid-tr:hover {
-    background-color: #cccccc;
-}
-.grid-td-opt{
-    text-align: center;
-    width: 120px;
+.lbl-enable{
+    color: green;
 }

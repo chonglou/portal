@@ -1,6 +1,8 @@
 package com.odong.portal.service.impl;
 
+import com.odong.portal.dao.FriendLinkDao;
 import com.odong.portal.dao.SettingDao;
+import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Setting;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.JsonHelper;
@@ -21,6 +23,39 @@ import java.util.List;
 @Service("siteService")
 public class SiteServiceImpl implements SiteService {
 
+
+    @Override
+    public FriendLink getFriendLink(long id) {
+        return friendLinkDao.select(id);  //
+    }
+
+    @Override
+    public void addFriendLink(String name, String url, String logo) {
+        FriendLink fl = new FriendLink();
+        fl.setName(name);
+        fl.setUrl( url);
+        fl.setLogo(logo);
+        friendLinkDao.insert(fl);
+    }
+
+    @Override
+    public void setFriendLink(long id, String name, String url, String logo) {
+        FriendLink fl = friendLinkDao.select(id);
+        fl.setName(name);
+        fl.setUrl(url);
+        fl.setLogo(logo);
+        friendLinkDao.update(fl);
+    }
+
+    @Override
+    public List<FriendLink> listFriendLink() {
+        return friendLinkDao.list();  //
+    }
+
+    @Override
+    public void delFriendLink(long id) {
+        friendLinkDao.delete(id);
+    }
 
     @Override
     public Boolean getBoolean(String key) {
@@ -79,7 +114,13 @@ public class SiteServiceImpl implements SiteService {
     private JsonHelper jsonHelper;
     @Resource
     private SettingDao settingDao;
-    private Logger logger = LoggerFactory.getLogger(SiteServiceImpl.class);
+    @Resource
+    private FriendLinkDao friendLinkDao;
+    private final static Logger logger = LoggerFactory.getLogger(SiteServiceImpl.class);
+
+    public void setFriendLinkDao(FriendLinkDao friendLinkDao) {
+        this.friendLinkDao = friendLinkDao;
+    }
 
     public void setSettingDao(SettingDao settingDao) {
         this.settingDao = settingDao;
