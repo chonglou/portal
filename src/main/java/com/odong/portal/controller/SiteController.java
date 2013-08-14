@@ -23,14 +23,12 @@ public class SiteController extends PageController {
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     String getMain(Map<String, Object> map) {
-
-        map.put("navBars", navBars());
+        map.put("navBars", getNavBars());
         fillSiteInfo(map);
         map.put("title", "首页");
         map.put("top_nav_key", "main");
         //TODO 分页
-        map.put("articles", contentService.latestArticle(siteService.getInteger("site.articlePageSize")));
-        map.put("articlesSize", contentService.countArticle());
+        map.put("articleList", contentService.latestArticle(siteService.getInteger("site.articlePageSize")));
         return "main";
     }
 
@@ -61,11 +59,11 @@ public class SiteController extends PageController {
     @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
     String getAboutMe(Map<String, Object> map) {
 
-        map.put("navBars", navBars());
+        map.put("navBars", getNavBars());
         fillSiteInfo(map);
         map.put("title", "关于我们");
-        map.put("top_nav_key", "about_me");
-        return "about_me";
+        map.put("top_nav_key", "aboutMe");
+        return "aboutMe";
     }
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)

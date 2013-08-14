@@ -12,6 +12,15 @@ public class AllowForm implements Serializable {
     private static final long serialVersionUID = -7689227883805567018L;
     private boolean allowRegister;
     private boolean allowLogin;
+    private boolean allowAnonym;
+
+    public boolean isAllowAnonym() {
+        return allowAnonym;
+    }
+
+    public void setAllowAnonym(boolean allowAnonym) {
+        this.allowAnonym = allowAnonym;
+    }
 
     public boolean isAllowRegister() {
         return allowRegister;

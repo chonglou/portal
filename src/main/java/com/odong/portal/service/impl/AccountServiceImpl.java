@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
     public User getUser(String email) {
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
-        return userDao.select("FROM User as i WHERE i.email=:email", map);
+        return userDao.select("FROM User  i WHERE i.email=:email", map);
     }
 
     @Override

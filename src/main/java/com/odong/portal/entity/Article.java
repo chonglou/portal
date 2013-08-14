@@ -4,6 +4,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Date;
 @Entity
 @Table(name = "cmsArticle")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Article extends IdEntity {
+public class Article implements Serializable {
     public enum State {
         PRIVATE, PUBLIC, PROTECTED
     }
@@ -25,7 +26,9 @@ public class Article extends IdEntity {
     }
 
     private static final long serialVersionUID = 9130835572844462147L;
-
+    @Id
+    @Column(nullable = false, unique = true, updatable = false)
+    private String id;
     @Column(nullable = false)
     private String title;
     @Column(length = 500)
@@ -45,6 +48,14 @@ public class Article extends IdEntity {
     private Long visits;
     @Version
     private int version;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Long getVisits() {
         return visits;

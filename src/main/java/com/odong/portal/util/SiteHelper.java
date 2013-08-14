@@ -41,6 +41,7 @@ public class SiteHelper {
             siteService.set("site.copyright", "&copy;2013");
             siteService.set("site.allowRegister", true);
             siteService.set("site.allowLogin", true);
+            siteService.set("site.allowAnonym", true);
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");

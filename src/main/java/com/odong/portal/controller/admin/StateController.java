@@ -31,9 +31,19 @@ public class StateController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     Form getAllow() {
-        Form fm = new Form("allow", "站点权限编辑", "/admin/allow");
-        fm.addField(new RadioField<>("allowRegister", "新用户注册", siteService.getBoolean("site.allowRegister")));
-        fm.addField(new RadioField<>("allowLogin", "普通用户登录", siteService.getBoolean("site.allowLogin")));
+        Form fm = new Form("siteState", "网站状态", "/admin/site/state");
+        RadioField<Boolean> login = new RadioField<>("allowLogin", "登陆", siteService.getBoolean("site.allowLogin"));
+        login.addOption("允许", true);
+        login.addOption("禁止", false);
+        RadioField<Boolean> register = new RadioField<>("allowRegister", "注册", siteService.getBoolean("site.allowRegister"));
+        register.addOption("允许", true);
+        register.addOption("禁止", false);
+        RadioField<Boolean> anonym = new RadioField<>("allowAnonym", "匿名用户", siteService.getBoolean("site.allowAnonym"));
+        anonym.addOption("允许", true);
+        anonym.addOption("禁止", false);
+        fm.addField(login);
+        fm.addField(register);
+        fm.addField(anonym);
         fm.setOk(true);
         return fm;
     }
@@ -46,7 +56,8 @@ public class StateController {
         if (ri.isOk()) {
             siteService.set("site.allowRegister", form.isAllowRegister());
             siteService.set("site.allowLogin", form.isAllowLogin());
-            logService.add(si.getSsUserId(), "变更站点权限 注册=>[" + form.isAllowRegister() + "] 登陆=>[" + form.isAllowLogin() + "]", Log.Type.INFO);
+            siteService.set("site.allowAnonym", form.isAllowAnonym());
+            logService.add(si.getSsUserId(), "变更站点权限 注册=>[" + form.isAllowRegister() + "] 登陆=>[" + form.isAllowLogin() + "] 匿名用户=>["+form.isAllowAnonym()+"]", Log.Type.INFO);
         }
         return ri;
 

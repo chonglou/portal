@@ -20,16 +20,15 @@ public class ArticleTag extends IdEntity {
     private static final long serialVersionUID = 4989475576131553738L;
 
     @Column(nullable = false)
-    private Long article;
+    private String article;
     @Column(nullable = false)
     private Long tag;
 
-    public Long getArticle() {
+    public String getArticle() {
         return article;
     }
 
-
-    public void setArticle(Long article) {
+    public void setArticle(String article) {
         this.article = article;
     }
 

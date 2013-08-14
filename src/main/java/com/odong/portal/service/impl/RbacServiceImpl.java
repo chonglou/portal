@@ -49,7 +49,7 @@ public class RbacServiceImpl implements RbacService {
         map.put("role", role);
         map.put("operation", operation);
         map.put("resource", resource);
-        return permissionDao.select("FROM Permission AS i WHERE i.role=:role AND i.operation=:operation AND i.resource=:resource", map);
+        return permissionDao.select("FROM Permission i WHERE i.role=:role AND i.operation=:operation AND i.resource=:resource", map);
 
     }
 
@@ -85,7 +85,7 @@ public class RbacServiceImpl implements RbacService {
     private long getResource(String name) {
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
-        Resource r = resourceDao.select("FROM Resource AS i WHERE i.name=:name", map);
+        Resource r = resourceDao.select("FROM Resource i WHERE i.name=:name", map);
         if (r == null) {
             r = new Resource();
             r.setName(name);
@@ -99,7 +99,7 @@ public class RbacServiceImpl implements RbacService {
         String key = "rbac://operation/" + type;
         Map<String, Object> map = new HashMap<>();
         map.put("name", key);
-        Operation o = operationDao.select("FROM Operation AS i WHERE i.name=:name", map);
+        Operation o = operationDao.select("FROM Operation i WHERE i.name=:name", map);
         if (o == null) {
             o = new Operation();
             o.setName(key);
@@ -113,7 +113,7 @@ public class RbacServiceImpl implements RbacService {
         String key = "rbac://role/" + user;
         Map<String, Object> map = new HashMap<>();
         map.put("name", key);
-        Role r = roleDao.select("FROM Role AS i WHERE i.name=:name", map);
+        Role r = roleDao.select("FROM Role i WHERE i.name=:name", map);
         if (r == null) {
             r = new Role();
             r.setName(key);

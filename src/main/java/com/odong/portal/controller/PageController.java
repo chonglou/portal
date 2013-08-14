@@ -2,9 +2,15 @@ package com.odong.portal.controller;
 
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Comment;
+import com.odong.portal.entity.User;
+import com.odong.portal.model.SessionItem;
+import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
+import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.NavBar;
+import com.odong.portal.web.ResponseItem;
 import org.joda.time.DateTime;
 
 import javax.annotation.Resource;
@@ -21,7 +27,24 @@ import java.util.Map;
  */
 public abstract class PageController {
 
-    protected List<NavBar> navBars() {
+    protected void checkLogin(ResponseItem ri, SessionItem si){
+        if(si.getSsUserId() == null){
+            ri.setOk(false);
+            ri.addData("需要登陆");
+        }
+    }
+
+    protected Map<Long,User> getUserMap(List<Article> articles){
+        Map<Long,User> users = new HashMap<>();
+        for(Article a : articles){
+            if(users.get(a.getAuthor()) == null){
+                users.put(a.getAuthor(), accountService.getUser(a.getAuthor()));
+            }
+        }
+        return users;
+    }
+
+    protected List<NavBar> getNavBars() {
 
         List<NavBar> navBars = new ArrayList<>();
 
@@ -65,9 +88,9 @@ public abstract class PageController {
 
         Map<String, String> topNavs = new HashMap<>();
         topNavs.put("main", "站点首页");
-        topNavs.put("personal", "用户中心");
-        topNavs.put("about_me", "关于我们");
+        topNavs.put("personal/self", "用户中心");
         topNavs.put("sitemap", "网站地图");
+        topNavs.put("aboutMe", "关于我们");
         site.put("topNavs", topNavs);
         site.put("hotTags", contentService.hotTag(siteService.getInteger("site.hotTagCount")));
         map.put("gl_site", site);
@@ -78,6 +101,24 @@ public abstract class PageController {
     protected SiteService siteService;
     @Resource
     protected ContentService contentService;
+    @Resource
+    protected FormHelper formHelper;
+    @Resource
+    protected LogService logService;
+    @Resource
+    protected AccountService accountService;
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
+    }
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;

@@ -18,10 +18,12 @@ import java.util.Date;
 public class Comment extends IdEntity {
     private static final long serialVersionUID = -9089422699866112475L;
 
-    @Column(nullable = false, updatable = false)
+    @Column( updatable = false)
     private Long user;
+    @Column( updatable = false)
+    private Long comment;
     @Column(nullable = false, updatable = false)
-    private Long article;
+    private String article;
     @Lob
     @Column(nullable = false)
     private String content;
@@ -30,6 +32,14 @@ public class Comment extends IdEntity {
     private Date lastEdit;
     @Version
     private int version;
+
+    public Long getComment() {
+        return comment;
+    }
+
+    public void setComment(Long comment) {
+        this.comment = comment;
+    }
 
     public int getVersion() {
         return version;
@@ -48,11 +58,11 @@ public class Comment extends IdEntity {
         this.user = user;
     }
 
-    public Long getArticle() {
+    public String getArticle() {
         return article;
     }
 
-    public void setArticle(Long article) {
+    public void setArticle(String article) {
         this.article = article;
     }
 

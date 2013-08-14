@@ -16,7 +16,7 @@ import java.util.List;
 public interface ContentService {
     long countTag();
 
-    long countTag(long article);
+    long countTag(String article);
 
     List<Tag> topTag(int count);
 
@@ -24,7 +24,7 @@ public interface ContentService {
 
     List<Tag> listTag();
 
-    List<Tag> listTagByArticle(long article);
+    List<Tag> listTagByArticle(String article);
 
     Tag getTag(long id);
 
@@ -37,12 +37,13 @@ public interface ContentService {
     void setTagVisit(long tag);
 
     void delTag(long id);
+    void delTagByArticle(String article);
 
     long countComment();
 
     long countCommentByUser(long user);
 
-    long countCommentByArticle(long article);
+    long countCommentByArticle(String article);
 
     Comment getComment(long comment);
 
@@ -50,7 +51,7 @@ public interface ContentService {
 
     List<Comment> listComment(int no, int size);
 
-    List<Comment> listCommentByArticle(long article);
+    List<Comment> listCommentByArticle(String article);
 
     List<Comment> listCommentByUser(long user);
 
@@ -58,7 +59,7 @@ public interface ContentService {
 
     void editComment(long comment, String content);
 
-    void addComment(long user, long article, String content);
+    void addComment(Long user, String article, Long comment, String content);
 
     void delComment(long id);
 
@@ -68,9 +69,11 @@ public interface ContentService {
 
     long countArticleByTag(long tag);
 
-    Article getArticle(long article);
+    Article getArticle(String article);
 
-    void delArticle(long article);
+    ArticleTag getArticleTag(String article, long tag);
+
+    void delArticle(String article);
 
     List<Article> listArticle();
 
@@ -88,14 +91,15 @@ public interface ContentService {
 
     List<ArticleTag> listArticleTag();
 
-    void addArticle(long author, String title, String summary, String body);
+    void addArticle(String id, long author, String title, String summary, String body);
 
-    void setArticleState(long article, Article.State state);
+    void setArticleState(String  article, Article.State state);
 
-    void editArticle(long id, String title, String summary, String body);
+    void setArticle(String id, String title, String summary, String body);
 
-    void setArticleTag(long article, long tag, boolean bind);
 
-    void setArticleVisits(long article);
+    void bindArticleTag(String article, long tag);
+
+    void setArticleVisits(String article);
 
 }
