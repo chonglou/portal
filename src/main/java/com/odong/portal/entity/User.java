@@ -42,6 +42,16 @@ public class User extends IdEntity {
     private State state;
     @Lob
     private String contact;
+    @Column(nullable = false)
+    private long visits;
+
+    public long getVisits() {
+        return visits;
+    }
+
+    public void setVisits(long visits) {
+        this.visits = visits;
+    }
 
     public String getContact() {
         return contact;

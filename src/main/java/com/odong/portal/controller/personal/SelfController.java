@@ -62,20 +62,22 @@ public class SelfController extends PageController {
             NavBar nbSite = new NavBar("站点管理");
             nbSite.add("用户管理", "/admin/user/");
             nbSite.add("标签管理", "/admin/tag/");
-            nbSite.add("站点信息", "/admin/site");
-            nbSite.add("站点状态", "/admin/state/");
+            nbSite.add("站点信息", "/admin/site/info");
+            nbSite.add("用户协议", "/admin/site/regProtocol");
+            nbSite.add("站点状态", "/admin/site/state");
+            nbSite.add("邮件设置", "/admin/smtp/");
             nbSite.add("友情链接", "/admin/friendLink/");
+            nbSite.add("广告设置", "/admin/site/adv/");
             nbSite.add("验证码", "/admin/captcha/");
             nbSite.add("数据库", "/admin/database/");
-            nbSite.add("日志管理", "/admin/log");
             nbSite.setAjax(true);
             navBars.add(nbSite);
         }
         map.put("navBars", navBars);
         fillSiteInfo(map);
         map.put("title", "用户中心");
-        map.put("top_nav_key", "personal");
-        return "main";
+        map.put("top_nav_key", "personal/self");
+        return "personal/self";
     }
 
 
@@ -175,6 +177,18 @@ public class SelfController extends PageController {
     String getLog(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         map.put("logList", logService.list(si.getSsUserId(), 100));
         return "personal/log";
+    }
+    @RequestMapping(value = "/comment", method = RequestMethod.GET)
+    String getComment(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        map.put("commentList", contentService.listCommentByUser(si.getSsUserId()));
+        return "personal/comment";
+    }
+
+    @RequestMapping(value = "/article", method = RequestMethod.GET)
+    String getArticle(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        //FIXME 分页
+        map.put("articleList", contentService.listArticleByAuthor(si.getSsUserId()));
+        return "personal/article";
     }
 
     @Resource

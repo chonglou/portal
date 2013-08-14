@@ -37,7 +37,7 @@ public class Article implements Serializable {
     @Column(nullable = false)
     private String body;
     @Column(nullable = false, updatable = false)
-    private Long author;
+    private long author;
     @Column(nullable = false, updatable = false)
     private Date created;
     private Date lastEdit;
@@ -45,7 +45,7 @@ public class Article implements Serializable {
     @Enumerated(EnumType.STRING)
     private State state;
     @Column(nullable = false)
-    private Long visits;
+    private long visits;
     @Version
     private int version;
 
@@ -57,11 +57,11 @@ public class Article implements Serializable {
         this.id = id;
     }
 
-    public Long getVisits() {
+    public long getVisits() {
         return visits;
     }
 
-    public void setVisits(Long visits) {
+    public void setVisits(long visits) {
         this.visits = visits;
     }
 
@@ -106,11 +106,11 @@ public class Article implements Serializable {
         this.body = body;
     }
 
-    public Long getAuthor() {
+    public long getAuthor() {
         return author;
     }
 
-    public void setAuthor(Long author) {
+    public void setAuthor(long author) {
         this.author = author;
     }
 

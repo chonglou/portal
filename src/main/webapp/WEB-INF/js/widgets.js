@@ -347,9 +347,9 @@ function FormWindow(form, parent) {
             input += "<label class='col-lg-2 control-label' for='" + _id('captcha') + "'>验证码(*)：</label>";
             switch (gl_captcha) {
                 case "kaptcha":
-                    input += "<div class='col-lg-1'><input class='form-control' type='text'  style='width: 80px;' id='"
+                    input += "<div class='col-lg-2'><input class='form-control' type='text'  style='width: 80px;' id='"
                         + _id("captcha") + "'/></div>";
-                    input += "<div class='col-lg-9'><img id='"
+                    input += "<div class='col-lg-8'><img id='"
                         + _id('captcha_img')
                         + "' src='/captcha?_="
                         + Math.random()
@@ -457,6 +457,13 @@ function FormWindow(form, parent) {
                         if ($("input#" + _id(field.id)).is(':checked')) {
                             data[field.id] = true;
                         }
+                        break;
+                    case "checkbox":
+                        var vv=[];
+                        $("input[name='" + _id(field.id) + "']:checked").each(function(){
+                            vv.push($(this).val());
+                        });
+                        data[field.id] = vv.join("-");
                         break;
                     default:
                         break;

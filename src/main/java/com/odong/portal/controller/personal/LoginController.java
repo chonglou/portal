@@ -51,7 +51,7 @@ public class LoginController {
     @ResponseBody
     ResponseItem postLogin(@Valid LoginForm form, BindingResult result, HttpServletRequest request, HttpSession session) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if (!siteService.getBoolean("site.allowLogin")) {
+        if (!siteService.getBoolean("site.allowLogin") && !siteService.getString("site.author").equals(form.getEmail())) {
             ri.setOk(false);
             ri.addData("站点禁止登陆");
         }

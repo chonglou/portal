@@ -1,0 +1,63 @@
+<!--#set(List<Tag> tagList) -->
+<div id="tag"></div>
+<fieldset>
+    <legend>
+        标签列表[${tagList.size}]
+        <span class="btn-group">
+        <button id="add" class="btn btn-mini btn-success" type="button">添加</button>
+
+        <button id="refresh" class="btn btn-mini btn-default" type="button">刷新</button>
+        </span>
+    </legend>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <td style="width: 2%">ID</td>
+            <td>内容</td>
+            <td style="width: 20%">操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        #for(a : tagList)
+        <tr>
+            <td>${a.id}</td>
+            <td>$!{a.name}</td>
+            <td>
+                <div class="btn-group">
+                    <button id="edit-${a.id}" class="btn btn-mini btn-warning" type="button">编辑</button>
+                    <button id="del-${a.id}" class="btn btn-mini btn-danger" type="button">删除</button>
+                </div>
+            </td>
+        </tr>
+        #end
+        </tbody>
+    </table>
+</fieldset>
+<script type="text/javascript">
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/admin/tag/");
+    });
+    $("button#add").click(function () {
+        clear_message_div();
+        new Ajax("/admin/tag/add", undefined, undefined, undefined, undefined, "tag");
+    });
+    $("button[id^='edit-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+
+                new Ajax("/admin/tag/" + ss[1], undefined, undefined, undefined, undefined,"tag");
+
+        });
+    });
+    $("button[id^='del-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            if (confirm("你确认要删除标签[" + ss[1] + "]么")) {
+                new Ajax("/admin/tag/" + ss[1], "DELETE");
+            }
+        });
+    });
+</script>

@@ -1,11 +1,13 @@
 package com.odong.portal.util;
 
 import com.odong.portal.email.EmailHelper;
+import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.model.KaptchaProfile;
 import com.odong.portal.model.ReCaptchaProfile;
 import com.odong.portal.model.SmtpProfile;
 import com.odong.portal.service.AccountService;
+import com.odong.portal.service.ContentService;
 import com.odong.portal.service.RbacService;
 import com.odong.portal.service.SiteService;
 import httl.spi.resolvers.GlobalResolver;
@@ -19,6 +21,7 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,6 +35,8 @@ public class SiteHelper {
     void init() {
         siteService.set("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
+            final String author = "zhengjitang@gmail.com";
+
             siteService.set("site.init", new Date());
             siteService.set("site.version", "v20130522");
             siteService.set("site.title", "门户网站系统");
@@ -44,7 +49,7 @@ public class SiteHelper {
             siteService.set("site.allowAnonym", true);
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
-            siteService.set("site.author", "zhengjitang@gmail.com");
+            siteService.set("site.author", author);
 
             //SMTP
             SmtpProfile smtp = new SmtpProfile();
@@ -63,17 +68,26 @@ public class SiteHelper {
             siteService.set("site.reCaptcha", new ReCaptchaProfile());
             siteService.set("site.captcha", "kaptcha");
 
+            //USER
+            accountService.addUser(author, "管理员", "123456");
+            User admin = accountService.getUser(author);
+            rbacService.bindAdmin(admin.getId(), true);
 
+            //CMS
             siteService.set("site.hotTagCount", 20);
             siteService.set("site.hotArticleCount", 10);
             siteService.set("site.latestCommentCount", 10);
             siteService.set("site.archiveCount", 6);
             siteService.set("site.articlePageSize", 50);
+            String defTag = "默认类别";
+            contentService.addTag(defTag);
+            Tag tag = contentService.getTag(defTag);
+            String defArticle = UUID.randomUUID().toString();
+            contentService.addArticle(defArticle, admin.getId(), "欢迎", "欢迎来到本站", "详细信息");
+            contentService.bindArticleTag(defArticle, tag.getId());
+            siteService.set("site.defArticle", defArticle);
+            siteService.set("site.defTag", tag.getId());
 
-            String email = "flamen@0-dong.com";
-            accountService.addUser(email, "管理员", "123456");
-            User admin = accountService.getUser(email);
-            rbacService.bindAdmin(admin.getId(), true);
         }
 
         GlobalResolver.put("gl_debug", appDebug);
@@ -110,6 +124,8 @@ public class SiteHelper {
     @Resource
     private StringHelper stringHelper;
     @Resource
+    private ContentService contentService;
+    @Resource
     private SiteService siteService;
     @Value("${app.store}")
     private String appStoreDir;
@@ -118,6 +134,10 @@ public class SiteHelper {
     @Resource
     private EmailHelper emailHelper;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setContentService(ContentService contentService) {
+        this.contentService = contentService;
+    }
 
     public void setEmailHelper(EmailHelper emailHelper) {
         this.emailHelper = emailHelper;

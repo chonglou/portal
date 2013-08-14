@@ -37,12 +37,6 @@ public class ContentServiceImpl implements ContentService {
 
 
     @Override
-    public List<Tag> topTag(int count) {
-        return tagDao.list(0, count, "SELECT i FROM Tag i ORDER BY i.visits DESC", new HashMap<String, Object>());
-    }
-
-
-    @Override
     public List<Tag> hotTag(int count) {
         return tagDao.list("FROM Tag  i ORDER BY i.visits DESC", null, count);  //
     }
@@ -80,29 +74,24 @@ public class ContentServiceImpl implements ContentService {
     public void addTag(String name) {
         Tag t = new Tag();
         t.setName(name);
+        t.setCreated(new Date());
         tagDao.insert(t);
     }
 
     @Override
     public void setTagName(long id, String name) {
-        /*
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        map.put("name", name);
-       tagDao.update("UPDATE Tag  i SET i.name=:name WHERE i.id=:id", map);
-       */
         Tag t = tagDao.select(id);
         t.setName(name);
+        t.setLastEdit(new Date());
         tagDao.update(t);
     }
 
     @Override
-    public void setTagVisit(long tag) {
+    public void setTagVisits(long tag) {
         Tag t = tagDao.select(tag);
         Map<String, Object> map = new HashMap<>();
         map.put("id", t.getId());
-        map.put("visits", t.getVisits() + 1);
-        tagDao.update("UPDATE Tag  i SET i.visits=visits WHERE i.id=:id", map);
+        tagDao.update("UPDATE Tag  i SET i.visits=i.visits+1 WHERE i.id=:id", map);
     }
 
     @Override
@@ -115,7 +104,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void delTagByArticle(String article) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         articleTagDao.delete("DELETE ArticleTag i WHERE i.article=:article", map);
     }
@@ -159,7 +148,7 @@ public class ContentServiceImpl implements ContentService {
     public List<Comment> listCommentByArticle(String article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
-        return commentDao.list("FROM Comment  i WHERE i.article=:article", map);  //
+        return commentDao.list("FROM Comment  i WHERE i.article=:article ORDER BY i.id DESC", map);  //
 
     }
 
@@ -167,7 +156,7 @@ public class ContentServiceImpl implements ContentService {
     public List<Comment> listCommentByUser(long user) {
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);
-        return commentDao.list("FROM Comment  i WHERE i.user=:user", map);  //
+        return commentDao.list("FROM Comment  i WHERE i.user=:user ORDER BY i.id DESC", map);  //
 
     }
 
@@ -227,10 +216,10 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public ArticleTag getArticleTag(String article, long tag) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         map.put("tag", tag);
-        return articleTagDao.select("SELECT i FROM ArticleTag i WHERE i.article=:article, i.tag=:tag",map);
+        return articleTagDao.select("SELECT i FROM ArticleTag i WHERE i.article=:article AND i.tag=:tag", map);
     }
 
     @Override
@@ -274,7 +263,7 @@ public class ContentServiceImpl implements ContentService {
     public List<Article> listArticleByAuthor(long author) {
         Map<String, Object> map = new HashMap<>();
         map.put("author", author);
-        return articleDao.list("FROM Article  i ORDER BY i.author=:author", map);  //
+        return articleDao.list("FROM Article  i WHERE i.author=:author ORDER BY i.id DESC", map);  //
     }
 
     @Override
@@ -348,8 +337,7 @@ public class ContentServiceImpl implements ContentService {
         Article a = articleDao.select(article);
         Map<String, Object> map = new HashMap<>();
         map.put("id", a.getId());
-        map.put("visits", a.getVisits() + 1);
-        articleDao.update("UPDATE Article  i SET i.visits=visits WHERE i.id=:id", map);
+        articleDao.update("UPDATE Article  i SET i.visits=i.visits+1 WHERE i.id=:id", map);
     }
 
     @Resource

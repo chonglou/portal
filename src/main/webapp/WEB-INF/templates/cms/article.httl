@@ -1,19 +1,53 @@
 $!{extends("/layout.httl")}
-
-<!--#macro(left)-->
-${left_nav_bar}
-${left_3d_tag_zone}
-<!--#end-->
-<!--#macro(main)-->
-#set(List
-<Article> articles)
-    <h4>${article.title} (${articles.size})</h4>
-    <hr/>
-    ${body}
-    //TODO 分页 样式表 添加评论 锚点
-    <ol>
-        #for(Comment a : article.comments)
-        <li><a href="/article/${a.id}" target="_blank">${a.title}</a></li>
+#macro(main)
+<div class="col-lg-3">
+    <br/>
+    ${left_nav_bar}
+</div>
+<div class="col-lg-9">
+    ${mainGL}
+    <!--#set(Article article)-->
+    <!--#set(User user)-->
+    <!--#set(List<Tag> tagList)-->
+    <!--#set(List<Comment> commentList)-->
+    <!--#set(Map<Long,User> userMap)-->
+    <h3>${article.title}[${article.visits}]</h3>
+    <hr>
+    作者：<a target="_blank" href="/user/${user.id}">${user.username}</a> &nbsp;
+    最后修改时间：${article.publishDate}
+    <br>
+    标签：
+    #for(t : tagList)
+    <a target="_blank" href="/tag/${t.id}">${t.name}</a> &nbsp;
+    #end
+    <br>
+    摘要：$!{article.summary}
+    <p>&nbsp;</p>
+    $!{article.body}
+    <hr>
+    <div id="comment">
+        #if(!gl_session)
+        请登录以发表评论。
         #end
-    </ol>
-    <!--#end-->
+    </div>
+    #for(c : commentList)
+    <blockquote>
+        <p>$!{c.content}</p>
+        <!--#set(u=userMap.get(c.user))-->
+        <small>
+            ${c.publishDate} &nbsp;
+            <cite><a target="_blank" href="/user/${u.id}">${u.username}</a></cite>
+        </small>
+    </blockquote>
+    #else
+    暂无评论
+    #end
+</div>
+
+#if(gl_session)
+<script type="text/javascript">
+    new Ajax("/comment/a-${article.id}", undefined, undefined, undefined, undefined,"comment");
+</script>
+#end
+
+#end

@@ -32,8 +32,9 @@ public class UserController extends PageController {
         List<NavBar> navBars = new ArrayList<>();
 
         NavBar nbUser = new NavBar("用户列表");
-        for(User u : accountService.listUser()){
-            nbUser.add(u.getEmail()+"["+u.getUsername()+"]", "/user/"+u.getId());
+        nbUser.setType(NavBar.Type.LIST);
+        for (User u : accountService.listUser()) {
+            nbUser.add(u.getUsername(), "/user/" + u.getId());
         }
         navBars.add(nbUser);
         map.put("navBars", navBars);

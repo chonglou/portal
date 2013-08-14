@@ -29,11 +29,11 @@ public class Tag extends IdEntity {
     @Column(nullable = false, unique = true)
     private String name;
     @Column(nullable = false)
-    private Long visits;
+    private long visits;
     @Version
     private int version;
-    private Date created;
     @Column(nullable = false, updatable = false)
+    private Date created;
     private Date lastEdit;
 
     public Date getCreated() {
@@ -52,11 +52,11 @@ public class Tag extends IdEntity {
         this.lastEdit = lastEdit;
     }
 
-    public Long getVisits() {
+    public long getVisits() {
         return visits;
     }
 
-    public void setVisits(Long visits) {
+    public void setVisits(long visits) {
         this.visits = visits;
     }
 

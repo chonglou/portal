@@ -4,7 +4,7 @@ $!{extends("/frame.httl")}
 <ul class="nav navbar-nav">
     <!--#set(Map<String,Object> gl_site)-->
     <!--#set(Map<String,String> topNavs=gl_site.topNavs)-->
-    #for(i : ["main", "personal/self", "aboutMe"])
+    #for(i : ["main", "personal/self", "sitemap", "aboutMe"])
     #if(top_nav_key == i)
     <li class="active"><a href="/${i}">${topNavs.get(i)}</a></li>
     #else
@@ -48,6 +48,7 @@ $!{extends("/frame.httl")}
 <!--#macro(left_nav_bar)-->
 <!--#set(List<NavBar> navBars)-->
 #for(NavBar i:navBars)
+#if(i.type.toString() == "MENU")
 <ul class="nav nav-pills nav-stacked">
     #if(i.pages.size == 0)
     <li><a>${i.title}</a></li>
@@ -71,6 +72,16 @@ $!{extends("/frame.httl")}
     </li>
     #end
 </ul>
+#else(i.type.toString()=="LIST")
+<label>${i.title}</label>
+<div class="list-group">
+    #for(Page j: i.pages)
+    <a class="list-group-item #if(request.getRequestURI() == j.url) active #end" href="${j.url}" target="_blank">
+     $!{j.name}
+    </a>
+    #end
+</div>
+#end
 #end
 <!--#end-->
 
@@ -79,4 +90,15 @@ $!{extends("/frame.httl")}
 <div id="gl_message"></div>
 <div id="gl_root"></div>
 <br/>
+<!--#end-->
+
+<!--#macro(listArticle)-->
+<!--#set(List<Article> articleList)-->
+<div class="row">
+#for(a : articleList)
+    <div class="col-lg-3">
+        <a href="/article/${a.id}" target="_blank">${a.summary}</a>
+    </div>
+#end
+</div>
 <!--#end-->

@@ -34,7 +34,7 @@ public class CommentController extends PageController {
     @RequestMapping(value = "/a-{articleId}", method = RequestMethod.GET)
     @ResponseBody
     Form getAddCommentForArticle(@PathVariable String articleId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("comment", "评论", "/comment/");
+        Form fm = new Form("comment", "添加评论", "/comment/");
         Article a = contentService.getArticle(articleId);
         if (a == null) {
             fm.addData("文章[" + articleId + "]不存在");
@@ -56,7 +56,7 @@ public class CommentController extends PageController {
     @ResponseBody
     Form getAddComment(@PathVariable long commentId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Comment comment = contentService.getComment(commentId);
-        Form fm = new Form("comment", "评论", "/comment/");
+        Form fm = new Form("comment", "添加评论", "/comment/");
         if (comment == null) {
             fm.addData("评论[" + commentId + "]不存在");
         } else {
@@ -76,7 +76,7 @@ public class CommentController extends PageController {
     @ResponseBody
     ResponseItem postComment(@Valid CommentForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(ri.isOk()){
+        if (ri.isOk()) {
             checkAnonym(ri, si);
         }
         if (ri.isOk()) {

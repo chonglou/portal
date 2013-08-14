@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  * Time: 下午5:40
  */
 @Repository("friendLinkDao")
-public class FriendLinkDaoImpl extends BaseJpa2DaoImpl<FriendLink,Long> implements FriendLinkDao {
+public class FriendLinkDaoImpl extends BaseJpa2DaoImpl<FriendLink, Long> implements FriendLinkDao {
 }

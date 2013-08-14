@@ -3,7 +3,6 @@ $!{extends("/layout.httl")}
 #macro(main)
 <div class="col-lg-12">
     ${mainGL}
-    <br/>
     <fieldset>
         <legend>关于我们</legend>
         $!{aboutMe}
@@ -18,10 +17,12 @@ $!{extends("/layout.httl")}
         </thead>
         <tbody>
         #for(i : logList)
-        <tr><td>${i}</td></tr>
+        <tr>
+            <td>${i}</td>
+        </tr>
         #end
         </tbody>
-</table>
+    </table>
     <br/>
 </div>
 #end

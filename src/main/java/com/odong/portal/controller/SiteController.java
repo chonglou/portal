@@ -34,13 +34,15 @@ public class SiteController extends PageController {
         map.put("top_nav_key", "main");
         //TODO 分页
         map.put("articleList", contentService.latestArticle(siteService.getInteger("site.articlePageSize")));
+        map.put("defArticle", contentService.getArticle(siteService.getString("site.defArticle")));
+
         return "main";
     }
 
 
     @RequestMapping(value = "sitemap", method = RequestMethod.GET)
     String getSitemap(Map<String, Object> map) {
-
+               /*
         List<NavBar> navBars = new ArrayList<>();
         NavBar nbTag = new NavBar("标签列表");
         int i = 0;
@@ -50,11 +52,14 @@ public class SiteController extends PageController {
         }
         nbTag.setTitle(nbTag.getTitle() + " [" + i + "]");
         navBars.add(nbTag);
-
-
         map.put("navBars", navBars);
+*/
+
         //TODO 分页
-        map.put("articles", contentService.listArticle());
+        map.put("articleList", contentService.listArticle());
+        map.put("userList", accountService.listUser());
+        map.put("tagList", contentService.listTag());
+
         fillSiteInfo(map);
         map.put("title", "网站地图");
         map.put("top_nav_key", "sitemap");

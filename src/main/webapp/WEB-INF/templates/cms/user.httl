@@ -1,0 +1,17 @@
+$!{extends("/layout.httl")}
+#macro(main)
+<div class="col-lg-3">
+    <br/>
+    ${left_nav_bar}
+</div>
+<div class="col-lg-9">
+    <br>
+    <!--#set(User user)-->
+    <!--#set(List<Article> articleList)-->
+    <h3>用户-${user.username} 文章列表[${articleList.size()}]</h3>
+    <hr/>
+    <label>邮箱：<a href="mailto:${user.email}" target="_top"> ${user.email} </a>上次登陆：${user.lastLogin}</label>
+    <p>&nbsp;</p>
+    ${listArticle}
+</div>
+#end

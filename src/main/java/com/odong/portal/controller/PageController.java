@@ -27,17 +27,17 @@ import java.util.Map;
  */
 public abstract class PageController {
 
-    protected void checkLogin(ResponseItem ri, SessionItem si){
-        if(si.getSsUserId() == null){
+    protected void checkLogin(ResponseItem ri, SessionItem si) {
+        if (si.getSsUserId() == null) {
             ri.setOk(false);
             ri.addData("需要登陆");
         }
     }
 
-    protected Map<Long,User> getUserMap(List<Article> articles){
-        Map<Long,User> users = new HashMap<>();
-        for(Article a : articles){
-            if(users.get(a.getAuthor()) == null){
+    protected Map<Long, User> getUserMap(List<Article> articles) {
+        Map<Long, User> users = new HashMap<>();
+        for (Article a : articles) {
+            if (users.get(a.getAuthor()) == null) {
                 users.put(a.getAuthor(), accountService.getUser(a.getAuthor()));
             }
         }
@@ -49,18 +49,21 @@ public abstract class PageController {
         List<NavBar> navBars = new ArrayList<>();
 
         NavBar nbArticle = new NavBar("热门文章");
+        nbArticle.setType(NavBar.Type.LIST);
         for (Article a : contentService.hotArticle(siteService.getInteger("site.hotArticleCount"))) {
             nbArticle.add(a.getTitle(), "/article/" + a.getId());
         }
         navBars.add(nbArticle);
 
         NavBar nbComment = new NavBar("最新评论");
+        nbComment.setType(NavBar.Type.LIST);
         for (Comment c : contentService.latestComment(siteService.getInteger("site.latestCommentCount"))) {
             nbComment.add(c.getContent(), "/comment/" + c.getId());
         }
         navBars.add(nbComment);
 
         NavBar nbArchive = new NavBar("最近归档");
+        nbArchive.setType(NavBar.Type.LIST);
         DateTime init = new DateTime(siteService.getDate("site.init"));
         for (int i = 0; i < siteService.getInteger("site.archiveCount"); i++) {
             DateTime dt = new DateTime().plusMonths(0 - i);

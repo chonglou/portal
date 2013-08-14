@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Date: 13-8-13
  * Time: 下午3:33
  */
-public class CommentForm implements Serializable{
+public class CommentForm implements Serializable {
     private static final long serialVersionUID = 4818866119895600775L;
     @NotNull
     private String content;

@@ -1,0 +1,15 @@
+$!{extends("/layout.httl")}
+#macro(main)
+<div class="col-lg-3">
+    <br/>
+    ${left_nav_bar}
+</div>
+<div class="col-lg-9">
+    <br/>
+    <!--#set(Tag tag)-->
+    <!--#set(List<Article> articleList)-->
+    <h3>标签-${tag.name} 文章列表[${articleList.size()}]</h3>
+    <hr/>
+    ${listArticle}
+</div>
+#end

@@ -1,0 +1,42 @@
+<!--#set(List<Comment> commentList) -->
+<fieldset>
+    <legend>
+        评论列表[${commentList.size}]
+        <button id="refresh" class="btn btn-mini btn-default" type="button">刷新</button>
+    </legend>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <td style="width: 2%">ID</td>
+            <td style="width: 20%">日期</td>
+            <td>内容</td>
+            <td style="width: 10%">操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        #for(c : commentList)
+        <tr>
+            <td>${c.id}</td>
+            <td>${c.publishDate}</td>
+            <td>$!{c.content}</td>
+            <td><button id="del-${c.id}" class="btn btn-mini btn-danger" type="button">删除</button></td>
+        </tr>
+        #end
+        </tbody>
+    </table>
+</fieldset>
+<script type="text/javascript">
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/personal/comment");
+    });
+    $("button[id^='del-']").each(function () {
+    $(this).click(function () {
+        var ss = $(this).attr('id').split('-');
+        clear_message_div();
+        if(confirm("你确认要删除评论["+ss[1]+"]么")){
+            new Ajax("/comment/" + ss[1], "DELETE");
+        }
+    });
+});
+</script>

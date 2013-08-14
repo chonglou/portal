@@ -3,7 +3,6 @@ package com.odong.portal.controller.admin;
 import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.FriendLinkForm;
-import com.odong.portal.form.cms.ArticleForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -31,11 +29,11 @@ import java.util.Map;
 @Controller("c.admin.friendLink")
 @RequestMapping(value = "/admin/friendLink")
 @SessionAttributes(SessionItem.KEY)
-public class FriendLinkController{
+public class FriendLinkController {
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     @ResponseBody
     Form getAddFriendLink(@ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("friendLink", "添加友情链接", "/admin/friendForm/");
+        Form fm = new Form("friendLink", "添加友情链接", "/admin/friendLink/");
         fm.addField(new HiddenField<>("id", null));
         fm.addField(new TextField<>("name", "名称"));
         fm.addField(new TextField<>("url", "网址"));
@@ -43,15 +41,15 @@ public class FriendLinkController{
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     Form getFriendLink(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("friendLink", "修改友情链接["+id+"]", "/admin/friendForm/");
+        Form fm = new Form("friendLink", "修改友情链接[" + id + "]", "/admin/friendLink/");
         FriendLink fl = siteService.getFriendLink(id);
-        if(fl == null){
-            fm.addData("友情链接["+id+"]不存在");
-        }
-        else {
+        if (fl == null) {
+            fm.addData("友情链接[" + id + "]不存在");
+        } else {
             fm.addField(new HiddenField<>("id", fl.getId()));
             fm.addField(new TextField<>("name", "名称", fl.getName()));
             fm.addField(new TextField<>("url", "网址", fl.getUrl()));
@@ -60,24 +58,23 @@ public class FriendLinkController{
         }
         return fm;
     }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postFriendLink(@Valid FriendLinkForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result);
-        if(ri.isOk()){
-            if(form.getId() == null){
-                siteService.addFriendLink(form.getName(),form.getUrl(),form.getLogo());
-                logService.add(si.getSsUserId(), "添加友情链接["+form.getName()+"]", Log.Type.INFO);
-            }
-            else {
+        if (ri.isOk()) {
+            if (form.getId() == null) {
+                siteService.addFriendLink(form.getName(), form.getUrl(), form.getLogo());
+                logService.add(si.getSsUserId(), "添加友情链接[" + form.getName() + "]", Log.Type.INFO);
+            } else {
                 FriendLink fl = siteService.getFriendLink(form.getId());
-                if(fl!=null){
-                    siteService.setFriendLink(form.getId(),form.getName(),form.getUrl(),form.getLogo());
-                    logService.add(si.getSsUserId(), "更新友情链接["+form.getId()+"]", Log.Type.INFO);
-                }
-                else {
+                if (fl != null) {
+                    siteService.setFriendLink(form.getId(), form.getName(), form.getUrl(), form.getLogo());
+                    logService.add(si.getSsUserId(), "更新友情链接[" + form.getId() + "]", Log.Type.INFO);
+                } else {
                     ri.setOk(false);
-                    ri.addData("友情链接["+form.getId()+"]不存在");
+                    ri.addData("友情链接[" + form.getId() + "]不存在");
                 }
             }
         }
@@ -86,22 +83,21 @@ public class FriendLinkController{
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    ResponseItem deleteFriendLink(@PathVariable long id,@ModelAttribute(SessionItem.KEY) SessionItem si, HttpServletRequest request) {
+    ResponseItem deleteFriendLink(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si, HttpServletRequest request) {
         FriendLink fl = siteService.getFriendLink(id);
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if(fl == null){
-            ri.addData("友情链接["+id+"]不存在 ");
-        }
-        else {
+        if (fl == null) {
+            ri.addData("友情链接[" + id + "]不存在 ");
+        } else {
             siteService.delFriendLink(id);
             ri.setOk(true);
-            logService.add(si.getSsUserId(), "删除友情链接["+id+"]", Log.Type.INFO);
+            logService.add(si.getSsUserId(), "删除友情链接[" + id + "]", Log.Type.INFO);
         }
         return ri;
     }
 
 
-        @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     String getCompress(Map<String, Object> map) {
         map.put("friendLinkList", siteService.listFriendLink());
         return "admin/friendLink";

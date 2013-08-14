@@ -33,7 +33,7 @@ public class SiteServiceImpl implements SiteService {
     public void addFriendLink(String name, String url, String logo) {
         FriendLink fl = new FriendLink();
         fl.setName(name);
-        fl.setUrl( url);
+        fl.setUrl(url);
         fl.setLogo(logo);
         friendLinkDao.insert(fl);
     }

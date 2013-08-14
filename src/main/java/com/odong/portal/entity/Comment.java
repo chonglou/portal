@@ -16,11 +16,15 @@ import java.util.Date;
 @Table(name = "cmsComment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Comment extends IdEntity {
+
+    public Date getPublishDate() {
+        return lastEdit == null ? created : lastEdit;
+    }
     private static final long serialVersionUID = -9089422699866112475L;
 
-    @Column( updatable = false)
+    @Column(updatable = false)
     private Long user;
-    @Column( updatable = false)
+    @Column(updatable = false)
     private Long comment;
     @Column(nullable = false, updatable = false)
     private String article;

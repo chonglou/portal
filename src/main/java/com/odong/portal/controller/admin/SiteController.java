@@ -1,6 +1,7 @@
 package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
+import com.odong.portal.form.admin.AllowForm;
 import com.odong.portal.form.admin.InfoForm;
 import com.odong.portal.form.admin.RegProtocolForm;
 import com.odong.portal.model.SessionItem;
@@ -9,6 +10,7 @@ import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
+import com.odong.portal.web.form.RadioField;
 import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
 import org.springframework.stereotype.Controller;
@@ -32,7 +34,7 @@ public class SiteController {
     @ResponseBody
     Form getRegProtocolForm() {
         Form fm = new Form("regProtocol", "用户注册协议", "/admin/site/regProtocol");
-        fm.addField(new TextField<>("protocol", siteService.getString("site.regProtocol")));
+        fm.addField(new TextAreaField("protocol", "用户协议", siteService.getString("site.regProtocol")));
         fm.setOk(true);
         return fm;
     }
@@ -74,6 +76,43 @@ public class SiteController {
             logService.add(si.getSsUserId(), "修改站点基本信息", Log.Type.INFO);
         }
         return ri;
+    }
+
+
+
+    @RequestMapping(value = "/state", method = RequestMethod.GET)
+    @ResponseBody
+    Form getAllow() {
+        Form fm = new Form("siteState", "网站状态", "/admin/site/state");
+        RadioField<Boolean> login = new RadioField<>("allowLogin", "登陆", siteService.getBoolean("site.allowLogin"));
+        login.addOption("允许", true);
+        login.addOption("禁止", false);
+        RadioField<Boolean> register = new RadioField<>("allowRegister", "注册", siteService.getBoolean("site.allowRegister"));
+        register.addOption("允许", true);
+        register.addOption("禁止", false);
+        RadioField<Boolean> anonym = new RadioField<>("allowAnonym", "匿名用户", siteService.getBoolean("site.allowAnonym"));
+        anonym.addOption("允许", true);
+        anonym.addOption("禁止", false);
+        fm.addField(login);
+        fm.addField(register);
+        fm.addField(anonym);
+        fm.setOk(true);
+        return fm;
+    }
+
+
+    @RequestMapping(value = "/state", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postAllow(@Valid AllowForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            siteService.set("site.allowRegister", form.isAllowRegister());
+            siteService.set("site.allowLogin", form.isAllowLogin());
+            siteService.set("site.allowAnonym", form.isAllowAnonym());
+            logService.add(si.getSsUserId(), "变更站点权限 注册=>[" + form.isAllowRegister() + "] 登陆=>[" + form.isAllowLogin() + "] 匿名用户=>[" + form.isAllowAnonym() + "]", Log.Type.INFO);
+        }
+        return ri;
+
     }
 
 

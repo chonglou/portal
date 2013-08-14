@@ -6,6 +6,7 @@ import com.odong.portal.form.admin.TagForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.LogService;
+import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
@@ -52,6 +53,7 @@ public class TagController {
     Form getTagEdit(@PathVariable long tagId) {
         Tag t = contentService.getTag(tagId);
         Form fm = new Form("tag", "标签", "/admin/tag/");
+
         fm.addField(new HiddenField<>("id", t.getId()));
         fm.addField(new TextField<>("name", "名称", t.getName()));
         fm.setOk(true);
@@ -69,7 +71,7 @@ public class TagController {
                 if (contentService.getTag(form.getName()) == null) {
                     contentService.addTag(form.getName());
                 } else {
-                    ri.addData("标签[" + form.getId() + "]已存在");
+                    ri.addData("标签[" + form.getName() + "]已存在");
                     ri.setOk(false);
                 }
             } else {
@@ -81,7 +83,7 @@ public class TagController {
                     if (contentService.getTag(form.getName()) == null) {
                         contentService.setTagName(form.getId(), form.getName());
                     } else {
-                        ri.addData("标签[" + form.getId() + "]已存在");
+                        ri.addData("标签[" + form.getName() + "]已存在");
                         ri.setOk(false);
                     }
                 }
@@ -94,7 +96,8 @@ public class TagController {
     @ResponseBody
     ResponseItem deleteTag(@PathVariable long tagId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if (contentService.countArticleByTag(tagId) == 0) {
+
+        if (siteService.getLong("site.defTag") != tagId && contentService.countArticleByTag(tagId) == 0) {
             contentService.delTag(tagId);
             logService.add(si.getSsUserId(), "删除标签[" + tagId + "]", Log.Type.INFO);
             ri.setOk(true);
@@ -105,11 +108,17 @@ public class TagController {
     }
 
     @Resource
+    private SiteService siteService;
+    @Resource
     private ContentService contentService;
     @Resource
     private FormHelper formHelper;
     @Resource
     private LogService logService;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;
