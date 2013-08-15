@@ -1,9 +1,6 @@
 package com.odong.portal.service.impl;
 
-import com.odong.portal.dao.ArticleDao;
-import com.odong.portal.dao.ArticleTagDao;
-import com.odong.portal.dao.CommentDao;
-import com.odong.portal.dao.TagDao;
+import com.odong.portal.dao.*;
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.ArticleTag;
 import com.odong.portal.entity.Comment;
@@ -88,9 +85,8 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void setTagVisits(long tag) {
-        Tag t = tagDao.select(tag);
         Map<String, Object> map = new HashMap<>();
-        map.put("id", t.getId());
+        map.put("id", tag);
         tagDao.update("UPDATE Tag  i SET i.visits=i.visits+1 WHERE i.id=:id", map);
     }
 
@@ -334,12 +330,22 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public void setArticleVisits(String article) {
 
-        Article a = articleDao.select(article);
         Map<String, Object> map = new HashMap<>();
-        map.put("id", a.getId());
+        map.put("id", article);
         articleDao.update("UPDATE Article  i SET i.visits=i.visits+1 WHERE i.id=:id", map);
     }
 
+    @Override
+    public void setUserVisits(long user) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", user);
+        articleDao.update("UPDATE User  i SET i.visits=i.visits+1 WHERE i.id=:id", map);
+
+    }
+
+    @Resource
+    private UserDao userDao;
     @Resource
     private ArticleDao articleDao;
     @Resource

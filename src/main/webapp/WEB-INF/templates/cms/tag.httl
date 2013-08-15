@@ -1,8 +1,10 @@
 $!{extends("/layout.httl")}
 #macro(main)
+<!--#set(Map<String,String> gl_site)-->
 <div class="col-lg-3">
     <br/>
     ${left_nav_bar}
+    $!{gl_site.advertLeft}
 </div>
 <div class="col-lg-9">
     <br/>
@@ -11,5 +13,6 @@ $!{extends("/layout.httl")}
     <h3>标签-${tag.name} 文章列表[${articleList.size()}]</h3>
     <hr/>
     ${listArticle}
+    $!{gl_site.advertBottom}
 </div>
 #end

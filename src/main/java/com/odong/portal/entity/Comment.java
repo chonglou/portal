@@ -20,6 +20,7 @@ public class Comment extends IdEntity {
     public Date getPublishDate() {
         return lastEdit == null ? created : lastEdit;
     }
+
     private static final long serialVersionUID = -9089422699866112475L;
 
     @Column(updatable = false)

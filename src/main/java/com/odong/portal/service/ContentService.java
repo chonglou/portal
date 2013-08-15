@@ -102,4 +102,6 @@ public interface ContentService {
 
     void setArticleVisits(String article);
 
+    void setUserVisits(long user);
+
 }

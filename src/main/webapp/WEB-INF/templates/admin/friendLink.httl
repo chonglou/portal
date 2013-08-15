@@ -24,7 +24,7 @@
         <tr>
             <td>${fl.id}</td>
             <td>${fl.name}</td>
-            <td><a href="${fl.url}" target="_blank">${fl.url}</a> </td>
+            <td><a href="${fl.url}" target="_blank">${fl.url}</a></td>
             <td><img src="${fl.logo}" alt="${fl.logo}"/></td>
             <td>
                 <div class="btn-group">
@@ -51,7 +51,7 @@
             var ss = $(this).attr('id').split('-');
             clear_message_div();
 
-            new Ajax("/admin/friendLink/" + ss[1], undefined, undefined, undefined, undefined,"friendLink");
+            new Ajax("/admin/friendLink/" + ss[1], undefined, undefined, undefined, undefined, "friendLink");
 
         });
     });

@@ -1,0 +1,32 @@
+<div class="btn-group">
+    <button id="edit-left" class="btn btn-mini btn-success" type="button">编辑左侧广告栏</button>
+    <button id="edit-bottom" class="btn btn-mini btn-warning" type="button">编辑底部广告栏</button>
+    <button id="refresh" class="btn btn-mini btn-primary" type="button">刷新代码</button>
+    <a target="_blank" href="/article/${defArticle}" class="btn btn-mini btn-default" type="button">查看效果</a>
+</div>
+<p>&nbsp;</p>
+<div id="advert"></div>
+<!--#set(Map<String,String> adverts)-->
+#for(s : ["left":"左侧广告栏", "bottom":"底部广告栏"])
+<h3><label for="ad-${s.key}">${s.value}</label></h3>
+<hr>
+<textarea class="form-control" rows="10" id="ad-${s.key}" readonly>
+    ${adverts.get(s.key)}
+</textarea>
+<p>&nbsp;</p>
+#end
+
+<script type="text/javascript">
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/admin/advert/");
+    });
+    $("button[id^='edit-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/admin/advert/" + ss[1], undefined, undefined, undefined, undefined, "advert");
+
+        });
+    });
+</script>

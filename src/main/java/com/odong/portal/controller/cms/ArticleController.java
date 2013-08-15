@@ -157,9 +157,9 @@ public class ArticleController extends PageController {
 
             map.put("tagList", contentService.listTagByArticle(articleId));
             List<Comment> comments = contentService.listCommentByArticle(articleId);
-            Map<Long,User> users = new HashMap<>();
-            for(Comment c : comments){
-                if(users.get(c.getUser()) == null){
+            Map<Long, User> users = new HashMap<>();
+            for (Comment c : comments) {
+                if (users.get(c.getUser()) == null) {
                     users.put(c.getUser(), accountService.getUser(c.getUser()));
                 }
             }

@@ -33,10 +33,10 @@
     </table>
 </fieldset>
 <script type="text/javascript">
-    $("button#add").click(function(){
-        new Ajax("/article/add", undefined,undefined,undefined,undefined,"article");
+    $("button#add").click(function () {
+        new Ajax("/article/add", undefined, undefined, undefined, undefined, "article");
     });
-    $("button#refresh").click(function(){
+    $("button#refresh").click(function () {
         clear_message_div();
         new Ajax("/personal/article");
     });
@@ -44,7 +44,7 @@
         $(this).click(function () {
             var ss = $(this).attr('id').split('_');
             clear_message_div();
-            if(confirm("你确认要删除文章["+ss[1]+"]么")){
+            if (confirm("你确认要删除文章[" + ss[1] + "]么")) {
                 new Ajax("/article/" + ss[1], "DELETE");
             }
         });
@@ -53,7 +53,7 @@
         $(this).click(function () {
             var ss = $(this).attr('id').split('_');
             clear_message_div();
-            new Ajax("/article/"+ss[1], "PUT",undefined,undefined,undefined,"article");
+            new Ajax("/article/" + ss[1], "PUT", undefined, undefined, undefined, "article");
         });
     });
 

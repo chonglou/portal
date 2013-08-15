@@ -77,7 +77,7 @@ $!{extends("/frame.httl")}
 <div class="list-group">
     #for(Page j: i.pages)
     <a class="list-group-item #if(request.getRequestURI() == j.url) active #end" href="${j.url}" target="_blank">
-     $!{j.name}
+        $!{j.name}
     </a>
     #end
 </div>
@@ -95,10 +95,10 @@ $!{extends("/frame.httl")}
 <!--#macro(listArticle)-->
 <!--#set(List<Article> articleList)-->
 <div class="row">
-#for(a : articleList)
+    #for(a : articleList)
     <div class="col-lg-3">
         <a href="/article/${a.id}" target="_blank">${a.summary}</a>
     </div>
-#end
+    #end
 </div>
 <!--#end-->

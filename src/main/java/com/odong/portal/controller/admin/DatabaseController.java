@@ -2,18 +2,16 @@ package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.AccountService;
-import com.odong.portal.service.ContentService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.DBHelper;
 import com.odong.portal.web.ResponseItem;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,19 +53,19 @@ public class DatabaseController {
 
     @RequestMapping(value = "/export", method = RequestMethod.POST)
     @ResponseBody
-    Map<String, Object> postCompress(@ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("userList", accountService.listUser());
-        map.put("articleList", contentService.listArticle());
-        map.put("tagList", contentService.listTag());
-        map.put("commentList", contentService.listComment());
-        map.put("articleTagList", contentService.listArticleTag());
-        map.put("friendLinkList", siteService.listFriendLink());
-        Date now = new Date();
-        map.put("created", now);
-        siteService.set("site.lastExport", now);
-        logService.add(si.getSsUserId(), "导出数据[" + now + "]", Log.Type.INFO);
-        return map;
+    ResponseItem postCompress(@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+
+        try {
+            dbHelper.export();
+            siteService.set("site.lastExport", new Date());
+            logService.add(si.getSsUserId(), "导出数据库", Log.Type.INFO);
+            ri.setOk(true);
+        } catch (Exception e) {
+            ri.setOk(false);
+            ri.addData(e.getMessage());
+        }
+        return ri;
     }
 
     @Resource
@@ -76,17 +74,11 @@ public class DatabaseController {
     private LogService logService;
     @Resource
     private SiteService siteService;
-    @Resource
-    private AccountService accountService;
-    @Resource
-    private ContentService contentService;
+    @Value("${app.store}")
+    private String appStoreDir;
 
-    public void setAccountService(AccountService accountService) {
-        this.accountService = accountService;
-    }
-
-    public void setContentService(ContentService contentService) {
-        this.contentService = contentService;
+    public void setAppStoreDir(String appStoreDir) {
+        this.appStoreDir = appStoreDir;
     }
 
     public void setSiteService(SiteService siteService) {

@@ -19,24 +19,26 @@
             <td>${c.id}</td>
             <td>${c.publishDate}</td>
             <td>$!{c.content}</td>
-            <td><button id="del-${c.id}" class="btn btn-mini btn-danger" type="button">删除</button></td>
+            <td>
+                <button id="del-${c.id}" class="btn btn-mini btn-danger" type="button">删除</button>
+            </td>
         </tr>
         #end
         </tbody>
     </table>
 </fieldset>
 <script type="text/javascript">
-    $("button#refresh").click(function(){
+    $("button#refresh").click(function () {
         clear_message_div();
         new Ajax("/personal/comment");
     });
     $("button[id^='del-']").each(function () {
-    $(this).click(function () {
-        var ss = $(this).attr('id').split('-');
-        clear_message_div();
-        if(confirm("你确认要删除评论["+ss[1]+"]么")){
-            new Ajax("/comment/" + ss[1], "DELETE");
-        }
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            if (confirm("你确认要删除评论[" + ss[1] + "]么")) {
+                new Ajax("/comment/" + ss[1], "DELETE");
+            }
+        });
     });
-});
 </script>

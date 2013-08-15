@@ -1,8 +1,6 @@
 package com.odong.portal.controller;
 
-import com.odong.portal.entity.Tag;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.web.NavBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,18 +41,6 @@ public class SiteController extends PageController {
 
     @RequestMapping(value = "sitemap", method = RequestMethod.GET)
     String getSitemap(Map<String, Object> map) {
-               /*
-        List<NavBar> navBars = new ArrayList<>();
-        NavBar nbTag = new NavBar("标签列表");
-        int i = 0;
-        for (Tag t : contentService.listTag()) {
-            nbTag.add(t.getName(), "/tag/" + t.getId());
-            i++;
-        }
-        nbTag.setTitle(nbTag.getTitle() + " [" + i + "]");
-        navBars.add(nbTag);
-        map.put("navBars", navBars);
-*/
 
         //TODO 分页
         map.put("articleList", contentService.listArticle());
@@ -64,6 +51,16 @@ public class SiteController extends PageController {
         map.put("title", "网站地图");
         map.put("top_nav_key", "sitemap");
         return "sitemap";
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    String postSearch(Map<String, Object> map, HttpServletRequest request) {
+        fillSiteInfo(map);
+        map.put("navBars", getNavBars());
+        String key = request.getParameter("keyword");
+        map.put("key", key);
+        map.put("title", "搜索-[" + key + "]");
+        return "search";
     }
 
     @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)

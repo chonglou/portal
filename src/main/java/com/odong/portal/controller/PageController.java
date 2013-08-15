@@ -96,6 +96,8 @@ public abstract class PageController {
         topNavs.put("aboutMe", "关于我们");
         site.put("topNavs", topNavs);
         site.put("hotTags", contentService.hotTag(siteService.getInteger("site.hotTagCount")));
+        site.put("advertLeft", siteService.getString("site.advert.left"));
+        site.put("advertBottom", siteService.getString("site.advert.bottom"));
         map.put("gl_site", site);
     }
 

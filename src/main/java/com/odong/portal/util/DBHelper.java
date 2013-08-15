@@ -1,5 +1,8 @@
 package com.odong.portal.util;
 
+import com.odong.portal.service.AccountService;
+import com.odong.portal.service.ContentService;
+import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +14,14 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,10 +34,27 @@ public class DBHelper {
     public String getSize() {
         switch (databaseProductName) {
             case "MySQL":
-                return jdbcTemplate.queryForObject(String.format("SELECT concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data FROM TABLES WHERE table_schema='%s'", dbName), String.class);
+                return jdbcTemplate.queryForObject(String.format("SELECT concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data FROM information_schema.TABLES WHERE table_schema='%s'", dbName), String.class);
 
         }
         return "未知大小";
+    }
+
+    public void export() {
+        String fileName = appStoreDir + "/backup/" + dbName + "_" + format.format(new Date()) + ".json";
+        try (PrintWriter writer = new PrintWriter(fileName)) {
+            writer.println(jsonHelper.object2json(accountService.listUser()));
+            writer.println(jsonHelper.object2json(contentService.listArticle()));
+            writer.println(jsonHelper.object2json(contentService.listTag()));
+            writer.println(jsonHelper.object2json(contentService.listArticleTag()));
+            writer.println(jsonHelper.object2json(contentService.listComment()));
+            writer.println(jsonHelper.object2json(siteService.listFriendLink()));
+            writer.flush();
+
+            zipHelper.compress(fileName, true);
+        } catch (IOException e) {
+            logger.error("导出数据库出错", e);
+        }
     }
 
     /**
@@ -44,7 +66,7 @@ public class DBHelper {
             case "MySQL":
                 logger.info("开始备份数据库{}@mysql", dbName);
                 try {
-                    String fileName = appStoreDir + "/backup/" + dbName + "_" + format.format(new java.util.Date()) + ".sql";
+                    String fileName = appStoreDir + "/backup/" + dbName + "_" + format.format(new Date()) + ".sql";
 
                     Process p = Runtime.getRuntime().exec("mysqldump -u " + username
                             + " -p" + password + " " + dbName
@@ -98,6 +120,7 @@ public class DBHelper {
         format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     }
 
+
     private String databaseProductName;
     private String databaseProductVersion;
     private String dbName;
@@ -115,9 +138,31 @@ public class DBHelper {
     private String password;
     @Value("${jdbc.url}")
     private String url;
-
-
+    @Resource
+    private ContentService contentService;
+    @Resource
+    private AccountService accountService;
+    @Resource
+    private JsonHelper jsonHelper;
+    @Resource
+    private SiteService siteService;
     private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setContentService(ContentService contentService) {
+        this.contentService = contentService;
+    }
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     public void setUrl(String url) {
         this.url = url;

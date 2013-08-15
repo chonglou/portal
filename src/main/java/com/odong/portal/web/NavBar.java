@@ -11,9 +11,10 @@ import java.util.List;
  * Time: 上午11:21
  */
 public class NavBar implements Serializable {
-    public enum  Type{
-        LIST,MENU
+    public enum Type {
+        LIST, MENU
     }
+
     public void add(String name, String url) {
         Page p = new Page();
         if (name.length() > 100) {

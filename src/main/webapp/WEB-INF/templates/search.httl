@@ -1,10 +1,17 @@
 $!{extends("/layout.httl")}
-
 #macro(main)
-${mainGL}
-<fieldset>
-    <legend>搜索结果[${key}]</legend>
-    <ul>
-    </ul>
-</fieldset>
+<!--#set(Map<String,String> gl_site)-->
+<div class="col-lg-3">
+    <br/>
+    ${left_nav_bar}
+    $!{gl_site.advertLeft}
+</div>
+<div class="col-lg-9">
+    <br/>
+    <!--#set(List<Article> articleList)-->
+    <h3>查找-${key} 文章列表[${articleList.size()}]</h3>
+    <hr/>
+    ${listArticle}
+    $!{gl_site.advertBottom}
+</div>
 #end

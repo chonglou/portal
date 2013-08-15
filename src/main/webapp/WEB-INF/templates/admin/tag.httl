@@ -47,7 +47,7 @@
             var ss = $(this).attr('id').split('-');
             clear_message_div();
 
-                new Ajax("/admin/tag/" + ss[1], undefined, undefined, undefined, undefined,"tag");
+            new Ajax("/admin/tag/" + ss[1], undefined, undefined, undefined, undefined, "tag");
 
         });
     });

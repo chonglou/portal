@@ -12,6 +12,8 @@ $!{extends("/layout.httl")}
             </a>
         </p>
     </div>
+    <!--#set(Map<String,String> gl_site)-->
+    $!{gl_site.advertBottom}
     ${listArticle}
 </div>
 #end

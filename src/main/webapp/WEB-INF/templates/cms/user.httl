@@ -1,8 +1,10 @@
 $!{extends("/layout.httl")}
 #macro(main)
+<!--#set(Map<String,String> gl_site)-->
 <div class="col-lg-3">
     <br/>
     ${left_nav_bar}
+    $!{gl_site.advertLeft}
 </div>
 <div class="col-lg-9">
     <br>
@@ -11,7 +13,9 @@ $!{extends("/layout.httl")}
     <h3>用户-${user.username} 文章列表[${articleList.size()}]</h3>
     <hr/>
     <label>邮箱：<a href="mailto:${user.email}" target="_top"> ${user.email} </a>上次登陆：${user.lastLogin}</label>
+
     <p>&nbsp;</p>
     ${listArticle}
+    $!{gl_site.advertBottom}
 </div>
 #end

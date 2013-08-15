@@ -65,9 +65,10 @@ public class SelfController extends PageController {
             nbSite.add("站点信息", "/admin/site/info");
             nbSite.add("用户协议", "/admin/site/regProtocol");
             nbSite.add("站点状态", "/admin/site/state");
+            nbSite.add("分页设置", "/admin/site/pager");
             nbSite.add("邮件设置", "/admin/smtp/");
             nbSite.add("友情链接", "/admin/friendLink/");
-            nbSite.add("广告设置", "/admin/site/adv/");
+            nbSite.add("广告设置", "/admin/advert/");
             nbSite.add("验证码", "/admin/captcha/");
             nbSite.add("数据库", "/admin/database/");
             nbSite.setAjax(true);
@@ -178,6 +179,7 @@ public class SelfController extends PageController {
         map.put("logList", logService.list(si.getSsUserId(), 100));
         return "personal/log";
     }
+
     @RequestMapping(value = "/comment", method = RequestMethod.GET)
     String getComment(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         map.put("commentList", contentService.listCommentByUser(si.getSsUserId()));

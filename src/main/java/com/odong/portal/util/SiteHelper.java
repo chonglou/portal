@@ -88,6 +88,30 @@ public class SiteHelper {
             siteService.set("site.defArticle", defArticle);
             siteService.set("site.defTag", tag.getId());
 
+            //广告
+            siteService.set("site.advert.bottom", "<script type=\"text/javascript\"><!--\n" +
+                    "google_ad_client = \"ca-pub-5028403610236620\";\n" +
+                    "/* 全局横幅 */\n" +
+                    "google_ad_slot = \"8184321813\";\n" +
+                    "google_ad_width = 728;\n" +
+                    "google_ad_height = 90;\n" +
+                    "//-->\n" +
+                    "</script>\n" +
+                    "<script type=\"text/javascript\"\n" +
+                    "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n" +
+                    "</script>");
+            siteService.set("site.advert.left", "<script type=\"text/javascript\"><!--\n" +
+                    "google_ad_client = \"ca-pub-5028403610236620\";\n" +
+                    "/* 底部商铺（discuz） */\n" +
+                    "google_ad_slot = \"6080910921\";\n" +
+                    "google_ad_width = 300;\n" +
+                    "google_ad_height = 250;\n" +
+                    "//-->\n" +
+                    "</script>\n" +
+                    "<script type=\"text/javascript\"\n" +
+                    "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n" +
+                    "</script>");
+
         }
 
         GlobalResolver.put("gl_debug", appDebug);

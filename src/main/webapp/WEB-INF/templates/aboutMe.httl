@@ -25,4 +25,6 @@ $!{extends("/layout.httl")}
     </table>
     <br/>
 </div>
+<!--#set(Map<String,String> gl_site)-->
+$!{gl_site.advertBottom}
 #end
