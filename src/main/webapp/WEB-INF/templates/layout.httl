@@ -45,59 +45,93 @@ $!{extends("/frame.httl")}
 </ul>
 <!--#end-->
 
-<!--#macro(left_nav_bar)-->
+<!--#macro(left_nav_bar_1)-->
 <!--#set(List<NavBar> navBars)-->
-#for(NavBar i:navBars)
-#if(i.type.toString() == "MENU")
-<ul class="nav nav-pills nav-stacked">
-    #if(i.pages.size == 0)
-    <li><a>${i.title}</a></li>
-    #else
-    <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-            ${i.title}
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            #if(i.ajax)
-            #for(Page j: i.pages)
-            <li><a id="left_nav-${j.url}">${j.name}</a></li>
-            #end
-            #else
-            #for(Page j: i.pages)
-            <li><a href="${j.url}" target="_blank">${j.name}</a></li>
+<!--#set(Map<String,String> gl_site)-->
+
+<div role="navigation" id="sidebar" class="col-lg-3 sidebar-offcanvas">
+    <br>
+    <div class="well sidebar-nav">
+        <ul class="nav">
+            #for(NavBar nb:navBars)
+            <li>${nb.title}</li>
+            #for(Page p: nb.pages)
+            <li class="warp"><a href="${p.url}" target="_blank">${p.name}</a></li>
             #end
             #end
         </ul>
-    </li>
-    #end
-</ul>
-#else(i.type.toString()=="LIST")
-<label>${i.title}</label>
-<div class="list-group">
-    #for(Page j: i.pages)
-    <a class="list-group-item #if(request.getRequestURI() == j.url) active #end" href="${j.url}" target="_blank">
-        $!{j.name}
-    </a>
-    #end
+    </div>
 </div>
-#end
-#end
 <!--#end-->
 
+<!--#macro(left_nav_bar_2)-->
+<!--#set(List<NavBar> navBars)-->
+<!--#set(Map<String,String> gl_site)-->
+<div class="col-lg-3">
+    <br/>
+    #for(NavBar i:navBars)
+    #if(i.type.toString() == "MENU")
+    <ul class="nav nav-pills nav-stacked">
+        #if(i.pages.size == 0)
+        <li><a>${i.title}</a></li>
+        #else
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">
+                ${i.title}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                #if(i.ajax)
+                #for(Page j: i.pages)
+                <li><a id="left_nav-${j.url}">${j.name}</a></li>
+                #end
+                #else
+                #for(Page j: i.pages)
+                <li><a href="${j.url}" target="_blank">${j.name}</a></li>
+                #end
+                #end
+            </ul>
+        </li>
+        #end
+    </ul>
+    #else(i.type.toString()=="LIST")
+    <label>${i.title}</label>
+
+    <div class="list-group">
+        #for(Page j: i.pages)
+        <a class="list-group-item #if(request.getRequestURI() == j.url) active #end" href="${j.url}" target="_blank">
+            $!{j.name}
+        </a>
+        #end
+    </div>
+    #end
+    #end
+    $!{gl_site.advertLeft}
+</div>
+<!--#end-->
+
+
 <!--#macro(mainGL)-->
-<br/>
 <div id="gl_message"></div>
 <div id="gl_root"></div>
-<br/>
 <!--#end-->
 
 <!--#macro(listArticle)-->
 <!--#set(List<Article> articleList)-->
-<div class="row">
+<div class="row row-offcanvas row-offcanvas-right">
     #for(a : articleList)
     <div class="col-lg-3">
-        <a href="/article/${a.id}" target="_blank">${a.summary}</a>
+        <div class="thumbnail">
+            <img src="" alt=""/>
+
+            <div class="caption">
+                <h3>${a.title}</h3>
+
+                <p><a href="/article/${a.id}" target="_blank">${a.summary}</a></p>
+            </div>
+        </div>
+        <!--FIXME 文章显示-->
+
     </div>
     #end
 </div>

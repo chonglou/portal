@@ -1,13 +1,9 @@
 $!{extends("/layout.httl")}
 #macro(main)
 <!--#set(Map<String,String> gl_site)-->
-<div class="col-lg-3">
-    <br/>
-    ${left_nav_bar}
-    $!{gl_site.advertLeft}
-</div>
+${left_nav_bar_1}
 <div class="col-lg-9">
-    <br/>
+    ${mainGL}
     <!--#set(Tag tag)-->
     <!--#set(List<Article> articleList)-->
     <h3>标签-${tag.name} 文章列表[${articleList.size()}]</h3>

@@ -1,6 +1,8 @@
 $!{extends("/layout.httl")}
 #macro(main)
-<div class="col-lg-12">
+<!--#set(Map<String,String> gl_site)-->
+${left_nav_bar_1}
+<div class="col-lg-9">
     ${mainGL}
     <!--#set(Article defArticle) -->
     <div class="jumbotron">
@@ -12,7 +14,6 @@ $!{extends("/layout.httl")}
             </a>
         </p>
     </div>
-    <!--#set(Map<String,String> gl_site)-->
     $!{gl_site.advertBottom}
     ${listArticle}
 </div>

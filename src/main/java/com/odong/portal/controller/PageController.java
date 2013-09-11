@@ -45,7 +45,7 @@ public abstract class PageController {
     }
 
     protected List<NavBar> getNavBars() {
-
+        //FIXME 缓存处理
         List<NavBar> navBars = new ArrayList<>();
 
         NavBar nbArticle = new NavBar("热门文章");

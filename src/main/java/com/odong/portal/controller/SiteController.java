@@ -29,6 +29,7 @@ public class SiteController extends PageController {
     String getMain(Map<String, Object> map) {
         map.put("navBars", getNavBars());
         fillSiteInfo(map);
+
         map.put("title", "首页");
         map.put("top_nav_key", "main");
         //TODO 分页
@@ -47,7 +48,9 @@ public class SiteController extends PageController {
         map.put("userList", accountService.listUser());
         map.put("tagList", contentService.listTag());
 
+        map.put("navBars", getNavBars());
         fillSiteInfo(map);
+
         map.put("title", "网站地图");
         map.put("top_nav_key", "sitemap");
         return "sitemap";
@@ -55,7 +58,9 @@ public class SiteController extends PageController {
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     String postSearch(Map<String, Object> map, HttpServletRequest request) {
+        map.put("navBars", getNavBars());
         fillSiteInfo(map);
+
         map.put("navBars", getNavBars());
         String key = request.getParameter("keyword");
         map.put("key", key);
@@ -68,6 +73,7 @@ public class SiteController extends PageController {
 
         map.put("navBars", getNavBars());
         fillSiteInfo(map);
+
         map.put("title", "关于我们");
         map.put("top_nav_key", "aboutMe");
         List<String> logList = new ArrayList<>();

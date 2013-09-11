@@ -1,11 +1,7 @@
 $!{extends("/layout.httl")}
 #macro(main)
 <!--#set(Map<String,String> gl_site)-->
-<div class="col-lg-3">
-    <br/>
-    ${left_nav_bar}
-    $!{gl_site.advertLeft}
-</div>
+${left_nav_bar_2}
 <div class="col-lg-9">
     ${mainGL}
     <script type="text/javascript">

@@ -50,17 +50,14 @@
         </div>
     </div>
 </div>
-
 <div class="container">
-    <div class="body-content">
-        <div class="row">
-            #macro($!main)#end
-        </div>
-        <hr>
-        <footer>
-            <p>$!{gl_site.copyright}</p>
-        </footer>
+    <div class="row">
+        #macro($!main)#end
     </div>
+    <hr>
+    <footer>
+        <p>$!{gl_site.copyright}</p>
+    </footer>
 </div>
 </body>
 </html>

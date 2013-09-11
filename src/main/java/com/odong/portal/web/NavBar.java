@@ -1,5 +1,7 @@
 package com.odong.portal.web;
 
+import org.jsoup.Jsoup;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,12 @@ public class NavBar implements Serializable {
         LIST, MENU
     }
 
-    public void add(String name, String url) {
+    public void add(String text, String url) {
         Page p = new Page();
-        if (name.length() > 100) {
-            name = name.substring(0, 97);
+        //过滤掉html标签
+        String name = Jsoup.parse(text).body().text();
+        if (name.length() > MAX_LEN) {
+            name = name.substring(0, MAX_LEN-3)+"...";
         }
         p.setName(name);
         p.setUrl(url);
@@ -32,6 +36,7 @@ public class NavBar implements Serializable {
     }
 
     private static final long serialVersionUID = 9005274236641313051L;
+    private static final int MAX_LEN=50;
     private Type type;
     private String title;
     private boolean ajax;

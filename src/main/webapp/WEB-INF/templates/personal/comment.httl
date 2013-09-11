@@ -1,11 +1,10 @@
 <!--#set(List<Comment> commentList) -->
-<fieldset>
-    <legend>
+<h3>
         评论列表[${commentList.size}]
         <span class="btn-group btn-group-sm">
             <button id="refresh" class="btn btn-primary" type="button">刷新</button>
         </span>
-    </legend>
+</h3><hr/>
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
@@ -30,7 +29,7 @@
         #end
         </tbody>
     </table>
-</fieldset>
+
 <script type="text/javascript">
     $("button#refresh").click(function () {
         clear_message_div();

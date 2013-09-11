@@ -3,11 +3,11 @@ $!{extends("/layout.httl")}
 <!--#set(List<User> userList)-->
 <!--#set(List<Tag> tagList)-->
 <!--#set(List<Article> articleList)-->
-<div class="col-lg-12">
-    <!--#set(Map<String,String> gl_site)-->
+<!--#set(Map<String,String> gl_site)-->
+${left_nav_bar_1}
+<div class="col-lg-9">
+    ${mainGL}
     $!{gl_site.advertBottom}
-    <br>
-
     <h3>用户列表</h3>
     <hr>
     <div class="row">

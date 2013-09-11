@@ -1,6 +1,5 @@
 <!--#set(List<Log> logList) -->
-<fieldset>
-    <legend>日志[${logList.size}]</legend>
+<h3>日志[${logList.size}]</h3><hr/>
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
@@ -19,4 +18,3 @@
         #end
         </tbody>
     </table>
-</fieldset>
