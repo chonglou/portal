@@ -1,4 +1,4 @@
-package com.odong.portal;
+package com.odong;
 
 import org.eclipse.jetty.deploy.DeploymentManager;
 import org.eclipse.jetty.deploy.PropertiesConfigurationManager;
@@ -17,30 +17,13 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.ResourceBundle;
+import org.apache.commons.daemon.Daemon;
+import org.apache.commons.daemon.DaemonContext;
+import org.apache.commons.daemon.DaemonInitException;
 
-public class App {
-    public static void main(String[] args) {
-        final App app = new App();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                try {
-                    app.destroy();
-                    app.stop();
-                } catch (Exception e) {
-                    logger.error("停止服务出错", e);
-                }
-            }
-        });
-        try {
-            app.init();
-            app.start();
-        } catch (Exception e) {
-            logger.debug("启动失败", e);
-        }
-    }
-
-    void init() throws Exception {
+public class App implements Daemon{
+    @Override
+    public void init(DaemonContext daemonContext) throws DaemonInitException, Exception {
         logger.info("初始化");
         ResourceBundle bundle = ResourceBundle.getBundle("config");
 
@@ -84,35 +67,38 @@ public class App {
         server.addBean(mbContainer);
         ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(config));
         http.setPort(httpPort);
-        http.setIdleTimeout(Integer.parseInt(bundle.getString("app.timeout")));
+        http.setIdleTimeout(1000*getInteger("timeout", bundle));
         server.addConnector(http);
 
         initWebApp(store);
 
-
     }
 
-    void start() throws Exception {
+    @Override
+    public void start() throws Exception {
         logger.info("启动");
         server.start();
         server.join();
     }
 
-    void stop() throws Exception {
+    @Override
+    public void stop() throws Exception {
         logger.info("停止");
         server.stop();
     }
 
-    void destroy() {
+    @Override
+    public void destroy() {
+
         logger.info("销毁");
     }
+
 
 
     private void initWebApp(String store) {
         WebAppContext app = new WebAppContext();
         app.setContextPath("/");
-        //app.setWar(store + "/apps/ROOT.war");
-        app.setWar("ROOT.war");
+        app.setWar(store + "/apps/ROOT.war");
         server.setHandler(app);
 
     }
