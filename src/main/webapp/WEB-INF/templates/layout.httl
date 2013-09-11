@@ -28,7 +28,7 @@ $!{extends("/frame.httl")}
 #set(personal_bar_sort=["login", "register", "active", "resetPwd"])
 #set(personal_bar_name="登录/注册")
 #end
-<ul class="nav navbar-nav pull-right">
+<ul class="nav navbar-nav navbar-right">
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             ${personal_bar_name} <b class="caret"></b>

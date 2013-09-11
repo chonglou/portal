@@ -1,10 +1,10 @@
 <fieldset>
     <legend>数据库状态
-        <div class="btn-group">
-            <button id="backup" class="btn btn-mini btn-info">备份</button>
-            <button id="export" class="btn btn-mini btn-warning">导出</button>
-            <button id="refresh" class="btn btn-mini btn-default">刷新</button>
-        </div>
+        <span class="btn-group btn-group-sm">
+            <button id="backup" class="btn btn-info">备份</button>
+            <button id="export" class="btn btn-warning">导出</button>
+            <button id="refresh" class="btn btn-primary">刷新</button>
+        </span>
     </legend>
     <b>
         大小：${dbSize},

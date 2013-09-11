@@ -1,0 +1,65 @@
+<!--#set(List<User> userList) -->
+<div id="user"></div>
+<fieldset>
+    <legend>
+        标签列表[${userList.size}]
+        <span class="btn-group btn-group-sm">
+            <button id="bind" class="btn btn-success" type="button">管理员</button>
+            <button id="refresh" class="btn btn-primary" type="button">刷新</button>
+        </span>
+    </legend>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <td style="width: 2%">ID</td>
+            <td>邮箱</td>
+            <td>用户名</td>
+            <td>状态</td>
+            <td>上次登录</td>
+            <td style="width: 20%">操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        #for(u : userList)
+        <tr>
+            <td>${u.id}</td>
+            <td>${u.email}</td>
+            <td>${u.username}</td>
+            <td>${u.state}</td>
+            <td>${u.lastLogin}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    #if(u.state == 'DISABLE')
+                        <button id="state-ENABLE-${u.id}" class="btn btn-primary" type="button">启用</button>
+                    #else(u.state == 'ENABLE')
+                        <button id="state-DISABLE-${u.id}" class="btn btn-danger" type="button">禁用</button>
+                    #end
+                </div>
+            </td>
+        </tr>
+        #end
+        </tbody>
+    </table>
+</fieldset>
+
+
+<script type="text/javascript">
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/admin/user/");
+    });
+
+    $("button[id^='state-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/admin/user/state", "POST", {id:ss[2],state:ss[1]}, undefined, undefined, "tag");
+
+        });
+    });
+
+    $("button#bind").click(function () {
+        clear_message_div();
+        new Ajax("/admin/user/bind", undefined, undefined, undefined, undefined, "user");
+    });
+</script>

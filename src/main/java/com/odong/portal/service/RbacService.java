@@ -1,5 +1,7 @@
 package com.odong.portal.service;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
@@ -7,6 +9,8 @@ package com.odong.portal.service;
  * Time: 上午10:34
  */
 public interface RbacService {
+
+    List<Long> listAdmin();
 
     void bindAdmin(long user, boolean bind);
 

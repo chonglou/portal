@@ -26,6 +26,11 @@ public class User extends IdEntity {
         SUBMIT, ENABLE, DISABLE, LOCK
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s[%s]", username,email);
+    }
+
     private static final long serialVersionUID = 6854757082522535497L;
 
     @Column(nullable = false, unique = true)

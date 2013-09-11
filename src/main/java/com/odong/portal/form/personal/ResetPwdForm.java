@@ -3,6 +3,7 @@ package com.odong.portal.form.personal;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -13,10 +14,11 @@ import java.io.Serializable;
  */
 public class ResetPwdForm implements Serializable {
     private static final long serialVersionUID = -8930794573995829457L;
-    @Email
+    @Email(message = "{valid.message}")
     @NotNull
     private String email;
     @NotNull
+    @Size(min = 6, max = 20, message = "{valid.password}")
     private String newPwd;
     @NotNull
     private String rePwd;

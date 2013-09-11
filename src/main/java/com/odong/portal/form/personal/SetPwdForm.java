@@ -14,10 +14,10 @@ public class SetPwdForm implements Serializable {
     private static final long serialVersionUID = 8215359471021027411L;
 
     @NotNull
-    @Size(min = 6, max = 20, message = "{val.password}")
+    @Size(min = 6, max = 20, message = "{valid.password}")
     private String oldPwd;
     @NotNull
-    @Size(min = 6, max = 20, message = "{val.password}")
+    @Size(min = 6, max = 20, message = "{valid.password}")
     private String newPwd;
     @NotNull
     private String rePwd;

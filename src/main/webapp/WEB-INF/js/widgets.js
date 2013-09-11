@@ -393,6 +393,7 @@ function FormWindow(form, parent) {
             if (field.type == "textarea" && field.html) {
                 var editor = new UE.ui.Editor();
                 editor.render(_id(field.id));
+                //uParse(_id(field.id), {'liiconpath':'/ueditor/themes/ueditor-list/'});
                 //UE.getEditor('myEditor')
             }
         }
@@ -402,8 +403,10 @@ function FormWindow(form, parent) {
                 var field = form.fields[i];
                 switch (field.type) {
                     case "text":
-                    case "password":
                         $("input#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
+                        break;
+                    case "password":
+                        $("input#" + _id(field.id)).val("");
                         break;
                     case "textarea":
                         $("textarea#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
@@ -441,8 +444,11 @@ function FormWindow(form, parent) {
                 switch (field.type) {
                     case "hidden":
                     case "text":
+                        data[field.id] = $('input#' + _id(field.id)).val();
+                        break;
                     case "password":
                         data[field.id] = $('input#' + _id(field.id)).val();
+                        $('input#' + _id(field.id)).val('');
                         break;
                     case "textarea":
                         data[field.id] = $('textarea#' + _id(field.id)).val();
@@ -503,7 +509,7 @@ function MessageDialog(messages, type) {
     var _init = function () {
         var name;
         switch (type) {
-            case "error":
+            case "warning":
                 name = "错误";
                 break;
             case "success":
@@ -513,14 +519,14 @@ function MessageDialog(messages, type) {
                 name = "提示";
                 break;
             default:
-                type = "block";
+                type = "danger";
                 name = "警告";
                 break;
         }
         if (type == undefined) {
             type = "error";
         }
-        $("div#gl_message").html("<div class='alert alert-block'><button type='button' class='close' data-dismiss='alert'>&times;</button><h4>" +
+        $("div#gl_message").html("<div class='alert alert-"+type+"'><button type='button' class='close' data-dismiss='alert'>&times;</button><h4>" +
             name + "[" + (new Date()).pattern("yyyy-MM-dd hh:mm:ss.S") + "]：</h4>" + (messages instanceof Array ? messages.join("<br/>") : messages) + "</div>");
 
     };

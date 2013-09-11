@@ -1,8 +1,8 @@
-<div class="btn-group">
-    <button id="edit-left" class="btn btn-mini btn-success" type="button">编辑左侧广告栏</button>
-    <button id="edit-bottom" class="btn btn-mini btn-warning" type="button">编辑底部广告栏</button>
-    <button id="refresh" class="btn btn-mini btn-primary" type="button">刷新代码</button>
-    <a target="_blank" href="/article/${defArticle}" class="btn btn-mini btn-default" type="button">查看效果</a>
+<div class="btn-group btn-group-sm">
+    <button id="edit-left" class="btn btn-success" type="button">编辑左侧广告栏</button>
+    <button id="edit-bottom" class="btn btn-warning" type="button">编辑底部广告栏</button>
+    <button id="refresh" class="btn btn-primary" type="button">刷新代码</button>
+    <a target="_blank" href="/article/${defArticle}" class="btn btn-default" type="button">查看效果</a>
 </div>
 <p>&nbsp;</p>
 <div id="advert"></div>

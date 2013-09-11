@@ -2,6 +2,7 @@ package com.odong.portal.form.personal;
 
 import org.hibernate.validator.constraints.Email;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -13,7 +14,8 @@ import java.io.Serializable;
 public class ActiveForm implements Serializable {
     private static final long serialVersionUID = -8643401225025746727L;
     private boolean agree;
-    @Email
+    @Email(message = "valid.email")
+    @NotNull
     private String email;
 
     public String getEmail() {

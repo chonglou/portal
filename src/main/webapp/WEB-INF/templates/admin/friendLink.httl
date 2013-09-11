@@ -3,10 +3,10 @@
 <fieldset>
     <legend>
         友情链接列表[${friendLinkList.size}]
-        <span class="btn-group">
-        <button id="add" class="btn btn-mini btn-success" type="button">添加</button>
+        <span class="btn-group btn-group-sm">
+        <button id="add" class="btn btn-success" type="button">添加</button>
 
-        <button id="refresh" class="btn btn-mini btn-default" type="button">刷新</button>
+        <button id="refresh" class="btn btn-primary" type="button">刷新</button>
         </span>
     </legend>
     <table class="table table-bordered table-hover">
@@ -27,9 +27,9 @@
             <td><a href="${fl.url}" target="_blank">${fl.url}</a></td>
             <td><img src="${fl.logo}" alt="${fl.logo}"/></td>
             <td>
-                <div class="btn-group">
-                    <button id="edit-${fl.id}" class="btn btn-mini btn-warning" type="button">编辑</button>
-                    <button id="del-${fl.id}" class="btn btn-mini btn-danger" type="button">删除</button>
+                <div class="btn-group btn-group-sm">
+                    <button id="edit-${fl.id}" class="btn btn-warning" type="button">编辑</button>
+                    <button id="del-${fl.id}" class="btn btn-danger" type="button">删除</button>
                 </div>
             </td>
         </tr>

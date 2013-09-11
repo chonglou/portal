@@ -2,7 +2,9 @@
 <fieldset>
     <legend>
         评论列表[${commentList.size}]
-        <button id="refresh" class="btn btn-mini btn-default" type="button">刷新</button>
+        <span class="btn-group btn-group-sm">
+            <button id="refresh" class="btn btn-primary" type="button">刷新</button>
+        </span>
     </legend>
     <table class="table table-bordered table-hover">
         <thead>
@@ -20,7 +22,9 @@
             <td>${c.publishDate}</td>
             <td>$!{c.content}</td>
             <td>
-                <button id="del-${c.id}" class="btn btn-mini btn-danger" type="button">删除</button>
+                <span class="btn-group btn-group-sm">
+                    <button id="del-${c.id}" class="btn  btn-danger" type="button">删除</button>
+                </span>
             </td>
         </tr>
         #end

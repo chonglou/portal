@@ -35,7 +35,6 @@ public class SiteHelper {
     void init() {
         siteService.set("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
-            final String author = "zhengjitang@gmail.com";
 
             siteService.set("site.init", new Date());
             siteService.set("site.version", "v20130522");
@@ -49,7 +48,7 @@ public class SiteHelper {
             siteService.set("site.allowAnonym", true);
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
-            siteService.set("site.author", author);
+            siteService.set("site.author", "zhengjitang@gmail.com");
 
             //SMTP
             SmtpProfile smtp = new SmtpProfile();
@@ -69,8 +68,8 @@ public class SiteHelper {
             siteService.set("site.captcha", "kaptcha");
 
             //USER
-            accountService.addUser(author, "管理员", "123456");
-            User admin = accountService.getUser(author);
+            accountService.addUser(manager, "管理员", "123456");
+            User admin = accountService.getUser(manager);
             rbacService.bindAdmin(admin.getId(), true);
 
             //CMS
@@ -146,8 +145,6 @@ public class SiteHelper {
     @Resource
     private AccountService accountService;
     @Resource
-    private StringHelper stringHelper;
-    @Resource
     private ContentService contentService;
     @Resource
     private SiteService siteService;
@@ -155,9 +152,15 @@ public class SiteHelper {
     private String appStoreDir;
     @Value("${app.debug}")
     private boolean appDebug;
+    @Value("${app.manager}")
+    private String manager;
     @Resource
     private EmailHelper emailHelper;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
@@ -181,10 +184,6 @@ public class SiteHelper {
 
     public void setAppStoreDir(String appStoreDir) {
         this.appStoreDir = appStoreDir;
-    }
-
-    public void setStringHelper(StringHelper stringHelper) {
-        this.stringHelper = stringHelper;
     }
 
     public void setSiteService(SiteService siteService) {
