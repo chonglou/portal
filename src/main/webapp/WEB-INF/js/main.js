@@ -28,16 +28,17 @@ function bind_left_nav_click() {
     });
 }
 
-function show_tag_cloud(id){
-    try {
-        TagCanvas.Start(id+"Canvas",id+'Items',{
-            textColour: '#ff0000',
-            outlineColour: '#ff00ff',
-            reverse: true,
-            depth: 0.8,
-            maxSpeed: 0.05
-        });
-    } catch(e) {
-        $("div#"+id+'Container').hide();
-    }
+function show_tag_cloud(id) {
+    $('ul#jcloud-' + id).jcloud({
+        radius: 200,
+        size: 30,
+        step: 2,
+        speed: 50,
+        flats: 2,
+        clock: 10,
+        areal: 100,
+        splitX: 100,
+        splitY: 100,
+        colors: ['#000000', '#DD2222', '#2267DD', '#2A872B', '#872A7B', '#CAC641']
+    });
 }

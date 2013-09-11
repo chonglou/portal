@@ -63,15 +63,12 @@ $!{extends("/frame.httl")}
     <!-- #set(List<Page> tagCloud=gl_site.tagCloud) -->
     <script type="text/javascript">
         $(document).ready(function(){
-            show_tag_cloud("tagCloud");
+            show_tag_cloud("pages");
         });
-
     </script>
-    <div id="tagCloudContainer">
-        <canvas width="300" height="300" id="tagCloudCanvas"></canvas>
-    </div>
-    <div id="tagCloudItems">
-        <ul>
+    <div class="jcloud">
+
+        <ul id="jcloud-pages">
             #for(Page p : tagCloud)
             <li><a href="${p.url}" target="_blank">${p.name}</a></li>
             #end
