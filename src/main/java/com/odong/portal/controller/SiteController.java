@@ -1,6 +1,10 @@
 package com.odong.portal.controller;
 
+import com.odong.portal.entity.Article;
+import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CacheHelper;
+import com.odong.portal.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -60,11 +64,22 @@ public class SiteController extends PageController {
     String postSearch(Map<String, Object> map, HttpServletRequest request) {
         map.put("navBars", getNavBars());
         fillSiteInfo(map);
-
-        map.put("navBars", getNavBars());
         String key = request.getParameter("keyword");
         map.put("key", key);
         map.put("title", "搜索-[" + key + "]");
+
+        //FIXME like查找性能
+        map.put("articleList",
+                cacheHelper.get(
+                        "search/"+key,
+                        (Class<List<Article>>) Collections.<Article>emptyList().getClass(),
+                        3600*24, new CacheHelper.Callback<List<Article>>() {
+                    @Override
+                    public List<Article> call() {
+                        return contentService.search(key);
+                    }
+                })
+        );
         return "search";
     }
 
@@ -95,6 +110,7 @@ public class SiteController extends PageController {
     Map<String, Object> getStatus() {
         Map<String, Object> map = new HashMap<>();
         map.put("site.startup", siteService.getObject("site.startup", Date.class));
+        map.put("site.cache", cacheHelper.status());
         map.put("created", new Date());
         return map;
     }
@@ -118,7 +134,19 @@ public class SiteController extends PageController {
 
     @Resource
     private SiteService siteService;
+    @Resource
+    private ContentService contentService;
+    @Resource
+    private CacheHelper cacheHelper;
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
+
+    public void setCacheHelper(CacheHelper cacheHelper) {
+        this.cacheHelper = cacheHelper;
+    }
+
+    public void setContentService(ContentService contentService) {
+        this.contentService = contentService;
+    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

@@ -14,6 +14,7 @@ import java.util.List;
  * Time: 下午2:28
  */
 public interface ContentService {
+    List<Article> search(String key);
     long countTag();
 
     long countTag(String article);
