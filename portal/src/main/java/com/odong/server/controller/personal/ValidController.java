@@ -1,0 +1,110 @@
+package com.odong.server.controller.personal;
+
+import com.odong.server.controller.EmailController;
+import com.odong.server.entity.Log;
+import com.odong.server.entity.User;
+import com.odong.server.model.SessionItem;
+import com.odong.server.service.AccountService;
+import com.odong.server.service.LogService;
+import com.odong.server.util.TimeHelper;
+import com.odong.server.web.ResponseItem;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: flamen
+ * Date: 13-8-13
+ * Time: 下午2:21
+ */
+@Controller("c.personal.valid")
+@RequestMapping(value = "/personal/valid")
+@SessionAttributes(SessionItem.KEY)
+public class ValidController extends EmailController {
+
+    @RequestMapping(value = "/valid", method = RequestMethod.GET)
+    String getValidCode(HttpServletRequest request, Map<String, Object> map) {
+
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        Map<String, String> mapA = jsonHelper.json2map(encryptHelper.decode(request.getParameter("code")), String.class, String.class);
+        String email = mapA.get("email");
+        String type = mapA.get("type");
+        String created = mapA.get("created");
+
+        if (email == null || type == null || created == null) {
+            ri.addData("链接信息不全");
+        } else if (timeHelper.plus(new Date(Long.parseLong(created)), 60 * linkValid).compareTo(new Date()) < 0
+                ) {
+            ri.addData("链接失效，请重新申请。");
+        } else {
+            User u = accountService.getUser(email);
+
+            switch (EmailController.Type.valueOf(type)) {
+                case REGISTER:
+                    if (u != null && u.getState() == User.State.SUBMIT) {
+                        accountService.setUserState(u.getId(), User.State.ENABLE);
+                        logService.add(u.getId(), "账户激活", Log.Type.INFO);
+                        emailHelper.send(
+                                email,
+                                "您在[" + siteService.getString("site.title") + "]上的激活了账户",
+                                "欢迎使用",
+                                true);
+                        ri.setOk(true);
+
+                    } else {
+                        ri.addData("账户[" + email + "]状态不对");
+                    }
+                    break;
+                case RESET_PWD:
+                    if (u.getState() == User.State.DISABLE) {
+                        if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(mapA.get("created"), Date.class), 60 * 30)) <= 0) {
+                            accountService.setUserPassword(u.getId(), mapA.get("password"));
+                            logService.add(u.getId(), "重置密码", Log.Type.INFO);
+                            emailHelper.send(email, "您在[" + siteService.getString("site.domain") + "]上的成功重置了密码",
+                                    "如果不是您的操作，请忽略该邮件。", true);
+                            ri.setOk(true);
+                            ri.addData("您成功重置了密码");
+                        } else {
+                            ri.addData("链接已失效");
+                        }
+                    } else {
+                        ri.addData("用户[" + u.getEmail() + "]状态不对");
+                    }
+                    break;
+                default:
+                    ri.addData("未知的操作");
+                    break;
+            }
+        }
+        map.put("item", ri);
+        return "message";
+    }
+
+
+    @Resource
+    private AccountService accountService;
+    @Resource
+    private TimeHelper timeHelper;
+    @Resource
+    private LogService logService;
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    public void setTimeHelper(TimeHelper timeHelper) {
+        this.timeHelper = timeHelper;
+    }
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
+}
