@@ -47,8 +47,7 @@ $!{extends("/frame.httl")}
 
 <!--#macro(left_nav_bar_1)-->
 <!--#set(List<NavBar> navBars)-->
-<!--#set(Map<String,String> gl_site)-->
-
+<!--#set(Map<String,Object> gl_site)-->
 <div role="navigation" id="sidebar" class="col-lg-3 sidebar-offcanvas">
     <br>
     <div class="well sidebar-nav">
@@ -61,12 +60,29 @@ $!{extends("/frame.httl")}
             #end
         </ul>
     </div>
+    <!-- #set(List<Page> tagCloud=gl_site.tagCloud) -->
+    <script type="text/javascript">
+        $(document).ready(function(){
+            show_tag_cloud("tagCloud");
+        });
+
+    </script>
+    <div id="tagCloudContainer">
+        <canvas width="300" height="300" id="tagCloudCanvas"></canvas>
+    </div>
+    <div id="tagCloudItems">
+        <ul>
+            #for(Page p : tagCloud)
+            <li><a href="${p.url}" target="_blank">${p.name}</a></li>
+            #end
+        </ul>
+    </div>
 </div>
 <!--#end-->
 
 <!--#macro(left_nav_bar_2)-->
 <!--#set(List<NavBar> navBars)-->
-<!--#set(Map<String,String> gl_site)-->
+<!--#set(Map<String,Object> gl_site)-->
 <div class="col-lg-3">
     <br/>
     #for(NavBar i:navBars)

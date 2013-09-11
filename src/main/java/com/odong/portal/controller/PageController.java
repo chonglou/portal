@@ -1,8 +1,6 @@
 package com.odong.portal.controller;
 
-import com.odong.portal.entity.Article;
-import com.odong.portal.entity.Comment;
-import com.odong.portal.entity.User;
+import com.odong.portal.entity.*;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
@@ -10,6 +8,7 @@ import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.NavBar;
+import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
 import org.joda.time.DateTime;
 
@@ -95,7 +94,15 @@ public abstract class PageController {
         topNavs.put("sitemap", "网站地图");
         topNavs.put("aboutMe", "关于我们");
         site.put("topNavs", topNavs);
-        site.put("hotTags", contentService.hotTag(siteService.getInteger("site.hotTagCount")));
+
+        List<Page> tagCloud = new ArrayList<>();
+        for(Tag tag: contentService.hotTag(siteService.getInteger("site.hotTagCount"))){
+            tagCloud.add(new Page(tag.getName(), "/tag/"+tag.getId()));
+        }
+        for(FriendLink fl : siteService.listFriendLink()){
+            tagCloud.add(new Page(fl.getName(),fl.getUrl()));
+        }
+        site.put("tagCloud", tagCloud);
         site.put("advertLeft", siteService.getString("site.advert.left"));
         site.put("advertBottom", siteService.getString("site.advert.bottom"));
         map.put("gl_site", site);

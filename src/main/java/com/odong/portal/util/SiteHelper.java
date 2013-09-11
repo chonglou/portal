@@ -78,8 +78,10 @@ public class SiteHelper {
             siteService.set("site.latestCommentCount", 10);
             siteService.set("site.archiveCount", 6);
             siteService.set("site.articlePageSize", 50);
+
             String defTag = "默认类别";
             contentService.addTag(defTag);
+
             Tag tag = contentService.getTag(defTag);
             String defArticle = UUID.randomUUID().toString();
             contentService.addArticle(defArticle, admin.getId(), "欢迎", "欢迎来到本站", "详细信息");

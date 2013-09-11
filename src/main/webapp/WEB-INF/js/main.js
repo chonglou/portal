@@ -27,3 +27,17 @@ function bind_left_nav_click() {
         });
     });
 }
+
+function show_tag_cloud(id){
+    try {
+        TagCanvas.Start(id+"Canvas",id+'Items',{
+            textColour: '#ff0000',
+            outlineColour: '#ff00ff',
+            reverse: true,
+            depth: 0.8,
+            maxSpeed: 0.05
+        });
+    } catch(e) {
+        $("div#"+id+'Container').hide();
+    }
+}
