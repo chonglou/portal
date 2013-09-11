@@ -41,12 +41,6 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-daemon</groupId>
-            <artifactId>commons-daemon</artifactId>
-            <version>1.0.15</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -110,13 +104,11 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <!--
                     <archive>
                         <manifest>
                             <mainClass>com.odong.portal.App</mainClass>
                         </manifest>
                     </archive>
-                    -->
                 </configuration>
                 <executions>
                     <execution>

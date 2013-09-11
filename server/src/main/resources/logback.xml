@@ -23,7 +23,7 @@
 
     </appender>
 
-    <logger name="com.odong.server" level="INFO"/>
+    <logger name="com.odong.portal" level="INFO"/>
 
     <root level="WARN">
         <appender-ref ref="stdout"/>

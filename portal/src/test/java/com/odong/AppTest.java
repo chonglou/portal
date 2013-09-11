@@ -1,11 +1,12 @@
 package com.odong;
 
-import com.odong.server.entity.User;
-import com.odong.server.util.JsonHelper;
-import com.odong.server.util.impl.JsonHelperImpl;
-import com.odong.server.web.form.*;
-import com.odong.server.web.grid.Column;
-import com.odong.server.web.grid.Grid;
+import com.odong.portal.App;
+import com.odong.portal.entity.User;
+import com.odong.portal.util.JsonHelper;
+import com.odong.portal.util.impl.JsonHelperImpl;
+import com.odong.portal.web.form.*;
+import com.odong.portal.web.grid.Column;
+import com.odong.portal.web.grid.Grid;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -13,6 +14,15 @@ import org.testng.annotations.Test;
  * Unit test for  App.
  */
 public class AppTest {
+    @Test
+    public void testApp(){
+        try{
+        App.main(new String[]{});
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     //@Test
     public void testGrid() {

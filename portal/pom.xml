@@ -23,10 +23,32 @@
         <antlr.version>3.5</antlr.version>
         <httl.version>1.0.11</httl.version>
         <activemq.version>5.7.0</activemq.version>
+        <jetty.version>9.0.5.v20130815</jetty.version>
         <jdk.version>1.8</jdk.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-deploy</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jmx</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.mail</groupId>

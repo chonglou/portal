@@ -13,7 +13,7 @@
         </property>
     </bean>
 
-    <context:component-scan base-package="com.odong.server.controller">
+    <context:component-scan base-package="com.odong.portal.controller">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     <mvc:annotation-driven/>
@@ -21,7 +21,7 @@
     <mvc:default-servlet-handler/>
 
     <mvc:interceptors>
-        <bean class="com.odong.server.aop.SecurityInterceptor"/>
+        <bean class="com.odong.portal.aop.SecurityInterceptor"/>
     </mvc:interceptors>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -37,9 +37,9 @@
         <property name="contentType" value="text/html; charset=UTF-8"/>
     </bean>
     <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
-    <bean id="rssView" class="com.odong.server.rss.RssView"/>
+    <bean id="rssView" class="com.odong.portal.rss.RssView"/>
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
-    <bean id="exceptionHandler" class="com.odong.server.aop.ExceptionHandler"/>
+    <bean id="exceptionHandler" class="com.odong.portal.aop.ExceptionHandler"/>
 
 </beans>
