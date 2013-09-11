@@ -43,14 +43,7 @@ public class Database {
                 url = "jdbc:derby:var/db;create=true";
                 type = Type.DERBY;
 
-                String log = "var/log";
-                File file = new File(log);
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        logger.error("创建日志目录失败");
-                    }
-                }
-                System.setProperty("derby.stream.error.file", log + "/derby.log");
+                System.setProperty("derby.stream.error.file",  System.getProperty("user.dir")+"/var/log" + "/derby.log");
                 return;
         }
         logger.warn("尚不支持[{}]自动创建,请自行确保数据库[{}]存在", driver, dbName);

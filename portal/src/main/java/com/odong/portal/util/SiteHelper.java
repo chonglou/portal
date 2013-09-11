@@ -120,7 +120,7 @@ public class SiteHelper {
         File base = new File(appStoreDir);
         if (base.exists()) {
             if (!base.isDirectory() || !base.canWrite()) {
-                throw new RuntimeException("数据存储目录[" + appStoreDir + "]不可用");
+                throw new RuntimeException("数据存储目录[" + base.getAbsolutePath() + "]不可用");
             }
         }
         if (!base.exists()) {
@@ -131,7 +131,7 @@ public class SiteHelper {
                 if (f.mkdirs()) {
                     logger.info("创建数据目录[{}]成功", dir);
                 } else {
-                    throw new IllegalArgumentException("数据存储目录[" + dir + "]创建失败");
+                    throw new IllegalArgumentException("数据存储目录[" + f.getAbsolutePath() + "]创建失败");
                 }
             }
         }

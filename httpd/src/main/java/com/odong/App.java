@@ -1,5 +1,8 @@
 package com.odong;
 
+import org.apache.commons.daemon.Daemon;
+import org.apache.commons.daemon.DaemonContext;
+import org.apache.commons.daemon.DaemonInitException;
 import org.eclipse.jetty.deploy.DeploymentManager;
 import org.eclipse.jetty.deploy.PropertiesConfigurationManager;
 import org.eclipse.jetty.deploy.providers.WebAppProvider;
@@ -13,15 +16,10 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.ResourceBundle;
-import org.apache.commons.daemon.Daemon;
-import org.apache.commons.daemon.DaemonContext;
-import org.apache.commons.daemon.DaemonInitException;
 
-public class App implements Daemon{
+public class App implements Daemon {
     @Override
     public void init(DaemonContext daemonContext) throws DaemonInitException, Exception {
         logger.info("初始化");
@@ -32,14 +30,6 @@ public class App implements Daemon{
         String store = getString("store", bundle);
 
         logger.info("使用端口[{},{}]，数据目录[{}]", httpPort, httpsPort, store);
-        for (String s : new String[]{"apps", "log"}) {
-            File f = new File(store + "/" + s);
-            if (!f.exists()) {
-                if (!f.mkdirs()) {
-                    throw new IOException("数据目录[" + f.getAbsolutePath() + "]不存在且创建失败");
-                }
-            }
-        }
 
         //线程池设置
         QueuedThreadPool threadPool = new QueuedThreadPool();
@@ -67,7 +57,7 @@ public class App implements Daemon{
         server.addBean(mbContainer);
         ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(config));
         http.setPort(httpPort);
-        http.setIdleTimeout(1000*getInteger("timeout", bundle));
+        http.setIdleTimeout(1000 * getInteger("timeout", bundle));
         server.addConnector(http);
 
         initWebApp(store);
@@ -94,12 +84,11 @@ public class App implements Daemon{
     }
 
 
-
     private void initWebApp(String store) {
-        WebAppContext app = new WebAppContext();
-        app.setContextPath("/");
-        app.setWar(store + "/apps/ROOT.war");
-        server.setHandler(app);
+        WebAppContext context = new WebAppContext();
+        context.setContextPath("/");
+        context.setWar(store + "/apps/ROOT.war");
+        server.setHandler(context);
 
     }
 
