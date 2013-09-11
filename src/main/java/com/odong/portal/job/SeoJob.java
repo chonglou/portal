@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +36,7 @@ import java.util.List;
  * Time: 下午12:26
  */
 @Component("seoJobTarget")
+@DependsOn("siteHelper")
 public class SeoJob {
     public void execute() {
         sitemap();

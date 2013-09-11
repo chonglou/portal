@@ -40,7 +40,7 @@ public class Database {
                 }
                 return;
             case "org.apache.derby.jdbc.EmbeddedDriver":
-                url = String.format("jdbc:derby:var/db/%s;create=true", dbName);
+                url = "jdbc:derby:var/db;create=true";
                 type = Type.DERBY;
 
                 String log = "var/log";

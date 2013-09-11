@@ -36,7 +36,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring/content.xml,classpath:spring/job.xml</param-value>
+        <param-value>classpath:spring/*.xml</param-value>
     </context-param>
 
     <listener>
