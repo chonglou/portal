@@ -2,7 +2,7 @@ package com.odong.portal.util;
 
 import com.odong.portal.service.SiteService;
 import org.jasypt.util.password.StrongPasswordEncryptor;
-import org.jasypt.util.text.StrongTextEncryptor;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,27 +17,27 @@ import javax.annotation.Resource;
 @Component
 public class EncryptHelper {
     public String encode(Object plain) {
-        return plain == null ? null : ste.encrypt(jsonHelper.object2json(plain));
+        return plain == null ? null : te.encrypt(jsonHelper.object2json(plain));
     }
 
     public <T> T decode(String encrypt, Class<T> clazz) {
-        return encrypt == null ? null : jsonHelper.json2object(ste.decrypt(encrypt), clazz);
+        return encrypt == null ? null : jsonHelper.json2object(te.decrypt(encrypt), clazz);
     }
 
     public String encode(String plain) {
-        return ste.encrypt(plain);
+        return te.encrypt(plain);
     }
 
     public String decode(String encrypt) {
-        return ste.decrypt(encrypt);
+        return te.decrypt(encrypt);
     }
 
     public String encrypt(String plain) {
-        return spe.encryptPassword(plain);
+        return pe.encryptPassword(plain);
     }
 
     public boolean check(String plain, String encrypt) {
-        return spe.checkPassword(plain, encrypt);
+        return pe.checkPassword(plain, encrypt);
     }
 
     @PostConstruct
@@ -49,13 +49,14 @@ public class EncryptHelper {
             siteService.set(key, val);
         }
 
-        spe = new StrongPasswordEncryptor();
-        ste = new StrongTextEncryptor();
-        ste.setPassword(val.substring(27, 39));
+        pe = new StrongPasswordEncryptor();
+        //ste = new StrongTextEncryptor(); NEED JCE
+        te = new BasicTextEncryptor();
+        te.setPassword(val.substring(27, 39));
     }
 
-    private StrongPasswordEncryptor spe;
-    private StrongTextEncryptor ste;
+    private StrongPasswordEncryptor pe;
+    private BasicTextEncryptor te;
     @Resource
     private SiteService siteService;
     @Resource

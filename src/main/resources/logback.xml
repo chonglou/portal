@@ -6,12 +6,12 @@
         </encoder>
     </appender>
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/tmp/portal.log</file>
+        <file>var/log/www.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%d{yyyy-MM-dd_HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>/tmp/portal.%i.log.zip</FileNamePattern>
+            <FileNamePattern>var/log/www.%i.log.zip</FileNamePattern>
             <MinIndex>1</MinIndex>
             <MaxIndex>10</MaxIndex>
         </rollingPolicy>
@@ -24,19 +24,18 @@
     </appender>
 
 
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.opensymphony" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
 
-    <logger name="org.springframework" level="WARN" />
-    <logger name="com.opensymphony" level="WARN" />
-    <logger name="org.apache" level="WARN" />
-
-    <logger name="org.hibernate" level="WARN" />
+    <logger name="org.hibernate" level="WARN"/>
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder"
-            level="TRACE" />
+            level="TRACE"/>
     <logger name="org.hibernate.type.descriptor.sql.BasicExtractor"
-            level="DEBUG" />
-    <logger name="org.hibernate.SQL" level="DEBUG" />
-    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />
-    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" />
+            level="DEBUG"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG"/>
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG"/>
 
     <logger name="net.rubyeye.xmemcached" level="WARN"/>
     <logger name="com.google.code.yanf4j" level="WARN"/>

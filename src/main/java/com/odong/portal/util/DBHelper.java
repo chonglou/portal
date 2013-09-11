@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -105,7 +106,7 @@ public class DBHelper {
 
     @PostConstruct
     void init() {
-        dbName = url.split("/")[3];
+
         jdbcTemplate.execute(new ConnectionCallback<Object>() {
             @Override
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
@@ -123,21 +124,18 @@ public class DBHelper {
 
     private String databaseProductName;
     private String databaseProductVersion;
-    private String dbName;
-
     private DateFormat format;
+    private JdbcTemplate jdbcTemplate;
     @Resource
     private ZipHelper zipHelper;
-    @Resource
-    private JdbcTemplate jdbcTemplate;
     @Value("${app.store}")
     private String appStoreDir;
     @Value("${jdbc.username}")
     private String username;
     @Value("${jdbc.password}")
     private String password;
-    @Value("${jdbc.url}")
-    private String url;
+    @Value("${jdbc.dbName}")
+    private String dbName;
     @Resource
     private ContentService contentService;
     @Resource
@@ -147,6 +145,16 @@ public class DBHelper {
     @Resource
     private SiteService siteService;
     private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
+
+
+    @Resource
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
 
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;
@@ -162,10 +170,6 @@ public class DBHelper {
 
     public void setAccountService(AccountService accountService) {
         this.accountService = accountService;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public void setUsername(String username) {

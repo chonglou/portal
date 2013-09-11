@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Date: 13-8-14
  * Time: 下午5:16
  */
-public class PagerForm implements Serializable{
+public class PagerForm implements Serializable {
     private static final long serialVersionUID = 701886481651194175L;
     private int hotTagCount;
     private int hotArticleCount;

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -33,7 +32,7 @@ public class Jpa {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
 
         Properties props = new Properties();
-        props.setProperty("hibernate.dialect", hibernateDialect);
+
         props.setProperty("hibernate.show_sql", Boolean.toString(hibernateShowSql));
         props.setProperty("hibernate.format_sql", "true");
         props.setProperty("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
@@ -43,6 +42,17 @@ public class Jpa {
         props.setProperty("hibernate.max_fetch_depth", Integer.toString(hibernateMaxFetchDepth));
         props.setProperty("hibernate.generate_statistics", "true");
         props.setProperty("hibernate.bytecode.use_reflection_optimizer", "true");
+
+        switch (database.getType()) {
+            case DERBY:
+                //props.setProperty("hibernate.dialect","org.hibernate.dialect.DerbyTenSevenDialect");
+                props.setProperty("hibernate.dialect", "com.odong.portal.config.DerbyDialect");
+                break;
+            case MYSQL:
+                props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
+
+                break;
+        }
 
         props.setProperty("hibernate.cache.use_second_level_cache", "true");
         props.setProperty("hibernate.cache.use_query_cache", "true");
@@ -92,9 +102,13 @@ public class Jpa {
     BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);
-        ds.setJdbcUrl(jdbcUrl);
-        ds.setUsername(jdbcUsername);
-        ds.setPassword(jdbcPassword);
+        ds.setJdbcUrl(database.getUrl());
+        switch (database.getType()) {
+            case MYSQL:
+                ds.setUsername(jdbcUsername);
+                ds.setPassword(jdbcPassword);
+                break;
+        }
         ds.setIdleConnectionTestPeriodInSeconds(60);
         ds.setIdleMaxAgeInSeconds(300);
         ds.setMaxConnectionsPerPartition(poolMaxConnectionsPerPartition);
@@ -104,11 +118,6 @@ public class Jpa {
         ds.setStatementsCacheSize(poolStatementsCacheSize);
         ds.setReleaseHelperThreads(3);
         return ds;
-    }
-
-    @Bean(name = "db.jdbcTemplate")
-    JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDataSource());
     }
 
 
@@ -128,15 +137,11 @@ public class Jpa {
 
     @Value("${jdbc.driver}")
     private String jdbcDriver;
-    @Value("${jdbc.url}")
-    private String jdbcUrl;
     @Value("${jdbc.username}")
     private String jdbcUsername;
     @Value("${jdbc.password}")
     private String jdbcPassword;
 
-    @Value("${hibernate.dialect}")
-    private String hibernateDialect;
     @Value("${hibernate.hbm2ddl.auto}")
     private String hibernateHbm2ddlAuto;
     @Value("${hibernate.show_sql}")
@@ -157,6 +162,12 @@ public class Jpa {
 
     @Resource
     private JpaVendorAdapter jpaVendorAdapter;
+    @Resource
+    private Database database;
+
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
 
     public void setJpaVendorAdapter(JpaVendorAdapter jpaVendorAdapter) {
         this.jpaVendorAdapter = jpaVendorAdapter;
@@ -167,10 +178,6 @@ public class Jpa {
         this.jdbcDriver = jdbcDriver;
     }
 
-    public void setJdbcUrl(String jdbcUrl) {
-        this.jdbcUrl = jdbcUrl;
-    }
-
     public void setJdbcUsername(String jdbcUsername) {
         this.jdbcUsername = jdbcUsername;
     }
@@ -179,9 +186,6 @@ public class Jpa {
         this.jdbcPassword = jdbcPassword;
     }
 
-    public void setHibernateDialect(String hibernateDialect) {
-        this.hibernateDialect = hibernateDialect;
-    }
 
     public void setHibernateHbm2ddlAuto(String hibernateHbm2ddlAuto) {
         this.hibernateHbm2ddlAuto = hibernateHbm2ddlAuto;
