@@ -4,9 +4,19 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class AppTest {
-    @Test
+    //@Test
     public void test0(){
-        log(System.getProperty("user.dir"));
+        try {
+            App app = new App();
+            app.start();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void test1(){
+
     }
     @BeforeTest
     public void init(){

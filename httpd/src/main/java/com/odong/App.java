@@ -1,8 +1,5 @@
 package com.odong;
 
-import org.apache.commons.daemon.Daemon;
-import org.apache.commons.daemon.DaemonContext;
-import org.apache.commons.daemon.DaemonInitException;
 import org.eclipse.jetty.deploy.DeploymentManager;
 import org.eclipse.jetty.deploy.PropertiesConfigurationManager;
 import org.eclipse.jetty.deploy.providers.WebAppProvider;
@@ -17,11 +14,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
+import java.net.URL;
+import java.security.ProtectionDomain;
 import java.util.ResourceBundle;
 
-public class App implements Daemon {
-    @Override
-    public void init(DaemonContext daemonContext) throws DaemonInitException, Exception {
+/**
+ * Created with IntelliJ IDEA.
+ * User: flamen
+ * Date: 13-9-11
+ * Time: 下午5:06
+ */
+public class App {
+
+    public static void main(String[] args) {
+        try {
+            final App app = new App();
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        app.stop();
+                    } catch (Exception e) {
+                        logger.error("停止服务出错", e);
+                    }
+                }
+            });
+            app.start();
+        } catch (Exception e) {
+            logger.debug("启动失败", e);
+        }
+    }
+
+    public App() throws Exception {
         logger.info("初始化");
         ResourceBundle bundle = ResourceBundle.getBundle("config");
 
@@ -30,11 +54,21 @@ public class App implements Daemon {
         String store = getString("store", bundle);
 
         logger.info("使用端口[{},{}]，数据目录[{}]", httpPort, httpsPort, store);
+        /*
+        for (String s : new String[]{"apps", "log"}) {
+            File f = new File(store + "/" + s);
+            if (!f.exists()) {
+                if (!f.mkdirs()) {
+                    throw new IOException("数据目录[" + f.getAbsolutePath() + "]不存在且创建失败");
+                }
+            }
+        }
+        */
 
         //线程池设置
         QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setMaxThreads(getInteger("threadPool", bundle));
-        server = new Server(threadPool);
+        server = new org.eclipse.jetty.server.Server(threadPool);
         server.setStopAtShutdown(true);
 
         //网络设置
@@ -60,36 +94,39 @@ public class App implements Daemon {
         http.setIdleTimeout(1000 * getInteger("timeout", bundle));
         server.addConnector(http);
 
-        initWebApp(store);
+        initWebAppWar(store);
+
 
     }
 
-    @Override
-    public void start() throws Exception {
+    void start() throws Exception {
         logger.info("启动");
         server.start();
         server.join();
     }
 
-    @Override
-    public void stop() throws Exception {
+    void stop() throws Exception {
         logger.info("停止");
         server.stop();
     }
 
-    @Override
-    public void destroy() {
 
-        logger.info("销毁");
-    }
-
-
-    private void initWebApp(String store) {
+    private void initWebAppWar(String store) {
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
         context.setWar(store + "/apps/ROOT.war");
-        server.setHandler(context);
 
+
+        server.setHandler(context);
+    }
+
+    private void initWebAppSelf() {
+        WebAppContext context = new WebAppContext();
+        context.setContextPath("/");
+        ProtectionDomain domain = App.class.getProtectionDomain();
+        URL url = domain.getCodeSource().getLocation();
+        context.setWar(url.toExternalForm());
+        server.setHandler(context);
     }
 
     private void initWebAppProvider(ContextHandlerCollection contexts, String store) {
@@ -115,6 +152,7 @@ public class App implements Daemon {
         return bundle.getString("app." + key);
     }
 
-    private Server server;
+    private final org.eclipse.jetty.server.Server server;
     private final static Logger logger = LoggerFactory.getLogger(App.class);
+
 }

@@ -23,9 +23,9 @@
 
     </appender>
 
-    <logger name="com.odong.portal" level="INFO"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
 
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="stdout"/>
         <appender-ref ref="file"/>
     </root>
