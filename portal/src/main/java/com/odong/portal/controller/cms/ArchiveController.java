@@ -1,9 +1,7 @@
 package com.odong.portal.controller.cms;
 
 import com.odong.portal.controller.PageController;
-import com.odong.portal.entity.Article;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.util.CacheHelper;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import org.joda.time.DateTime;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +44,11 @@ public class ArchiveController extends PageController {
         );
 
         map.put("navBars", navBars);
-        map.put("articleList", cacheHelper.get("cards/archive/"+year+"-"+month, ArrayList.class, null,
-                ()->{
+        map.put("articleList", cacheHelper.get("cards/archive/" + year + "-" + month, ArrayList.class, null,
+                () -> {
                     ArrayList<Card> cards = new ArrayList<>();
                     //FIXME 分页
-                    contentService.listArticleByMonth(year, month).forEach((a)->cards.add(a.toCard()));
+                    contentService.listArticleByMonth(year, month).forEach((a) -> cards.add(a.toCard()));
                     return cards;
                 }));
         fillSiteInfo(map);

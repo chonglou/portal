@@ -19,12 +19,14 @@ import java.util.Date;
 @Table(name = "cmsArticle")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Article implements Serializable {
-    public Page toPage(){
-        return new Page(title, "/article/"+id);
+    public Page toPage() {
+        return new Page(title, "/article/" + id);
     }
-    public Card toCard(){
-        return new Card(logo, title, summary, "/article/"+id);
+
+    public Card toCard() {
+        return new Card(logo, title, summary, "/article/" + id);
     }
+
     public enum State {
         PRIVATE, PUBLIC, PROTECTED
     }

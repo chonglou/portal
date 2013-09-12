@@ -23,11 +23,10 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class CacheHelperImpl implements CacheHelper {
     @Override
-    public Map<InetSocketAddress, Map<String,String>> status() {
+    public Map<InetSocketAddress, Map<String, String>> status() {
         try {
             return client.getStats();  //
-        }
-        catch (MemcachedException|InterruptedException|TimeoutException e){
+        } catch (MemcachedException | InterruptedException | TimeoutException e) {
             logger.error("获取状态出错", e);
         }
         return new HashMap<>();
@@ -57,7 +56,7 @@ public class CacheHelperImpl implements CacheHelper {
     @Override
     public <T> T get(String key, Class<T> clazz) {
         try {
-            logger.debug("GET "+key);
+            logger.debug("GET " + key);
             return client.get(key(key));
         } catch (MemcachedException | TimeoutException | InterruptedException e) {
             logger.error("取得缓存[{}]出错", key, e);
@@ -69,10 +68,10 @@ public class CacheHelperImpl implements CacheHelper {
     public <T> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback) {
         String k = key(key);
         T t = get(k, clazz);
-        if(t == null){
+        if (t == null) {
             t = callback.call();
-            if(timeout==null || timeout<=0){
-                timeout=60*60*24;
+            if (timeout == null || timeout <= 0) {
+                timeout = 60 * 60 * 24;
             }
             set(k, timeout, t);
         }
@@ -83,15 +82,15 @@ public class CacheHelperImpl implements CacheHelper {
     public void set(String key, int timeout, Object object) {
         try {
             client.set(key(key), timeout, object);
-            logger.debug("SET "+key);
+            logger.debug("SET " + key);
         } catch (MemcachedException | TimeoutException | InterruptedException e) {
             logger.error("取得缓存[{}]出错", key, e);
 
         }
     }
 
-    private String key(String key){
-        return "cache://"+appName+"/"+key;
+    private String key(String key) {
+        return "cache://" + appName + "/" + key;
     }
 
     @Resource

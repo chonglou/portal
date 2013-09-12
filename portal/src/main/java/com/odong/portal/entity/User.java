@@ -28,7 +28,7 @@ public class User extends IdEntity {
 
     @Override
     public String toString() {
-        return String.format("%s[%s]", username,email);
+        return String.format("%s[%s]", username, email);
     }
 
     private static final long serialVersionUID = 6854757082522535497L;

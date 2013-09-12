@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -43,7 +42,7 @@ public class Database {
                 url = "jdbc:derby:var/db;create=true";
                 type = Type.DERBY;
 
-                System.setProperty("derby.stream.error.file",  System.getProperty("user.dir")+"/var/log" + "/derby.log");
+                System.setProperty("derby.stream.error.file", System.getProperty("user.dir") + "/var/log" + "/derby.log");
                 return;
         }
         logger.warn("尚不支持[{}]自动创建,请自行确保数据库[{}]存在", driver, dbName);

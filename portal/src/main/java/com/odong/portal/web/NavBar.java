@@ -22,10 +22,10 @@ public class NavBar implements Serializable {
         //过滤掉html标签
         String name = Jsoup.parse(text).body().text();
         if (name.length() > MAX_LEN) {
-            name = name.substring(0, MAX_LEN-3)+"...";
+            name = name.substring(0, MAX_LEN - 3) + "...";
         }
 
-        this.pages.add(new Page(name,url));
+        this.pages.add(new Page(name, url));
     }
 
     public NavBar(String title) {
@@ -35,7 +35,7 @@ public class NavBar implements Serializable {
     }
 
     private static final long serialVersionUID = 9005274236641313051L;
-    private static final int MAX_LEN=50;
+    private static final int MAX_LEN = 50;
     private Type type;
     private String title;
     private boolean ajax;

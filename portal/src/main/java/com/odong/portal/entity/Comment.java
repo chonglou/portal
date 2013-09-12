@@ -17,9 +17,10 @@ import java.util.Date;
 @Table(name = "cmsComment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Comment extends IdEntity {
-    public Page toPage(){
-        return new Page(content, "/article/"+article+"#"+getId());
+    public Page toPage() {
+        return new Page(content, "/article/" + article + "#" + getId());
     }
+
     public Date getPublishDate() {
         return lastEdit == null ? created : lastEdit;
     }

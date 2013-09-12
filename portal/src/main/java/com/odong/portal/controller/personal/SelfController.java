@@ -5,7 +5,10 @@ import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.LogService;
 import com.odong.portal.web.NavBar;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -65,8 +68,6 @@ public class SelfController extends PageController {
         map.put("top_nav_key", "personal/self");
         return "personal/self";
     }
-
-
 
 
     @RequestMapping(value = "/log", method = RequestMethod.GET)

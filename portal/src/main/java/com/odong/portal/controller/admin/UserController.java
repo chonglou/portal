@@ -57,10 +57,10 @@ public class UserController {
     @RequestMapping(value = "/bind", method = RequestMethod.GET)
     @ResponseBody
     Form getBind() {
-        Form fm =new Form("bind", "管理员权限管理", "/admin/user/bind");
+        Form fm = new Form("bind", "管理员权限管理", "/admin/user/bind");
 
         SelectField<Long> users = new SelectField<>("userId", "用户");
-        for(User user : accountService.listUser()){
+        for (User user : accountService.listUser()) {
             users.addOption(user.toString(), user.getId());
         }
         users.setWidth(320);
@@ -68,7 +68,7 @@ public class UserController {
 
         RadioField<Boolean> bind = new RadioField<>("bind", "操作", Boolean.FALSE);
         bind.addOption("绑定", Boolean.TRUE);
-        bind.addOption("解绑",Boolean.FALSE);
+        bind.addOption("解绑", Boolean.FALSE);
         fm.addField(bind);
         fm.setOk(true);
         return fm;
@@ -81,12 +81,13 @@ public class UserController {
         check(ri, form.getUserId());
         if (ri.isOk()) {
             rbacService.bindAdmin(form.getUserId(), form.isBind());
-            logService.add(si.getSsUserId(), form.isBind() ? "绑定":"解绑"+"用户["+form.getUserId()+"]到管理员组", Log.Type.INFO);
+            logService.add(si.getSsUserId(), form.isBind() ? "绑定" : "解绑" + "用户[" + form.getUserId() + "]到管理员组", Log.Type.INFO);
         }
         return ri;
     }
-    private void check(ResponseItem ri, long userId){
-        if(manager.equals(accountService.getUser(userId).getEmail())){
+
+    private void check(ResponseItem ri, long userId) {
+        if (manager.equals(accountService.getUser(userId).getEmail())) {
             ri.setOk(false);
             ri.addData("不能修改超级管理员");
         }

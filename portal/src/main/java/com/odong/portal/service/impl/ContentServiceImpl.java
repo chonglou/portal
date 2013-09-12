@@ -22,8 +22,8 @@ import java.util.*;
 public class ContentServiceImpl implements ContentService {
     @Override
     public List<Article> search(String key) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("key", "%"+key+"%");
+        Map<String, Object> map = new HashMap<>();
+        map.put("key", "%" + key + "%");
         return articleDao.list("FROM Article a WHERE a.title LIKE :key OR a.summary LIKE :key", map);  //
     }
 

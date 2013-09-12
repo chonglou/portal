@@ -7,6 +7,7 @@ import com.odong.portal.model.ReCaptchaProfile;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.CaptchaHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
@@ -106,6 +107,13 @@ public class CaptchaController {
     private SiteService siteService;
     @Resource
     private FormHelper formHelper;
+
+    @Resource
+    private CacheHelper cacheHelper;
+
+    public void setCacheHelper(CacheHelper cacheHelper) {
+        this.cacheHelper = cacheHelper;
+    }
 
     public void setCaptchaHelper(CaptchaHelper captchaHelper) {
         this.captchaHelper = captchaHelper;

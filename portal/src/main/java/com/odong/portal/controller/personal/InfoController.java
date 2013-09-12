@@ -96,6 +96,7 @@ public class InfoController {
     private JsonHelper jsonHelper;
     @Resource
     private LogService logService;
+
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;
     }

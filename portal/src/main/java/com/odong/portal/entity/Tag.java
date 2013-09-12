@@ -1,7 +1,6 @@
 package com.odong.portal.entity;
 
 
-import com.odong.portal.web.Card;
 import com.odong.portal.web.Page;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -22,9 +21,10 @@ import java.util.Date;
 @Table(name = "cmsTag")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Tag extends IdEntity {
-    public Page toPage(){
-        return new Page(name, "/tag/"+getId());
+    public Page toPage() {
+        return new Page(name, "/tag/" + getId());
     }
+
     public Date getPublishDate() {
         return lastEdit == null ? created : lastEdit;
     }

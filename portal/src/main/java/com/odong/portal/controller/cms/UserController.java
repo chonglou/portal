@@ -30,19 +30,19 @@ public class UserController extends PageController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     String getUser(Map<String, Object> map, @PathVariable long userId, HttpServletResponse response) throws IOException {
 
-        User user = cacheHelper.get("user/"+userId, User.class, null, ()->accountService.getUser(userId));
+        User user = cacheHelper.get("user/" + userId, User.class, null, () -> accountService.getUser(userId));
         if (user != null) {
             contentService.setUserVisits(userId);
             map.put("navBars", getNavBars());
             //TODO 分页
-            map.put("articleList", cacheHelper.get("cards/article/user/"+userId, ArrayList.class, null, ()->{
+            map.put("articleList", cacheHelper.get("cards/article/user/" + userId, ArrayList.class, null, () -> {
                 ArrayList<Card> cards = new ArrayList<>();
-                contentService.listArticleByAuthor(userId).forEach((a)->cards.add(a.toCard()));
+                contentService.listArticleByAuthor(userId).forEach((a) -> cards.add(a.toCard()));
                 return cards;
             }));
 
             List<NavBar> navBars = new ArrayList<>();
-            navBars.add(cacheHelper.get("navBar/users", NavBar.class, null, ()->{
+            navBars.add(cacheHelper.get("navBar/users", NavBar.class, null, () -> {
                 NavBar nb = new NavBar("用户列表");
                 nb.setType(NavBar.Type.LIST);
                 for (User u : accountService.listUser()) {

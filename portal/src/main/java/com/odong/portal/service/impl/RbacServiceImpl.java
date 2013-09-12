@@ -25,7 +25,7 @@ public class RbacServiceImpl implements RbacService {
     @Override
     public List<Long> listAdmin() {
         List<Long> list = new ArrayList<>();
-        for(Role r : listRole(getOperation(OperationType.MANAGER), getResource(getSiteResourceName()))){
+        for (Role r : listRole(getOperation(OperationType.MANAGER), getResource(getSiteResourceName()))) {
             list.add(role2user(r.getName()));
         }
         return list;  //
@@ -51,8 +51,8 @@ public class RbacServiceImpl implements RbacService {
         return "rbac://resource/site";
     }
 
-    private List<Role> listRole(long operation, long resource){
-        Map<String,Object> map = new HashMap<>();
+    private List<Role> listRole(long operation, long resource) {
+        Map<String, Object> map = new HashMap<>();
         map.put("operation", operation);
         map.put("resource", resource);
         return roleDao.list("FROM Role r WHERE r.id IN (FROM Permission p WHERE p.operation=:operation AND p.resource=:resource)", map);
@@ -123,9 +123,10 @@ public class RbacServiceImpl implements RbacService {
         return o.getId();
     }
 
-    private long role2user(String key){
+    private long role2user(String key) {
         return Long.parseLong(key.split("/")[3]);
     }
+
     private long getRole(long user) {
         String key = "rbac://role/" + user;
         Map<String, Object> map = new HashMap<>();

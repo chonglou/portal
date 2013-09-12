@@ -1,12 +1,12 @@
 package com.odong.portal.controller.admin;
 
-import com.odong.portal.email.EmailHelper;
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.SmtpForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.model.SmtpProfile;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.util.JsonHelper;
@@ -34,9 +34,8 @@ public class SmtpController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteSmtp() {
-        SmtpProfile profile = jsonHelper.json2object(
-                encryptHelper.decode(siteService.getString("site.smtp")),
-                SmtpProfile.class);
+        SmtpProfile profile = encryptHelper.decode(siteService.getString("site.smtp"), SmtpProfile.class);
+
         if (profile == null) {
             profile = new SmtpProfile();
         }
@@ -65,21 +64,20 @@ public class SmtpController {
             SmtpProfile profile = new SmtpProfile(form.getHost(), form.getUsername(), form.getPassword(), form.getBcc());
             profile.setPort(form.getPort());
             profile.setSsl(form.isSsl());
-            siteService.set("site.smtp", encryptHelper.encode(jsonHelper.object2json(profile)));
+            siteService.set("site.smtp", encryptHelper.encode(profile));
             logService.add(si.getSsUserId(), "设置SMTP信息", Log.Type.INFO);
-            emailHelper.reload();
-
+            cacheHelper.delete("site/smtp");
         }
         return ri;
 
     }
 
     @Resource
+    private CacheHelper cacheHelper;
+    @Resource
     private SiteService siteService;
     @Resource
     private EncryptHelper encryptHelper;
-    @Resource
-    private EmailHelper emailHelper;
     @Resource
     private JsonHelper jsonHelper;
     @Resource
@@ -87,16 +85,17 @@ public class SmtpController {
     @Resource
     private FormHelper formHelper;
 
+    public void setCacheHelper(CacheHelper cacheHelper) {
+        this.cacheHelper = cacheHelper;
+    }
+
+
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
     }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;
-    }
-
-    public void setEmailHelper(EmailHelper emailHelper) {
-        this.emailHelper = emailHelper;
     }
 
     public void setJsonHelper(JsonHelper jsonHelper) {

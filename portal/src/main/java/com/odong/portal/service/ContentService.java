@@ -4,7 +4,6 @@ import com.odong.portal.entity.Article;
 import com.odong.portal.entity.ArticleTag;
 import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Tag;
-import com.odong.portal.web.Card;
 
 import java.util.List;
 
@@ -16,6 +15,7 @@ import java.util.List;
  */
 public interface ContentService {
     List<Article> search(String key);
+
     long countTag();
 
     long countTag(String article);

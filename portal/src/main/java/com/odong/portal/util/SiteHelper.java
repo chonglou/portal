@@ -1,11 +1,9 @@
 package com.odong.portal.util;
 
-import com.odong.portal.email.EmailHelper;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.model.KaptchaProfile;
 import com.odong.portal.model.ReCaptchaProfile;
-import com.odong.portal.model.SmtpProfile;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.RbacService;
@@ -49,12 +47,6 @@ public class SiteHelper {
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
-
-            //SMTP
-            SmtpProfile smtp = new SmtpProfile();
-            smtp.setPort(25);
-            emailHelper.setup(smtp);
-            emailHelper.reload();
 
             //KAPTCHA
             KaptchaProfile kaptcha = new KaptchaProfile();
@@ -156,8 +148,6 @@ public class SiteHelper {
     private boolean appDebug;
     @Value("${app.manager}")
     private String manager;
-    @Resource
-    private EmailHelper emailHelper;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
 
     public void setManager(String manager) {
@@ -168,9 +158,6 @@ public class SiteHelper {
         this.contentService = contentService;
     }
 
-    public void setEmailHelper(EmailHelper emailHelper) {
-        this.emailHelper = emailHelper;
-    }
 
     public void setRbacService(RbacService rbacService) {
         this.rbacService = rbacService;

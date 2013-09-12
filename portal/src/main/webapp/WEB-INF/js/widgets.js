@@ -486,7 +486,7 @@ function FormWindow(form, parent) {
                         break;
                 }
             }
-            new Ajax(form.action, "POST", data);
+            new Ajax(form.action, "POST", data, undefined, false);
             reload_captcha();
         });
 

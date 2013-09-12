@@ -36,11 +36,13 @@ public class SiteController {
     @ResponseBody
     Map<String, Object> getStatus() {
         Map<String, Object> map = new HashMap<>();
-        map.put("site.startup", cacheHelper.get("startup", Date.class, null, ()->siteService.getObject("site.startup", Date.class)));
-        map.put("site.cache", cacheHelper.status());
+        map.put("site.startup", cacheHelper.get("startup", Date.class, null, () -> siteService.getObject("site.startup", Date.class)));
+        map.put("memcached", cacheHelper.status());
+
         map.put("created", new Date());
         return map;
     }
+
     @RequestMapping(value = "/pager", method = RequestMethod.GET)
     @ResponseBody
     Form getSizeForm() {
@@ -90,6 +92,7 @@ public class SiteController {
             siteService.set("site.hotTagCount", form.getHotTagCount());
             siteService.set("site.latestCommentCount", form.getLatestCommentCount());
             logService.add(si.getSsUserId(), "修改用户注册协议", Log.Type.INFO);
+            cacheHelper.delete("site/info");
         }
         return ri;
     }
@@ -138,6 +141,7 @@ public class SiteController {
             siteService.set("site.description", form.getDescription());
             siteService.set("site.copyright", form.getCopyright());
             logService.add(si.getSsUserId(), "修改站点基本信息", Log.Type.INFO);
+            cacheHelper.delete("site/info");
         }
         return ri;
     }
@@ -187,6 +191,7 @@ public class SiteController {
     private FormHelper formHelper;
     @Resource
     private CacheHelper cacheHelper;
+
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;

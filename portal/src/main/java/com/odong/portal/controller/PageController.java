@@ -1,9 +1,7 @@
 package com.odong.portal.controller;
 
-import com.odong.portal.entity.Article;
 import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Tag;
-import com.odong.portal.entity.User;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
@@ -40,20 +38,20 @@ public abstract class PageController {
 
     protected List<NavBar> getNavBars() {
         List<NavBar> navBars = new ArrayList<>();
-        navBars.add(cacheHelper.get("navBar/hotArticle", NavBar.class, null, ()->{
+        navBars.add(cacheHelper.get("navBar/hotArticle", NavBar.class, null, () -> {
             NavBar nb = new NavBar("热门文章");
             nb.setType(NavBar.Type.LIST);
             contentService.hotArticle(siteService.getInteger("site.hotArticleCount")).forEach((a) -> nb.add(a.getTitle(), "/article/" + a.getId()));
 
             return nb;
         }));
-        navBars.add(cacheHelper.get("navBar/leastComment", NavBar.class, 60*60, ()->{
+        navBars.add(cacheHelper.get("navBar/leastComment", NavBar.class, 60 * 60, () -> {
             NavBar nb = new NavBar("最新评论");
             nb.setType(NavBar.Type.LIST);
             contentService.latestComment(siteService.getInteger("site.latestCommentCount")).forEach((c) -> nb.add(c.getContent(), "/comment/" + c.getId()));
             return nb;
         }));
-        navBars.add(cacheHelper.get("navBar/recentArchive", NavBar.class, null, ()->{
+        navBars.add(cacheHelper.get("navBar/recentArchive", NavBar.class, null, () -> {
             NavBar nb = new NavBar("最近归档");
             nb.setType(NavBar.Type.LIST);
             DateTime init = new DateTime(siteService.getDate("site.init"));
@@ -77,33 +75,33 @@ public abstract class PageController {
 
     protected void fillSiteInfo(Map<String, Object> map) {
 
-        map.put("gl_site", cacheHelper.get("siteInfo", HashMap.class, null,
-                ()-> {
-                        HashMap<String, Object> site = new HashMap<>();
-                        for (String s : new String[]{"title", "description", "copyright", "keywords", "author", "articlePageSize"}) {
-                            site.put(s, siteService.getString("site." + s));
-                        }
-
-                        Map<String, String> topNavs = new HashMap<>();
-                        topNavs.put("main", "站点首页");
-                        topNavs.put("personal/self", "用户中心");
-                        topNavs.put("sitemap", "网站地图");
-                        topNavs.put("aboutMe", "关于我们");
-                        site.put("topNavs", topNavs);
-
-                        List<Page> tagCloud = new ArrayList<>();
-                        for (Tag tag : contentService.hotTag(siteService.getInteger("site.hotTagCount"))) {
-                            tagCloud.add(new Page(tag.getName(), "/tag/" + tag.getId()));
-                        }
-                        for (FriendLink fl : siteService.listFriendLink()) {
-                            tagCloud.add(new Page(fl.getName(), fl.getUrl()));
-                        }
-                        site.put("tagCloud", tagCloud);
-                        site.put("advertLeft", siteService.getString("site.advert.left"));
-                        site.put("advertBottom", siteService.getString("site.advert.bottom"));
-                        return site;
+        map.put("gl_site", cacheHelper.get("site/info", HashMap.class, null,
+                () -> {
+                    HashMap<String, Object> site = new HashMap<>();
+                    for (String s : new String[]{"title", "description", "copyright", "keywords", "author", "articlePageSize"}) {
+                        site.put(s, siteService.getString("site." + s));
                     }
-               ));
+
+                    Map<String, String> topNavs = new HashMap<>();
+                    topNavs.put("main", "站点首页");
+                    topNavs.put("personal/self", "用户中心");
+                    topNavs.put("sitemap", "网站地图");
+                    topNavs.put("aboutMe", "关于我们");
+                    site.put("topNavs", topNavs);
+
+                    List<Page> tagCloud = new ArrayList<>();
+                    for (Tag tag : contentService.hotTag(siteService.getInteger("site.hotTagCount"))) {
+                        tagCloud.add(new Page(tag.getName(), "/tag/" + tag.getId()));
+                    }
+                    for (FriendLink fl : siteService.listFriendLink()) {
+                        tagCloud.add(new Page(fl.getName(), fl.getUrl()));
+                    }
+                    site.put("tagCloud", tagCloud);
+                    site.put("advertLeft", siteService.getString("site.advert.left"));
+                    site.put("advertBottom", siteService.getString("site.advert.bottom"));
+                    return site;
+                }
+        ));
     }
 
     @Resource

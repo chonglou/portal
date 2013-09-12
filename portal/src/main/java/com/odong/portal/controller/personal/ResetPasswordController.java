@@ -1,8 +1,8 @@
 package com.odong.portal.controller.personal;
 
-import com.odong.portal.controller.EmailController;
 import com.odong.portal.entity.User;
 import com.odong.portal.form.personal.ResetPwdForm;
+import com.odong.portal.job.TaskSender;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.util.FormHelper;
@@ -32,7 +32,7 @@ import java.util.Map;
 @Controller("c.personal.resetPassword")
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
-public class ResetPasswordController extends EmailController {
+public class ResetPasswordController {
     @RequestMapping(value = "/resetPwd", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postResetPwd(@Valid ResetPwdForm form, BindingResult result, HttpServletRequest request) {
@@ -44,9 +44,9 @@ public class ResetPasswordController extends EmailController {
         if (ri.isOk()) {
             User u = accountService.getUser(form.getEmail());
             if (u != null && u.getState() == User.State.ENABLE) {
-                Map<String, String> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 map.put("password", form.getNewPwd());
-                sendValidEmail(form.getEmail(), EmailController.Type.RESET_PWD, map);
+                taskSender.sendValidEmail(form.getEmail(), "reset_pwd", map);
                 ri.addData("已向您的邮箱发送了密码重置链接，请进入邮箱进行操作。");
 
             } else {
@@ -73,7 +73,13 @@ public class ResetPasswordController extends EmailController {
     @Resource
     private FormHelper formHelper;
     @Resource
+    private TaskSender taskSender;
+    @Resource
     private AccountService accountService;
+
+    public void setTaskSender(TaskSender taskSender) {
+        this.taskSender = taskSender;
+    }
 
     public void setFormHelper(FormHelper formHelper) {
         this.formHelper = formHelper;

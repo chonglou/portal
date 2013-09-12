@@ -1,8 +1,8 @@
 package com.odong.portal.controller.personal;
 
-import com.odong.portal.email.EmailHelper;
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.personal.SetPwdForm;
+import com.odong.portal.job.TaskSender;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.LogService;
@@ -56,8 +56,8 @@ public class SetPasswordController {
             } else {
                 accountService.setUserPassword(si.getSsUserId(), form.getNewPwd());
                 logService.add(si.getSsUserId(), "变更密码", Log.Type.INFO);
-                emailHelper.send(si.getSsEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
-                        "如果不是您的操作，请忽略该邮件。", true);
+                taskSender.sendEmail(si.getSsEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
+                        "如果不是您的操作，请忽略该邮件。", true, null);
             }
         }
         return ri;
@@ -68,13 +68,13 @@ public class SetPasswordController {
     @Resource
     private SiteService siteService;
     @Resource
-    private EmailHelper emailHelper;
-    @Resource
     private FormHelper formHelper;
     @Resource
     private AccountService accountService;
     @Resource
     private LogService logService;
+    @Resource
+    private TaskSender taskSender;
 
     public void setFormHelper(FormHelper formHelper) {
         this.formHelper = formHelper;
@@ -88,9 +88,6 @@ public class SetPasswordController {
         this.logService = logService;
     }
 
-    public void setEmailHelper(EmailHelper emailHelper) {
-        this.emailHelper = emailHelper;
-    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

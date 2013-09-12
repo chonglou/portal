@@ -1,9 +1,5 @@
 package com.odong.portal.controller;
 
-import com.odong.portal.entity.Article;
-import com.odong.portal.service.ContentService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.Page;
 import org.slf4j.Logger;
@@ -14,12 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,7 +41,7 @@ public class SiteController extends PageController {
                         "cards/leastArticle",
                         ArrayList.class,
                         null,
-                        ()->{
+                        () -> {
                             ArrayList<Card> cards = new ArrayList<>();
                             contentService.latestArticle(siteService.getInteger("site.articlePageSize")).forEach((a) -> cards.add(a.toCard()));
                             return cards;
@@ -55,9 +53,9 @@ public class SiteController extends PageController {
                         "cards/defArticle",
                         ArrayList.class,
                         null,
-                        ()->{
+                        () -> {
                             ArrayList<Card> cards = new ArrayList<>();
-                            for (String aid : siteService.getObject("site.defArticles", String[].class)){
+                            for (String aid : siteService.getObject("site.defArticles", String[].class)) {
                                 cards.add(contentService.getArticle(aid).toCard());
                             }
                             return cards;
@@ -69,16 +67,16 @@ public class SiteController extends PageController {
 
     @RequestMapping(value = "sitemap", method = RequestMethod.GET)
     String getSitemap(Map<String, Object> map) {
-        map.put("userList", cacheHelper.get("cards/user", ArrayList.class, null, ()->{
+        map.put("userList", cacheHelper.get("cards/user", ArrayList.class, null, () -> {
             ArrayList<Card> cards = new ArrayList<>();
-            accountService.listUser().forEach((u)->{
-                cards.add(new Card(u.getLogo(), u.getUsername(), u.getEmail(), "/user/"+u.getId()));
+            accountService.listUser().forEach((u) -> {
+                cards.add(new Card(u.getLogo(), u.getUsername(), u.getEmail(), "/user/" + u.getId()));
             });
             return cards;
         }));
-        map.put("tagList", cacheHelper.get("pages/tag", ArrayList.class, null, ()->{
+        map.put("tagList", cacheHelper.get("pages/tag", ArrayList.class, null, () -> {
             ArrayList<Page> pages = new ArrayList<>();
-            contentService.listTag().forEach((t)->pages.add(t.toPage()));
+            contentService.listTag().forEach((t) -> pages.add(t.toPage()));
             return pages;
         }));
 
@@ -105,7 +103,9 @@ public class SiteController extends PageController {
                         ArrayList.class,
                         null, () -> {
                     ArrayList<Card> cards = new ArrayList<>();
-                    contentService.search(key).forEach((a)->{cards.add(a.toCard());});
+                    contentService.search(key).forEach((a) -> {
+                        cards.add(a.toCard());
+                    });
                     return cards;
                 })
         );
@@ -122,7 +122,7 @@ public class SiteController extends PageController {
         map.put("top_nav_key", "aboutMe");
 
 
-        map.put("logList", cacheHelper.get("logs", ArrayList.class, null, ()->{
+        map.put("logList", cacheHelper.get("logs", ArrayList.class, null, () -> {
             ArrayList<String> logList = new ArrayList<>();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))) {
                 String line;
@@ -134,10 +134,9 @@ public class SiteController extends PageController {
             }
             return logList;
         }));
-        map.put("aboutMe", cacheHelper.get("aboutMe", String.class, null, ()->siteService.getString("site.aboutMe")));
+        map.put("aboutMe", cacheHelper.get("aboutMe", String.class, null, () -> siteService.getString("site.aboutMe")));
         return "aboutMe";
     }
-
 
 
     @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)

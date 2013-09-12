@@ -16,8 +16,6 @@ import javax.persistence.Table;
 @Table(name = "task")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Task extends IdEntity {
-    public enum  Type{
-        DB_BACKUP, SITE_MAP, RSS
-    }
+
     private static final long serialVersionUID = 5719367084733563338L;
 }

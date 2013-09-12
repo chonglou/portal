@@ -9,13 +9,15 @@ import java.io.Serializable;
  * Time: 上午11:22
  */
 public class Page implements Serializable {
-    public Page(String name,String url) {
+    public Page(String name, String url) {
         this.url = url;
         this.name = name;
     }
 
     @Deprecated
-    public Page(){}
+    public Page() {
+    }
+
     private static final long serialVersionUID = -7821227957600602570L;
     private String url;
     private String name;

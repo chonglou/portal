@@ -1,9 +1,9 @@
 package com.odong.portal.controller.personal;
 
-import com.odong.portal.controller.EmailController;
 import com.odong.portal.entity.User;
 import com.odong.portal.form.personal.ActiveForm;
 import com.odong.portal.form.personal.RegisterForm;
+import com.odong.portal.job.TaskSender;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.SiteService;
@@ -34,7 +34,7 @@ import java.util.HashMap;
 @Controller("c.personal.register")
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
-public class RegisterController extends EmailController {
+public class RegisterController {
     @RequestMapping(value = "/active", method = RequestMethod.GET)
     @ResponseBody
     Form getActive() {
@@ -57,7 +57,7 @@ public class RegisterController extends EmailController {
         if (ri.isOk()) {
             User u = accountService.getUser(form.getEmail());
             if (u != null && u.getState() == User.State.SUBMIT) {
-                sendValidEmail(form.getEmail(), EmailController.Type.REGISTER, new HashMap<String, String>());
+                taskSender.sendValidEmail(form.getEmail(), "register", new HashMap<String, Object>());
                 ri.addData("已向您的邮箱发送了账户激活链接，请进入邮箱进行操作。");
             } else {
                 ri.setOk(false);
@@ -71,7 +71,6 @@ public class RegisterController extends EmailController {
     @ResponseBody
     Form getRegister() {
         Form fm = new Form("register", "注册账户", "/personal/register");
-        fm.addField(new TextField("company", "公司名称"));
         fm.addField(new TextField("email", "邮箱"));
         fm.addField(new TextField("username", "用户名"));
         fm.addField(new PasswordField("newPwd", "登陆密码"));
@@ -102,7 +101,7 @@ public class RegisterController extends EmailController {
             User u = accountService.getUser(form.getEmail());
             if (u == null) {
                 accountService.addUser(form.getEmail(), form.getUsername(), form.getNewPwd());
-                sendValidEmail(form.getEmail(), Type.REGISTER, new HashMap<String, String>());
+                taskSender.sendValidEmail(form.getEmail(), "register", new HashMap<String, Object>());
                 ri.addData("已向您的邮箱发送一封激活邮件，请进入邮箱继续操作.");
             } else {
                 ri.setOk(false);
@@ -118,6 +117,12 @@ public class RegisterController extends EmailController {
     private FormHelper formHelper;
     @Resource
     private SiteService siteService;
+    @Resource
+    private TaskSender taskSender;
+
+    public void setTaskSender(TaskSender taskSender) {
+        this.taskSender = taskSender;
+    }
 
     public void setAccountService(AccountService accountService) {
         this.accountService = accountService;

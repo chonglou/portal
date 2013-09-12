@@ -5,6 +5,7 @@ import com.odong.portal.form.admin.AboutMeForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
@@ -28,12 +29,13 @@ import javax.validation.Valid;
 public class AboutMeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
-    Form getAboutMe(){
-        Form fm =new Form("aboutMe", "设置关于我们", "/admin/aboutMe/");
+    Form getAboutMe() {
+        Form fm = new Form("aboutMe", "设置关于我们", "/admin/aboutMe/");
         fm.addField(new TextAreaField("content", "内容", siteService.getString("site.aboutMe")));
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postAboutMe(@Valid AboutMeForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
@@ -41,6 +43,7 @@ public class AboutMeController {
         if (ri.isOk()) {
             siteService.set("site.aboutMe", form.getContent());
             logService.add(si.getSsUserId(), "设置关于我们", Log.Type.INFO);
+            cacheHelper.delete("site.aboutMe");
         }
         return ri;
 
@@ -52,6 +55,12 @@ public class AboutMeController {
     private SiteService siteService;
     @Resource
     private LogService logService;
+    @Resource
+    private CacheHelper cacheHelper;
+
+    public void setCacheHelper(CacheHelper cacheHelper) {
+        this.cacheHelper = cacheHelper;
+    }
 
     public void setFormHelper(FormHelper formHelper) {
         this.formHelper = formHelper;

@@ -10,7 +10,8 @@ import java.util.Map;
  * Time: 上午12:28
  */
 public interface CacheHelper {
-    Map<InetSocketAddress, Map<String,String>> status();
+    Map<InetSocketAddress, Map<String, String>> status();
+
     void delete(String key);
 
     void touch(String key, int timeout);
@@ -21,7 +22,7 @@ public interface CacheHelper {
 
     void set(String key, int timeout, Object object);
 
-    public interface Callback<T>{
+    public interface Callback<T> {
         T call();
     }
 }
