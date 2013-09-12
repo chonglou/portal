@@ -66,11 +66,14 @@ public class CacheHelperImpl implements CacheHelper {
     }
 
     @Override
-    public <T> T get(String key, Class<T> clazz, int timeout, Callback<T> callback) {
+    public <T> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback) {
         String k = key(key);
         T t = get(k, clazz);
         if(t == null){
             t = callback.call();
+            if(timeout==null || timeout<=0){
+                timeout=60*60*24;
+            }
             set(k, timeout, t);
         }
         return t;  //

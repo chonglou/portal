@@ -8,6 +8,7 @@ import com.odong.portal.form.admin.RegProtocolForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +32,15 @@ import javax.validation.Valid;
 @RequestMapping(value = "/admin/site")
 @SessionAttributes(SessionItem.KEY)
 public class SiteController {
+    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    @ResponseBody
+    Map<String, Object> getStatus() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("site.startup", cacheHelper.get("startup", Date.class, null, ()->siteService.getObject("site.startup", Date.class)));
+        map.put("site.cache", cacheHelper.status());
+        map.put("created", new Date());
+        return map;
+    }
     @RequestMapping(value = "/pager", method = RequestMethod.GET)
     @ResponseBody
     Form getSizeForm() {
@@ -172,6 +185,12 @@ public class SiteController {
     private SiteService siteService;
     @Resource
     private FormHelper formHelper;
+    @Resource
+    private CacheHelper cacheHelper;
+
+    public void setCacheHelper(CacheHelper cacheHelper) {
+        this.cacheHelper = cacheHelper;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;

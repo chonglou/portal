@@ -17,7 +17,7 @@ public interface CacheHelper {
 
     <T> T get(String key, Class<T> clazz);
 
-    <T> T get(String key, Class<T> clazz, int timeout, Callback<T> callback);
+    <T> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback);
 
     void set(String key, int timeout, Object object);
 

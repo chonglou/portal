@@ -35,6 +35,7 @@ public class User extends IdEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
+    private String logo;
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
@@ -49,6 +50,14 @@ public class User extends IdEntity {
     private String contact;
     @Column(nullable = false)
     private long visits;
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
     public long getVisits() {
         return visits;

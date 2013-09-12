@@ -60,7 +60,7 @@ public class ArticleController extends PageController {
     @RequestMapping(value = "/{articleId}", method = RequestMethod.PUT)
     @ResponseBody
     Form putArticleEditForm(@PathVariable String articleId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Article article = contentService.getArticle(articleId);
+        Article article = cacheHelper.get("archive/"+articleId, Article.class, null, ()->contentService.getArticle(articleId));
         Form fm = new Form("article", "编辑文章[" + articleId + "]", "/article/");
         fm.setOk(true);
         checkLogin(fm, si);
@@ -106,6 +106,7 @@ public class ArticleController extends PageController {
             if (ri.isOk()) {
                 if (article.getAuthor() == si.getSsUserId() || si.isSsAdmin()) {
                     contentService.delArticle(id);
+                    cacheHelper.delete("article/"+id);
                     logService.add(si.getSsUserId(), "删除文章[" + id + "]", Log.Type.INFO);
                 }
             }
@@ -133,6 +134,7 @@ public class ArticleController extends PageController {
                     for (String s : form.getTags().split("-")) {
                         contentService.bindArticleTag(form.getId(), Long.parseLong(s));
                     }
+                    cacheHelper.delete("article/"+form.getId());
                 } else {
                     ri.setOk(false);
                     ri.addData("文章[" + form.getId() + "]不存在");

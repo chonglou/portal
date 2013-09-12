@@ -1,6 +1,9 @@
 package com.odong.portal.controller;
 
-import com.odong.portal.entity.*;
+import com.odong.portal.entity.Article;
+import com.odong.portal.entity.FriendLink;
+import com.odong.portal.entity.Tag;
+import com.odong.portal.entity.User;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
@@ -34,53 +37,38 @@ public abstract class PageController {
         }
     }
 
-    protected Map<Long, User> getUserMap(List<Article> articles) {
-        Map<Long, User> users = new HashMap<>();
-        for (Article a : articles) {
-            if (users.get(a.getAuthor()) == null) {
-                users.put(a.getAuthor(), accountService.getUser(a.getAuthor()));
-            }
-        }
-        return users;
-    }
 
     protected List<NavBar> getNavBars() {
-        return cacheHelper.get("navBars", (Class<ArrayList<NavBar>>) new ArrayList<NavBar>().getClass(), 3600 * 24,
-                new CacheHelper.Callback<ArrayList<NavBar>>() {
-                    @Override
-                    public ArrayList<NavBar> call() {
+        List<NavBar> navBars = new ArrayList<>();
+        navBars.add(cacheHelper.get("navBar/hotArticle", NavBar.class, null, ()->{
+            NavBar nb = new NavBar("热门文章");
+            nb.setType(NavBar.Type.LIST);
+            contentService.hotArticle(siteService.getInteger("site.hotArticleCount")).forEach((a) -> nb.add(a.getTitle(), "/article/" + a.getId()));
 
-                        ArrayList<NavBar> navBars = new ArrayList<>();
+            return nb;
+        }));
+        navBars.add(cacheHelper.get("navBar/leastComment", NavBar.class, 60*60, ()->{
+            NavBar nb = new NavBar("最新评论");
+            nb.setType(NavBar.Type.LIST);
+            contentService.latestComment(siteService.getInteger("site.latestCommentCount")).forEach((c) -> nb.add(c.getContent(), "/comment/" + c.getId()));
+            return nb;
+        }));
+        navBars.add(cacheHelper.get("navBar/recentArchive", NavBar.class, null, ()->{
+            NavBar nb = new NavBar("最近归档");
+            nb.setType(NavBar.Type.LIST);
+            DateTime init = new DateTime(siteService.getDate("site.init"));
+            for (int i = 0; i < siteService.getInteger("site.archiveCount"); i++) {
+                DateTime dt = new DateTime().plusMonths(0 - i);
+                if (dt.compareTo(init) >= 0) {
+                    addArchive2NavBar(nb, dt);
+                } else {
+                    break;
+                }
+            }
+            return nb;
+        }));
+        return navBars;
 
-                        NavBar nbArticle = new NavBar("热门文章");
-                        nbArticle.setType(NavBar.Type.LIST);
-                        for (Article a : contentService.hotArticle(siteService.getInteger("site.hotArticleCount"))) {
-                            nbArticle.add(a.getTitle(), "/article/" + a.getId());
-                        }
-                        navBars.add(nbArticle);
-
-                        NavBar nbComment = new NavBar("最新评论");
-                        nbComment.setType(NavBar.Type.LIST);
-                        for (Comment c : contentService.latestComment(siteService.getInteger("site.latestCommentCount"))) {
-                            nbComment.add(c.getContent(), "/comment/" + c.getId());
-                        }
-                        navBars.add(nbComment);
-
-                        NavBar nbArchive = new NavBar("最近归档");
-                        nbArchive.setType(NavBar.Type.LIST);
-                        DateTime init = new DateTime(siteService.getDate("site.init"));
-                        for (int i = 0; i < siteService.getInteger("site.archiveCount"); i++) {
-                            DateTime dt = new DateTime().plusMonths(0 - i);
-                            if (dt.compareTo(init) >= 0) {
-                                addArchive2NavBar(nbArchive, dt);
-                            } else {
-                                break;
-                            }
-                        }
-                        navBars.add(nbArchive);
-                        return navBars;
-                    }
-                });
     }
 
     protected void addArchive2NavBar(NavBar nb, DateTime dt) {
@@ -89,15 +77,12 @@ public abstract class PageController {
 
     protected void fillSiteInfo(Map<String, Object> map) {
 
-        map.put("gl_site", cacheHelper.get("site", (Class<HashMap<String, Object>>) (new HashMap<String, Object>().getClass()), 3600 * 24,
-                new CacheHelper.Callback<HashMap<String, Object>>() {
-                    @Override
-                    public HashMap<String, Object> call() {
+        map.put("gl_site", cacheHelper.get("siteInfo", HashMap.class, null,
+                ()-> {
                         HashMap<String, Object> site = new HashMap<>();
                         for (String s : new String[]{"title", "description", "copyright", "keywords", "author", "articlePageSize"}) {
                             site.put(s, siteService.getString("site." + s));
                         }
-
 
                         Map<String, String> topNavs = new HashMap<>();
                         topNavs.put("main", "站点首页");
@@ -118,11 +103,11 @@ public abstract class PageController {
                         site.put("advertBottom", siteService.getString("site.advert.bottom"));
                         return site;
                     }
-                }));
+               ));
     }
 
     @Resource
-    private CacheHelper cacheHelper;
+    protected CacheHelper cacheHelper;
     @Resource
     protected SiteService siteService;
     @Resource

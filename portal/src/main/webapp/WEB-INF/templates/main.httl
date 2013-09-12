@@ -8,13 +8,15 @@ ${left_nav_bar_1}
     <div class="jumbotron">
         <h2>${defArticle.title}</h2>
         ${defArticle.summary}
-        <p style="text-align: right">
+        <p class="pull-right">
             <a target="_blank" href="/article/${defArticle.id}" class="btn btn-primary btn-large">
                 更多信息 &raquo;
             </a>
         </p>
     </div>
     $!{gl_site.advertBottom}
-    ${listArticle}
+    <!--#set(List<Card> articleList)-->
+    aaa${articleList.size}
+    ${listCard}
 </div>
 #end

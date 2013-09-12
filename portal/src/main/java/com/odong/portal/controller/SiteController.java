@@ -4,6 +4,8 @@ import com.odong.portal.entity.Article;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
+import com.odong.portal.web.Card;
+import com.odong.portal.web.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -35,21 +37,50 @@ public class SiteController extends PageController {
 
         map.put("title", "首页");
         map.put("top_nav_key", "main");
-        //TODO 分页
-        map.put("articleList", contentService.latestArticle(siteService.getInteger("site.articlePageSize")));
-        map.put("defArticle", contentService.getArticle(siteService.getString("site.defArticle")));
 
+        map.put("articleList",
+                cacheHelper.get(
+                        "cards/leastArticle",
+                        ArrayList.class,
+                        null,
+                        ()->{
+                            ArrayList<Card> cards = new ArrayList<>();
+                            contentService.latestArticle(siteService.getInteger("site.articlePageSize")).forEach((a) -> cards.add(a.toCard()));
+                            return cards;
+                        }
+                )
+        );
+        map.put("defArticles",
+                cacheHelper.get(
+                        "cards/defArticle",
+                        ArrayList.class,
+                        null,
+                        ()->{
+                            ArrayList<Card> cards = new ArrayList<>();
+                            for (String aid : siteService.getObject("site.defArticles", String[].class)){
+                                cards.add(contentService.getArticle(aid).toCard());
+                            }
+                            return cards;
+                        })
+        );
         return "main";
     }
 
 
     @RequestMapping(value = "sitemap", method = RequestMethod.GET)
     String getSitemap(Map<String, Object> map) {
-
-        //TODO 分页
-        map.put("articleList", contentService.listArticle());
-        map.put("userList", accountService.listUser());
-        map.put("tagList", contentService.listTag());
+        map.put("userList", cacheHelper.get("cards/user", ArrayList.class, null, ()->{
+            ArrayList<Card> cards = new ArrayList<>();
+            accountService.listUser().forEach((u)->{
+                cards.add(new Card(u.getLogo(), u.getUsername(), u.getEmail(), "/user/"+u.getId()));
+            });
+            return cards;
+        }));
+        map.put("tagList", cacheHelper.get("pages/tag", ArrayList.class, null, ()->{
+            ArrayList<Page> pages = new ArrayList<>();
+            contentService.listTag().forEach((t)->pages.add(t.toPage()));
+            return pages;
+        }));
 
         map.put("navBars", getNavBars());
         fillSiteInfo(map);
@@ -60,7 +91,6 @@ public class SiteController extends PageController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    @SuppressWarnings("unchecked")
     String postSearch(Map<String, Object> map, HttpServletRequest request) {
         map.put("navBars", getNavBars());
         fillSiteInfo(map);
@@ -71,9 +101,13 @@ public class SiteController extends PageController {
         //FIXME like查找性能
         map.put("articleList",
                 cacheHelper.get(
-                        "search/"+key,
-                        (Class<List<Article>>) Collections.<Article>emptyList().getClass(),
-                        3600*24, ()->contentService.search(key))
+                        "search/" + key,
+                        ArrayList.class,
+                        null, () -> {
+                    ArrayList<Card> cards = new ArrayList<>();
+                    contentService.search(key).forEach((a)->{cards.add(a.toCard());});
+                    return cards;
+                })
         );
         return "search";
     }
@@ -86,29 +120,25 @@ public class SiteController extends PageController {
 
         map.put("title", "关于我们");
         map.put("top_nav_key", "aboutMe");
-        List<String> logList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                logList.add(line);
+
+
+        map.put("logList", cacheHelper.get("logs", ArrayList.class, null, ()->{
+            ArrayList<String> logList = new ArrayList<>();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    logList.add(line);
+                }
+            } catch (IOException e) {
+                logger.error("加载大事记文件出错", e);
             }
-        } catch (IOException e) {
-            logger.error("加载大事记文件出错", e);
-        }
-        map.put("logList", logList);
-        map.put("aboutMe", siteService.getString("site.aboutMe"));
+            return logList;
+        }));
+        map.put("aboutMe", cacheHelper.get("aboutMe", String.class, null, ()->siteService.getString("site.aboutMe")));
         return "aboutMe";
     }
 
-    @RequestMapping(value = "/status", method = RequestMethod.GET)
-    @ResponseBody
-    Map<String, Object> getStatus() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("site.startup", siteService.getObject("site.startup", Date.class));
-        map.put("site.cache", cacheHelper.status());
-        map.put("created", new Date());
-        return map;
-    }
+
 
     @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)
     @ResponseBody
@@ -127,23 +157,6 @@ public class SiteController extends PageController {
         return map;
     }
 
-    @Resource
-    private SiteService siteService;
-    @Resource
-    private ContentService contentService;
-    @Resource
-    private CacheHelper cacheHelper;
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
-    }
-
-    public void setContentService(ContentService contentService) {
-        this.contentService = contentService;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 }

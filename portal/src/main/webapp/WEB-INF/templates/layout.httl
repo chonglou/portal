@@ -131,22 +131,20 @@ $!{extends("/frame.httl")}
 <div id="gl_root"></div>
 <!--#end-->
 
-<!--#macro(listArticle)-->
-<!--#set(List<Article> articleList)-->
+<!--#macro(listCard)-->
+<!--#set(List<Card> cardList)-->
 <div class="row row-offcanvas row-offcanvas-right">
-    #for(a : articleList)
+    #for(i : cardList)
     <div class="col-lg-3">
         <div class="thumbnail">
-            <img src="" alt=""/>
-
+            #if(i.logo)
+            <img src="${i.logo}" class="img-thumbnail" alt=""/>
+            #end
             <div class="caption">
-                <h3>${a.title}</h3>
-
-                <p><a href="/article/${a.id}" target="_blank">${a.summary}</a></p>
+                <h3>${i.title}</h3>
+                <p><a href="${i.url}" target="_blank">${i.body}</a></p>
             </div>
         </div>
-        <!--FIXME 文章显示-->
-
     </div>
     #end
 </div>

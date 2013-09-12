@@ -1,5 +1,7 @@
 package com.odong.portal.entity;
 
+import com.odong.portal.web.Card;
+import com.odong.portal.web.Page;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -17,6 +19,12 @@ import java.util.Date;
 @Table(name = "cmsArticle")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Article implements Serializable {
+    public Page toPage(){
+        return new Page(title, "/article/"+id);
+    }
+    public Card toCard(){
+        return new Card(logo, title, summary, "/article/"+id);
+    }
     public enum State {
         PRIVATE, PUBLIC, PROTECTED
     }
@@ -31,6 +39,8 @@ public class Article implements Serializable {
     private String id;
     @Column(nullable = false)
     private String title;
+    @Column
+    private String logo;
     @Column(length = 500)
     private String summary;
     @Lob
@@ -48,6 +58,14 @@ public class Article implements Serializable {
     private long visits;
     @Version
     private int version;
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
     public String getId() {
         return id;

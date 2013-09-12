@@ -1,5 +1,6 @@
 package com.odong.portal.entity;
 
+import com.odong.portal.web.Page;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -16,7 +17,9 @@ import java.util.Date;
 @Table(name = "cmsComment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Comment extends IdEntity {
-
+    public Page toPage(){
+        return new Page(content, "/article/"+article+"#"+getId());
+    }
     public Date getPublishDate() {
         return lastEdit == null ? created : lastEdit;
     }

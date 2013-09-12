@@ -79,14 +79,14 @@ public class SiteHelper {
             siteService.set("site.archiveCount", 6);
             siteService.set("site.articlePageSize", 50);
 
-            String defTag = "默认类别";
-            contentService.addTag(defTag);
+            String defTagName = "默认";
+            contentService.addTag(defTagName);
 
-            Tag tag = contentService.getTag(defTag);
-            String defArticle = UUID.randomUUID().toString();
-            contentService.addArticle(defArticle, admin.getId(), "欢迎", "欢迎来到本站", "详细信息");
-            contentService.bindArticleTag(defArticle, tag.getId());
-            siteService.set("site.defArticle", defArticle);
+            Tag tag = contentService.getTag(defTagName);
+            String defArticleId = UUID.randomUUID().toString();
+            contentService.addArticle(defArticleId, admin.getId(), "欢迎", "欢迎来到本站", "详细信息");
+            contentService.bindArticleTag(defArticleId, tag.getId());
+            siteService.set("site.defArticles", new String[]{defArticleId});
             siteService.set("site.defTag", tag.getId());
 
             //广告

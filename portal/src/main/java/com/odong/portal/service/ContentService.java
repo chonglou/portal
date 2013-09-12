@@ -4,6 +4,7 @@ import com.odong.portal.entity.Article;
 import com.odong.portal.entity.ArticleTag;
 import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Tag;
+import com.odong.portal.web.Card;
 
 import java.util.List;
 
