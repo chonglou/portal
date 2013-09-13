@@ -1,0 +1,30 @@
+<br/>
+<fieldset>
+    <legend>
+        <span class="btn-group btn-group-sm">
+            <button id="runtime" class="btn btn-info">系统运行</button>
+            <button id="service" class="btn btn-warning">站点服务</button>
+            <button id="refresh" class="btn btn-primary">刷新</button>
+        </span>
+    </legend>
+    <div id="state"></div>
+</fieldset>
+
+<script type="text/javascript">
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/admin/state/");
+    });
+
+    $("button#runtime").click(function () {
+        clear_message_div();
+        new Ajax("/admin/state/runtime", "POST", undefined, function (result) {
+            $("div#state").html(object2html(result));
+        });
+    });
+    $("button#service").click(function () {
+        clear_message_div();
+        $("div#state").html("");
+        new Ajax("/admin/state/service", undefined, undefined, undefined, undefined, "state");
+    });
+</script>

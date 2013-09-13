@@ -1,38 +1,29 @@
 $!{extends("/layout.httl")}
 #macro(main)
-<!--#set(List<User> userList)-->
-<!--#set(List<Tag> tagList)-->
-<!--#set(List<Article> articleList)-->
-<!--#set(Map<String,String> gl_site)-->
+<!--#set(List<Card> userList)-->
+<!--#set(List<Page> tagList)-->
+<!--#set(List<Card> articleList)-->
+<!--#set(Map<String,Object> gl_site)-->
 ${left_nav_bar_1}
 <div class="col-lg-9">
     ${mainGL}
     $!{gl_site.advertBottom}
     <h3>用户列表</h3>
     <hr>
-    <div class="row">
-        #for(u : userList)
-        <div class="col-lg-1">
-            <a href="/user/${u.id}" target="_blank">${u.username}</a>
-        </div>
-        #end
-    </div>
+    #set(cardList = userList)
+    ${fallCard}
     <p>&nbsp;</p>
 
     <h3>标签列表</h3>
     <hr>
-    <div class="row">
-        #for(t : tagList)
-        <div class="col-lg-1">
-            <a href="/tag/${t.id}" target="_blank">${t.name}</a>
-        </div>
-        #end
-    </div>
+    #set(pageList = tagList)
+    ${fallPage}
     <p>&nbsp;</p>
 
     <h3>文章列表</h3>
     <hr>
-    ${listArticle}
+    #set(cardList=articleList)
+    ${fallCard}
     <p>&nbsp;</p>
 </div>
 #end

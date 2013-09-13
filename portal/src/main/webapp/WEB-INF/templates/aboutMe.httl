@@ -8,7 +8,7 @@ ${left_nav_bar_1}
 
     <h3>关于我们</h3>
     <hr/>
-        $!{aboutMe}
+    $!{aboutMe}
     $!{gl_site.advertBottom}
     <!--#set(List<String> logList) -->
     <table class="table table-bordered table-hover">

@@ -1,4 +1,6 @@
 $!{extends("/layout.httl")}
+
+
 #macro(main)
 <!--#set(Map<String,String> gl_site)-->
 ${left_nav_bar_1}
@@ -15,8 +17,11 @@ ${left_nav_bar_1}
         </p>
     </div>
     $!{gl_site.advertBottom}
-    <!--#set(List<Card> articleList)-->
-    aaa${articleList.size}
-    ${listCard}
+    <!--#set(cardList = articleList)-->
+    ${fallCard}
 </div>
 #end
+
+
+
+

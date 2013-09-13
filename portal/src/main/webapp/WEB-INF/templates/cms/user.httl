@@ -11,7 +11,8 @@ ${left_nav_bar_1}
     <label>邮箱：<a href="mailto:${user.email}" target="_top"> ${user.email} </a>上次登陆：${user.lastLogin}</label>
 
     <p>&nbsp;</p>
-    ${listArticle}
+    <!--#set(cardList = articleList)-->
+    ${fallCard}
     $!{gl_site.advertBottom}
 </div>
 #end

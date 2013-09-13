@@ -7,7 +7,8 @@ ${left_nav_bar_1}
     <!--#set(List<Article> articleList)-->
     <h3>归档-${title} 文章列表[${articleList.size()}]</h3>
     <hr/>
-    ${listArticle}
+    <!--#set(cardList = articleList)-->
+    ${fallCard}
     <br>
     $!{gl_site.advertBottom}
 </div>

@@ -1,3 +1,43 @@
+
+function show_tag_cloud(id) {
+    $('ul#jcloud-' + id).jcloud({
+        radius: 200,
+        size: 30,
+        step: 2,
+        speed: 50,
+        flats: 2,
+        clock: 10,
+        areal: 100,
+        splitX: 100,
+        splitY: 100,
+        colors: ['#000000', '#DD2222', '#2267DD', '#2A872B', '#872A7B', '#CAC641']
+    });
+}
+
+function object2html(obj) {
+    var context = "<ol class='list-group'>";
+    for (var k in obj) {
+        var v = obj[k];
+        var s;
+        switch (typeof v) {
+            case "number":
+            case "string":
+                s = v;
+                break;
+            case "object":
+                s += object2html(v);
+                break;
+            default :
+                s = "未知类型：" + k;
+                break;
+        }
+
+        context += "<li class='list-group-item'>" + k + "：" + s + "</li>";
+    }
+    context += "</ol>";
+    return context;
+}
+
 function Ajax(url, type, data, success, async, parent) {
     var _init = function () {
         if (type == undefined) {
@@ -526,7 +566,7 @@ function MessageDialog(messages, type) {
         if (type == undefined) {
             type = "error";
         }
-        $("div#gl_message").html("<div class='alert alert-"+type+"'><button type='button' class='close' data-dismiss='alert'>&times;</button><h4>" +
+        $("div#gl_message").html("<div class='alert alert-" + type + "'><button type='button' class='close' data-dismiss='alert'>&times;</button><h4>" +
             name + "[" + (new Date()).pattern("yyyy-MM-dd hh:mm:ss.S") + "]：</h4>" + (messages instanceof Array ? messages.join("<br/>") : messages) + "</div>");
 
     };

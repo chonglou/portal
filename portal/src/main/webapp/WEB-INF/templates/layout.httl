@@ -50,6 +50,7 @@ $!{extends("/frame.httl")}
 <!--#set(Map<String,Object> gl_site)-->
 <div role="navigation" id="sidebar" class="col-lg-3 sidebar-offcanvas">
     <br>
+
     <div class="well sidebar-nav">
         <ul class="nav">
             #for(NavBar nb:navBars)
@@ -64,7 +65,7 @@ $!{extends("/frame.httl")}
     <br/>
     <!-- #set(List<Page> tagCloud=gl_site.tagCloud) -->
     <script type="text/javascript">
-        $(document).ready(function(){
+        $(document).ready(function () {
             show_tag_cloud("pages");
         });
     </script>
@@ -125,15 +126,14 @@ $!{extends("/frame.httl")}
 </div>
 <!--#end-->
 
-
 <!--#macro(mainGL)-->
 <div id="gl_message"></div>
 <div id="gl_root"></div>
 <!--#end-->
 
-<!--#macro(listCard)-->
-<!--#set(List<Card> cardList)-->
+<!--#macro(fallCard)-->
 <div class="row row-offcanvas row-offcanvas-right">
+    <!--#set(List<Card> cardList)-->
     #for(i : cardList)
     <div class="col-lg-3">
         <div class="thumbnail">
@@ -141,8 +141,24 @@ $!{extends("/frame.httl")}
             <img src="${i.logo}" class="img-thumbnail" alt=""/>
             #end
             <div class="caption">
-                <h3>${i.title}</h3>
+                <h4>${i.title}</h4>
+
                 <p><a href="${i.url}" target="_blank">${i.body}</a></p>
+            </div>
+        </div>
+    </div>
+    #end
+</div>
+<!--#end-->
+
+<!--#macro(fallPage)-->
+<div class="row row-offcanvas row-offcanvas-right">
+    <!--#set(List<Page> pageList)-->
+    #for(i : pageList)
+    <div class="col-lg-1">
+        <div class="thumbnail">
+            <div class="caption">
+                <a href="${i.url}" target="_blank">${i.name}</a>
             </div>
         </div>
     </div>

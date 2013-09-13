@@ -33,7 +33,6 @@ public class UserController extends PageController {
         User user = cacheHelper.get("user/" + userId, User.class, null, () -> accountService.getUser(userId));
         if (user != null) {
             contentService.setUserVisits(userId);
-            map.put("navBars", getNavBars());
             //TODO 分页
             map.put("articleList", cacheHelper.get("cards/article/user/" + userId, ArrayList.class, null, () -> {
                 ArrayList<Card> cards = new ArrayList<>();
@@ -46,7 +45,9 @@ public class UserController extends PageController {
                 NavBar nb = new NavBar("用户列表");
                 nb.setType(NavBar.Type.LIST);
                 for (User u : accountService.listUser()) {
-                    nb.add(u.getUsername(), "/user/" + u.getId());
+                    if (u.getState() == User.State.ENABLE) {
+                        nb.add(u.getUsername(), "/user/" + u.getId());
+                    }
                 }
                 return nb;
             }));

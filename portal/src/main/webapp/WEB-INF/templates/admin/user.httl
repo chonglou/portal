@@ -30,9 +30,9 @@
             <td>
                 <div class="btn-group btn-group-sm">
                     #if(u.state == 'DISABLE')
-                        <button id="state-ENABLE-${u.id}" class="btn btn-primary" type="button">启用</button>
+                    <button id="state-ENABLE-${u.id}" class="btn btn-primary" type="button">启用</button>
                     #else(u.state == 'ENABLE')
-                        <button id="state-DISABLE-${u.id}" class="btn btn-danger" type="button">禁用</button>
+                    <button id="state-DISABLE-${u.id}" class="btn btn-danger" type="button">禁用</button>
                     #end
                 </div>
             </td>
@@ -53,7 +53,7 @@
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-            new Ajax("/admin/user/state", "POST", {id:ss[2],state:ss[1]}, undefined, undefined, "tag");
+            new Ajax("/admin/user/state", "POST", {id: ss[2], state: ss[1]}, undefined, undefined, "tag");
 
         });
     });

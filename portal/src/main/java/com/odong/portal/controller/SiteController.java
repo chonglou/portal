@@ -1,5 +1,6 @@
 package com.odong.portal.controller;
 
+import com.odong.portal.entity.User;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.Page;
 import org.slf4j.Logger;
@@ -70,7 +71,9 @@ public class SiteController extends PageController {
         map.put("userList", cacheHelper.get("cards/user", ArrayList.class, null, () -> {
             ArrayList<Card> cards = new ArrayList<>();
             accountService.listUser().forEach((u) -> {
-                cards.add(new Card(u.getLogo(), u.getUsername(), u.getEmail(), "/user/" + u.getId()));
+                if (u.getState() == User.State.ENABLE) {
+                    cards.add(new Card(u.getLogo(), u.getUsername(), u.getEmail(), "/user/" + u.getId()));
+                }
             });
             return cards;
         }));

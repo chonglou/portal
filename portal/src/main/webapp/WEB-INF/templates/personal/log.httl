@@ -1,20 +1,21 @@
 <!--#set(List<Log> logList) -->
-<h3>日志[${logList.size}]</h3><hr/>
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <td style="width: 20%">日期</td>
-            <td style="width: 10%">类型</td>
-            <td>内容</td>
-        </tr>
-        </thead>
-        <tbody>
-        #for(l : logList)
-        <tr>
-            <td>${l.created}</td>
-            <td>${l.type}</td>
-            <td>${l.message}</td>
-        </tr>
-        #end
-        </tbody>
-    </table>
+<h3>日志[${logList.size}]</h3>
+<hr/>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td style="width: 20%">日期</td>
+        <td style="width: 10%">类型</td>
+        <td>内容</td>
+    </tr>
+    </thead>
+    <tbody>
+    #for(l : logList)
+    <tr>
+        <td>${l.created}</td>
+        <td>${l.type}</td>
+        <td>${l.message}</td>
+    </tr>
+    #end
+    </tbody>
+</table>
