@@ -40,6 +40,16 @@ public class Tag extends IdEntity {
     @Column(nullable = false, updatable = false)
     private Date created;
     private Date lastEdit;
+    @Column(nullable = false, updatable = false)
+    private boolean keep;
+
+    public boolean isKeep() {
+        return keep;
+    }
+
+    public void setKeep(boolean keep) {
+        this.keep = keep;
+    }
 
     public Date getCreated() {
         return created;

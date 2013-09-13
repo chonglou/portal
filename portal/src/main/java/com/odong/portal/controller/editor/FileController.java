@@ -3,7 +3,6 @@ package com.odong.portal.controller.editor;
 import com.odong.portal.ueditor.FileUploader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +23,7 @@ import java.io.IOException;
 public class FileController {
     @RequestMapping(value = "/attachments/**", method = RequestMethod.GET)
     @ResponseBody
-    FileSystemResource getAttach(HttpServletRequest request){
+    FileSystemResource getAttach(HttpServletRequest request) {
         return new FileSystemResource(fileUploader.getPhysicalPath(request.getRequestURI().substring("/attachments/".length())));
     }
 

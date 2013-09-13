@@ -18,7 +18,7 @@ public class ArticleForm implements Serializable {
     @NotNull
     private String tags;
     private String summary;
-    private String id;
+    private Long id;
 
     public String getTags() {
         return tags;
@@ -52,11 +52,11 @@ public class ArticleForm implements Serializable {
         this.summary = summary;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

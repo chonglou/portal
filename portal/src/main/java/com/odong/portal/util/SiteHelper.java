@@ -1,6 +1,5 @@
 package com.odong.portal.util;
 
-import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.model.KaptchaProfile;
 import com.odong.portal.model.ReCaptchaProfile;
@@ -19,7 +18,6 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -71,15 +69,8 @@ public class SiteHelper {
             siteService.set("site.archiveCount", 6);
             siteService.set("site.articlePageSize", 50);
 
-            String defTagName = "默认";
-            contentService.addTag(defTagName);
-
-            Tag tag = contentService.getTag(defTagName);
-            String defArticleId = UUID.randomUUID().toString();
-            contentService.addArticle(defArticleId, admin.getId(), "欢迎", "欢迎来到本站", "详细信息");
-            contentService.bindArticleTag(defArticleId, tag.getId());
-            siteService.set("site.defArticles", new String[]{defArticleId});
-            siteService.set("site.defTag", tag.getId());
+            contentService.addTag("默认", true);
+            contentService.addTag("置顶", true);
 
             //广告
             siteService.set("site.advert.bottom", "<script type=\"text/javascript\"><!--\n" +

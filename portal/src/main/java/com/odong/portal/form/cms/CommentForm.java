@@ -14,7 +14,7 @@ public class CommentForm implements Serializable {
     @NotNull
     private String content;
     @NotNull
-    private String article;
+    private Long article;
     private Long comment;
 
     public Long getComment() {
@@ -33,11 +33,11 @@ public class CommentForm implements Serializable {
         this.content = content;
     }
 
-    public String getArticle() {
+    public Long getArticle() {
         return article;
     }
 
-    public void setArticle(String article) {
+    public void setArticle(Long article) {
         this.article = article;
     }
 }

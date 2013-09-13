@@ -33,7 +33,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public long countTag(String article) {
+    public long countTag(Long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         return tagDao.count("FROM ArticleTag  i WHERE i.article=:article", map);  //
@@ -51,7 +51,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public List<Tag> listTagByArticle(String article) {
+    public List<Tag> listTagByArticle(Long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
 
@@ -75,9 +75,10 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void addTag(String name) {
+    public void addTag(String name, boolean keep) {
         Tag t = new Tag();
         t.setName(name);
+        t.setKeep(keep);
         t.setCreated(new Date());
         tagDao.insert(t);
     }
@@ -101,12 +102,12 @@ public class ContentServiceImpl implements ContentService {
     public void delTag(long id) {
         tagDao.delete(id);
         Map<String, Object> map = new HashMap<>();
-        map.put("tag", id);
-        articleTagDao.delete("DELETE ArticleTag  i WHERE i.tag=:tag", map);
+        map.put("id", id);
+        articleTagDao.delete("DELETE Tag  i WHERE i.id=:id ", map);
     }
 
     @Override
-    public void delTagByArticle(String article) {
+    public void delTagByArticle(Long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         articleTagDao.delete("DELETE ArticleTag i WHERE i.article=:article", map);
@@ -126,7 +127,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public long countCommentByArticle(String article) {
+    public long countCommentByArticle(Long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         return commentDao.count("SELECT COUNT(*) FROM Comment  i WHERE i.article=:article", map);  //
@@ -148,7 +149,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public List<Comment> listCommentByArticle(String article) {
+    public List<Comment> listCommentByArticle(Long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         return commentDao.list("FROM Comment  i WHERE i.article=:article ORDER BY i.id DESC", map);  //
@@ -178,7 +179,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void addComment(Long user, String article, Long comment, String content) {
+    public void addComment(Long user, Long article, Long comment, String content) {
         Comment c = new Comment();
         c.setUser(user);
         c.setArticle(article);
@@ -213,12 +214,12 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public Article getArticle(String article) {
+    public Article getArticle(Long article) {
         return articleDao.select(article);  //
     }
 
     @Override
-    public ArticleTag getArticleTag(String article, long tag) {
+    public ArticleTag getArticleTag(Long article, long tag) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         map.put("tag", tag);
@@ -226,7 +227,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void delArticle(String article) {
+    public void delArticle(Long article) {
         articleDao.delete(article);
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
@@ -287,9 +288,8 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void addArticle(String id, long author, String title, String summary, String body) {
+    public Long addArticle(long author, String title, String summary, String body) {
         Article a = new Article();
-        a.setId(id);
         a.setAuthor(author);
         a.setTitle(title);
         a.setSummary(summary);
@@ -297,11 +297,11 @@ public class ContentServiceImpl implements ContentService {
         a.setVisits(0l);
         a.setCreated(new Date());
         a.setState(Article.State.PROTECTED);
-        articleDao.insert(a);
+        return articleDao.persist(a);
     }
 
     @Override
-    public void setArticleState(String article, Article.State state) {
+    public void setArticleState(Long article, Article.State state) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", article);
         map.put("state", state);
@@ -309,7 +309,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void setArticle(String id, String title, String summary, String body) {
+    public void setArticle(Long id, String title, String summary, String body) {
         Article a = articleDao.select(id);
         a.setTitle(title);
         a.setSummary(summary);
@@ -319,7 +319,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void bindArticleTag(String article, long tag) {
+    public void bindArticleTag(Long article, long tag) {
         Map<String, Object> map = new HashMap<>();
         map.put("article", article);
         map.put("tag", tag);
@@ -335,7 +335,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void setArticleVisits(String article) {
+    public void setArticleVisits(Long article) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("id", article);

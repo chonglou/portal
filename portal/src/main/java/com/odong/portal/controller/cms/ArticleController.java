@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,7 +58,7 @@ public class ArticleController extends PageController {
 
     @RequestMapping(value = "/{articleId}", method = RequestMethod.PUT)
     @ResponseBody
-    Form putArticleEditForm(@PathVariable String articleId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    Form putArticleEditForm(@PathVariable Long articleId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Article article = cacheHelper.get("archive/" + articleId, Article.class, null, () -> contentService.getArticle(articleId));
         Form fm = new Form("article", "编辑文章[" + articleId + "]", "/article/");
         fm.setOk(true);
@@ -90,7 +89,7 @@ public class ArticleController extends PageController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    ResponseItem deleteArticle(@PathVariable String id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem deleteArticle(@PathVariable Long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         Article article = contentService.getArticle(id);
         String defA = siteService.getString("site.defArticle");
@@ -120,12 +119,13 @@ public class ArticleController extends PageController {
         ResponseItem ri = formHelper.check(result, request, true);
         checkLogin(ri, si);
         if (ri.isOk()) {
-            if (form.getId() == null || "".equals(form.getId())) {
-                String aid = UUID.randomUUID().toString();
-                contentService.addArticle(aid, si.getSsUserId(), form.getTitle(), form.getSummary(), form.getBody());
+            if (form.getId() == null) {
+                Long aid = contentService.addArticle(si.getSsUserId(), form.getTitle(), form.getSummary(), form.getBody());
+
                 for (String s : form.getTags().split("-")) {
                     contentService.bindArticleTag(aid, Long.parseLong(s));
                 }
+
             } else {
                 Article article = contentService.getArticle(form.getId());
                 if (article != null && (article.getAuthor() == si.getSsUserId() || si.isSsAdmin())) {
@@ -146,7 +146,7 @@ public class ArticleController extends PageController {
     }
 
     @RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
-    String getArticle(Map<String, Object> map, @PathVariable String articleId, HttpServletResponse response) throws IOException {
+    String getArticle(Map<String, Object> map, @PathVariable Long articleId, HttpServletResponse response) throws IOException {
         Article a = contentService.getArticle(articleId);
         if (a != null) {
             contentService.setArticleVisits(articleId);

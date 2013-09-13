@@ -19,16 +19,16 @@ import javax.persistence.Table;
 public class ArticleTag extends IdEntity {
     private static final long serialVersionUID = 4989475576131553738L;
 
-    @Column(nullable = false)
-    private String article;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
+    private Long article;
+    @Column(nullable = false, updatable = false)
     private Long tag;
 
-    public String getArticle() {
+    public Long getArticle() {
         return article;
     }
 
-    public void setArticle(String article) {
+    public void setArticle(Long article) {
         this.article = article;
     }
 

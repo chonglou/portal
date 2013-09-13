@@ -32,7 +32,7 @@ public class Comment extends IdEntity {
     @Column(updatable = false)
     private Long comment;
     @Column(nullable = false, updatable = false)
-    private String article;
+    private Long article;
     @Lob
     @Column(nullable = false)
     private String content;
@@ -67,11 +67,11 @@ public class Comment extends IdEntity {
         this.user = user;
     }
 
-    public String getArticle() {
+    public Long getArticle() {
         return article;
     }
 
-    public void setArticle(String article) {
+    public void setArticle(Long article) {
         this.article = article;
     }
 

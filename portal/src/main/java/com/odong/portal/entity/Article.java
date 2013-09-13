@@ -6,7 +6,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,13 +17,13 @@ import java.util.Date;
 @Entity
 @Table(name = "cmsArticle")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Article implements Serializable {
+public class Article extends IdEntity {
     public Page toPage() {
-        return new Page(title, "/article/" + id);
+        return new Page(title, "/article/" + getId());
     }
 
     public Card toCard() {
-        return new Card(logo, title, summary, "/article/" + id);
+        return new Card(logo, title, summary, "/article/" + getId());
     }
 
     public enum State {
@@ -36,9 +35,6 @@ public class Article implements Serializable {
     }
 
     private static final long serialVersionUID = 9130835572844462147L;
-    @Id
-    @Column(nullable = false, unique = true, updatable = false)
-    private String id;
     @Column(nullable = false)
     private String title;
     @Column
@@ -67,14 +63,6 @@ public class Article implements Serializable {
 
     public void setLogo(String logo) {
         this.logo = logo;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public long getVisits() {

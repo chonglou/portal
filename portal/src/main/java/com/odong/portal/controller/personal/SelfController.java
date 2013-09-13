@@ -39,7 +39,6 @@ public class SelfController extends PageController {
 
 
         NavBar nbCms = new NavBar("内容管理");
-        nbCms.add("新增文章", "/article/add");
         nbCms.add("文章管理", "/personal/article");
         nbCms.add("评论管理", "/personal/comment");
         nbCms.setAjax(true);

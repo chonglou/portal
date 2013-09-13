@@ -34,8 +34,8 @@ public class SecurityInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if(url.startsWith("/editor/")){
-            if(si == null){
+        if (url.startsWith("/editor/")) {
+            if (si == null) {
                 notFound(response);
                 return false;
             }

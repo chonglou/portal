@@ -17,6 +17,8 @@ public interface BaseDao<T extends Serializable, PK extends Serializable> {
 
     void insert(T t);
 
+    PK persist(T t);
+
     void delete(PK id);
 
     void delete(String hql, Map<String, Object> map);

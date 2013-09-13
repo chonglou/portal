@@ -33,7 +33,7 @@ public class CommentController extends PageController {
 
     @RequestMapping(value = "/a-{articleId}", method = RequestMethod.GET)
     @ResponseBody
-    Form getAddCommentForArticle(@PathVariable String articleId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    Form getAddCommentForArticle(@PathVariable Long articleId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("comment", "添加评论", "/comment/");
         Article a = contentService.getArticle(articleId);
         if (a == null) {

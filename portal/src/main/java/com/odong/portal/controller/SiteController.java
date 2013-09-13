@@ -1,5 +1,6 @@
 package com.odong.portal.controller;
 
+import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.Page;
@@ -56,9 +57,10 @@ public class SiteController extends PageController {
                         null,
                         () -> {
                             ArrayList<Card> cards = new ArrayList<>();
-                            for (String aid : siteService.getObject("site.defArticles", String[].class)) {
-                                cards.add(contentService.getArticle(aid).toCard());
-                            }
+                            Tag tag = contentService.getTag("置顶");
+                            contentService.listArticleByTag(tag.getId()).forEach((a) -> {
+                                cards.add(a.toCard());
+                            });
                             return cards;
                         })
         );

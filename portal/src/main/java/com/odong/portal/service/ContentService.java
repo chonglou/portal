@@ -18,20 +18,20 @@ public interface ContentService {
 
     long countTag();
 
-    long countTag(String article);
+    long countTag(Long article);
 
 
     List<Tag> hotTag(int count);
 
     List<Tag> listTag();
 
-    List<Tag> listTagByArticle(String article);
+    List<Tag> listTagByArticle(Long article);
 
     Tag getTag(long id);
 
     Tag getTag(String name);
 
-    void addTag(String name);
+    void addTag(String name, boolean keep);
 
     void setTagName(long id, String name);
 
@@ -39,13 +39,13 @@ public interface ContentService {
 
     void delTag(long id);
 
-    void delTagByArticle(String article);
+    void delTagByArticle(Long article);
 
     long countComment();
 
     long countCommentByUser(long user);
 
-    long countCommentByArticle(String article);
+    long countCommentByArticle(Long article);
 
     Comment getComment(long comment);
 
@@ -53,7 +53,7 @@ public interface ContentService {
 
     List<Comment> listComment(int no, int size);
 
-    List<Comment> listCommentByArticle(String article);
+    List<Comment> listCommentByArticle(Long article);
 
     List<Comment> listCommentByUser(long user);
 
@@ -61,7 +61,7 @@ public interface ContentService {
 
     void editComment(long comment, String content);
 
-    void addComment(Long user, String article, Long comment, String content);
+    void addComment(Long user, Long article, Long comment, String content);
 
     void delComment(long id);
 
@@ -71,11 +71,11 @@ public interface ContentService {
 
     long countArticleByTag(long tag);
 
-    Article getArticle(String article);
+    Article getArticle(Long article);
 
-    ArticleTag getArticleTag(String article, long tag);
+    ArticleTag getArticleTag(Long article, long tag);
 
-    void delArticle(String article);
+    void delArticle(Long article);
 
     List<Article> listArticle();
 
@@ -93,16 +93,16 @@ public interface ContentService {
 
     List<ArticleTag> listArticleTag();
 
-    void addArticle(String id, long author, String title, String summary, String body);
+    Long addArticle(long author, String title, String summary, String body);
 
-    void setArticleState(String article, Article.State state);
+    void setArticleState(Long article, Article.State state);
 
-    void setArticle(String id, String title, String summary, String body);
+    void setArticle(Long id, String title, String summary, String body);
 
 
-    void bindArticleTag(String article, long tag);
+    void bindArticleTag(Long article, long tag);
 
-    void setArticleVisits(String article);
+    void setArticleVisits(Long article);
 
     void setUserVisits(long user);
 

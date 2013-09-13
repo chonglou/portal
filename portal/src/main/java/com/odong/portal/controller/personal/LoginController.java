@@ -12,7 +12,6 @@ import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.PasswordField;
-import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;

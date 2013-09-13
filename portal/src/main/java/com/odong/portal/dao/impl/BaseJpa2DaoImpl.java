@@ -45,10 +45,24 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public PK persist(T t) {
+        entityManager.persist(t);
+        entityManager.flush();
+        try {
+            return (PK) pkField.get(t);
+        } catch (IllegalAccessException e) {
+            logger.error("获得主键失败", e);
+        }
+
+        return null;
+    }
+
+    @Override
     public void delete(PK id) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
-        update("DELETE " + tableName() + " i WHERE i." + pkName + "=:id", map);
+        update("DELETE " + tableName() + " i WHERE i." + pkField.getName() + "=:id", map);
     }
 
     @Override
@@ -131,7 +145,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
 
     @Override
     public String hqlListAll() {
-        return "SELECT i FROM " + tableName() + " i ORDER BY i." + pkName + " DESC";
+        return "SELECT i FROM " + tableName() + " i ORDER BY i." + pkField.getName() + " DESC";
     }
 
     protected void remove(T t) {
@@ -141,27 +155,24 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
     @SuppressWarnings("unchecked")
     public BaseJpa2DaoImpl() {
         this.clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        Field[] fields = this.clazz.getDeclaredFields();
-        String pk = null;
-        for (Field f : fields) {
-            if (f.isAnnotationPresent(Id.class)) {
-                pk = f.getName();
+        this.pkField = getPkField(clazz);
+        if (pkField == null) {
+            throw new IllegalArgumentException("类[" + clazz.getSimpleName() + "]没有定义主键");
+        }
+        pkField.setAccessible(true);
+
+    }
+
+    private Field getPkField(Class clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Id.class)) {
+                return field;
             }
         }
-        if (pk == null) {
-            //throw new IllegalArgumentException("类[" + clazz.getSimpleName() + "]没有定义主键");
-            pk = "id";
-        }
-        this.pkName = pk;
+        Class sup = clazz.getSuperclass();
+        return sup == null ? null : getPkField(sup);
     }
-
-
-    /*
-    public BaseDaoJpa2Impl(Class<T> clazz, String pkName){
-        this.clazz = clazz;
-        this.pkName = pkName;
-    }
-    */
 
 
     protected String tableName() {
@@ -172,7 +183,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
     @PersistenceContext
     protected EntityManager entityManager;
     protected final Class<T> clazz;
-    protected final String pkName;
+    protected final Field pkField;
     private final static Logger logger = LoggerFactory.getLogger(BaseJpa2DaoImpl.class);
 
     public void setEntityManager(EntityManager entityManager) {

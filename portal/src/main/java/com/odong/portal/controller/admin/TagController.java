@@ -69,7 +69,7 @@ public class TagController {
             if (form.getId() == null) {
 
                 if (contentService.getTag(form.getName()) == null) {
-                    contentService.addTag(form.getName());
+                    contentService.addTag(form.getName(), false);
                 } else {
                     ri.addData("标签[" + form.getName() + "]已存在");
                     ri.setOk(false);
@@ -97,10 +97,15 @@ public class TagController {
     ResponseItem deleteTag(@PathVariable long tagId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
 
-        if (siteService.getLong("site.defTag") != tagId && contentService.countArticleByTag(tagId) == 0) {
-            contentService.delTag(tagId);
-            logService.add(si.getSsUserId(), "删除标签[" + tagId + "]", Log.Type.INFO);
-            ri.setOk(true);
+        if (contentService.countArticleByTag(tagId) == 0) {
+            Tag tag = contentService.getTag(tagId);
+            if (tag.isKeep()) {
+                ri.addData("标签[" + tag.getName() + "]是内置标签");
+            } else {
+                contentService.delTag(tagId);
+                logService.add(si.getSsUserId(), "删除标签[" + tagId + "]", Log.Type.INFO);
+                ri.setOk(true);
+            }
         } else {
             ri.addData("标签[" + tagId + "]正在被使用");
         }
