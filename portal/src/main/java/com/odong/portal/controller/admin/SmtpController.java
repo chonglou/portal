@@ -38,6 +38,7 @@ public class SmtpController {
 
         if (profile == null) {
             profile = new SmtpProfile();
+            profile.setPort(25);
         }
 
         Form fm = new Form("siteSmtp", "SMTP信息", "/admin/smtp/");

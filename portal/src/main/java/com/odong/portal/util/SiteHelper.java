@@ -60,6 +60,7 @@ public class SiteHelper {
             //USER
             accountService.addUser(manager, "管理员", "123456");
             User admin = accountService.getUser(manager);
+            accountService.setUserState(admin.getId(), User.State.ENABLE);
             rbacService.bindAdmin(admin.getId(), true);
 
             //CMS

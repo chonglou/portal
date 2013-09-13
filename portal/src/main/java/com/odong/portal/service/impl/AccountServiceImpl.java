@@ -61,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
         u.setUsername(username);
         u.setPassword(encryptHelper.encrypt(password));
         u.setCreated(new Date());
-        u.setState(User.State.ENABLE);
+        u.setState(User.State.SUBMIT);
         userDao.insert(u);
     }
 

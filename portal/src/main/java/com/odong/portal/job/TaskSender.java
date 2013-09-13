@@ -87,7 +87,8 @@ public class TaskSender {
             return message;
         }
         );
-        logger.debug("发送任务消息[{}]", taskId);
+
+        //logger.debug("发送任务消息[{}]", taskId);
     }
 
     @PostConstruct

@@ -93,7 +93,7 @@ public class TaskListener implements MessageListener {
                        String bcc,
                        String to, String title, String body, boolean html,
                        Map<String, String> attachs) {
-
+        logger.debug("准备给[{}]发送邮件", to);
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setHost(host);
         sender.setPort(port);
