@@ -526,7 +526,7 @@ function FormWindow(form, parent) {
                         break;
                 }
             }
-            new Ajax(form.action, "POST", data, undefined, false);
+            new Ajax(form.action, "POST", data, undefined, !form.captcha);
             reload_captcha();
         });
 

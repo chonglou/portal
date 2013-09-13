@@ -12,6 +12,7 @@ import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.PasswordField;
+import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -42,6 +43,7 @@ public class LoginController {
         Form fm = new Form("login", "欢迎登录", "/personal/login");
         fm.addField(new TextField("email", "邮箱"));
         fm.addField(new PasswordField("password", "密码"));
+        fm.addField(new TextAreaField("fuck", "测试"));
         fm.setCaptcha(true);
         fm.setOk(true);
         return fm;
