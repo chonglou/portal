@@ -1,6 +1,7 @@
 package com.odong.portal.ueditor;
 
 import com.odong.portal.model.SessionItem;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadBase;
@@ -12,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import sun.misc.BASE64Decoder;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +35,11 @@ import java.util.UUID;
 @Component("file.uploader")
 public class FileUploader {
 
+
+    public String getPhysicalPath(String url) {
+        return appStore + "/attach/" + url;
+    }
+
     public String imageUp(HttpServletRequest request) {
         Attachment attach = upload(request, imageTypes);
         return "{'original':'" + attach.getOriginalName() + "','url':'" + attach.getUrl() + "','title':'" + attach.getTitle() + "','state':'" + attach.getState() + "'}";
@@ -55,7 +60,7 @@ public class FileUploader {
     }
 
     public String imageManager(HttpSession session) {
-        String path = getPhysicalPath(getSelfPath(session));
+        String path = checkPhysicalPath(getSelfPath(session));
         String url = getServletUrl(getSelfPath(session));
         List<File> files = listImages(path, new ArrayList<>());
         StringBuilder sb = new StringBuilder();
@@ -115,8 +120,8 @@ public class FileUploader {
 
         if (ServletFileUpload.isMultipartContent(request)) {
             DiskFileItemFactory dff = new DiskFileItemFactory();
-            String servletPath = getSelfPath(request.getSession())+"/" +getDatePath();
-            String savePath = getPhysicalPath(servletPath);
+            String servletPath = getSelfPath(request.getSession()) + "/" + getDatePath();
+            String savePath = checkPhysicalPath(servletPath);
             dff.setRepository(new File(savePath));
             try {
                 ServletFileUpload sfu = new ServletFileUpload(dff);
@@ -131,11 +136,11 @@ public class FileUploader {
                             attach.setState(Attachment.State.TYPE);
                             continue;
                         }
-                        attach.setFileName(getFileName(attach.getOriginalName()));
+                        attach.setFileName(getFileName(getFileExt(attach.getOriginalName())));
                         attach.setType(getFileExt(attach.getFileName()));
-                        attach.setUrl(servletPath+"/"+attach.getFileName());
+                        attach.setUrl(servletPath + "/" + attach.getFileName());
                         BufferedInputStream in = new BufferedInputStream(fis.openStream());
-                        FileOutputStream out = new FileOutputStream(new File(savePath+"/"+attach.getFileName()));
+                        FileOutputStream out = new FileOutputStream(new File(savePath + "/" + attach.getFileName()));
                         BufferedOutputStream output = new BufferedOutputStream(out);
                         Streams.copy(in, output, true);
                         //UE中只会处理单张上传，完成后即退出
@@ -143,14 +148,14 @@ public class FileUploader {
                     } else {
                         String fname = fis.getFieldName();
                         //只处理title，其余表单请自行处理
-                        if(!fname.equals("pictitle")){
+                        if (!fname.equals("pictitle")) {
                             continue;
                         }
                         BufferedInputStream in = new BufferedInputStream(fis.openStream());
                         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                         StringBuilder result = new StringBuilder();
                         while (reader.ready()) {
-                            result.append((char)reader.read());
+                            result.append((char) reader.read());
                         }
                         attach.setTitle(result.toString());
                         reader.close();
@@ -169,26 +174,24 @@ public class FileUploader {
                 logger.error("上传文件未知错误", e);
                 attach.setState(Attachment.State.UNKNOWN);
             }
-        }
-        else {
+        } else {
             attach.setState(Attachment.State.NOFILE);
         }
-       return attach;
+        return attach;
     }
 
     private Attachment uploadBase64(HttpServletRequest request, String fieldName, String[] fileTypes) {
 
 
         //FIXME 文件后缀名
-        String fileName = getSelfPath(request.getSession())+"/"+getDatePath()+"/"+getFileName("");
-        String path = getPhysicalPath(fileName);
+        String fileName = getSelfPath(request.getSession()) + "/" + getDatePath() + "/" + getFileName("");
+        String path = checkPhysicalPath(fileName);
         String url = getServletUrl(fileName);
-        Attachment.State   state = Attachment.State.SUCCESS;
+        Attachment.State state = Attachment.State.SUCCESS;
         String base64Data = request.getParameter(fieldName);
 
-        try(OutputStream ro = new FileOutputStream(new File(path))) {
-            BASE64Decoder decoder = new BASE64Decoder();
-            byte[] b = decoder.decodeBuffer(base64Data);
+        try (OutputStream ro = new FileOutputStream(new File(path))) {
+            byte[] b = Base64.decodeBase64(base64Data);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
                     b[i] += 256;
@@ -249,7 +252,7 @@ public class FileUploader {
                     attach.setState(Attachment.State.URL);
                 } else {
                     String fileName = getSelfPath(session) + "/" + getDatePath() + "/" + getFileName(getFileExt(imgUrl));
-                    File file = new File(getPhysicalPath(fileName));
+                    File file = new File(checkPhysicalPath(fileName));
                     attach.setFileName(getServletUrl(fileName));
                     try (InputStream is = conn.getInputStream();
                          OutputStream os = new FileOutputStream(file)) {
@@ -274,12 +277,9 @@ public class FileUploader {
 
 
     private String getServletUrl(String url) {
-        return "/statics/" + url;
+        return url;
     }
 
-    private String getPhysicalPath(String url) {
-        return appStore + "/attach/" + url;
-    }
 
     private String getSelfPath(HttpSession session) {
         SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
@@ -287,14 +287,7 @@ public class FileUploader {
     }
 
     private String getDatePath() {
-        String path = FORMAT.format(new Date());
-        File dir = new File(getPhysicalPath(path));
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                logger.error("创建目录{}失败", path);
-            }
-        }
-        return path;
+        return FORMAT.format(new Date());
     }
 
     private String getFileExt(String fileName) {
@@ -305,11 +298,26 @@ public class FileUploader {
         return UUID.randomUUID().toString() + ext;
     }
 
+    private String checkPhysicalPath(String url) {
+        String path = getPhysicalPath(url);
+
+        File dir = new File(path);
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                logger.error("创建目录{}失败", path);
+            }
+        }
+        return path;
+    }
+
 
     @PostConstruct
     void init() {
         imageTypes = new String[]{".gif", ".png", ".jpg", ".jpeg", ".bmp"};
-        upTypes = new String[]{".rar", ".doc", ".docx", ".zip", ".pdf", ".txt", ".swf", ".wmv"};
+        upTypes = new String[]{
+                ".rar", ".zip", ".tar", ".gz", ".xz", ".7z",
+                ".doc", ".docx", ".xls", ".pdf", ".txt",
+                ".swf", ".wmv", ".mp4", ".mp3", ".flv", ".rmvb", ".rm", ".mkv"};
     }
 
     private String[] imageTypes;
