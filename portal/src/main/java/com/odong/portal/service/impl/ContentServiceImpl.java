@@ -276,7 +276,7 @@ public class ContentServiceImpl implements ContentService {
         map.put("tag", tag);
 
         List<Article> articles = new ArrayList<>();
-        for (ArticleTag at : articleTagDao.list("FROM ArticleTag  i WHERE i.tag=:tag", map)) {
+        for (ArticleTag at : articleTagDao.list("FROM ArticleTag  i WHERE i.tag=:tag ORDER BY i.article DESC", map)) {
             articles.add(articleDao.select(at.getArticle()));
         }
         return articles;  //

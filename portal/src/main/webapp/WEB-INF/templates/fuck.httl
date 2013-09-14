@@ -35,16 +35,7 @@
 
 <!--#macro(jumbotronCard)-->
 <!--#set(Card card)-->
-<div class="jumbotron">
-    <h2>${card.title}</h2>
 
-    <p class="pull-right">
-        ${card.body}
-        <a target="_blank" href="${card.url}" class="btn btn-primary btn-large">
-            更多信息 &raquo;
-        </a>
-    </p>
-</div>
 <!--#end-->
 
 

@@ -1,14 +1,27 @@
 function show_card_carousel(id){
     $("div#"+id).jcarousel({
-        scroll: 1,
+        auto: 2,
+        scroll:1,
+        visible:1,
         initCallback:function(carousel){
-            $(".jcarousel-control a").bind('click', function() {
-                carousel.scroll(jQuery.jcarousel.intval(jQuery(this).text()));
-                return false;
+            $("img[id^='"+id+"-']").each(function () {
+                $(this).click(function () {
+                    window.open($(this).attr('id').split('-')[1]);
+                });
+            });
+            carousel.buttonNext.bind('click', function() {
+                carousel.startAuto(0);
+            });
+            carousel.buttonPrev.bind('click', function() {
+                carousel.startAuto(0);
+            });
+            carousel.clip.hover(function() {
+                carousel.stopAuto();
+            }, function() {
+                carousel.startAuto();
             });
         },
-        buttonNextHTML: null,
-        buttonPrevHTML: null
+        wrap: 'circular'
     });
 }
 function show_card_fall(id){

@@ -176,30 +176,39 @@ $!{extends("/frame.httl")}
 <!--#end-->
 
 
-<!--#macro(carouseCard)-->
+<!--#macro(carouselCard)-->
 <script type="text/javascript">
     $(document).ready(function () {
-        show_card_carousel("carouse-container");
+        show_card_carousel("carousel");
     });
 </script>
 <!--#set(List<Card> cardList)-->
-<div id="carouse-container" class="jcarousel-skin-tango carouse-container">
-    <ul>
-        #for(card : cardList)
-        <!--#if(card.logo)-->
-        <li><a href="${card.url}"><img src="${card.logo}"/></a></li>
-        <!--#end-->
-        #end
-        <li></li>
-    </ul>
-    <div class="jcarousel-control">
-        <!--#set(i=1)-->
-        #for(card : cardList)
-        <a href="${card.url}">${i}</a>
-        <!--#set(i=i+1)-->
-        #end
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-lg-7">
+            <div id="carousel" class="jcarousel-skin-tango">
+                <ul>
+                    #for(card : cardList)
+                    <!--#if(card.logo)-->
+                    <li>
+                        <img title="${card.title}" id="carousel-${card.url}" src="${card.logo}"/>
+                    </li>
+                    <!--#end-->
+                    #end
+                </ul>
+            </div>
+        </div>
+        <!--#set(card = cardList[0])-->
+        <div class="col-lg-5">
+            <h2>${card.title}</h2>
+            ${card.body}
+        </div>
     </div>
+    <p class="pull-right">
+        <a target="_blank" href="${card.url}" class="btn btn-primary btn-large">
+            更多信息 &raquo;
+        </a>
+    </p>
 </div>
-
 <!--#end-->
 

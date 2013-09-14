@@ -6,7 +6,7 @@ ${left_nav_bar_1}
 <div class="col-lg-9">
     ${mainGL}
     <!--#set(cardList=defArticles) -->
-    ${carouseCard}
+    ${carouselCard}
     <!--#set(cardList = articleList)-->
     ${fallCard}
     <br>
