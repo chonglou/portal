@@ -1,3 +1,21 @@
+function show_card_carousel(id){
+    $("div#"+id).jcarousel({
+        scroll: 1,
+        initCallback:function(carousel){
+            $(".jcarousel-control a").bind('click', function() {
+                carousel.scroll(jQuery.jcarousel.intval(jQuery(this).text()));
+                return false;
+            });
+        },
+        buttonNextHTML: null,
+        buttonPrevHTML: null
+    });
+}
+function show_card_fall(id){
+    $('div#'+id).masonry({
+        itemSelector: '.fall-item'
+    });
+}
 
 function show_tag_cloud(id) {
     $('ul#jcloud-' + id).jcloud({

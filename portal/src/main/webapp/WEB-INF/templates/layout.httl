@@ -132,20 +132,27 @@ $!{extends("/frame.httl")}
 <!--#end-->
 
 <!--#macro(fallCard)-->
-<div class="row row-offcanvas row-offcanvas-right">
+<script type="text/javascript">
+    $(document).ready(function () {
+        show_card_fall("fall-container");
+    });
+</script>
+<div id="fall-container" class="row row-offcanvas row-offcanvas-right">
     <!--#set(List<Card> cardList)-->
     #for(i : cardList)
-    <div class="col-lg-3">
-        <div class="thumbnail">
-            #if(i.logo)
-            <img src="${i.logo}" class="img-thumbnail" alt=""/>
-            #end
-            <div class="caption">
-                <h4>${i.title}</h4>
+    <div class="col-lg-3 fall-item">
+        <a href="${i.url}" target="_blank">
+            <div class="thumbnail">
+                #if(i.logo)
+                <img src="${i.logo}" class="img-thumbnail" alt=""/>
+                #end
+                <div class="caption">
+                    <h4>${i.title}</h4>
 
-                <p><a href="${i.url}" target="_blank">${i.body}</a></p>
+                    <p>${i.body}</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     #end
 </div>
@@ -156,12 +163,43 @@ $!{extends("/frame.httl")}
     <!--#set(List<Page> pageList)-->
     #for(i : pageList)
     <div class="col-lg-1">
-        <div class="thumbnail">
-            <div class="caption">
-                <a href="${i.url}" target="_blank">${i.name}</a>
+        <a href="${i.url}" target="_blank">
+            <div class="thumbnail">
+                <div class="caption">
+                    ${i.name}
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     #end
 </div>
 <!--#end-->
+
+
+<!--#macro(carouseCard)-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        show_card_carousel("carouse-container");
+    });
+</script>
+<!--#set(List<Card> cardList)-->
+<div id="carouse-container" class="jcarousel-skin-tango carouse-container">
+    <ul>
+        #for(card : cardList)
+        <!--#if(card.logo)-->
+        <li><a href="${card.url}"><img src="${card.logo}"/></a></li>
+        <!--#end-->
+        #end
+        <li></li>
+    </ul>
+    <div class="jcarousel-control">
+        <!--#set(i=1)-->
+        #for(card : cardList)
+        <a href="${card.url}">${i}</a>
+        <!--#set(i=i+1)-->
+        #end
+    </div>
+</div>
+
+<!--#end-->
+

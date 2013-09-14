@@ -26,6 +26,7 @@ public class Web extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/highcharts/**").addResourceLocations("/WEB-INF/Highcharts-3.0.1/");
         registry.addResourceHandler("/style/**").addResourceLocations("/WEB-INF/style/");
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
+        registry.addResourceHandler("/jcarousel/**").addResourceLocations("/WEB-INF/jcarousel/");
 
 
     }

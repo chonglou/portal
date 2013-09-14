@@ -70,8 +70,8 @@ public class SiteHelper {
             siteService.set("site.archiveCount", 6);
             siteService.set("site.articlePageSize", 50);
 
-            contentService.addTag("默认", true);
-            contentService.addTag("置顶", true);
+            siteService.set("site.defTag", contentService.addTag("默认", true));
+            siteService.set("site.topTag", contentService.addTag("置顶", true));
 
             //广告
             siteService.set("site.advert.bottom", "<script type=\"text/javascript\"><!--\n" +

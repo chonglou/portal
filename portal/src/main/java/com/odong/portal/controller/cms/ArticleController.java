@@ -6,6 +6,10 @@ import com.odong.portal.form.cms.ArticleForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -113,14 +117,21 @@ public class ArticleController extends PageController {
         return ri;
     }
 
+    private String firstImage(String html){
+        Document doc = Jsoup.parse(html);
+        Elements elements = doc.getElementsByTag("img");
+        return elements.size() == 0 ? null : elements.get(0).attr("src");
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postArticle(@Valid ArticleForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         checkLogin(ri, si);
         if (ri.isOk()) {
+            String logo = firstImage(form.getBody());
             if (form.getId() == null) {
-                Long aid = contentService.addArticle(si.getSsUserId(), form.getTitle(), form.getSummary(), form.getBody());
+                Long aid = contentService.addArticle(si.getSsUserId(), logo, form.getTitle(), form.getSummary(), form.getBody());
 
                 for (String s : form.getTags().split("-")) {
                     contentService.bindArticleTag(aid, Long.parseLong(s));
@@ -129,7 +140,7 @@ public class ArticleController extends PageController {
             } else {
                 Article article = contentService.getArticle(form.getId());
                 if (article != null && (article.getAuthor() == si.getSsUserId() || si.isSsAdmin())) {
-                    contentService.setArticle(form.getId(), form.getTitle(), form.getSummary(), form.getBody());
+                    contentService.setArticle(form.getId(), logo, form.getTitle(), form.getSummary(), form.getBody());
                     contentService.delTagByArticle(form.getId());
                     for (String s : form.getTags().split("-")) {
                         contentService.bindArticleTag(form.getId(), Long.parseLong(s));

@@ -33,25 +33,26 @@ public class TaskSender {
         args.put("valid", linkValid);
         args.put("created", jsonHelper.object2json(new Date()));
 
-        String title = "";
+        String action = "";
         String content = "";
         switch (type) {
             case "register":
-                title = "创建了账户";
+                action = "创建了账户";
                 content = "激活账户";
                 break;
             case "reset_pwd":
-                title = "重置了密码";
+                action = "重置了密码";
                 content = "重置密码";
                 break;
         }
 
-        String domain = cacheHelper.get("site/title", String.class, null, () -> siteService.getString("site.title"));
+        String domain = cacheHelper.get("site/domain", String.class, null, () -> siteService.getString("site.domain"));
+        String title = cacheHelper.get("site/title", String.class, null, () -> siteService.getString("site.title"));
 
         try {
 
-            sendEmail(to, "您在[" + domain + "(" + siteService.getString("site.title") + ")]上"
-                    + title + "，请激活",
+            sendEmail(to, "您在[" + domain + "(" + title + ")]上"
+                    + action + "，请激活",
                     "<a href='http://" + domain + "/personal/valid?code=" +
                             URLEncoder.encode(encryptHelper.encode(jsonHelper.object2json(
                                     args)), "UTF-8")

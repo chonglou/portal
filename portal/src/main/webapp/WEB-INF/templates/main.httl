@@ -1,24 +1,16 @@
 $!{extends("/layout.httl")}
 
-
 #macro(main)
 <!--#set(Map<String,String> gl_site)-->
 ${left_nav_bar_1}
 <div class="col-lg-9">
     ${mainGL}
-    <!--#set(Article defArticle) -->
-    <div class="jumbotron">
-        <h2>${defArticle.title}</h2>
-        ${defArticle.summary}
-        <p class="pull-right">
-            <a target="_blank" href="/article/${defArticle.id}" class="btn btn-primary btn-large">
-                更多信息 &raquo;
-            </a>
-        </p>
-    </div>
-    $!{gl_site.advertBottom}
+    <!--#set(cardList=defArticles) -->
+    ${carouseCard}
     <!--#set(cardList = articleList)-->
     ${fallCard}
+    <br>
+    $!{gl_site.advertBottom}
 </div>
 #end
 
