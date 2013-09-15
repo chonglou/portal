@@ -52,6 +52,7 @@ public class SelfController extends PageController {
             nbSite.add("用户协议", "/admin/site/regProtocol");
             nbSite.add("站点状态", "/admin/state/");
             nbSite.add("分页设置", "/admin/site/pager");
+            nbSite.add("定时任务", "/admin/task/");
             nbSite.add("邮件设置", "/admin/smtp/");
             nbSite.add("友情链接", "/admin/friendLink/");
             nbSite.add("广告设置", "/admin/advert/");

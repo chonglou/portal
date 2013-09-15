@@ -35,7 +35,7 @@ public class CacheHelperImpl implements CacheHelper {
     @Override
     public void delete(String key) {
         try {
-            logger.debug("DELETE "+key);
+            logger.debug("DELETE " + key);
             client.delete(key(key));
         } catch (MemcachedException | TimeoutException | InterruptedException e) {
             logger.error("删除缓存[{}]出错", key, e);
@@ -47,7 +47,7 @@ public class CacheHelperImpl implements CacheHelper {
     @Override
     public void touch(String key, int timeout) {
         try {
-            logger.debug("TOUCH "+key);
+            logger.debug("TOUCH " + key);
             client.touch(key(key), timeout);
         } catch (MemcachedException | TimeoutException | InterruptedException e) {
             logger.error("延长缓存有效期[{}]出错", key, e);

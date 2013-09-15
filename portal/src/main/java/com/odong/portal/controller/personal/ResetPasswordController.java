@@ -46,7 +46,7 @@ public class ResetPasswordController {
             if (u != null && u.getState() == User.State.ENABLE) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("password", form.getNewPwd());
-                taskSender.sendValidEmail(form.getEmail(), "reset_pwd", map);
+                taskSender.validEmail(form.getEmail(), "reset_pwd", map);
                 ri.addData("已向您的邮箱发送了密码重置链接，请进入邮箱进行操作。");
 
             } else {

@@ -56,7 +56,7 @@ public class SetPasswordController {
             } else {
                 accountService.setUserPassword(si.getSsUserId(), form.getNewPwd());
                 logService.add(si.getSsUserId(), "变更密码", Log.Type.INFO);
-                taskSender.sendEmail(si.getSsEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
+                taskSender.email(si.getSsEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
                         "如果不是您的操作，请忽略该邮件。", true, null);
             }
         }

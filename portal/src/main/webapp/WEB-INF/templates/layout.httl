@@ -198,11 +198,13 @@ $!{extends("/frame.httl")}
                 </ul>
             </div>
         </div>
+        #if(cardList)
         <!--#set(card = cardList[0])-->
         <div class="col-lg-5">
             <h2>${card.title}</h2>
             ${card.body}
         </div>
+        #end
     </div>
     <p class="pull-right">
         <a target="_blank" href="${card.url}" class="btn btn-primary btn-large">

@@ -1,0 +1,43 @@
+= 环境 =
+ * 编译需要JDK8 MAVEN3 和GIT，操作系统建议使用linux 
+ * 运行需要数据库（mysql或derby），缓存系统使用memcached
+ * SERVLET容器建议使用TOMCAT
+== 下载地址 ==
+ * JDK8 [https://jdk8.java.net/download.html]
+ * MAVEN3 [http://maven.apache.org/download.cgi]
+ * GIT [http://git-scm.com/downloads]
+ * TOMCAT [http://tomcat.apache.org/download-80.cgi]
+ * MEMCACHED [http://memcached.org/]
+ * MYSQL [http://www.mysql.com/downloads/]
+ * DERBY 内置 无需安装
+== 环境变量设置 ==
+例子（tools/j8dev.sh）：
+{{{
+  JAVA_HOME=$HOME/local/jdk1.8.0
+  M2_HOME=$HOME/local/maven
+  CLASSPATH=.:$JAVA_HOME/lib
+  PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+  export JAVA_HOME M2_HOME CLASSPATH PATH
+}}}
+
+= 编译 =
+== 下载源码 ==
+ * git clone https://code.google.com/p/latrop/ 
+== 编译 ==
+{{{
+  cd latrop/portal
+  mvn clean
+  mvn package
+}}}
+
+= 部署 =
+== tomcat ==
+把target/portal.war复制到tomcat的webapps目录，并重命名为ROOT.war 其它容器参照设置
+== 数据库配置 ==
+当前支持derby和mysql，在config.properties中配置jdbc driver；数据库如果不存在会自动创建
+= 启动 =
+{{{
+cd $TOMCAT_HOME
+./bin/startup.sh
+}}}
+ * 浏览器打开[http://localhost:8080]即可看到结果

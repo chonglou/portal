@@ -19,8 +19,8 @@ public class TimeHelper {
         return new DateTime(date).plusSeconds(second).toDate();
     }
 
-    public Date nextDay(int hour) {
-        return new DateTime().plusDays(1).millisOfDay().withMinimumValue().withHourOfDay(hour).toDate();
+    public Date nextDay(int clock) {
+        return new DateTime().plusDays(1).millisOfDay().withMinimumValue().withHourOfDay(clock).toDate();
     }
 
     public Date max() {

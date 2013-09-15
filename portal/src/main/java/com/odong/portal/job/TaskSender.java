@@ -1,5 +1,6 @@
 package com.odong.portal.job;
 
+import com.odong.portal.entity.Task;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.EncryptHelper;
@@ -29,7 +30,23 @@ import java.util.UUID;
 @Component
 public class TaskSender {
 
-    public void sendValidEmail(String to, String type, Map<String, Object> args) {
+    public void gc() {
+        send(Task.Type.GC, new HashMap<String, Object>());
+    }
+
+    public void rss() {
+        send(Task.Type.RSS, new HashMap<String, Object>());
+    }
+
+    public void backup() {
+        send(Task.Type.BACKUP, new HashMap<String, Object>());
+    }
+
+    public void sitemap() {
+        send(Task.Type.SITE_MAP, new HashMap<String, Object>());
+    }
+
+    public void validEmail(String to, String type, Map<String, Object> args) {
         args.put("valid", linkValid);
         args.put("created", jsonHelper.object2json(new Date()));
 
@@ -51,7 +68,7 @@ public class TaskSender {
 
         try {
 
-            sendEmail(to, "您在[" + domain + "(" + title + ")]上"
+            email(to, "您在[" + domain + "(" + title + ")]上"
                     + action + "，请激活",
                     "<a href='http://" + domain + "/personal/valid?code=" +
                             URLEncoder.encode(encryptHelper.encode(jsonHelper.object2json(
@@ -65,7 +82,7 @@ public class TaskSender {
         }
     }
 
-    public void sendEmail(String to, String title, String body, boolean html, Map<String, String> attachs) {
+    public void email(String to, String title, String body, boolean html, Map<String, String> attachs) {
         Map<String, Object> map = new HashMap<>();
         map.put("to", to);
         map.put("title", title);
@@ -75,16 +92,14 @@ public class TaskSender {
             attachs = new HashMap<>();
         }
         map.put("attachs", attachs);
-        send(null, "email", map);
+        send(Task.Type.EMAIL, map);
     }
 
-    private void send(final String taskId, final String type, Map<String, Object> map) {
+    private void send(final Task.Type type, Map<String, Object> map) {
 
         jmsTemplate.convertAndSend(taskQueue, map, (message) -> {
-            message.setStringProperty("taskId", taskId);
-            message.setStringProperty("type", type);
-            message.setJMSCorrelationID(taskId == null ? UUID.randomUUID().toString()
-                    : taskId);
+            message.setStringProperty("type", type.name());
+            message.setJMSCorrelationID(UUID.randomUUID().toString());
             return message;
         }
         );

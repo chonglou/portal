@@ -56,7 +56,7 @@ public class ValidController {
                     if (u != null && u.getState() == User.State.SUBMIT) {
                         accountService.setUserState(u.getId(), User.State.ENABLE);
                         logService.add(u.getId(), "账户激活", Log.Type.INFO);
-                        taskSender.sendEmail(email, "您在[" + siteService.getString("site.title") + "]上的激活了账户", "欢迎使用", true, null);
+                        taskSender.email(email, "您在[" + siteService.getString("site.title") + "]上的激活了账户", "欢迎使用", true, null);
                         ri.setOk(true);
 
                     } else {
@@ -68,7 +68,7 @@ public class ValidController {
                         if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(mapA.get("created"), Date.class), 60 * 30)) <= 0) {
                             accountService.setUserPassword(u.getId(), mapA.get("password"));
                             logService.add(u.getId(), "重置密码", Log.Type.INFO);
-                            taskSender.sendEmail(email, "您在[" + siteService.getString("site.domain") + "]上的成功重置了密码",
+                            taskSender.email(email, "您在[" + siteService.getString("site.domain") + "]上的成功重置了密码",
                                     "如果不是您的操作，请忽略该邮件。", true, null);
                             ri.setOk(true);
                             ri.addData("您成功重置了密码");

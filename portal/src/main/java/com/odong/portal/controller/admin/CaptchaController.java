@@ -2,9 +2,9 @@ package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.CaptchaForm;
-import com.odong.portal.model.KaptchaProfile;
-import com.odong.portal.model.ReCaptchaProfile;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.model.profile.KaptchaProfile;
+import com.odong.portal.model.profile.ReCaptchaProfile;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;

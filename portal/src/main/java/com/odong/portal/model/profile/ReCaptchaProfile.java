@@ -1,4 +1,4 @@
-package com.odong.portal.model;
+package com.odong.portal.model.profile;
 
 import java.io.Serializable;
 

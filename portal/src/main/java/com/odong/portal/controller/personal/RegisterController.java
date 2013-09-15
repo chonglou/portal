@@ -57,7 +57,7 @@ public class RegisterController {
         if (ri.isOk()) {
             User u = accountService.getUser(form.getEmail());
             if (u != null && u.getState() == User.State.SUBMIT) {
-                taskSender.sendValidEmail(form.getEmail(), "register", new HashMap<String, Object>());
+                taskSender.validEmail(form.getEmail(), "register", new HashMap<String, Object>());
                 ri.addData("已向您的邮箱发送了账户激活链接，请进入邮箱进行操作。");
             } else {
                 ri.setOk(false);
@@ -101,7 +101,7 @@ public class RegisterController {
             User u = accountService.getUser(form.getEmail());
             if (u == null) {
                 accountService.addUser(form.getEmail(), form.getUsername(), form.getNewPwd());
-                taskSender.sendValidEmail(form.getEmail(), "register", new HashMap<String, Object>());
+                taskSender.validEmail(form.getEmail(), "register", new HashMap<String, Object>());
                 ri.addData("已向您的邮箱发送一封激活邮件，请进入邮箱继续操作.");
             } else {
                 ri.setOk(false);

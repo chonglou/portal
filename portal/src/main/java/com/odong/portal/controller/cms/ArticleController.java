@@ -8,7 +8,6 @@ import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -117,7 +116,7 @@ public class ArticleController extends PageController {
         return ri;
     }
 
-    private String firstImage(String html){
+    private String firstImage(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.getElementsByTag("img");
         return elements.size() == 0 ? null : elements.get(0).attr("src");

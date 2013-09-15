@@ -1,12 +1,11 @@
 package com.odong.portal.util;
 
+import com.odong.portal.entity.Task;
 import com.odong.portal.entity.User;
-import com.odong.portal.model.KaptchaProfile;
-import com.odong.portal.model.ReCaptchaProfile;
-import com.odong.portal.service.AccountService;
-import com.odong.portal.service.ContentService;
-import com.odong.portal.service.RbacService;
-import com.odong.portal.service.SiteService;
+import com.odong.portal.model.profile.KaptchaProfile;
+import com.odong.portal.model.profile.ReCaptchaProfile;
+import com.odong.portal.model.task.ClockRequest;
+import com.odong.portal.service.*;
 import httl.spi.resolvers.GlobalResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +28,7 @@ import java.util.Date;
 public class SiteHelper {
     @PostConstruct
     void init() {
+
         siteService.set("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
 
@@ -97,17 +97,21 @@ public class SiteHelper {
                     "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n" +
                     "</script>");
 
+            addClockTask(Task.Type.SITE_MAP, 3);
+            addClockTask(Task.Type.RSS, 3);
+            addClockTask(Task.Type.GC, 2);
+            addClockTask(Task.Type.BACKUP, 4);
         }
 
         GlobalResolver.put("gl_debug", appDebug);
 
+        logger.info("用户数据目录{}", appStoreDir);
         File base = new File(appStoreDir);
         if (base.exists()) {
             if (!base.isDirectory() || !base.canWrite()) {
                 throw new RuntimeException("数据存储目录[" + base.getAbsolutePath() + "]不可用");
             }
-        }
-        if (!base.exists()) {
+        } else {
             logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
             for (String s : new String[]{"backup", "seo", "attach"}) {
                 String dir = appStoreDir + "/" + s;
@@ -119,6 +123,16 @@ public class SiteHelper {
                 }
             }
         }
+    }
+
+    private void addClockTask(Task.Type type, int clock) {
+        siteService.set("task." + type, taskService.addTask(
+                type,
+                new ClockRequest(clock),
+                new Date(),
+                timeHelper.max(),
+                timeHelper.nextDay(clock)
+        ));
     }
 
     @PreDestroy
@@ -134,6 +148,10 @@ public class SiteHelper {
     private ContentService contentService;
     @Resource
     private SiteService siteService;
+    @Resource
+    private TaskService taskService;
+    @Resource
+    private TimeHelper timeHelper;
     @Value("${app.store}")
     private String appStoreDir;
     @Value("${app.debug}")
@@ -142,8 +160,16 @@ public class SiteHelper {
     private String manager;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
 
+    public void setTimeHelper(TimeHelper timeHelper) {
+        this.timeHelper = timeHelper;
+    }
+
     public void setManager(String manager) {
         this.manager = manager;
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     public void setContentService(ContentService contentService) {

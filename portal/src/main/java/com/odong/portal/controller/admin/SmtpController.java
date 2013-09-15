@@ -3,13 +3,12 @@ package com.odong.portal.controller.admin;
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.SmtpForm;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.model.SmtpProfile;
+import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.FormHelper;
-import com.odong.portal.util.JsonHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.RadioField;
@@ -80,11 +79,9 @@ public class SmtpController {
     @Resource
     private EncryptHelper encryptHelper;
     @Resource
-    private JsonHelper jsonHelper;
+    private FormHelper formHelper;
     @Resource
     private LogService logService;
-    @Resource
-    private FormHelper formHelper;
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;
@@ -97,10 +94,6 @@ public class SmtpController {
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;
-    }
-
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
     }
 
     public void setLogService(LogService logService) {

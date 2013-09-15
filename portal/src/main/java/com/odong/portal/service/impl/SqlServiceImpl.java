@@ -13,7 +13,7 @@ import javax.sql.DataSource;
  * Date: 13-9-10
  * Time: 下午10:51
  */
-@Service
+@Service("sqlService")
 public class SqlServiceImpl implements SqlService {
     private JdbcTemplate jdbcTemplate;
 
