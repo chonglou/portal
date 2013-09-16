@@ -5,7 +5,7 @@
          dynamicConfig="true">
 
 
-    <diskStore path="java.io.tmpdir/cache/portal"/>
+    <diskStore path="${user.dir}/var/cache"/>
 
     <defaultCache
             maxEntriesLocalHeap="10000"

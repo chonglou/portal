@@ -36,8 +36,11 @@
 == 数据库配置 ==
 当前支持derby和mysql，在config.properties中配置jdbc driver；数据库如果不存在会自动创建
 = 启动 =
+== TOMCAT ==
 {{{
 cd $TOMCAT_HOME
 ./bin/startup.sh
 }}}
+== 打开页面 ==
  * 浏览器打开[http://localhost:8080]即可看到结果
+ * 默认账户名在config.properties中，密码为123456 请自行更改
