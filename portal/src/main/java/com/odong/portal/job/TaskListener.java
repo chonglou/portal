@@ -2,6 +2,7 @@ package com.odong.portal.job;
 
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Tag;
+import com.odong.portal.entity.Task;
 import com.odong.portal.entity.User;
 import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
@@ -59,19 +60,19 @@ public class TaskListener implements MessageListener {
     @SuppressWarnings("unchecked")
     private void map(MapMessage message) {
         try {
-            String type = message.getStringProperty("type");
+            Task.Type type = Task.Type.valueOf(message.getStringProperty("type"));
             String itemId = message.getJMSCorrelationID();
             switch (type) {
-                case "system.gc":
+                case GC:
                     System.gc();
                     break;
-                case "database.backup":
+                case BACKUP:
                     taskExecutor.execute(() -> {
                         dbHelper.backup();
                         siteService.set("site.lastBackup", new Date());
                     });
                     break;
-                case "site.rss":
+                case RSS:
                     taskExecutor.execute(new Runnable() {
 
                         @Override
@@ -112,7 +113,7 @@ public class TaskListener implements MessageListener {
                         }
                     });
                     break;
-                case "site.map":
+                case SITE_MAP:
                     taskExecutor.execute(() -> {
                         try {
                             String domain = "http://" + siteService.getString("site.domain");
@@ -140,7 +141,7 @@ public class TaskListener implements MessageListener {
                         }
                     });
                     break;
-                case "email":
+                case EMAIL:
                     taskExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
