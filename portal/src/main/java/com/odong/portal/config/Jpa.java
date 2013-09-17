@@ -50,12 +50,12 @@ public class Jpa {
                 break;
             case MYSQL:
                 props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
-
                 break;
         }
 
         props.setProperty("hibernate.cache.use_second_level_cache", "true");
         props.setProperty("hibernate.cache.use_query_cache", "true");
+        props.setProperty("hibernate.cache.region_prefix", appName);
         props.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
         props.setProperty("hibernate.ejb.naming_strategy", "com.odong.portal.config.NamingStrategy");
 
@@ -100,6 +100,7 @@ public class Jpa {
     @Bean(destroyMethod = "close")
     @DependsOn("config.database")
     BoneCPDataSource getDataSource() {
+
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);
         ds.setJdbcUrl(database.getUrl());
@@ -160,10 +161,17 @@ public class Jpa {
     @Value("${pool.statements_cache_size}")
     private int poolStatementsCacheSize;
 
+    @Value("${app.name}")
+    private String appName;
+
     @Resource
     private JpaVendorAdapter jpaVendorAdapter;
     @Resource
     private Database database;
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public void setDatabase(Database database) {
         this.database = database;

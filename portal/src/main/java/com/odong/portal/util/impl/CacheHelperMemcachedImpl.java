@@ -20,8 +20,8 @@ import java.util.concurrent.TimeoutException;
  * Date: 13-5-23
  * Time: 上午12:28
  */
-@Component
-public class CacheHelperImpl implements CacheHelper {
+@Component("cache.memcached")
+public class CacheHelperMemcachedImpl implements CacheHelper {
     @Override
     public Map<InetSocketAddress, Map<String, String>> status() {
         try {
@@ -82,6 +82,10 @@ public class CacheHelperImpl implements CacheHelper {
     @Override
     public void set(String key, int timeout, Object object) {
         try {
+            if(object == null){
+                logger.error("空的缓存内容[{}]", key);
+                return;
+            }
             client.set(key(key), timeout, object);
             logger.debug("SET " + key);
         } catch (MemcachedException | TimeoutException | InterruptedException e) {
@@ -98,7 +102,7 @@ public class CacheHelperImpl implements CacheHelper {
     private MemcachedClient client;
     @Value("${app.name}")
     private String appName;
-    private final static Logger logger = LoggerFactory.getLogger(CacheHelperImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(CacheHelperMemcachedImpl.class);
 
     public void setAppName(String appName) {
         this.appName = appName;
