@@ -122,7 +122,7 @@ public class DBHelper {
                 DatabaseMetaData dmd = connection.getMetaData();
                 databaseProductName = dmd.getDatabaseProductName();
                 databaseProductVersion = dmd.getDatabaseProductVersion();
-                logger.info("使用数据库[{},{},{}]", databaseProductName, databaseProductVersion, dbName);
+                logger.info("使用数据库[{},{}]", databaseProductName, databaseProductVersion);
                 return null;  //
             }
         });

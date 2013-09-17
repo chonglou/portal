@@ -11,6 +11,7 @@ import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +25,7 @@ import java.util.Properties;
  * Time: 下午11:23
  */
 @Component
+@DependsOn("siteHelper")
 public class CaptchaHelper {
 
 

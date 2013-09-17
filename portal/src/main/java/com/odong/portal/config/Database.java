@@ -25,7 +25,6 @@ public class Database {
 
     @PostConstruct
     synchronized void init() throws ClassNotFoundException, SQLException {
-
         switch (driver) {
             case "com.mysql.jdbc.Driver":
                 type = Type.MYSQL;
@@ -39,9 +38,9 @@ public class Database {
                 }
                 return;
             case "org.apache.derby.jdbc.EmbeddedDriver":
-                url = "jdbc:derby:var/db/"+appName+";create=true";
+                url = "jdbc:derby:"+appStore+"/db;create=true";
                 type = Type.DERBY;
-                System.setProperty("derby.stream.error.file", System.getProperty("user.dir") + "/var/log/derby_"+appName+".log");
+                System.setProperty("derby.stream.error.file", "/tmp/.derby."+appName+".log");
                 return;
         }
         logger.warn("尚不支持[{}]自动创建,请自行确保数据库[{}]存在", driver, dbName);
@@ -64,8 +63,13 @@ public class Database {
     private String password;
     @Value("${app.name}")
     private String appName;
-
+    @Value("${app.store}")
+    private String appStore;
     private final static Logger logger = LoggerFactory.getLogger(Database.class);
+
+    public void setAppStore(String appStore) {
+        this.appStore = appStore;
+    }
 
     public void setAppName(String appName) {
         this.appName = appName;

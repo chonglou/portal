@@ -106,16 +106,15 @@ public class SiteHelper {
         GlobalResolver.put("gl_debug", appDebug);
 
         logger.info("用户数据目录{}", appStoreDir);
-        File base = new File(appStoreDir);
-        if (base.exists()) {
-            if (!base.isDirectory() || !base.canWrite()) {
-                throw new RuntimeException("数据存储目录[" + base.getAbsolutePath() + "]不可用");
-            }
-        } else {
-            logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
-            for (String s : new String[]{"backup", "seo", "attach"}) {
-                String dir = appStoreDir + "/" + s;
-                File f = new File(dir);
+        for (String s : new String[]{"backup", "seo", "attach"}) {
+            String dir = appStoreDir + "/" + s;
+            File f = new File(dir);
+            if (f.exists()) {
+                if (!f.isDirectory() || !f.canWrite()) {
+                    throw new RuntimeException("数据存储目录[" + f.getAbsolutePath() + "]不可用");
+                }
+            } else {
+                logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
                 if (f.mkdirs()) {
                     logger.info("创建数据目录[{}]成功", dir);
                 } else {

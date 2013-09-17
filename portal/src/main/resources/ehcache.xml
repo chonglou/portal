@@ -4,7 +4,7 @@
          updateCheck="false" monitoring="autodetect"
          dynamicConfig="true">
 
-    <diskStore path="${user.dir}/var/cache"/>
+    <diskStore path="java.io.tmpdir/.cache"/>
 
 
     <defaultCache
