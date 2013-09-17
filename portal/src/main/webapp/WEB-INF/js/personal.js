@@ -1,7 +1,8 @@
 function bind_personal_bar_click() {
     $('a#personal_bar-logout').click(function () {
         if (window.confirm("您确认要退出系统么？")) {
-            new Ajax("/personal/logout");
+            //new Ajax("/personal/logout", undefined,undefined,undefined,false);
+            window.location.href="/";
         }
 
     });
