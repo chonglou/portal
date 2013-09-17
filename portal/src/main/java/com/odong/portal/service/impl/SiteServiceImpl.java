@@ -53,6 +53,11 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
+    public List<Setting> listSetting() {
+        return settingDao.list();
+    }
+
+    @Override
     public void delFriendLink(long id) {
         friendLinkDao.delete(id);
     }

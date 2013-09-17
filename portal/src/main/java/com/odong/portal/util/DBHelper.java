@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Consumer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,15 +44,23 @@ public class DBHelper {
 
     public void export() {
         String fileName = appStoreDir + "/backup/" + dbName + "_" + format.format(new Date()) + ".json";
-        try (PrintWriter writer = new PrintWriter(fileName)) {
-            writer.println(jsonHelper.object2json(accountService.listUser()));
-            writer.println(jsonHelper.object2json(contentService.listArticle()));
-            writer.println(jsonHelper.object2json(contentService.listTag()));
-            writer.println(jsonHelper.object2json(contentService.listArticleTag()));
-            writer.println(jsonHelper.object2json(contentService.listComment()));
-            writer.println(jsonHelper.object2json(siteService.listFriendLink()));
-            writer.flush();
 
+        try (PrintWriter writer = new PrintWriter(fileName)) {
+            writer.println();
+            accountService.listUser().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            writer.println();
+            contentService.listArticle().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            writer.println();
+            contentService.listTag().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            writer.println();
+            contentService.listArticleTag().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            writer.println();
+            contentService.listComment().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            writer.println();
+            siteService.listFriendLink().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            writer.println();
+            siteService.listSetting().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            writer.flush();
             zipHelper.compress(fileName, true);
         } catch (IOException e) {
             logger.error("导出数据库出错", e);

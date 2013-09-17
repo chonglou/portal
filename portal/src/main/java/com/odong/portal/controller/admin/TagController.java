@@ -41,7 +41,7 @@ public class TagController {
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     @ResponseBody
     Form getTagAdd() {
-        Form fm = new Form("tag", "标签", "/admin/tag/");
+        Form fm = new Form("tag", "添加标签", "/admin/tag/");
         fm.addField(new HiddenField<Long>("id", null));
         fm.addField(new TextField<>("name", "名称", null));
         fm.setOk(true);
@@ -52,7 +52,7 @@ public class TagController {
     @ResponseBody
     Form getTagEdit(@PathVariable long tagId) {
         Tag t = contentService.getTag(tagId);
-        Form fm = new Form("tag", "标签", "/admin/tag/");
+        Form fm = new Form("tag", "修改标签["+tagId+"]", "/admin/tag/");
 
         fm.addField(new HiddenField<>("id", t.getId()));
         fm.addField(new TextField<>("name", "名称", t.getName()));

@@ -1,6 +1,7 @@
 package com.odong.portal.service;
 
 import com.odong.portal.entity.FriendLink;
+import com.odong.portal.entity.Setting;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ public interface SiteService {
     void setFriendLink(long id, String name, String url, String logo);
 
     List<FriendLink> listFriendLink();
+    List<Setting> listSetting();
 
     void delFriendLink(long id);
 
