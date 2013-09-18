@@ -1,0 +1,17 @@
+#!/bin/sh
+
+JAVA_HOME=$HOME/local/jdk
+M2_HOME=$HOME/local/maven
+TOMCAT_HOME=$HOME/local/tomcat
+MQ_HOME=$HOME/local/activemq
+CLASSPATH=.:$JAVA_HOME/lib
+PATH=$JAVA_HOME/bin:$M2_HOME/bin:$MQ_HOME/bin:$PATH
+
+EDITOR=vim
+TERM=xterm
+
+LC_ALL=zh_CN.utf8
+LANGUAGE=zh_CN.utf8
+LANG=zh_CN.utf8
+
+export JAVA_HOME M2_HOME PATH CLASSPATH LC_ALL LANGUAGE LANG EDITOR TERM
