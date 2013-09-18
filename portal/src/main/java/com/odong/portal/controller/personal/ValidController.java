@@ -1,6 +1,7 @@
 package com.odong.portal.controller.personal;
 
 
+import com.odong.portal.controller.PageController;
 import com.odong.portal.entity.Log;
 import com.odong.portal.entity.User;
 import com.odong.portal.job.TaskSender;
@@ -12,6 +13,9 @@ import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.JsonHelper;
 import com.odong.portal.util.TimeHelper;
 import com.odong.portal.web.ResponseItem;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,15 +35,24 @@ import java.util.Map;
  * Time: 下午2:21
  */
 @Controller("c.personal.valid")
-@RequestMapping(value = "/personal/valid")
+@RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
-public class ValidController {
+public class ValidController extends PageController {
 
     @RequestMapping(value = "/valid", method = RequestMethod.GET)
     String getValidCode(HttpServletRequest request, Map<String, Object> map) {
 
+
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        Map<String, String> mapA = jsonHelper.json2map(encryptHelper.decode(request.getParameter("code")), String.class, String.class);
+        Map<String, String> mapA;
+        try {
+            mapA = jsonHelper.json2map(encryptHelper.decode(request.getParameter("code")), String.class, String.class);
+        } catch (EncryptionOperationNotPossibleException e) {
+            logger.error("解析code出错", e);
+            mapA = new HashMap<>();
+
+        }
+
         String email = mapA.get("email");
         String type = mapA.get("type");
         String created = mapA.get("created");
@@ -85,6 +99,8 @@ public class ValidController {
             }
         }
         map.put("item", ri);
+        map.put("navBars", getNavBars());
+        fillSiteInfo(map);
         return "message";
     }
 
@@ -105,6 +121,7 @@ public class ValidController {
     private EncryptHelper encryptHelper;
     @Value("${link.valid}")
     protected int linkValid;
+    private final static Logger logger = LoggerFactory.getLogger(ValidController.class);
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

@@ -52,7 +52,7 @@ public class TagController {
     @ResponseBody
     Form getTagEdit(@PathVariable long tagId) {
         Tag t = contentService.getTag(tagId);
-        Form fm = new Form("tag", "修改标签["+tagId+"]", "/admin/tag/");
+        Form fm = new Form("tag", "修改标签[" + tagId + "]", "/admin/tag/");
 
         fm.addField(new HiddenField<>("id", t.getId()));
         fm.addField(new TextField<>("name", "名称", t.getName()));

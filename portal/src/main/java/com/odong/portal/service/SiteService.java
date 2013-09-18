@@ -20,6 +20,7 @@ public interface SiteService {
     void setFriendLink(long id, String name, String url, String logo);
 
     List<FriendLink> listFriendLink();
+
     List<Setting> listSetting();
 
     void delFriendLink(long id);

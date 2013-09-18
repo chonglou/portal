@@ -97,24 +97,25 @@ public class LoginController {
 
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    void getLogout(HttpSession session, HttpServletResponse response) throws IOException{
+    void getLogout(HttpSession session, HttpServletResponse response) throws IOException {
         SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
         logService.add(si.getSsUserId(), "注销登陆", Log.Type.INFO);
         session.invalidate();
         response.sendRedirect("/");
     }
+
     /**
-     *TOMCAT 有bug
-    ResponseItem getLogout(HttpSession session) {
-        SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
-        logService.add(si.getSsUserId(), "注销登陆", Log.Type.INFO);
-        session.invalidate();
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
-        ri.addData("/");
-        ri.setOk(true);
-        return ri;
-    }
-    */
+     * TOMCAT 有bug
+     * ResponseItem getLogout(HttpSession session) {
+     * SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
+     * logService.add(si.getSsUserId(), "注销登陆", Log.Type.INFO);
+     * session.invalidate();
+     * ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
+     * ri.addData("/");
+     * ri.setOk(true);
+     * return ri;
+     * }
+     */
 
     @Resource
     private SiteService siteService;

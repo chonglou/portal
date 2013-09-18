@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.function.Consumer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,23 +42,23 @@ public class DBHelper {
     }
 
     public void export() {
-        String fileName = appStoreDir + "/backup/" + dbName + "_" + format.format(new Date()) + ".json";
+        String fileName = appStoreDir + "/backup/" + appName + "_" + format.format(new Date()) + ".json";
 
         try (PrintWriter writer = new PrintWriter(fileName)) {
             writer.println();
-            accountService.listUser().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            accountService.listUser().forEach((i) -> writer.println(jsonHelper.object2json(i)));
             writer.println();
-            contentService.listArticle().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            contentService.listArticle().forEach((i) -> writer.println(jsonHelper.object2json(i)));
             writer.println();
-            contentService.listTag().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            contentService.listTag().forEach((i) -> writer.println(jsonHelper.object2json(i)));
             writer.println();
-            contentService.listArticleTag().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            contentService.listArticleTag().forEach((i) -> writer.println(jsonHelper.object2json(i)));
             writer.println();
-            contentService.listComment().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            contentService.listComment().forEach((i) -> writer.println(jsonHelper.object2json(i)));
             writer.println();
-            siteService.listFriendLink().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            siteService.listFriendLink().forEach((i) -> writer.println(jsonHelper.object2json(i)));
             writer.println();
-            siteService.listSetting().forEach((i)->writer.println(jsonHelper.object2json(i)));
+            siteService.listSetting().forEach((i) -> writer.println(jsonHelper.object2json(i)));
             writer.flush();
             zipHelper.compress(fileName, true);
         } catch (IOException e) {
@@ -76,7 +75,7 @@ public class DBHelper {
             case "MySQL":
                 logger.info("开始备份数据库{}@mysql", dbName);
                 try {
-                    String fileName = appStoreDir + "/backup/" + dbName + "_" + format.format(new Date()) + ".sql";
+                    String fileName = appStoreDir + "/backup/" + appName + "_" + format.format(new Date()) + ".sql";
 
                     Process p = Runtime.getRuntime().exec("mysqldump -u " + username
                             + " -p" + password + " " + dbName
@@ -95,7 +94,7 @@ public class DBHelper {
                 }
                 return;
         }
-        logger.error("未知的数据库类型[{}]" + databaseProductName);
+        logger.error("不支持备份的数据库类型[{}]", databaseProductName);
     }
 
     private boolean isTableExist(final String tableName) {
@@ -145,6 +144,8 @@ public class DBHelper {
     private String password;
     @Value("${jdbc.dbName}")
     private String dbName;
+    @Value("${app.name}")
+    private String appName;
     @Resource
     private ContentService contentService;
     @Resource
@@ -159,6 +160,10 @@ public class DBHelper {
     @Resource
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public void setDbName(String dbName) {

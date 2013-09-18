@@ -48,6 +48,8 @@ public class TaskSender {
 
     public void validEmail(String to, String type, Map<String, Object> args) {
         args.put("valid", linkValid);
+        args.put("type", type);
+        args.put("email", to);
         args.put("created", jsonHelper.object2json(new Date()));
 
         String action = "";
@@ -62,6 +64,7 @@ public class TaskSender {
                 content = "重置密码";
                 break;
         }
+
 
         String domain = cacheHelper.get("site/domain", String.class, null, () -> siteService.getString("site.domain"));
         String title = cacheHelper.get("site/title", String.class, null, () -> siteService.getString("site.title"));

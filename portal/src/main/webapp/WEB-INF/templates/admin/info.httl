@@ -1,0 +1,28 @@
+<br>
+<fieldset>
+    <legend>
+        <span class="btn-group btn-group-sm">
+            <button id="details" class="btn btn-info">详细信息</button>
+            <button id="domain" class="btn btn-warning">域名设置</button>
+            <button id="refresh" class="btn btn-primary">刷新</button>
+        </span>
+    </legend>
+    <div id="info"></div>
+</fieldset>
+<script type="text/javascript">
+    function show(act){
+        clear_message_div();
+        $("div#info").html("");
+        new Ajax("/admin/site/"+act, undefined, undefined, undefined, undefined, "info");
+    }
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/admin/site/info");
+    });
+    $("button#domain").click(function () {
+        show("domain");
+    });
+    $("button#details").click(function () {
+        show("details");
+    });
+</script>

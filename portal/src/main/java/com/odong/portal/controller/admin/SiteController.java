@@ -1,6 +1,7 @@
 package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
+import com.odong.portal.form.admin.DomainForm;
 import com.odong.portal.form.admin.InfoForm;
 import com.odong.portal.form.admin.PagerForm;
 import com.odong.portal.form.admin.RegProtocolForm;
@@ -107,9 +108,36 @@ public class SiteController {
     }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
+    String getInfo() {
+        return "admin/info";
+    }
+
+    @RequestMapping(value = "/domain", method = RequestMethod.GET)
     @ResponseBody
-    Form getInfoForm() {
-        Form fm = new Form("info", "站点信息编辑", "/admin/site/info");
+    Form getDomainForm() {
+        Form fm = new Form("domain", "域名设置", "/admin/site/domain");
+        fm.addField(new TextField<>("domain", "域名", siteService.getString("site.domain")));
+        fm.setOk(true);
+        return fm;
+    }
+
+    @RequestMapping(value = "/domain", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postDomainForm(@Valid DomainForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            siteService.set("site.domain", form.getDomain());
+            logService.add(si.getSsUserId(), "修改站点域名", Log.Type.INFO);
+            cacheHelper.delete("site/info");
+        }
+        return ri;
+    }
+
+
+    @RequestMapping(value = "/details", method = RequestMethod.GET)
+    @ResponseBody
+    Form getDetailsForm() {
+        Form fm = new Form("details", "站点信息编辑", "/admin/site/details");
         fm.addField(new TextField<>("title", "名称", siteService.getString("site.title")));
         fm.addField(new TextField<>("keywords", "关键字", siteService.getString("site.keywords"), "用空格隔开"));
         TextAreaField desc = new TextAreaField("description", "说明", siteService.getString("site.description"));
@@ -120,9 +148,9 @@ public class SiteController {
         return fm;
     }
 
-    @RequestMapping(value = "/info", method = RequestMethod.POST)
+    @RequestMapping(value = "/details", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postInfoForm(@Valid InfoForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postDetailsForm(@Valid InfoForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.title", form.getTitle());

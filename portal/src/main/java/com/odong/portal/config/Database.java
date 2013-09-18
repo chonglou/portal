@@ -38,9 +38,9 @@ public class Database {
                 }
                 return;
             case "org.apache.derby.jdbc.EmbeddedDriver":
-                url = "jdbc:derby:"+appStore+"/db;create=true";
+                url = "jdbc:derby:" + appStore + "/db;create=true";
                 type = Type.DERBY;
-                System.setProperty("derby.stream.error.file", "/tmp/.derby."+appName+".log");
+                System.setProperty("derby.stream.error.file", "/tmp/.derby." + appName + ".log");
                 return;
         }
         logger.warn("尚不支持[{}]自动创建,请自行确保数据库[{}]存在", driver, dbName);

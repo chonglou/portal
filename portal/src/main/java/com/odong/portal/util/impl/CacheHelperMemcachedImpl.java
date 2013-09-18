@@ -82,7 +82,7 @@ public class CacheHelperMemcachedImpl implements CacheHelper {
     @Override
     public void set(String key, int timeout, Object object) {
         try {
-            if(object == null){
+            if (object == null) {
                 logger.error("空的缓存内容[{}]", key);
                 return;
             }

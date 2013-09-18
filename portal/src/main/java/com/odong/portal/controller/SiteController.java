@@ -4,21 +4,19 @@ import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.Page;
+import com.odong.portal.web.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -145,6 +143,28 @@ public class SiteController extends PageController {
 
 
     @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)
+    String getError(@PathVariable int code, Map<String, Object> map) {
+        ResponseItem item = new ResponseItem(ResponseItem.Type.message);
+        switch (code) {
+            case 400:
+                item.addData("错误的请求");
+                break;
+            case 404:
+                item.addData("资源不存在");
+                break;
+            case 500:
+                item.addData("服务器内部错误");
+                break;
+            default:
+                item.addData("未知错误[" + code + "]");
+                break;
+        }
+        map.put("navBars", getNavBars());
+        fillSiteInfo(map);
+        map.put("item", item);
+        return "message";
+    }
+    /*
     @ResponseBody
     Map<String, Object> getError(@PathVariable int code) {
         Map<String, Object> map = new HashMap<>();
@@ -160,6 +180,7 @@ public class SiteController extends PageController {
         map.put("created", new Date());
         return map;
     }
+    */
 
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
