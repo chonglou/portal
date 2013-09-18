@@ -71,20 +71,25 @@ public class ArticleController extends PageController {
                 fm.setOk(false);
                 fm.addData("文章[" + articleId + "]不存在");
             } else {
-                fm.addField(new HiddenField<>("id", article.getId()));
-                fm.addField(new TextField<>("title", "标题", article.getTitle()));
-                TextAreaField summary = new TextAreaField("summary", "摘要", article.getSummary());
-                summary.setHtml(false);
-                fm.addField(summary);
+                if (article.getAuthor() == si.getSsUserId() || si.isSsAdmin()) {
+                    fm.addField(new HiddenField<>("id", article.getId()));
+                    fm.addField(new TextField<>("title", "标题", article.getTitle()));
+                    TextAreaField summary = new TextAreaField("summary", "摘要", article.getSummary());
+                    summary.setHtml(false);
+                    fm.addField(summary);
 
-                CheckBoxField<Long> tags = new CheckBoxField<>("tags", "标签");
-                for (Tag t : contentService.listTag()) {
-                    tags.addOption(t.getName(), t.getId(), contentService.getArticleTag(articleId, t.getId()) != null);
+                    CheckBoxField<Long> tags = new CheckBoxField<>("tags", "标签");
+                    for (Tag t : contentService.listTag()) {
+                        tags.addOption(t.getName(), t.getId(), contentService.getArticleTag(articleId, t.getId()) != null);
+                    }
+                    fm.addField(tags);
+
+                    fm.addField(new TextAreaField("body", "内容", article.getBody()));
+                    fm.setCaptcha(true);
+                } else {
+                    fm.setOk(false);
+                    fm.addData("没有权限");
                 }
-                fm.addField(tags);
-
-                fm.addField(new TextAreaField("body", "内容", article.getBody()));
-                fm.setCaptcha(true);
             }
         }
         return fm;
@@ -92,18 +97,14 @@ public class ArticleController extends PageController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    ResponseItem deleteArticle(@PathVariable Long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem deleteArticle(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         Article article = contentService.getArticle(id);
-        String defA = siteService.getString("site.defArticle");
+
         if (article == null) {
             ri.addData("文章[" + id + "]不存在");
         } else {
-            if (defA.equals(article.getId())) {
-                ri.addData("默认文章不能被删除");
-            } else {
-                ri.setOk(true);
-            }
+            ri.setOk(true);
             checkLogin(ri, si);
             if (ri.isOk()) {
                 if (article.getAuthor() == si.getSsUserId() || si.isSsAdmin()) {
@@ -133,7 +134,9 @@ public class ArticleController extends PageController {
                 Long aid = contentService.addArticle(si.getSsUserId(), logo, form.getTitle(), form.getSummary(), form.getBody());
 
                 for (String s : form.getTags().split("-")) {
-                    contentService.bindArticleTag(aid, Long.parseLong(s));
+                    if (!"".equals(s)) {
+                        contentService.bindArticleTag(aid, Long.parseLong(s));
+                    }
                 }
 
             } else {

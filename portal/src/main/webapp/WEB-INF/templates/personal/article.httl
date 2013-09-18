@@ -1,6 +1,7 @@
 <br>
 <div id="article"></div>
 <!--#set(List<Article> articleList) -->
+<!--#set(SessionItem gl_session=session.d1s7e0wp)-->
 <fieldset>
     <legend>文章列表[${articleList.size}]
         <span class="btn-group  btn-group-sm">
@@ -12,6 +13,7 @@
         <thead>
         <tr>
             <td style="width: 5%">ID</td>
+            <td style="width: 5%">作者</td>
             <td style="width: 20%">最后修改</td>
             <td>标题</td>
             <td style="width: 20%">操作</td>
@@ -21,13 +23,23 @@
         #for(a : articleList)
         <tr title="${a.id}">
             <td>${a.id}</td>
+            <td>
+                #if(gl_session.ssUserId == a.id)
+                SELF
+                #else
+                ${a.author}
+                #end
+            </td>
             <td>${a.publishDate}</td>
             <td>${a.title}</td>
             <td>
                 <div class="btn-group btn-group-sm">
                     <a href="/article/${a.id}" target="_blank" class="btn btn-primary" type="button">查看</a>
-                    <button id="edit_${a.id}" class="btn btn-warning" type="button">编辑</button>
-                    <button id="del_${a.id}" class="btn btn-danger" type="button">删除</button>
+                    <button id="edit-${a.id}" class="btn btn-warning" type="button">编辑</button>
+                    <button id="del-${a.id}" class="btn btn-danger" type="button">删除</button>
+                    #if(gl_session.ssAdmin)
+                    <button id="author-${a.id}" class="btn btn-info" type="button">变更作者</button>
+                    #end
                 </div>
             </td>
         </tr>
@@ -43,20 +55,28 @@
         clear_message_div();
         new Ajax("/personal/article");
     });
-    $("button[id^='del_']").each(function () {
+    $("button[id^='del-']").each(function () {
         $(this).click(function () {
-            var ss = $(this).attr('id').split('_');
+            var ss = $(this).attr('id').split('-');
             clear_message_div();
             if (confirm("你确认要删除文章[" + ss[1] + "]么")) {
                 new Ajax("/article/" + ss[1], "DELETE");
             }
         });
     });
-    $("button[id^='edit_']").each(function () {
+    $("button[id^='edit-']").each(function () {
         $(this).click(function () {
-            var ss = $(this).attr('id').split('_');
+            var ss = $(this).attr('id').split('-');
             clear_message_div();
             new Ajax("/article/" + ss[1], "PUT", undefined, undefined, undefined, "article");
+        });
+    });
+
+    $("button[id^='author-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/admin/article/" + ss[1], "GET", undefined, undefined, undefined, "article");
         });
     });
 

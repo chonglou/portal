@@ -26,7 +26,7 @@ public class ZipHelper {
                 FileInputStream in = new FileInputStream(input);
                 XZOutputStream out = new XZOutputStream(new FileOutputStream(input + ".xz"), options);
         ) {
-            byte[] buf = new byte[8192];
+            byte[] buf = new byte[1024];
             int size;
             while ((size = in.read(buf)) != -1) {
                 out.write(buf, 0, size);

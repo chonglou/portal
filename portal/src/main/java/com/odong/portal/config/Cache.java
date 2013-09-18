@@ -30,7 +30,7 @@ public class Cache {
     @Bean
     XMemcachedClientBuilder getClientBuilder() {
         XMemcachedClientBuilder builder = new XMemcachedClientBuilder(servers);
-        builder.setConnectionPoolSize(poolSize);
+        //builder.setConnectionPoolSize(poolSize);
         builder.setCommandFactory(getCommandFactory());
         builder.setSessionLocator(getSessionLocator());
         builder.setTranscoder(getTranscoder());

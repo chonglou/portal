@@ -84,8 +84,7 @@ public class SelfController extends PageController {
 
     @RequestMapping(value = "/article", method = RequestMethod.GET)
     String getArticle(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        //FIXME 分页
-        map.put("articleList", contentService.listArticleByAuthor(si.getSsUserId()));
+        map.put("articleList", si.isSsAdmin() ?  contentService.listArticle(): contentService.listArticleByAuthor(si.getSsUserId()));
         return "personal/article";
     }
 

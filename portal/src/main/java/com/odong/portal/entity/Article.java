@@ -44,7 +44,7 @@ public class Article extends IdEntity {
     @Lob
     @Column(nullable = false)
     private String body;
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private long author;
     @Column(nullable = false, updatable = false)
     private Date created;

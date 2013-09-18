@@ -302,6 +302,14 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public void setArticleAuthor(long article, long user) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id", article);
+        map.put("author", user);
+        articleDao.update("UPDATE Article a SET a.author=:author WHERE a.id=:id ", map);
+    }
+
+    @Override
     public void setArticleState(long article, Article.State state) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", article);
