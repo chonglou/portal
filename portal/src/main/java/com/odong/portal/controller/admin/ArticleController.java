@@ -2,7 +2,7 @@ package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.AdvertForm;
+import com.odong.portal.entity.User;
 import com.odong.portal.form.admin.AuthorForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
@@ -38,26 +38,32 @@ public class ArticleController {
         if (a != null) {
             fm.addField(new HiddenField<Long>("article", id));
             SelectField<Long> user = new SelectField<Long>("author", "用户", a.getAuthor());
-            accountService.listUser().forEach((u) -> user.addOption(u.toString(), u.getId()));
+            accountService.listUser().forEach((u) -> {
+                if (u.getState() == User.State.ENABLE) {
+                    user.addOption(u.toString(), u.getId());
+                }
+            });
             user.setWidth(220);
             fm.addField(user);
             fm.setOk(true);
         }
         return fm;
     }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteSmtp(@Valid AuthorForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postForm(@Valid AuthorForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
-        if(ri.isOk()){
-            contentService.setArticleAuthor(form.getArticle(),form.getAuthor());
-            logService.add(si.getSsUserId(), "变更文章["+form.getArticle()+"]的作者为["+form.getAuthor()+"]", Log.Type.INFO);
+        if (ri.isOk()) {
+            contentService.setArticleAuthor(form.getArticle(), form.getAuthor());
+            logService.add(si.getSsUserId(), "变更文章[" + form.getArticle() + "]的作者为[" + form.getAuthor() + "]", Log.Type.INFO);
         }
         return ri;
     }
+
     @Resource
     private LogService logService;
-        @Resource
+    @Resource
     private ContentService contentService;
     @Resource
     private AccountService accountService;

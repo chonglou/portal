@@ -78,7 +78,7 @@ public class ValidController extends PageController {
                     }
                     break;
                 case "reset_pwd":
-                    if (u.getState() == User.State.DISABLE) {
+                    if (u.getState() == User.State.ENABLE) {
                         if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(mapA.get("created"), Date.class), 60 * 30)) <= 0) {
                             accountService.setUserPassword(u.getId(), mapA.get("password"));
                             logService.add(u.getId(), "重置密码", Log.Type.INFO);

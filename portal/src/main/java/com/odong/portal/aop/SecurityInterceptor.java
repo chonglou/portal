@@ -1,11 +1,14 @@
 package com.odong.portal.aop;
 
+import com.odong.portal.entity.Log;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.service.LogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -43,6 +46,12 @@ public class SecurityInterceptor implements HandlerInterceptor {
         }
 
         if (url.startsWith("/personal/")) {
+            if (si != null && "/personal/logout".equals(url)) {
+                logService.add(si.getSsUserId(), "注销登陆", Log.Type.INFO);
+                request.getSession().invalidate();
+                login(response);
+                return false;
+            }
             boolean notNeedLogin = false;
             for (String s : new String[]{"login", "register", "resetPwd", "valid", "active"}) {
                 if (url.startsWith("/personal/" + s)) {
@@ -91,6 +100,10 @@ public class SecurityInterceptor implements HandlerInterceptor {
     }
 
     private final static Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
+    @Resource
+    private LogService logService;
 
-
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
 }

@@ -96,6 +96,7 @@ public interface ContentService {
     Long addArticle(long author, String logo, String title, String summary, String body);
 
     void setArticleAuthor(long article, long user);
+
     void setArticleState(long article, Article.State state);
 
     void setArticle(long id, String logo, String title, String summary, String body);

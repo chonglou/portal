@@ -24,7 +24,7 @@
         <tr title="${a.id}">
             <td>${a.id}</td>
             <td>
-                #if(gl_session.ssUserId == a.id)
+                #if(gl_session.ssUserId == a.author)
                 SELF
                 #else
                 ${a.author}

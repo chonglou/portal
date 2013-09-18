@@ -129,6 +129,7 @@ public class SiteController {
             siteService.set("site.domain", form.getDomain());
             logService.add(si.getSsUserId(), "修改站点域名", Log.Type.INFO);
             cacheHelper.delete("site/info");
+            cacheHelper.delete("site/domain");
         }
         return ri;
     }

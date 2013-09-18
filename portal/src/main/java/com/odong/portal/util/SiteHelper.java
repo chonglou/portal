@@ -103,6 +103,7 @@ public class SiteHelper {
             addClockTask(Task.Type.BACKUP, 4);
         }
 
+        logger.info("DEBUG模式[{}]",appDebug);
         GlobalResolver.put("gl_debug", appDebug);
 
         logger.info("用户数据目录{}", appStoreDir);

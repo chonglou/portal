@@ -117,11 +117,6 @@ public class ArticleController extends PageController {
         return ri;
     }
 
-    private String firstImage(String html) {
-        Document doc = Jsoup.parse(html);
-        Elements elements = doc.getElementsByTag("img");
-        return elements.size() == 0 ? null : elements.get(0).attr("src");
-    }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
@@ -184,5 +179,11 @@ public class ArticleController extends PageController {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
         return "cms/article";
+    }
+
+    private String firstImage(String html) {
+        Document doc = Jsoup.parse(html);
+        Elements elements = doc.getElementsByTag("img");
+        return elements.size() == 0 ? null : elements.get(0).attr("src");
     }
 }

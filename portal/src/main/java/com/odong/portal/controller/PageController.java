@@ -13,6 +13,7 @@ import com.odong.portal.web.NavBar;
 import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public abstract class PageController {
                     return site;
                 }
         ));
+
     }
 
     @Resource
@@ -116,6 +118,7 @@ public abstract class PageController {
     protected LogService logService;
     @Resource
     protected AccountService accountService;
+
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;

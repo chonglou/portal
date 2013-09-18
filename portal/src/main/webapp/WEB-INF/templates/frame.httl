@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <!--#set(Map<String,String> gl_site)-->
 <!--#set(gl_session=session.d1s7e0wp)-->
+<!--#set(Boolean gl_debug)-->
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
