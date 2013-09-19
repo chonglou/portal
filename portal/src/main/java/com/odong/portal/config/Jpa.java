@@ -46,7 +46,7 @@ public class Jpa {
         switch (database.getType()) {
             case DERBY:
                 //props.setProperty("hibernate.dialect","org.hibernate.dialect.DerbyTenSevenDialect");
-                props.setProperty("hibernate.dialect", "com.odong.portal.config.DerbyDialect");
+                props.setProperty("hibernate.dialect", DerbyDialect.class.getName());
                 break;
             case MYSQL:
                 props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
@@ -57,7 +57,7 @@ public class Jpa {
         props.setProperty("hibernate.cache.use_query_cache", "true");
         props.setProperty("hibernate.cache.region_prefix", appName);
         props.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
-        props.setProperty("hibernate.ejb.naming_strategy", "com.odong.portal.config.NamingStrategy");
+        props.setProperty("hibernate.ejb.naming_strategy", NamingStrategy.class.getName());
 
 
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
