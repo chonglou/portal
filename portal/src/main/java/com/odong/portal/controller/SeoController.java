@@ -34,14 +34,14 @@ public class SeoController {
 
 
     @PostConstruct
-    void init(){
-        rssF = appStoreDir+"/seo/rss.xml";
+    void init() {
+        rssF = appStoreDir + "/seo/rss.xml";
         mapF = appStoreDir + "/seo/rss.xml";
 
-        if(!new File(rssF).exists()){
+        if (!new File(rssF).exists()) {
             taskSender.rss();
         }
-        if(!new File(mapF).exists()){
+        if (!new File(mapF).exists()) {
             taskSender.sitemap();
         }
 

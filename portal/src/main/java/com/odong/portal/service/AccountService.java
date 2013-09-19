@@ -22,7 +22,7 @@ public interface AccountService {
 
     User getUser(String email);
 
-    void addUser(String email, String username, String password);
+    long addUser(String email, String username, String password);
 
     void setUserInfo(long user, String username, String contact);
 

@@ -20,7 +20,7 @@ import java.io.*;
 public class ZipHelper {
     public void compress(String input, boolean delete) throws IOException {
         try (
-                InputStream in = new BufferedInputStream(new FileInputStream(input)) ;
+                InputStream in = new BufferedInputStream(new FileInputStream(input));
                 OutputStream out = new XZOutputStream(new BufferedOutputStream(new FileOutputStream(input + ".xz")), options);
         ) {
             byte[] buf = new byte[1024];

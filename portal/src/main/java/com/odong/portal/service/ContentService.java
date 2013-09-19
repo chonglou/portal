@@ -5,6 +5,7 @@ import com.odong.portal.entity.ArticleTag;
 import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Tag;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,8 @@ public interface ContentService {
     Tag getTag(String name);
 
     Long addTag(String name, boolean keep);
+
+    Long addTag(String name, Date created, long visits);
 
     void setTagName(long id, String name);
 
@@ -62,6 +65,8 @@ public interface ContentService {
     void editComment(long comment, String content);
 
     void addComment(Long user, long article, Long comment, String content);
+
+    void addComment(Long user, long article, String content, Date created);
 
     void delComment(long id);
 
@@ -94,6 +99,8 @@ public interface ContentService {
     List<ArticleTag> listArticleTag();
 
     Long addArticle(long author, String logo, String title, String summary, String body);
+
+    Long addArticle(long author, String logo, String title, String summary, String body, Date created, long visits);
 
     void setArticleAuthor(long article, long user);
 

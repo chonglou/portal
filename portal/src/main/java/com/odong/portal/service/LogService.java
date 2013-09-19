@@ -12,6 +12,7 @@ import java.util.List;
  */
 public interface LogService {
     List<Log> list();
+
     void add(Long user, String message, Log.Type type);
 
     List<Log> list(int no, int size);

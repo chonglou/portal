@@ -114,7 +114,7 @@ public class CommentController extends PageController {
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.GET)
     void getComment(@PathVariable long commentId, HttpServletResponse response) throws IOException {
-        response.sendRedirect("/article/" + contentService.getComment(commentId).getArticle() + "#" + commentId);
+        response.sendRedirect("/article/" + contentService.getComment(commentId).getArticle() + "#c" + commentId);
     }
 
 

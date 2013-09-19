@@ -63,6 +63,25 @@ public class TaskListener implements MessageListener {
             Task.Type type = Task.Type.valueOf(message.getStringProperty("type"));
             String itemId = message.getJMSCorrelationID();
             switch (type) {
+                case IMPORT:
+                    taskExecutor.execute(() -> {
+                        try {
+                            dbHelper.import4json(message.getString("filename"));
+                        } catch (Exception e) {
+                            logger.error("导入数据出错", e);
+                        }
+                    });
+                    break;
+                case EXPORT:
+                    taskExecutor.execute(() -> {
+                        try {
+                            dbHelper.export2json();
+                        } catch (Exception e) {
+                            logger.error("导出数据出错", e);
+                        }
+                    });
+
+                    break;
                 case GC:
                     System.gc();
                     break;

@@ -5,18 +5,18 @@ ${left_nav_bar_1}
 <div class="col-lg-9">
     ${mainGL}
     <!--#set(Article article)-->
-    <!--#set(User user)-->
-    <!--#set(List<Tag> tagList)-->
+    <!--#set(Page user)-->
+    <!--#set(List<Page> tagList)-->
     <!--#set(List<Comment> commentList)-->
     <!--#set(Map<Long,User> userMap)-->
     <h3>${article.title}[${article.visits}]</h3>
     <hr>
-    作者：<a target="_blank" href="/user/${user.id}">${user.username}</a> &nbsp;
+    作者：<a target="_blank" href="${user.url}">${user.name}</a> &nbsp;
     最后修改时间：${article.publishDate}
     <br>
     标签：
     #for(t : tagList)
-    <a target="_blank" href="/tag/${t.id}">${t.name}</a> &nbsp;
+    <a target="_blank" href="${t.url}">${t.name}</a> &nbsp;
     #end
     <br>
     摘要：$!{article.summary}
@@ -30,6 +30,7 @@ ${left_nav_bar_1}
         #end
     </div>
     #for(c : commentList)
+    <a name="#c${c.id}"></a>
     <blockquote>
         <p>$!{c.content}</p>
         <!--#set(u=userMap.get(c.user))-->

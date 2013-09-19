@@ -4,6 +4,7 @@ import com.odong.portal.controller.PageController;
 import com.odong.portal.entity.*;
 import com.odong.portal.form.cms.ArticleForm;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
 import org.jsoup.Jsoup;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,11 +64,12 @@ public class ArticleController extends PageController {
     @RequestMapping(value = "/{articleId}", method = RequestMethod.PUT)
     @ResponseBody
     Form putArticleEditForm(@PathVariable Long articleId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Article article = cacheHelper.get("archive/" + articleId, Article.class, null, () -> contentService.getArticle(articleId));
+
         Form fm = new Form("article", "编辑文章[" + articleId + "]", "/article/");
         fm.setOk(true);
         checkLogin(fm, si);
         if (fm.isOk()) {
+            Article article = contentService.getArticle(articleId);
             if (article == null) {
                 fm.setOk(false);
                 fm.addData("文章[" + articleId + "]不存在");
@@ -155,17 +158,24 @@ public class ArticleController extends PageController {
 
     @RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
     String getArticle(Map<String, Object> map, @PathVariable Long articleId, HttpServletResponse response) throws IOException {
-        Article a = contentService.getArticle(articleId);
+        Article a = cacheHelper.get("article/" + articleId, Article.class, null, () -> contentService.getArticle(articleId));
         if (a != null) {
             contentService.setArticleVisits(articleId);
             map.put("article", a);
-            map.put("user", accountService.getUser(a.getAuthor()));
+            map.put("user", cacheHelper.get("page/user/"+a.getAuthor(), Page.class, null, ()->{
+                User u = accountService.getUser(a.getAuthor());
+                return new Page(u.getUsername(), "/user/"+u.getId());
+            }));
             map.put("navBars", getNavBars());
             fillSiteInfo(map);
             map.put("title", a.getTitle());
             map.put("description", a.getSummary());
 
-            map.put("tagList", contentService.listTagByArticle(articleId));
+            map.put("tagList", cacheHelper.get("article/"+a.getId()+"/tags", ArrayList.class, null, ()->{
+                    ArrayList< Page > pages = new ArrayList<>();
+                    contentService.listTagByArticle(articleId).forEach((t)->pages.add(t.toPage()));
+                return pages;
+            }));
             List<Comment> comments = contentService.listCommentByArticle(articleId);
             Map<Long, User> users = new HashMap<>();
             for (Comment c : comments) {

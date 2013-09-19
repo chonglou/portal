@@ -18,7 +18,7 @@ import java.util.Date;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Task implements Serializable {
     public enum Type {
-        EMAIL, RSS, SITE_MAP, GC, BACKUP
+        EMAIL, RSS, SITE_MAP, GC, BACKUP, IMPORT, EXPORT,VISIT
     }
 
     @Id

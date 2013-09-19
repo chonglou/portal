@@ -13,7 +13,6 @@ import com.odong.portal.web.NavBar;
 import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -46,10 +45,10 @@ public abstract class PageController {
 
             return nb;
         }));
-        navBars.add(cacheHelper.get("navBar/leastComment", NavBar.class, 60 * 60, () -> {
+        navBars.add(cacheHelper.get("navBar/leastComment", NavBar.class, null, () -> {
             NavBar nb = new NavBar("最新评论");
             nb.setType(NavBar.Type.LIST);
-            contentService.latestComment(siteService.getInteger("site.latestCommentCount")).forEach((c) -> nb.add(c.getContent(), "/comment/" + c.getId()));
+            contentService.latestComment(siteService.getInteger("site.latestCommentCount")).forEach((c) -> nb.add(c.getContent(), "/article/" + c.getArticle()+"#c"+c.getId()));
             return nb;
         }));
         navBars.add(cacheHelper.get("navBar/recentArchive", NavBar.class, null, () -> {

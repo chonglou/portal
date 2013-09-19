@@ -55,14 +55,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addUser(String email, String username, String password) {
+    public long addUser(String email, String username, String password) {
         User u = new User();
         u.setEmail(email);
         u.setUsername(username);
         u.setPassword(encryptHelper.encrypt(password));
         u.setCreated(new Date());
         u.setState(User.State.SUBMIT);
-        userDao.insert(u);
+        return userDao.persist(u);
     }
 
     @Override

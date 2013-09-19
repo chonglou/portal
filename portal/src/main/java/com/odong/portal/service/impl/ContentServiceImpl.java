@@ -84,6 +84,14 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public Long addTag(String name, Date created, long visits) {
+        Tag t = new Tag();
+        t.setCreated(created);
+        t.setVisits(visits);
+        return tagDao.persist(t);  //
+    }
+
+    @Override
     public void setTagName(long id, String name) {
         Tag t = tagDao.select(id);
         t.setName(name);
@@ -190,6 +198,17 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public void addComment(Long user, long article, String content, Date created) {
+        Comment c = new Comment();
+        c.setUser(user);
+        c.setArticle(article);
+        c.setContent(content);
+        c.setCreated(created);
+        c.setCreated(new Date());
+        commentDao.insert(c);
+    }
+
+    @Override
     public void delComment(long id) {
         commentDao.delete(id);
     }
@@ -289,14 +308,19 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public Long addArticle(long author, String logo, String title, String summary, String body) {
+        return addArticle(author, logo, title, summary, body, new Date(), 0l);
+    }
+
+    @Override
+    public Long addArticle(long author, String logo, String title, String summary, String body, Date created, long visits) {
         Article a = new Article();
         a.setAuthor(author);
         a.setLogo(logo);
         a.setTitle(title);
         a.setSummary(summary);
         a.setBody(body);
-        a.setVisits(0l);
-        a.setCreated(new Date());
+        a.setVisits(visits);
+        a.setCreated(created);
         a.setState(Article.State.PROTECTED);
         return articleDao.persist(a);
     }

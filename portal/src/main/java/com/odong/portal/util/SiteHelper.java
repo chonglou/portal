@@ -58,10 +58,9 @@ public class SiteHelper {
             siteService.set("site.captcha", "kaptcha");
 
             //USER
-            accountService.addUser(manager, "管理员", "123456");
-            User admin = accountService.getUser(manager);
-            accountService.setUserState(admin.getId(), User.State.ENABLE);
-            rbacService.bindAdmin(admin.getId(), true);
+            long admin = accountService.addUser(manager, "管理员", "123456");
+            accountService.setUserState(admin, User.State.ENABLE);
+            rbacService.bindAdmin(admin, true);
 
             //CMS
             siteService.set("site.hotTagCount", 20);
@@ -103,7 +102,7 @@ public class SiteHelper {
             addClockTask(Task.Type.BACKUP, 4);
         }
 
-        logger.info("DEBUG模式[{}]",appDebug);
+        logger.info("DEBUG模式[{}]", appDebug);
         GlobalResolver.put("gl_debug", appDebug);
 
         logger.info("用户数据目录{}", appStoreDir);

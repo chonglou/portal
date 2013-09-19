@@ -29,6 +29,28 @@ import java.util.UUID;
  */
 @Component
 public class TaskSender {
+    public void visitArticle(long article){
+        Map<String,Object> map = new HashMap<>();
+        map.put("type", "article");
+        map.put("id", article);
+        send(Task.Type.VISIT, map);
+    }
+    public void visitTag(long tag){
+        Map<String,Object> map = new HashMap<>();
+        map.put("type", "tag");
+        map.put("id", tag);
+        send(Task.Type.VISIT, map);
+    }
+
+    public void export2json() {
+        send(Task.Type.EXPORT, new HashMap<String, Object>());
+    }
+
+    public void import4json(String filename) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("filename", filename);
+        send(Task.Type.IMPORT, map);
+    }
 
     public void gc() {
         send(Task.Type.GC, new HashMap<String, Object>());

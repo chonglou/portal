@@ -1,10 +1,8 @@
 package com.odong.portal.util;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.odong.portal.entity.Article;
-import com.odong.portal.entity.Log;
+import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
@@ -13,25 +11,25 @@ import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.tukaani.xz.LZMA2Options;
-import org.tukaani.xz.UnsupportedOptionsException;
-import org.tukaani.xz.XZOutputStream;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -51,51 +49,172 @@ public class DBHelper {
         return "未知大小";
     }
 
-    public void export() {
-        String fileName = appStoreDir + "/backup/" + appName + "_" + format.format(new Date()) + ".json";
+    public void import4json(String filename) throws IOException {
+        Path file = Paths.get(filename);
+        ObjectMapper mapper = new ObjectMapper();
+        try (BufferedReader reader = Files.newBufferedReader(file, CHARSET)) {
 
-        
-        LZMA2Options options = new LZMA2Options();
-        try {
-            options.setPreset(7);    
-        }
-        catch (UnsupportedOptionsException e){
-            logger.error("不支持的压缩选项", e);
-        }
+            //系统信息
+            String line = reader.readLine();
+            Map<String, String> env = mapper.readValue(line, new TypeReference<Map<String, String>>() {
+            });
+            for (String s : env.keySet()) {
+                siteService.set("site." + s, env.get(s));
+            }
 
-        ObjectMapper mapper  = new ObjectMapper();
-        try (OutputStream out = new XZOutputStream(new BufferedOutputStream(new FileOutputStream(fileName + ".xz")), options)) {
-            Consumer<Object> consumer = (obj)->{
-                try {
-                    out.write(mapper.writeValueAsBytes(obj));
-                    out.write('\n');
+            //友情链接
+            line = reader.readLine();
+            List<Map<String, String>> friendLinks = mapper.readValue(line, new TypeReference<List<Map<String, String>>>() {
+            });
+            for (Map<String, String> fl : friendLinks) {
+                siteService.addFriendLink(fl.get("name"), fl.get("url"), fl.get("logo"));
+            }
+
+            //文章信息
+            while ((line = reader.readLine()) != null) {
+                Map<String, String> map = mapper.readValue(line, new TypeReference<Map<String, Object>>() {
+                });
+
+                long aid = contentService.addArticle(getUser(map.get("author")), map.get("logo"), map.get("title"), map.get("summary"), map.get("body"), getDate(map.get("created")), getLong(map.get("visits")));
+                List<Map<String, String>> tags = mapper.readValue(map.get("tags"), new TypeReference<List<Map<String, String>>>() {
+                });
+                for (Map<String, String> t : tags) {
+                    contentService.bindArticleTag(aid, getTag(t.get("name"), getDate(t.get("created")), getLong(t.get("visits"))));
                 }
-                catch (IOException e){
+                List<Map<String, String>> comments = mapper.readValue(map.get("comments"), new TypeReference<List<Map<String, String>>>() {
+                });
+                for (Map<String, String> c : comments) {
+                    contentService.addComment(getUser(c.get("user")), aid, c.get("content"), getDate(c.get("created")));
+                }
+            }
+        }
+        logger.debug("成功导入数据[{}]", filename);
+    }
+
+    private Date getDate(String time) {
+        return new Date(getLong(time));
+    }
+
+    private long getLong(String str) {
+        return Long.parseLong(str);
+    }
+
+    private synchronized long getUser(String email) {
+        User user = accountService.getUser(email);
+        return user == null ? accountService.addUser(email, email, stringHelper.random(12)) : user.getId();
+    }
+
+    private synchronized long getTag(String name, Date created, long visits) {
+        Tag tag = contentService.getTag(name);
+        return tag == null ? contentService.addTag(name, created, visits) : tag.getId();
+    }
+
+    /**
+     * 只导出文章
+     * 文章：title，summary，logo，body，author，tags,comments
+     *
+     * @throws IOException
+     */
+    public void export2json() throws IOException {
+        String fileName = appStoreDir + "/backup/" + appName + "_" + format.format(new Date()) + ".json";
+        Path file = Paths.get(fileName);
+        ObjectMapper mapper = new ObjectMapper();
+        logger.debug("导出数据库到文件", fileName);
+        try (BufferedWriter writer = Files.newBufferedWriter(file, CHARSET)) {
+            Map<String, String> env = new HashMap<>();
+            for (String s : SITE_KEYS) {
+                env.put(s, siteService.getString("site." + s));
+            }
+            writer.write(mapper.writeValueAsString(env));
+            writer.write('\n');
+
+            List<Map<String, String>> friendLinks = new ArrayList<>();
+            siteService.listFriendLink().forEach((fl) -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("url", fl.getUrl());
+                map.put("logo", fl.getLogo());
+                map.put("name", fl.getName());
+                friendLinks.add(map);
+            });
+            writer.write(mapper.writeValueAsString(friendLinks));
+            writer.write('\n');
+
+            contentService.listArticle().forEach((a) -> {
+
+                try {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("author", accountService.getUser(a.getAuthor()).getEmail());
+                    map.put("title", a.getTitle());
+                    map.put("summary", a.getSummary());
+                    map.put("logo", a.getLogo());
+                    map.put("body", a.getBody());
+                    map.put("created", "" + a.getCreated().getTime());
+                    map.put("visits", "" + a.getVisits());
+
+                    List<Map<String, String>> tags = new ArrayList<>();
+                    contentService.listTagByArticle(a.getId()).forEach((t) -> {
+                        Map<String, String> tag = new HashMap<>();
+                        tag.put("name", t.getName());
+                        tag.put("visits", "" + t.getVisits());
+                        tags.add(tag);
+                    });
+                    map.put("tags", mapper.writeValueAsString(tags));
+
+                    List<Map<String, String>> comments = new ArrayList<>();
+                    contentService.listComment().forEach((c) -> {
+                        Map<String, String> comment = new HashMap<>();
+                        comment.put("content", c.getContent());
+                        comment.put("created", "" + c.getCreated().getTime());
+                        comment.put("user", accountService.getUser(c.getUser()).getEmail());
+                        comments.add(comment);
+                    });
+                    map.put("comments", mapper.writeValueAsString(comments));
+
+                    writer.write(mapper.writeValueAsString(map));
+                    writer.write('\n');
+                } catch (IOException e) {
+                    logger.error("导出文章[{}]出错", a.getId(), e);
+                }
+            });
+        }
+
+        logger.debug("开始压缩文件[{}]", fileName);
+        zipHelper.compress(fileName, true);
+    }
+
+    public void export2json_all() throws IOException {
+        String fileName = appStoreDir + "/backup/" + appName + "_" + format.format(new Date()) + ".json";
+        Path file = Paths.get(fileName);
+        ObjectMapper mapper = new ObjectMapper();
+        try (BufferedWriter writer = Files.newBufferedWriter(file, CHARSET)) {
+            Consumer<Object> consumer = (obj) -> {
+                try {
+                    writer.write(mapper.writeValueAsString(obj));
+                    writer.write('\n');
+                } catch (IOException e) {
                     logger.error("JSON IO出错", e);
                 }
             };
-            out.write("Users\n".getBytes());
+            writer.write("Users\n");
             accountService.listUser().forEach(consumer);
-            out.write("Logs\n".getBytes());
+            writer.write("Logs\n");
             logService.list().forEach(consumer);
-            out.write("Articles\n".getBytes());
+            writer.write("Articles\n");
             contentService.listArticle().forEach(consumer);
-            out.write("Tags\n".getBytes());
+            writer.write("Tags\n");
             contentService.listTag().forEach(consumer);
-            out.write("ArticleTags\n".getBytes());
+            writer.write("ArticleTags\n");
             contentService.listArticleTag().forEach(consumer);
-            out.write("Comments\n".getBytes());
+            writer.write("Comments\n");
             contentService.listComment().forEach(consumer);
-            out.write("FriendLinks\n".getBytes());
+            writer.write("FriendLinks\n");
             siteService.listFriendLink().forEach(consumer);
-            out.write("Settings\n".getBytes());
+            writer.write("Settings\n");
             siteService.listSetting().forEach(consumer);
-
-            out.flush();
-
-        } catch ( IOException e) {
-            logger.error("导出数据库出错", e);
         }
+        logger.debug("导出数据库到文件[{}]成功", fileName);
+        zipHelper.compress(fileName, true);
+        logger.debug("压缩文件[{}]", fileName);
     }
 
     /**
@@ -130,7 +249,7 @@ public class DBHelper {
     }
 
     private boolean isTableExist(final String tableName) {
-        return jdbcTemplate.execute((Connection c)->{
+        return jdbcTemplate.execute((Connection c) -> {
 
             DatabaseMetaData dmd = c.getMetaData();
             ResultSet rs = dmd.getTables(null, dbName, tableName, new String[]{"TABLE", "VIEW"});
@@ -143,7 +262,7 @@ public class DBHelper {
     @PostConstruct
     void init() {
 
-        jdbcTemplate.execute((Connection c)->{
+        jdbcTemplate.execute((Connection c) -> {
             DatabaseMetaData dmd = c.getMetaData();
             databaseProductName = dmd.getDatabaseProductName();
             databaseProductVersion = dmd.getDatabaseProductVersion();
@@ -179,10 +298,16 @@ public class DBHelper {
     @Resource
     private AccountService accountService;
     @Resource
-    private JsonHelper jsonHelper;
-    @Resource
     private SiteService siteService;
+    @Resource
+    private StringHelper stringHelper;
+    private final Charset CHARSET = Charset.forName("UTF-8");
+    private final String[] SITE_KEYS = {"domain", "title", "aboutMe", "keywords", "description", "copyright", "regProtocol"};
     private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
+
+    public void setStringHelper(StringHelper stringHelper) {
+        this.stringHelper = stringHelper;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -201,9 +326,6 @@ public class DBHelper {
         this.dbName = dbName;
     }
 
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
-    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
