@@ -1,7 +1,14 @@
 package com.odong.portal.util;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.odong.portal.entity.Article;
+import com.odong.portal.entity.Log;
+import com.odong.portal.entity.User;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
+import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +17,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.UnsupportedOptionsException;
+import org.tukaani.xz.XZOutputStream;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -23,6 +32,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Consumer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,24 +54,46 @@ public class DBHelper {
     public void export() {
         String fileName = appStoreDir + "/backup/" + appName + "_" + format.format(new Date()) + ".json";
 
-        try (PrintWriter writer = new PrintWriter(fileName)) {
-            writer.println();
-            accountService.listUser().forEach((i) -> writer.println(jsonHelper.object2json(i)));
-            writer.println();
-            contentService.listArticle().forEach((i) -> writer.println(jsonHelper.object2json(i)));
-            writer.println();
-            contentService.listTag().forEach((i) -> writer.println(jsonHelper.object2json(i)));
-            writer.println();
-            contentService.listArticleTag().forEach((i) -> writer.println(jsonHelper.object2json(i)));
-            writer.println();
-            contentService.listComment().forEach((i) -> writer.println(jsonHelper.object2json(i)));
-            writer.println();
-            siteService.listFriendLink().forEach((i) -> writer.println(jsonHelper.object2json(i)));
-            writer.println();
-            siteService.listSetting().forEach((i) -> writer.println(jsonHelper.object2json(i)));
-            writer.flush();
-            zipHelper.compress(fileName, true);
-        } catch (IOException e) {
+        
+        LZMA2Options options = new LZMA2Options();
+        try {
+            options.setPreset(7);    
+        }
+        catch (UnsupportedOptionsException e){
+            logger.error("不支持的压缩选项", e);
+        }
+
+        ObjectMapper mapper  = new ObjectMapper();
+        try (OutputStream out = new XZOutputStream(new BufferedOutputStream(new FileOutputStream(fileName + ".xz")), options)) {
+            Consumer<Object> consumer = (obj)->{
+                try {
+                    out.write(mapper.writeValueAsBytes(obj));
+                    out.write('\n');
+                }
+                catch (IOException e){
+                    logger.error("JSON IO出错", e);
+                }
+            };
+            out.write("Users\n".getBytes());
+            accountService.listUser().forEach(consumer);
+            out.write("Logs\n".getBytes());
+            logService.list().forEach(consumer);
+            out.write("Articles\n".getBytes());
+            contentService.listArticle().forEach(consumer);
+            out.write("Tags\n".getBytes());
+            contentService.listTag().forEach(consumer);
+            out.write("ArticleTags\n".getBytes());
+            contentService.listArticleTag().forEach(consumer);
+            out.write("Comments\n".getBytes());
+            contentService.listComment().forEach(consumer);
+            out.write("FriendLinks\n".getBytes());
+            siteService.listFriendLink().forEach(consumer);
+            out.write("Settings\n".getBytes());
+            siteService.listSetting().forEach(consumer);
+
+            out.flush();
+
+        } catch ( IOException e) {
             logger.error("导出数据库出错", e);
         }
     }
@@ -98,33 +130,27 @@ public class DBHelper {
     }
 
     private boolean isTableExist(final String tableName) {
+        return jdbcTemplate.execute((Connection c)->{
 
-        return jdbcTemplate.execute(new ConnectionCallback<Boolean>() {
-            @Override
-            public Boolean doInConnection(Connection connection) throws SQLException, DataAccessException {
-
-                DatabaseMetaData dmd = connection.getMetaData();
-                ResultSet rs = dmd.getTables(null, dbName, tableName, new String[]{"TABLE", "VIEW"});
-                boolean exist = rs.next();
-                rs.close();
-                return exist;
-            }
+            DatabaseMetaData dmd = c.getMetaData();
+            ResultSet rs = dmd.getTables(null, dbName, tableName, new String[]{"TABLE", "VIEW"});
+            boolean exist = rs.next();
+            rs.close();
+            return exist;
         });
     }
 
     @PostConstruct
     void init() {
 
-        jdbcTemplate.execute(new ConnectionCallback<Object>() {
-            @Override
-            public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                DatabaseMetaData dmd = connection.getMetaData();
-                databaseProductName = dmd.getDatabaseProductName();
-                databaseProductVersion = dmd.getDatabaseProductVersion();
-                logger.info("使用数据库[{},{}]", databaseProductName, databaseProductVersion);
-                return null;  //
-            }
+        jdbcTemplate.execute((Connection c)->{
+            DatabaseMetaData dmd = c.getMetaData();
+            databaseProductName = dmd.getDatabaseProductName();
+            databaseProductVersion = dmd.getDatabaseProductVersion();
+            logger.info("使用数据库[{},{}]", databaseProductName, databaseProductVersion);
+            return null;  //
         });
+
 
         format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     }
@@ -149,6 +175,8 @@ public class DBHelper {
     @Resource
     private ContentService contentService;
     @Resource
+    private LogService logService;
+    @Resource
     private AccountService accountService;
     @Resource
     private JsonHelper jsonHelper;
@@ -156,6 +184,9 @@ public class DBHelper {
     private SiteService siteService;
     private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
 
     @Resource
     public void setDataSource(DataSource dataSource) {

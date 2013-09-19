@@ -1,5 +1,6 @@
 package com.odong.portal.util;
 
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import java.util.Map;
  * Time: 下午2:27
  */
 public interface JsonHelper {
+
     String object2json(Object object);
 
     <T> T json2object(String json, Class<T> clazz);

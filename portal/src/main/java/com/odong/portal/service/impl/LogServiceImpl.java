@@ -21,6 +21,11 @@ import java.util.Map;
 public class LogServiceImpl implements LogService {
 
     @Override
+    public List<Log> list() {
+        return logDao.list();
+    }
+
+    @Override
     public void add(Long user, String message, Log.Type type) {
         Log log = new Log();
         log.setUser(user);

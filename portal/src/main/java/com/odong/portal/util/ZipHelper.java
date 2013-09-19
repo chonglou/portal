@@ -8,10 +8,7 @@ import org.tukaani.xz.UnsupportedOptionsException;
 import org.tukaani.xz.XZOutputStream;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,15 +20,14 @@ import java.io.IOException;
 public class ZipHelper {
     public void compress(String input, boolean delete) throws IOException {
         try (
-                FileInputStream in = new FileInputStream(input);
-                XZOutputStream out = new XZOutputStream(new FileOutputStream(input + ".xz"), options);
+                InputStream in = new BufferedInputStream(new FileInputStream(input)) ;
+                OutputStream out = new XZOutputStream(new BufferedOutputStream(new FileOutputStream(input + ".xz")), options);
         ) {
             byte[] buf = new byte[1024];
             int size;
             while ((size = in.read(buf)) != -1) {
                 out.write(buf, 0, size);
             }
-            out.finish();
         } catch (IOException e) {
             logger.error("压缩文件[{}]出错", input);
             throw e;

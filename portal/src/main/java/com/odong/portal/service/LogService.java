@@ -11,6 +11,7 @@ import java.util.List;
  * Time: 下午11:42
  */
 public interface LogService {
+    List<Log> list();
     void add(Long user, String message, Log.Type type);
 
     List<Log> list(int no, int size);
