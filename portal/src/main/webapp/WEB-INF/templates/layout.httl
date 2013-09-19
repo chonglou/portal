@@ -42,6 +42,7 @@ $!{extends("/frame.httl")}
             #end
         </ul>
     </li>
+    <li><a href="/rss.xml" target="_blank"><img title="收取站点更新通知" style="width: 20px;height: 20px" src="/style/rss.png"/></a></li>
 </ul>
 <!--#end-->
 
