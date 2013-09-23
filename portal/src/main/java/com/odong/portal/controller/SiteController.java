@@ -29,18 +29,6 @@ import java.util.Map;
 @Controller("c.site")
 public class SiteController extends PageController {
 
-    @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
-    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        String vCode=cacheHelper.get("site/google/valid", String.class, null, ()->siteService.getString("site.google.valid"));
-        logger.debug("##### {} {}", vCode, request.getRequestURI().substring(1));
-        if (request.getRequestURI().substring(1).equals(vCode)){
-            response.getWriter().println("google-site-verification: "+vCode);
-        }
-        else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
-
-    }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     String getMain(Map<String, Object> map) {
@@ -195,6 +183,21 @@ public class SiteController extends PageController {
         return map;
     }
     */
+
+
+    @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
+    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        String vCode=cacheHelper.get("site/google/valid", String.class, null, ()->siteService.getString("site.google.valid"));
+        logger.debug("##### {} {}", vCode, request.getRequestURI().substring(1));
+        if (request.getRequestURI().substring(1).equals(vCode)){
+            response.getWriter().println("google-site-verification: "+vCode);
+        }
+        else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+
+    }
+
 
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 

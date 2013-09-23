@@ -20,6 +20,12 @@ import java.io.File;
  */
 @Controller("c.seo")
 public class SeoController {
+    @RequestMapping(value = "/robots.txt", method = RequestMethod.GET)
+    @ResponseBody
+    FileSystemResource robots() {
+        return new FileSystemResource(appStoreDir+"/seo/robots.txt");
+    }
+
     @RequestMapping(value = "/sitemap.xml.gz", method = RequestMethod.GET)
     @ResponseBody
     FileSystemResource sitemap() {
@@ -36,7 +42,7 @@ public class SeoController {
     @PostConstruct
     void init() {
         rssF = appStoreDir + "/seo/rss.xml";
-        mapF = appStoreDir + "/seo/rss.xml";
+        mapF = appStoreDir + "/seo/sitemap.xml.gz";
 
         if (!new File(rssF).exists()) {
             taskSender.rss();

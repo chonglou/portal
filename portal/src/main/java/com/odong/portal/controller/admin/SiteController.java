@@ -12,12 +12,23 @@ import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.SelectField;
 import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created with IntelliJ IDEA.
@@ -123,7 +134,7 @@ public class SiteController {
     ResponseItem postGoogleForm(@Valid GoogleForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            siteService.set("site.google.valid", form.getValid());
+            siteService.set("site.google.valid", form.getValid().trim());
             logService.add(si.getSsUserId(), "修改google 网站验证文件", Log.Type.INFO);
             cacheHelper.delete("site/google/valid");
         }
@@ -144,10 +155,23 @@ public class SiteController {
     ResponseItem postDomainForm(@Valid DomainForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            siteService.set("site.domain", form.getDomain());
+            String domain = form.getDomain().trim();
+            siteService.set("site.domain", domain);
             logService.add(si.getSsUserId(), "修改站点域名", Log.Type.INFO);
             cacheHelper.delete("site/info");
             cacheHelper.delete("site/domain");
+
+
+            Path file = Paths.get(appStoreDir+"/seo/robots.txt");
+            try (BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"))) {
+                writer.write("User-agent: *\n");
+                writer.write("Disallow: /admin/\n");
+                writer.write("Disallow: /personal/\n");
+                writer.write("Sitemap: http://"+domain+"/sitemap.xml.gz\n");
+            }
+            catch (IOException e){
+                logger.error("生成robots.txt文件出错",e);
+            }
         }
         return ri;
     }
@@ -191,7 +215,13 @@ public class SiteController {
     private FormHelper formHelper;
     @Resource
     private CacheHelper cacheHelper;
+    @Value("${app.store}")
+    private String appStoreDir;
+    private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
+    public void setAppStoreDir(String appStoreDir) {
+        this.appStoreDir = appStoreDir;
+    }
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;
