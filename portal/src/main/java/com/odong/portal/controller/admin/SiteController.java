@@ -1,10 +1,7 @@
 package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.DomainForm;
-import com.odong.portal.form.admin.InfoForm;
-import com.odong.portal.form.admin.PagerForm;
-import com.odong.portal.form.admin.RegProtocolForm;
+import com.odong.portal.form.admin.*;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
@@ -110,6 +107,27 @@ public class SiteController {
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     String getInfo() {
         return "admin/info";
+    }
+
+    @RequestMapping(value = "/google", method = RequestMethod.GET)
+    @ResponseBody
+    Form getGoogleForm() {
+        Form fm = new Form("google", "Google Web 设置", "/admin/site/google");
+        fm.addField(new TextField<>("valid", "验证文件名", siteService.getString("site.google.valid")));
+        fm.setOk(true);
+        return fm;
+    }
+
+    @RequestMapping(value = "/google", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postGoogleForm(@Valid GoogleForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            siteService.set("site.google.valid", form.getValid());
+            logService.add(si.getSsUserId(), "修改google 网站验证文件", Log.Type.INFO);
+            cacheHelper.delete("site/google/valid");
+        }
+        return ri;
     }
 
     @RequestMapping(value = "/domain", method = RequestMethod.GET)

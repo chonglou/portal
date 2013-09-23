@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,6 +28,19 @@ import java.util.Map;
  */
 @Controller("c.site")
 public class SiteController extends PageController {
+
+    @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
+    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        String vCode=cacheHelper.get("site/google/valid", String.class, null, ()->siteService.getString("site.google.valid"));
+        logger.debug("##### {} {}", vCode, request.getRequestURI().substring(1));
+        if (request.getRequestURI().substring(1).equals(vCode)){
+            response.getWriter().println("google-site-verification: "+vCode);
+        }
+        else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+
+    }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     String getMain(Map<String, Object> map) {

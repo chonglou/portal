@@ -45,6 +45,7 @@ public class SiteHelper {
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
+            siteService.set("site.google.valid",stringHelper.random(8));
 
             //KAPTCHA
             KaptchaProfile kaptcha = new KaptchaProfile();
@@ -151,6 +152,8 @@ public class SiteHelper {
     private TaskService taskService;
     @Resource
     private TimeHelper timeHelper;
+    @Resource
+    private StringHelper stringHelper;
     @Value("${app.store}")
     private String appStoreDir;
     @Value("${app.debug}")
@@ -158,6 +161,10 @@ public class SiteHelper {
     @Value("${app.manager}")
     private String manager;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setStringHelper(StringHelper stringHelper) {
+        this.stringHelper = stringHelper;
+    }
 
     public void setTimeHelper(TimeHelper timeHelper) {
         this.timeHelper = timeHelper;

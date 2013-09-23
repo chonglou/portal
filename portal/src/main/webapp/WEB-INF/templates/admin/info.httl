@@ -4,6 +4,7 @@
         <span class="btn-group btn-group-sm">
             <button id="details" class="btn btn-info">详细信息</button>
             <button id="domain" class="btn btn-warning">域名设置</button>
+            <button id="google" class="btn btn-success">Google设置</button>
             <button id="refresh" class="btn btn-primary">刷新</button>
         </span>
     </legend>
@@ -24,5 +25,8 @@
     });
     $("button#details").click(function () {
         show("details");
+    });
+    $("button#google").click(function () {
+        show("google");
     });
 </script>
