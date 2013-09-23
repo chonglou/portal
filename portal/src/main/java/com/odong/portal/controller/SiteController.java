@@ -114,6 +114,8 @@ public class SiteController extends PageController {
                     return cards;
                 })
         );
+
+        map.put("google", cacheHelper.get("site/google/search", String.class, null, ()->siteService.getString("site.google.search")));
         return "search";
     }
 

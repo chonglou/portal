@@ -19,8 +19,8 @@ ${left_nav_bar_1}
     <a target="_blank" href="${t.url}">${t.name}</a> &nbsp;
     #end
     <br>
-    摘要：$!{article.summary}
-    <br>
+    摘要：<b>$!{article.summary}</b>
+    <p>&nbsp;</p>
     $!{article.body}
     <br>
     $!{gl_site.advertBottom}

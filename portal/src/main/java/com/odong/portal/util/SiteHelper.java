@@ -59,7 +59,7 @@ public class SiteHelper {
             siteService.set("site.captcha", "kaptcha");
 
             //USER
-            long admin = accountService.addUser(manager, "管理员", "123456");
+            long admin = accountService.addUser(manager, "系统管理员", "123456");
             accountService.setUserState(admin, User.State.ENABLE);
             rbacService.bindAdmin(admin, true);
 

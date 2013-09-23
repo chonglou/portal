@@ -13,6 +13,15 @@ public class GoogleForm implements Serializable {
     private static final long serialVersionUID = -1962194717189752239L;
     @NotNull
     private String valid;
+    private String search;
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
 
     public String getValid() {
         return valid;

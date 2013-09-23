@@ -5,6 +5,7 @@ ${left_nav_bar_1}
 <div class="col-lg-9">
     ${mainGL}
     <br/>
+    $!{google}
     <!--#set(List<Article> articleList)-->
     <h3>查找-${key} 文章列表[${articleList.size()}]</h3>
     <hr/>

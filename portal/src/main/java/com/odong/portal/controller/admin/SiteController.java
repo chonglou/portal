@@ -125,6 +125,9 @@ public class SiteController {
     Form getGoogleForm() {
         Form fm = new Form("google", "Google Web 设置", "/admin/site/google");
         fm.addField(new TextField<>("valid", "验证文件名", siteService.getString("site.google.valid")));
+        TextAreaField search = new TextAreaField("search", "自定义搜索代码",siteService.getString("site.google.search"));
+        search.setHtml(false);
+        fm.addField(search);
         fm.setOk(true);
         return fm;
     }
@@ -135,8 +138,10 @@ public class SiteController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.google.valid", form.getValid().trim());
-            logService.add(si.getSsUserId(), "修改google 网站验证文件", Log.Type.INFO);
+            siteService.set("site.google.search", form.getSearch());
+            logService.add(si.getSsUserId(), "修改google配置", Log.Type.INFO);
             cacheHelper.delete("site/google/valid");
+            cacheHelper.delete("site/google/search");
         }
         return ri;
     }

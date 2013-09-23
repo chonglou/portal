@@ -123,6 +123,7 @@ $!{extends("/frame.httl")}
     </div>
     #end
     #end
+    <br/>
     $!{gl_site.advertLeft}
 </div>
 <!--#end-->
