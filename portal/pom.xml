@@ -31,7 +31,7 @@
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <version>1.5.0-b01</version>
         </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
@@ -116,6 +116,12 @@
             <groupId>com.jhlabs</groupId>
             <artifactId>filters</artifactId>
             <version>2.0.235-1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.snmp4j</groupId>
+            <artifactId>snmp4j</artifactId>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
@@ -452,6 +458,11 @@
 
     <repositories>
 
+        <repository>
+            <id>oosnmp.net</id>
+            <name>SNMP4j Repository</name>
+            <url>https://oosnmp.net/dist/release/</url>
+        </repository>
         <repository>
             <id>httl-repository</id>
             <name>Httl Repository</name>
