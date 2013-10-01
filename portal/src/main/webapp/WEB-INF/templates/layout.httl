@@ -28,7 +28,30 @@ $!{extends("/frame.httl")}
 #set(personal_bar_sort=["login", "register", "active", "resetPwd"])
 #set(personal_bar_name="登录/注册")
 #end
+<script>
+    $(document).ready(function () {
+        $("a#favorites").click(function (e) {
+            e.preventDefault(); // this will prevent the anchor tag from going the user off to the link
+            var bookmarkUrl = this.href;
+            var bookmarkTitle = this.title;
+
+            if (window.sidebar) { // For Mozilla Firefox Bookmark
+                window.sidebar.addPanel(bookmarkTitle, bookmarkUrl,"");
+            } else if( window.external || document.all) { // For IE Favorite
+                window.external.AddFavorite( bookmarkUrl, bookmarkTitle);
+            } else if(window.opera) { // For Opera Browsers
+                this.attr("href",bookmarkUrl);
+                this.attr("title",bookmarkTitle);
+                this.attr("rel","sidebar");
+            } else { // for other browsers which does not support
+                alert('您的浏览器不支持收藏夹功能，请手动使用Ctrl+D快捷键');
+            }
+
+        });
+    });
+</script>
 <ul class="nav navbar-nav navbar-right">
+    <li><a href="#" id="favorites">收藏本页</a></li>
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             ${personal_bar_name} <b class="caret"></b>
@@ -42,7 +65,8 @@ $!{extends("/frame.httl")}
             #end
         </ul>
     </li>
-    <li><a href="/rss.xml" target="_blank"><img title="收取站点更新通知" style="width: 20px;height: 20px" src="/style/rss.png"/></a></li>
+    <li><a href="/rss.xml" target="_blank"><img title="收取站点更新通知" style="width: 20px;height: 20px" src="/style/rss.png"/></a>
+    </li>
 </ul>
 <!--#end-->
 
