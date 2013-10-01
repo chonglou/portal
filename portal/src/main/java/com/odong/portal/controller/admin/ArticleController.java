@@ -13,6 +13,7 @@ import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.HiddenField;
 import com.odong.portal.web.form.SelectField;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class ArticleController {
             fm.addField(new HiddenField<Long>("article", id));
             SelectField<Long> user = new SelectField<Long>("author", "用户", a.getAuthor());
             accountService.listUser().forEach((u) -> {
-                if (u.getState() == User.State.ENABLE) {
+                if (u.getState() == User.State.ENABLE && !u.getEmail().equals(manager)) {
                     user.addOption(u.toString(), u.getId());
                 }
             });
@@ -69,6 +70,16 @@ public class ArticleController {
     private AccountService accountService;
     @Resource
     private FormHelper formHelper;
+    @Value("${app.manager}")
+    private String manager;
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;

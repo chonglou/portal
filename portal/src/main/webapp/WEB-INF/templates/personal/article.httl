@@ -5,7 +5,9 @@
 <fieldset>
     <legend>文章列表[${articleList.size}]
         <span class="btn-group  btn-group-sm">
+            #if(manager != gl_session.ssEmail)
         <button id="add" class="btn btn-success" type="button">添加</button>
+            #end
             <button id="refresh" class="btn btn-primary" type="button">刷新</button>
         </span>
     </legend>

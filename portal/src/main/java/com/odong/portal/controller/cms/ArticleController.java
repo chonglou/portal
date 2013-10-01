@@ -187,6 +187,7 @@ public class ArticleController extends PageController {
             map.put("userMap", users);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
         return "cms/article";
     }

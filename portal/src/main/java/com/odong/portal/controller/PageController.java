@@ -13,6 +13,7 @@ import com.odong.portal.web.NavBar;
 import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -99,6 +100,8 @@ public abstract class PageController {
                     site.put("tagCloud", tagCloud);
                     site.put("advertLeft", siteService.getString("site.advert.left"));
                     site.put("advertBottom", siteService.getString("site.advert.bottom"));
+
+                    site.put("manager", manager);
                     return site;
                 }
         ));
@@ -117,7 +120,12 @@ public abstract class PageController {
     protected LogService logService;
     @Resource
     protected AccountService accountService;
+    @Value("${app.manager}")
+    protected String manager;
 
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;

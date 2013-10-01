@@ -56,6 +56,7 @@ public class TagController extends PageController {
             map.put("tag", tag);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
         return "cms/tag";
     }

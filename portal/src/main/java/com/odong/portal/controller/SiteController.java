@@ -73,7 +73,7 @@ public class SiteController extends PageController {
         map.put("userList", cacheHelper.get("cards/user", ArrayList.class, null, () -> {
             ArrayList<Card> cards = new ArrayList<>();
             accountService.listUser().forEach((u) -> {
-                if (u.getState() == User.State.ENABLE) {
+                if (u.getState() == User.State.ENABLE && !u.getEmail().equals(manager)) {
                     cards.add(new Card(u.getLogo(), u.getUsername(), u.getEmail(), "/user/" + u.getId()));
                 }
             });

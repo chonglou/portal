@@ -31,7 +31,7 @@ public class UserController extends PageController {
     String getUser(Map<String, Object> map, @PathVariable long userId, HttpServletResponse response) throws IOException {
 
         User user = cacheHelper.get("user/" + userId, User.class, null, () -> accountService.getUser(userId));
-        if (user != null) {
+        if (user != null && !user.getEmail().equals(manager)) {
             contentService.setUserVisits(userId);
             //TODO 分页
             map.put("articleList", cacheHelper.get("cards/article/user/" + userId, ArrayList.class, null, () -> {
@@ -45,7 +45,7 @@ public class UserController extends PageController {
                 NavBar nb = new NavBar("用户列表");
                 nb.setType(NavBar.Type.LIST);
                 for (User u : accountService.listUser()) {
-                    if (u.getState() == User.State.ENABLE) {
+                    if (u.getState() == User.State.ENABLE && !u.getEmail().equals(manager)) {
                         nb.add(u.getUsername(), "/user/" + u.getId());
                     }
                 }
@@ -58,6 +58,7 @@ public class UserController extends PageController {
             map.put("title", "用户-[" + user.getUsername() + "]");
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
 
         return "cms/user";
