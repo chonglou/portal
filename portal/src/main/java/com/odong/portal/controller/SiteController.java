@@ -7,6 +7,7 @@ import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -94,29 +97,39 @@ public class SiteController extends PageController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    String postSearch(Map<String, Object> map, HttpServletRequest request) {
+    String postSearch(Map<String, Object> map, HttpServletRequest request, HttpSession session) {
+        Date last = (Date) session.getAttribute("lastSearch");
+        session.setAttribute("lastSearch", new Date());
+
         map.put("navBars", getNavBars());
         fillSiteInfo(map);
         String key = request.getParameter("keyword");
         map.put("key", key);
         map.put("title", "搜索-[" + key + "]");
 
-        //FIXME like查找性能
-        map.put("articleList",
-                cacheHelper.get(
-                        "search/" + key,
-                        ArrayList.class,
-                        null, () -> {
-                    ArrayList<Card> cards = new ArrayList<>();
-                    contentService.search(key).forEach((a) -> {
-                        cards.add(a.toCard());
-                    });
-                    return cards;
-                })
-        );
-
-        map.put("google", cacheHelper.get("site/google/search", String.class, null, ()->siteService.getString("site.google.search")));
-        return "search";
+        if (last == null || last.getTime()+ 1000 * searchSpace < new Date().getTime() ) {
+            //FIXME like查找性能
+            map.put("articleList",
+                    cacheHelper.get(
+                            "search/" + key,
+                            ArrayList.class,
+                            null, () -> {
+                        ArrayList<Card> cards = new ArrayList<>();
+                        contentService.search(key).forEach((a) -> {
+                            cards.add(a.toCard());
+                        });
+                        return cards;
+                    })
+            );
+            map.put("google", cacheHelper.get("site/google/search", String.class, null, () -> siteService.getString("site.google.search")));
+            return "search";
+        }
+        else {
+            ResponseItem item = new ResponseItem(ResponseItem.Type.message);
+            item.addData("过于频繁的搜索，请过"+searchSpace+"秒钟重试");
+            map.put("item", item);
+            return "message";
+        }
     }
 
     @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
@@ -188,19 +201,22 @@ public class SiteController extends PageController {
 
 
     @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
-    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        String vCode=cacheHelper.get("site/google/valid", String.class, null, ()->siteService.getString("site.google.valid"));
+    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String vCode = cacheHelper.get("site/google/valid", String.class, null, () -> siteService.getString("site.google.valid"));
         logger.debug("##### {} {}", vCode, request.getRequestURI().substring(1));
-        if (request.getRequestURI().substring(1).equals(vCode)){
-            response.getWriter().println("google-site-verification: "+vCode);
-        }
-        else {
+        if (request.getRequestURI().substring(1).equals(vCode)) {
+            response.getWriter().println("google-site-verification: " + vCode);
+        } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
     }
 
-
+    @Value("${search.space}")
+    private int searchSpace;
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
+    public void setSearchSpace(int searchSpace) {
+        this.searchSpace = searchSpace;
+    }
 }

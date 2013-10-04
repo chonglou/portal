@@ -9,7 +9,8 @@ $!{extends("/layout.httl")}
 <!--#end-->
 
 <!--#macro(showHead)-->
-<h4>#if(ok)操作成功#else发生错误#end：[<label id="time">5</label>秒钟之后跳转至首页]</h4>
+#set(ResponseItem item)
+<h4>#if(item.ok)操作成功#else发生错误#end：[<label id="time">5</label>秒钟之后跳转至首页]</h4>
 <!--#end-->
 
 #macro(main)
