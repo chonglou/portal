@@ -36,7 +36,10 @@ public class ArchiveController extends PageController {
                     NavBar nb = new NavBar("归档列表");
                     nb.setType(NavBar.Type.LIST);
                     DateTime now = new DateTime();
-                    for (DateTime init = new DateTime(siteService.getDate("site.init")); init.compareTo(now) <= 0; init = init.plusMonths(1)) {
+
+                    for (DateTime init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
+                         init.compareTo(now) <= 0;
+                         init = init.plusMonths(1)) {
                         addArchive2NavBar(nb, init);
                     }
                     return nb;

@@ -55,7 +55,7 @@ public abstract class PageController {
         navBars.add(cacheHelper.get("navBar/recentArchive", NavBar.class, null, () -> {
             NavBar nb = new NavBar("最近归档");
             nb.setType(NavBar.Type.LIST);
-            DateTime init = new DateTime(siteService.getDate("site.init"));
+            DateTime init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
             for (int i = 0; i < siteService.getInteger("site.archiveCount"); i++) {
                 DateTime dt = new DateTime().plusMonths(0 - i);
                 if (dt.compareTo(init) >= 0) {

@@ -1,6 +1,5 @@
 package com.odong;
 
-import org.snmp4j.TransportMapping;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
