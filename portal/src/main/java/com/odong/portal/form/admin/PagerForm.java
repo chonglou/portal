@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class PagerForm implements Serializable {
     private static final long serialVersionUID = 701886481651194175L;
     private int hotTagCount;
-    private int hotArticleCount;
+    private int latestArticleCount;
     private int latestCommentCount;
     private int archiveCount;
     private int articlePageSize;
@@ -24,12 +24,12 @@ public class PagerForm implements Serializable {
         this.hotTagCount = hotTagCount;
     }
 
-    public int getHotArticleCount() {
-        return hotArticleCount;
+    public int getLatestArticleCount() {
+        return latestArticleCount;
     }
 
-    public void setHotArticleCount(int hotArticleCount) {
-        this.hotArticleCount = hotArticleCount;
+    public void setLatestArticleCount(int latestArticleCount) {
+        this.latestArticleCount = latestArticleCount;
     }
 
     public int getLatestCommentCount() {

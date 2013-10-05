@@ -48,7 +48,7 @@ public class SiteController extends PageController {
                         null,
                         () -> {
                             ArrayList<Card> cards = new ArrayList<>();
-                            contentService.latestArticle(siteService.getInteger("site.articlePageSize")).forEach((a) -> cards.add(a.toCard()));
+                            contentService.hotArticle(siteService.getInteger("site.articlePageSize")).forEach((a) -> cards.add(a.toCard()));
                             return cards;
                         }
                 )

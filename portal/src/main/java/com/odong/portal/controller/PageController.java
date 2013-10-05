@@ -40,9 +40,9 @@ public abstract class PageController {
     protected List<NavBar> getNavBars() {
         List<NavBar> navBars = new ArrayList<>();
         navBars.add(cacheHelper.get("navBar/hotArticle", NavBar.class, null, () -> {
-            NavBar nb = new NavBar("热门文章");
+            NavBar nb = new NavBar("最新文章");
             nb.setType(NavBar.Type.LIST);
-            contentService.hotArticle(siteService.getInteger("site.hotArticleCount")).forEach((a) -> nb.add(a.getTitle(), "/article/" + a.getId()));
+            contentService.latestArticle(siteService.getInteger("site.latestArticleCount")).forEach((a) -> nb.add(a.getTitle(), "/article/" + a.getId()));
 
             return nb;
         }));

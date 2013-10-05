@@ -1,5 +1,30 @@
 $!{extends("/layout.httl")}
 
+#macro(pager)
+<ul class="pagination pagination-lg">
+    #if(pg_index==1)
+    <li class="disabled"><a href="#">&laquo;</a></li>
+    #else
+    <li><a href="#">&laquo;</a></li>
+    #end
+
+    <!--set(i=0)-->
+    <!--#for(i : 1 .. pg_size)-->
+    #if(i==pg_index)
+    <li class="active"><a href="#">${i}</a></li>
+    #else
+    <li><a href="#">${i}</a></li>
+    #end
+    <!--#end-->
+
+    #if(pg_index==pg_size)
+    <li class="disabled"><a href="#">&raquo;</a></li>
+    #else
+    <li><a href="#">&raquo;</a></li>
+    #end
+</ul>
+#end
+
 #macro(main)
 <!--#set(Map<String,String> gl_site)-->
 ${left_nav_bar_1}
@@ -9,6 +34,9 @@ ${left_nav_bar_1}
     ${carouselCard}
     <!--#set(cardList = articleList)-->
     ${fallCard}
+    <!--#set(pg_index=10)-->
+    <!--#set(pg_size=10)-->
+    <!--${pager}-->
     <br>
     $!{gl_site.advertBottom}
 </div>

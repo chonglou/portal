@@ -20,10 +20,5 @@ ${left_nav_bar_1}
     ${fallPage}
     <p>&nbsp;</p>
 
-    <h3>文章列表</h3>
-    <hr>
-    #set(cardList=articleList)
-    ${fallCard}
-    <p>&nbsp;</p>
 </div>
 #end

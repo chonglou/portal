@@ -41,59 +41,6 @@ import java.nio.file.Paths;
 @SessionAttributes(SessionItem.KEY)
 public class SiteController {
 
-    @RequestMapping(value = "/pager", method = RequestMethod.GET)
-    @ResponseBody
-    Form getSizeForm() {
-        Form fm = new Form("pager", "分页设置", "/admin/site/pager");
-
-        SelectField<Integer> hotTagCount = new SelectField<Integer>("hotTagCount", "热门标签数", siteService.getInteger("site.hotTagCount"));
-        for (int i : new int[]{5, 10, 20, 30, 50}) {
-            hotTagCount.addOption(i + "个", i);
-        }
-        fm.addField(hotTagCount);
-
-        SelectField<Integer> hotArticleCount = new SelectField<Integer>("hotArticleCount", "左侧热门文章数", siteService.getInteger("site.hotArticleCount"));
-        for (int i : new int[]{5, 10, 20, 30, 50}) {
-            hotArticleCount.addOption(i + "篇", i);
-        }
-        fm.addField(hotArticleCount);
-
-        SelectField<Integer> latestCommentCount = new SelectField<Integer>("latestCommentCount", "左侧最新评论数", siteService.getInteger("site.latestCommentCount"));
-        for (int i : new int[]{5, 10, 20, 30, 50}) {
-            latestCommentCount.addOption(i + "条", i);
-        }
-        fm.addField(latestCommentCount);
-
-        SelectField<Integer> archiveCount = new SelectField<Integer>("archiveCount", "左侧最近归档", siteService.getInteger("site.archiveCount"));
-        for (int i : new int[]{3, 6, 9, 12, 15, 18, 24}) {
-            archiveCount.addOption(i + "个月", i);
-        }
-        fm.addField(archiveCount);
-
-        SelectField<Integer> articlePageSize = new SelectField<Integer>("articlePageSize", "每页文章数", siteService.getInteger("site.articlePageSize"));
-        for (int i : new int[]{20, 30, 50, 80, 100, 150, 200}) {
-            articlePageSize.addOption(i + "篇", i);
-        }
-        fm.addField(articlePageSize);
-        fm.setOk(true);
-        return fm;
-    }
-
-    @RequestMapping(value = "/pager", method = RequestMethod.POST)
-    @ResponseBody
-    ResponseItem postSizeForm(@Valid PagerForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        ResponseItem ri = formHelper.check(result);
-        if (ri.isOk()) {
-            siteService.set("site.archiveCount", form.getArchiveCount());
-            siteService.set("site.articlePageSize", form.getArticlePageSize());
-            siteService.set("site.hotArticleCount", form.getHotArticleCount());
-            siteService.set("site.hotTagCount", form.getHotTagCount());
-            siteService.set("site.latestCommentCount", form.getLatestCommentCount());
-            logService.add(si.getSsUserId(), "修改用户注册协议", Log.Type.INFO);
-            cacheHelper.delete("site/info");
-        }
-        return ri;
-    }
 
     @RequestMapping(value = "/regProtocol", method = RequestMethod.GET)
     @ResponseBody
