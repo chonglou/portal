@@ -7,6 +7,7 @@ import com.odong.portal.entity.Tag;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -95,6 +96,19 @@ public interface ContentService {
     List<Article> listArticleByAuthor(long author);
 
     List<Article> listArticleByTag(long tag);
+
+    Set<Long> getTagIdsByArticle(long article);
+
+    Set<Long> getArticleIdsByTag(long tag);
+
+
+    List<Long> getArticleIdsByPage(int no, int size);
+
+    List<Long> getArticleIdsByUser(long user);
+
+    List<Long> getArticleIdsByMonth(int year, int month);
+
+    List<Long> getArticleIdsBySearch(String key);
 
     List<ArticleTag> listArticleTag();
 

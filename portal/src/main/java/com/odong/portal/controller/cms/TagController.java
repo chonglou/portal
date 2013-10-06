@@ -3,7 +3,6 @@ package com.odong.portal.controller.cms;
 import com.odong.portal.controller.PageController;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,27 +29,15 @@ public class TagController extends PageController {
     @RequestMapping(value = "/{tagId}", method = RequestMethod.GET)
     String getTag(Map<String, Object> map, @PathVariable long tagId, HttpServletResponse response) throws IOException {
 
-        Tag tag = cacheHelper.get("tag/" + tagId, Tag.class, null, () -> contentService.getTag(tagId));
+        Tag tag = cacheService.getTag(tagId);
         if (tag != null) {
             contentService.setTagVisits(tagId);
             List<NavBar> navBars = new ArrayList<>();
 
-            navBars.add(cacheHelper.get("navBar/tags", NavBar.class, null, () -> {
-                NavBar nb = new NavBar("标签列表");
-                nb.setType(NavBar.Type.LIST);
-                for (Tag t : contentService.listTag()) {
-                    nb.add(t.getName(), "/tag/" + t.getId());
-                }
-                return nb;
-            }));
+            navBars.add(cacheService.getTagNavBar());
             map.put("navBars", navBars);
 
-            map.put("articleList", cacheHelper.get("articleCard/tag/" + tagId, ArrayList.class, null, () -> {
-                ArrayList<Card> cards = new ArrayList<>();
-                //FIXME 分页
-                contentService.listArticleByTag(tagId).forEach((a) -> cards.add(a.toCard()));
-                return cards;
-            }));
+            map.put("articleList", cacheService.getArticleCardsByTag(tagId));
             fillSiteInfo(map);
             map.put("title", "标签-[" + tag.getName() + "]");
             map.put("tag", tag);

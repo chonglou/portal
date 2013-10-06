@@ -302,6 +302,55 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public Set<Long> getTagIdsByArticle(long article) {
+        Set<Long> ids = new HashSet<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("article", article);
+        articleTagDao.list("FROM ArticleTag at WHERE at.article=:article", map).forEach((at) -> ids.add(at.getTag()));
+        return ids;  //
+    }
+
+    @Override
+    public Set<Long> getArticleIdsByTag(long tag) {
+        Set<Long> ids = new HashSet<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("tag", tag);
+        articleTagDao.list("FROM ArticleTag at WHERE at.tag=:tag", map).forEach((at) -> ids.add(at.getArticle()));
+        return ids;  //
+    }
+
+    @Override
+    public List<Long> getArticleIdsByPage(int no, int size) {
+        return articleTagDao.list(no, size, "FROM Article i ORDER BY i.visit DESC", null, Long.class);
+    }
+
+    @Override
+    public List<Long> getArticleIdsByUser(long user) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("author", user);
+        return articleDao.list("SELECT a.id FROM Article WHERE a.author=:author", map, Long.class);
+    }
+
+    @Override
+    public List<Long> getArticleIdsByMonth(int year, int month) {
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("begin", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMinimumValue().secondOfDay().withMinimumValue().toDate());
+        map.put("end", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMaximumValue().secondOfDay().withMaximumValue().toDate());
+
+        return articleDao.list("FROM Article  i WHERE i.created>=:begin AND i.created <=:end", map, Long.class);
+    }
+
+    @Override
+    public List<Long> getArticleIdsBySearch(String key) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("key", "%" + key + "%");
+        return articleDao.list("FROM Article a WHERE a.title LIKE :key OR a.summary LIKE :key", map, Long.class);
+
+    }
+
+    @Override
     public List<ArticleTag> listArticleTag() {
         return articleTagDao.list();
     }

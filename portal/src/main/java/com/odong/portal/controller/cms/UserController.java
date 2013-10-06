@@ -3,7 +3,6 @@ package com.odong.portal.controller.cms;
 import com.odong.portal.controller.PageController;
 import com.odong.portal.entity.User;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,27 +29,14 @@ public class UserController extends PageController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     String getUser(Map<String, Object> map, @PathVariable long userId, HttpServletResponse response) throws IOException {
 
-        User user = cacheHelper.get("user/" + userId, User.class, null, () -> accountService.getUser(userId));
+        User user = cacheService.getUser(userId);
         if (user != null && !user.getEmail().equals(manager)) {
             contentService.setUserVisits(userId);
             //TODO 分页
-            map.put("articleList", cacheHelper.get("cards/article/user/" + userId, ArrayList.class, null, () -> {
-                ArrayList<Card> cards = new ArrayList<>();
-                contentService.listArticleByAuthor(userId).forEach((a) -> cards.add(a.toCard()));
-                return cards;
-            }));
+            map.put("articleList", cacheService.getArticleCardsByUser(userId));
 
             List<NavBar> navBars = new ArrayList<>();
-            navBars.add(cacheHelper.get("navBar/users", NavBar.class, null, () -> {
-                NavBar nb = new NavBar("用户列表");
-                nb.setType(NavBar.Type.LIST);
-                for (User u : accountService.listUser()) {
-                    if (u.getState() == User.State.ENABLE && !u.getEmail().equals(manager)) {
-                        nb.add(u.getUsername(), "/user/" + u.getId());
-                    }
-                }
-                return nb;
-            }));
+            navBars.add(cacheService.getUserNavBar());
             map.put("navBars", navBars);
 
             fillSiteInfo(map);

@@ -1,15 +1,17 @@
 package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.*;
+import com.odong.portal.form.admin.DomainForm;
+import com.odong.portal.form.admin.GoogleForm;
+import com.odong.portal.form.admin.InfoForm;
+import com.odong.portal.form.admin.RegProtocolForm;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.service.CacheService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.SelectField;
 import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
 import org.slf4j.Logger;
@@ -21,9 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -72,7 +72,7 @@ public class SiteController {
     Form getGoogleForm() {
         Form fm = new Form("google", "Google Web 设置", "/admin/site/google");
         fm.addField(new TextField<>("valid", "验证文件名", siteService.getString("site.google.valid")));
-        TextAreaField search = new TextAreaField("search", "自定义搜索代码",siteService.getString("site.google.search"));
+        TextAreaField search = new TextAreaField("search", "自定义搜索代码", siteService.getString("site.google.search"));
         search.setHtml(false);
         fm.addField(search);
         fm.setOk(true);
@@ -87,8 +87,8 @@ public class SiteController {
             siteService.set("site.google.valid", form.getValid().trim());
             siteService.set("site.google.search", form.getSearch());
             logService.add(si.getSsUserId(), "修改google配置", Log.Type.INFO);
-            cacheHelper.delete("site/google/valid");
-            cacheHelper.delete("site/google/search");
+            cacheService.popGoogleSearch();
+            cacheService.popGoogleValidCode();
         }
         return ri;
     }
@@ -110,19 +110,18 @@ public class SiteController {
             String domain = form.getDomain().trim();
             siteService.set("site.domain", domain);
             logService.add(si.getSsUserId(), "修改站点域名", Log.Type.INFO);
-            cacheHelper.delete("site/info");
-            cacheHelper.delete("site/domain");
+            cacheService.popSiteInfo();
+            cacheService.popDomain();
 
 
-            Path file = Paths.get(appStoreDir+"/seo/robots.txt");
+            Path file = Paths.get(appStoreDir + "/seo/robots.txt");
             try (BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"))) {
                 writer.write("User-agent: *\n");
                 writer.write("Disallow: /admin/\n");
                 writer.write("Disallow: /personal/\n");
-                writer.write("Sitemap: http://"+domain+"/sitemap.xml.gz\n");
-            }
-            catch (IOException e){
-                logger.error("生成robots.txt文件出错",e);
+                writer.write("Sitemap: http://" + domain + "/sitemap.xml.gz\n");
+            } catch (IOException e) {
+                logger.error("生成robots.txt文件出错", e);
             }
         }
         return ri;
@@ -153,7 +152,7 @@ public class SiteController {
             siteService.set("site.description", form.getDescription());
             siteService.set("site.copyright", form.getCopyright());
             logService.add(si.getSsUserId(), "修改站点基本信息", Log.Type.INFO);
-            cacheHelper.delete("site/info");
+            cacheService.popSiteInfo();
         }
         return ri;
     }
@@ -166,7 +165,7 @@ public class SiteController {
     @Resource
     private FormHelper formHelper;
     @Resource
-    private CacheHelper cacheHelper;
+    private CacheService cacheService;
     @Value("${app.store}")
     private String appStoreDir;
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
@@ -175,8 +174,8 @@ public class SiteController {
         this.appStoreDir = appStoreDir;
     }
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public void setLogService(LogService logService) {

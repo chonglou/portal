@@ -71,6 +71,33 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
     }
 
     @Override
+    public <ID> List<ID> list(String hql, Map<String, Object> map, Class<ID> clazz) {
+
+
+        TypedQuery<ID> query = entityManager.createQuery(hql, clazz);
+        if (map != null) {
+            for (String key : map.keySet()) {
+                query.setParameter(key, map.get(key));
+            }
+        }
+        return query.getResultList();
+
+    }
+
+    @Override
+    public <ID> List<ID> list(int pageNo, int pageSize, String hql, Map<String, Object> map, Class<ID> clazz) {
+        TypedQuery<ID> query = entityManager.createQuery(hql, clazz);
+        if (map != null) {
+            for (String key : map.keySet()) {
+                query.setParameter(key, map.get(key));
+            }
+        }
+        query.setFirstResult((pageNo - 1) * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
+    @Override
     public List<T> list() {
         return list(hqlListAll(), null);
     }

@@ -45,7 +45,7 @@ public class SiteHelper {
             siteService.set("site.aboutMe", "关于我们");
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
-            siteService.set("site.google.valid",stringHelper.random(8));
+            siteService.set("site.google.valid", stringHelper.random(8));
 
             //KAPTCHA
             KaptchaProfile kaptcha = new KaptchaProfile();

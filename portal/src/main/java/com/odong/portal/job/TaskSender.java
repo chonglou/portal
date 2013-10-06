@@ -29,14 +29,15 @@ import java.util.UUID;
  */
 @Component
 public class TaskSender {
-    public void visitArticle(long article){
-        Map<String,Object> map = new HashMap<>();
+    public void visitArticle(long article) {
+        Map<String, Object> map = new HashMap<>();
         map.put("type", "article");
         map.put("id", article);
         send(Task.Type.VISIT, map);
     }
-    public void visitTag(long tag){
-        Map<String,Object> map = new HashMap<>();
+
+    public void visitTag(long tag) {
+        Map<String, Object> map = new HashMap<>();
         map.put("type", "tag");
         map.put("id", tag);
         send(Task.Type.VISIT, map);

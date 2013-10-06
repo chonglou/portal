@@ -23,7 +23,7 @@ public class SeoController {
     @RequestMapping(value = "/robots.txt", method = RequestMethod.GET)
     @ResponseBody
     FileSystemResource robots() {
-        return new FileSystemResource(appStoreDir+"/seo/robots.txt");
+        return new FileSystemResource(appStoreDir + "/seo/robots.txt");
     }
 
     @RequestMapping(value = "/sitemap.xml.gz", method = RequestMethod.GET)

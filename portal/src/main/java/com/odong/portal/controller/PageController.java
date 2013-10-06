@@ -1,23 +1,14 @@
 package com.odong.portal.controller;
 
-import com.odong.portal.entity.FriendLink;
-import com.odong.portal.entity.Tag;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.AccountService;
-import com.odong.portal.service.ContentService;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
+import com.odong.portal.service.*;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.NavBar;
-import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,77 +30,21 @@ public abstract class PageController {
 
     protected List<NavBar> getNavBars() {
         List<NavBar> navBars = new ArrayList<>();
-        navBars.add(cacheHelper.get("navBar/hotArticle", NavBar.class, null, () -> {
-            NavBar nb = new NavBar("最新文章");
-            nb.setType(NavBar.Type.LIST);
-            contentService.latestArticle(siteService.getInteger("site.latestArticleCount")).forEach((a) -> nb.add(a.getTitle(), "/article/" + a.getId()));
-
-            return nb;
-        }));
-        navBars.add(cacheHelper.get("navBar/leastComment", NavBar.class, null, () -> {
-            NavBar nb = new NavBar("最新评论");
-            nb.setType(NavBar.Type.LIST);
-            contentService.latestComment(siteService.getInteger("site.latestCommentCount")).forEach((c) -> nb.add(c.getContent(), "/article/" + c.getArticle()+"#c"+c.getId()));
-            return nb;
-        }));
-        navBars.add(cacheHelper.get("navBar/recentArchive", NavBar.class, null, () -> {
-            NavBar nb = new NavBar("最近归档");
-            nb.setType(NavBar.Type.LIST);
-            DateTime init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
-            for (int i = 0; i < siteService.getInteger("site.archiveCount"); i++) {
-                DateTime dt = new DateTime().plusMonths(0 - i);
-                if (dt.compareTo(init) >= 0) {
-                    addArchive2NavBar(nb, dt);
-                } else {
-                    break;
-                }
-            }
-            return nb;
-        }));
+        navBars.add(cacheService.getLatestArticleNavBar());
+        navBars.add(cacheService.getLeastCommentNavBar());
+        navBars.add(cacheService.getRecentArchiveNavBar());
         return navBars;
 
     }
 
-    protected void addArchive2NavBar(NavBar nb, DateTime dt) {
-        nb.add(dt.toString("yyyy年MM月"), "/archive/" + dt.toString("yyyy-MM"));
-    }
-
     protected void fillSiteInfo(Map<String, Object> map) {
-
-        map.put("gl_site", cacheHelper.get("site/info", HashMap.class, null,
-                () -> {
-                    HashMap<String, Object> site = new HashMap<>();
-                    for (String s : new String[]{"title", "description", "copyright", "keywords", "author", "articlePageSize"}) {
-                        site.put(s, siteService.getString("site." + s));
-                    }
-
-                    Map<String, String> topNavs = new HashMap<>();
-                    topNavs.put("main", "站点首页");
-                    topNavs.put("personal/self", "用户中心");
-                    topNavs.put("sitemap", "网站地图");
-                    topNavs.put("aboutMe", "关于我们");
-                    site.put("topNavs", topNavs);
-
-                    List<Page> tagCloud = new ArrayList<>();
-                    for (Tag tag : contentService.hotTag(siteService.getInteger("site.hotTagCount"))) {
-                        tagCloud.add(new Page(tag.getName(), "/tag/" + tag.getId()));
-                    }
-                    for (FriendLink fl : siteService.listFriendLink()) {
-                        tagCloud.add(new Page(fl.getName(), fl.getUrl()));
-                    }
-                    site.put("tagCloud", tagCloud);
-                    site.put("advertLeft", siteService.getString("site.advert.left"));
-                    site.put("advertBottom", siteService.getString("site.advert.bottom"));
-
-                    site.put("manager", manager);
-                    return site;
-                }
-        ));
+        map.put("gl_size", cacheService.getSiteInfo());
 
     }
+
 
     @Resource
-    protected CacheHelper cacheHelper;
+    protected CacheService cacheService;
     @Resource
     protected SiteService siteService;
     @Resource
@@ -127,8 +62,8 @@ public abstract class PageController {
         this.manager = manager;
     }
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public void setAccountService(AccountService accountService) {

@@ -3,9 +3,9 @@ package com.odong.portal.controller.admin;
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.PagerForm;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.service.CacheService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
@@ -77,7 +77,8 @@ public class PagerController {
             siteService.set("site.hotTagCount", form.getHotTagCount());
             siteService.set("site.latestCommentCount", form.getLatestCommentCount());
             logService.add(si.getSsUserId(), "修改用户注册协议", Log.Type.INFO);
-            cacheHelper.delete("site/info");
+            cacheService.popSiteInfo();
+            cacheService.popPager();
         }
         return ri;
     }
@@ -89,7 +90,11 @@ public class PagerController {
     @Resource
     private FormHelper formHelper;
     @Resource
-    private CacheHelper cacheHelper;
+    private CacheService cacheService;
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -103,7 +108,4 @@ public class PagerController {
         this.formHelper = formHelper;
     }
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
-    }
 }

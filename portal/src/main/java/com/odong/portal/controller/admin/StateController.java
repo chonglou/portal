@@ -3,6 +3,7 @@ package com.odong.portal.controller.admin;
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.AllowForm;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.service.CacheService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
@@ -43,7 +44,7 @@ public class StateController {
     @ResponseBody
     Map<String, Object> getOsStatus() {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("site.startup", cacheHelper.get("startup", Date.class, null, () -> siteService.getObject("site.startup", Date.class)));
+        map.put("site.startup", cacheService.getStartUp());
         map.put("memcached", cacheHelper.status());
         map.put("jvm.loadedClassCount", ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
 
@@ -113,7 +114,12 @@ public class StateController {
     private FormHelper formHelper;
     @Resource
     private CacheHelper cacheHelper;
+    @Resource
+    private CacheService cacheService;
 
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;

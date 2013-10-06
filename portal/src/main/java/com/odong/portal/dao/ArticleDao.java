@@ -9,4 +9,5 @@ import com.odong.portal.entity.Article;
  * Time: 下午11:29
  */
 public interface ArticleDao extends BaseDao<Article, Long> {
+
 }

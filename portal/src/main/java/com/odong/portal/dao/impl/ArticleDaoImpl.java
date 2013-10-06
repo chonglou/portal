@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("articleDao")
 public class ArticleDaoImpl extends BaseJpa2DaoImpl<Article, Long> implements ArticleDao {
+
 }

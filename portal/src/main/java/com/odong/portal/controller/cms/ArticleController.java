@@ -4,7 +4,6 @@ import com.odong.portal.controller.PageController;
 import com.odong.portal.entity.*;
 import com.odong.portal.form.cms.ArticleForm;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.web.Page;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
 import org.jsoup.Jsoup;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +110,7 @@ public class ArticleController extends PageController {
             if (ri.isOk()) {
                 if (article.getAuthor() == si.getSsUserId() || si.isSsAdmin()) {
                     contentService.delArticle(id);
-                    cacheHelper.delete("article/" + id);
+                    cacheService.popArticle(id);
                     logService.add(si.getSsUserId(), "删除文章[" + id + "]", Log.Type.INFO);
                 }
             }
@@ -145,7 +143,7 @@ public class ArticleController extends PageController {
                     for (String s : form.getTags().split("-")) {
                         contentService.bindArticleTag(form.getId(), Long.parseLong(s));
                     }
-                    cacheHelper.delete("article/" + form.getId());
+                    cacheService.popArticle(form.getId());
                 } else {
                     ri.setOk(false);
                     ri.addData("文章[" + form.getId() + "]不存在");
@@ -158,24 +156,19 @@ public class ArticleController extends PageController {
 
     @RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
     String getArticle(Map<String, Object> map, @PathVariable Long articleId, HttpServletResponse response) throws IOException {
-        Article a = cacheHelper.get("article/" + articleId, Article.class, null, () -> contentService.getArticle(articleId));
+        Article a = cacheService.getArticle(articleId);
         if (a != null) {
             contentService.setArticleVisits(articleId);
             map.put("article", a);
-            map.put("user", cacheHelper.get("page/user/"+a.getAuthor(), Page.class, null, ()->{
-                User u = accountService.getUser(a.getAuthor());
-                return new Page(u.getUsername(), "/user/"+u.getId());
-            }));
+            map.put("user", cacheService.getUserPage(a.getAuthor()));
             map.put("navBars", getNavBars());
             fillSiteInfo(map);
             map.put("title", a.getTitle());
             map.put("description", a.getSummary());
 
-            map.put("tagList", cacheHelper.get("article/"+a.getId()+"/tags", ArrayList.class, null, ()->{
-                    ArrayList< Page > pages = new ArrayList<>();
-                    contentService.listTagByArticle(articleId).forEach((t)->pages.add(t.toPage()));
-                return pages;
-            }));
+            map.put("tagList", cacheService.getTagPagesByArticle(articleId));
+
+            //TODO 缓存？
             List<Comment> comments = contentService.listCommentByArticle(articleId);
             Map<Long, User> users = new HashMap<>();
             for (Comment c : comments) {

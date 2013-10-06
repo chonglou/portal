@@ -23,6 +23,10 @@ public interface BaseDao<T extends Serializable, PK extends Serializable> {
 
     void delete(String hql, Map<String, Object> map);
 
+    <ID> List<ID> list(String hql, Map<String, Object> map, Class<ID> clazz);
+
+    <ID> List<ID> list(int pageNo, int pageSize, String hql, Map<String, Object> map, Class<ID> clazz);
+
     List<T> list();
 
     List<T> list(String hql, Map<String, Object> map, int count);

@@ -3,9 +3,9 @@ package com.odong.portal.controller.admin;
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.AboutMeForm;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.service.CacheService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
@@ -43,7 +43,7 @@ public class AboutMeController {
         if (ri.isOk()) {
             siteService.set("site.aboutMe", form.getContent());
             logService.add(si.getSsUserId(), "设置关于我们", Log.Type.INFO);
-            cacheHelper.delete("site.aboutMe");
+            cacheService.popAboutMe();
         }
         return ri;
 
@@ -56,10 +56,10 @@ public class AboutMeController {
     @Resource
     private LogService logService;
     @Resource
-    private CacheHelper cacheHelper;
+    private CacheService cacheService;
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public void setFormHelper(FormHelper formHelper) {

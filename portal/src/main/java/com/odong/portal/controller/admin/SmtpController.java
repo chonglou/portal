@@ -4,9 +4,9 @@ import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.SmtpForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.model.profile.SmtpProfile;
+import com.odong.portal.service.CacheService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
@@ -66,14 +66,14 @@ public class SmtpController {
             profile.setSsl(form.isSsl());
             siteService.set("site.smtp", encryptHelper.encode(profile));
             logService.add(si.getSsUserId(), "设置SMTP信息", Log.Type.INFO);
-            cacheHelper.delete("site/smtp");
+            cacheService.popSmtp();
         }
         return ri;
 
     }
 
     @Resource
-    private CacheHelper cacheHelper;
+    private CacheService cacheService;
     @Resource
     private SiteService siteService;
     @Resource
@@ -83,10 +83,9 @@ public class SmtpController {
     @Resource
     private LogService logService;
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
-
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

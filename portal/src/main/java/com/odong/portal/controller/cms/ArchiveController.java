@@ -2,7 +2,6 @@ package com.odong.portal.controller.cms;
 
 import com.odong.portal.controller.PageController;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
@@ -30,30 +29,10 @@ public class ArchiveController extends PageController {
 
         List<NavBar> navBars = new ArrayList<>();
 
-        navBars.add(
-                cacheHelper.get("navBar/archives", NavBar.class, null, () -> {
-
-                    NavBar nb = new NavBar("归档列表");
-                    nb.setType(NavBar.Type.LIST);
-                    DateTime now = new DateTime();
-
-                    for (DateTime init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
-                         init.compareTo(now) <= 0;
-                         init = init.plusMonths(1)) {
-                        addArchive2NavBar(nb, init);
-                    }
-                    return nb;
-                })
-        );
+        navBars.add(cacheService.getArchiveNavBar());
 
         map.put("navBars", navBars);
-        map.put("articleList", cacheHelper.get("cards/archive/" + year + "-" + month, ArrayList.class, null,
-                () -> {
-                    ArrayList<Card> cards = new ArrayList<>();
-                    //FIXME 分页
-                    contentService.listArticleByMonth(year, month).forEach((a) -> cards.add(a.toCard()));
-                    return cards;
-                }));
+        map.put("articleList", cacheService.getArticleCardByMonth(year, month));
         fillSiteInfo(map);
         map.put("title", new DateTime().withYear(year).withMonthOfYear(month).toString("yyyy年MM月"));
         return "cms/archive";
