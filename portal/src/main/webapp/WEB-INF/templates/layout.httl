@@ -251,7 +251,7 @@ $!{extends("/frame.httl")}
             </div>
         </div>
         #if(cardList)
-        <!--#set(card = cardList[0])-->
+        <!--#set(card = cardList[cardList.size-1])-->
         <div class="col-lg-5">
             <h2>${card.title}</h2>
             ${card.body}

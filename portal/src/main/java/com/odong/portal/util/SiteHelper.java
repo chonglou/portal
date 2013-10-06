@@ -103,8 +103,34 @@ public class SiteHelper {
             addClockTask(Task.Type.BACKUP, 4);
         }
 
-        switch (siteService.getString("site.version")){
-            case "v20130522":
+
+        logger.info("DEBUG模式[{}]", appDebug);
+        GlobalResolver.put("gl_debug", appDebug);
+
+        logger.info("用户数据目录{}", appStoreDir);
+        for (String s : new String[]{"backup", "seo", "attach"}) {
+            String dir = appStoreDir + "/" + s;
+            File f = new File(dir);
+            if (f.exists()) {
+                if (!f.isDirectory() || !f.canWrite()) {
+                    throw new RuntimeException("数据存储目录[" + f.getAbsolutePath() + "]不可用");
+                }
+            } else {
+                logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
+                if (f.mkdirs()) {
+                    logger.info("创建数据目录[{}]成功", dir);
+                } else {
+                    throw new IllegalArgumentException("数据存储目录[" + f.getAbsolutePath() + "]创建失败");
+                }
+            }
+        }
+
+        checkUpdate();
+    }
+
+    private void checkUpdate(){
+
+        if("v20130522".equals(siteService.getString("site.version"))){
                 //升级默认配置
                 siteService.set("site.latestArticleCount", 10);
                 siteService.set("site.google.search","<style type=\"text/css\">\n" +
@@ -132,29 +158,8 @@ public class SiteHelper {
                         "  </div>\n" +
                         "</div>\n");
                 siteService.set("site.version", "v20131006");
-                break;
         }
 
-        logger.info("DEBUG模式[{}]", appDebug);
-        GlobalResolver.put("gl_debug", appDebug);
-
-        logger.info("用户数据目录{}", appStoreDir);
-        for (String s : new String[]{"backup", "seo", "attach"}) {
-            String dir = appStoreDir + "/" + s;
-            File f = new File(dir);
-            if (f.exists()) {
-                if (!f.isDirectory() || !f.canWrite()) {
-                    throw new RuntimeException("数据存储目录[" + f.getAbsolutePath() + "]不可用");
-                }
-            } else {
-                logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
-                if (f.mkdirs()) {
-                    logger.info("创建数据目录[{}]成功", dir);
-                } else {
-                    throw new IllegalArgumentException("数据存储目录[" + f.getAbsolutePath() + "]创建失败");
-                }
-            }
-        }
     }
 
     private void addClockTask(Task.Type type, int clock) {
