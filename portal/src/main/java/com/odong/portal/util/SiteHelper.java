@@ -96,6 +96,77 @@ public class SiteHelper {
                     "<script type=\"text/javascript\"\n" +
                     "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n" +
                     "</script>");
+            //GOOGLE SEARCH
+            siteService.set("site.google.search", "<style type=\"text/css\">\n" +
+                    "@import url(http://www.google.com/cse/api/branding.css);\n" +
+                    "</style>\n" +
+                    "<div class=\"cse-branding-right\" style=\"background-color:#FFFFFF;color:#000000\">\n" +
+                    "  <div class=\"cse-branding-form\">\n" +
+                    "    <form action=\"http://www.google.com.hk\" id=\"cse-search-box\" target=\"_blank\">\n" +
+                    "      <div>\n" +
+                    "        <input type=\"hidden\" name=\"cx\" value=\"partner-pub-5028403610236620:4707578439\" />\n" +
+                    "        <input type=\"hidden\" name=\"ie\" value=\"UTF-8\" />\n" +
+                    "        <input type=\"text\" name=\"q\" size=\"55\" />\n" +
+                    "        <input type=\"submit\" name=\"sa\" value=\"搜索\" />\n" +
+                    "      </div>\n" +
+                    "    </form>\n" +
+                    "    <script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>\n" +
+                    "    <script type=\"text/javascript\">google.load(\"elements\", \"1\", {packages: \"transliteration\"});</script>\n" +
+                    "    <script type=\"text/javascript\" src=\"http://www.google.com/cse/t13n?form=cse-search-box&t13n_langs=en\"></script>\n" +
+                    "  </div>\n" +
+                    "  <div class=\"cse-branding-logo\">\n" +
+                    "    <img src=\"http://www.google.com/images/poweredby_transparent/poweredby_FFFFFF.gif\" alt=\"Google\" />\n" +
+                    "  </div>\n" +
+                    "  <div class=\"cse-branding-text\">\n" +
+                    "    自定义搜索\n" +
+                    "  </div>\n" +
+                    "</div>\n");
+
+            //社交网站分享代码
+            siteService.set("site.share.qq","   <script type=\"text/javascript\">\n" +
+                    "(function(){\n" +
+                    "var p = {\n" +
+                    "url:location.href, /*获取URL，可加上来自分享到QQ标识，方便统计*/\n" +
+                    "desc:'', /*分享理由(风格应模拟用户对话),支持多分享语随机展现（使用|分隔）*/\n" +
+                    "title:'', /*分享标题(可选)*/\n" +
+                    "summary:'', /*分享摘要(可选)*/\n" +
+                    "pics:'', /*分享图片(可选)*/\n" +
+                    "flash: '', /*视频地址(可选)*/\n" +
+                    "site:'', /*分享来源(可选) 如：QQ分享*/\n" +
+                    "style:'101',\n" +
+                    "width:96,\n" +
+                    "height:24\n" +
+                    "};\n" +
+                    "var s = [];\n" +
+                    "for(var i in p){\n" +
+                    "s.push(i + '=' + encodeURIComponent(p[i]||''));\n" +
+                    "}\n" +
+                    "document.write(['<a class=\"qcShareQQDiv\" href=\"http://connect.qq.com/widget/shareqq/index.html?',s.join('&'),'\" target=\"_blank\">分享到QQ</a>'].join(''));\n" +
+                    "})();\n" +
+                    "</script>\n" +
+                    "<script src=\"http://connect.qq.com/widget/loader/loader.js\" widget=\"shareqq\" charset=\"utf-8\"></script>\n");
+            siteService.set("site.share.qZone"," <script type=\"text/javascript\">\n" +
+                    "(function(){\n" +
+                    "var p = {\n" +
+                    "url:location.href,\n" +
+                    "showcount:'1',/*是否显示分享总数,显示：'1'，不显示：'0' */\n" +
+                    "desc:'',/*默认分享理由(可选)*/\n" +
+                    "summary:'',/*分享摘要(可选)*/\n" +
+                    "title:'',/*分享标题(可选)*/\n" +
+                    "site:'',/*分享来源 如：腾讯网(可选)*/\n" +
+                    "pics:'', /*分享图片的路径(可选)*/\n" +
+                    "style:'101',\n" +
+                    "width:199,\n" +
+                    "height:30\n" +
+                    "};\n" +
+                    "var s = [];\n" +
+                    "for(var i in p){\n" +
+                    "s.push(i + '=' + encodeURIComponent(p[i]||''));\n" +
+                    "}\n" +
+                    "document.write(['<a version=\"1.0\" class=\"qzOpenerDiv\" href=\"http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?',s.join('&'),'\" target=\"_blank\">分享</a>'].join(''));\n" +
+                    "})();\n" +
+                    "</script>\n" +
+                    "<script src=\"http://qzonestyle.gtimg.cn/qzone/app/qzlike/qzopensl.js#jsdate=20111201\" charset=\"utf-8\"></script>\n");
 
             addClockTask(Task.Type.SITE_MAP, 3);
             addClockTask(Task.Type.RSS, 3);
@@ -128,36 +199,36 @@ public class SiteHelper {
         checkUpdate();
     }
 
-    private void checkUpdate(){
+    private void checkUpdate() {
 
-        if("v20130522".equals(siteService.getString("site.version"))){
-                //升级默认配置
-                siteService.set("site.latestArticleCount", 10);
-                siteService.set("site.google.search","<style type=\"text/css\">\n" +
-                        "@import url(http://www.google.com/cse/api/branding.css);\n" +
-                        "</style>\n" +
-                        "<div class=\"cse-branding-right\" style=\"background-color:#FFFFFF;color:#000000\">\n" +
-                        "  <div class=\"cse-branding-form\">\n" +
-                        "    <form action=\"http://www.google.com.hk\" id=\"cse-search-box\" target=\"_blank\">\n" +
-                        "      <div>\n" +
-                        "        <input type=\"hidden\" name=\"cx\" value=\"partner-pub-5028403610236620:4707578439\" />\n" +
-                        "        <input type=\"hidden\" name=\"ie\" value=\"UTF-8\" />\n" +
-                        "        <input type=\"text\" name=\"q\" size=\"55\" />\n" +
-                        "        <input type=\"submit\" name=\"sa\" value=\"搜索\" />\n" +
-                        "      </div>\n" +
-                        "    </form>\n" +
-                        "    <script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>\n" +
-                        "    <script type=\"text/javascript\">google.load(\"elements\", \"1\", {packages: \"transliteration\"});</script>\n" +
-                        "    <script type=\"text/javascript\" src=\"http://www.google.com/cse/t13n?form=cse-search-box&t13n_langs=en\"></script>\n" +
-                        "  </div>\n" +
-                        "  <div class=\"cse-branding-logo\">\n" +
-                        "    <img src=\"http://www.google.com/images/poweredby_transparent/poweredby_FFFFFF.gif\" alt=\"Google\" />\n" +
-                        "  </div>\n" +
-                        "  <div class=\"cse-branding-text\">\n" +
-                        "    自定义搜索\n" +
-                        "  </div>\n" +
-                        "</div>\n");
-                siteService.set("site.version", "v20131006");
+        if ("v20130522".equals(siteService.getString("site.version"))) {
+            //升级默认配置
+            siteService.set("site.latestArticleCount", 10);
+            siteService.set("site.google.search", "<style type=\"text/css\">\n" +
+                    "@import url(http://www.google.com/cse/api/branding.css);\n" +
+                    "</style>\n" +
+                    "<div class=\"cse-branding-right\" style=\"background-color:#FFFFFF;color:#000000\">\n" +
+                    "  <div class=\"cse-branding-form\">\n" +
+                    "    <form action=\"http://www.google.com.hk\" id=\"cse-search-box\" target=\"_blank\">\n" +
+                    "      <div>\n" +
+                    "        <input type=\"hidden\" name=\"cx\" value=\"partner-pub-5028403610236620:4707578439\" />\n" +
+                    "        <input type=\"hidden\" name=\"ie\" value=\"UTF-8\" />\n" +
+                    "        <input type=\"text\" name=\"q\" size=\"55\" />\n" +
+                    "        <input type=\"submit\" name=\"sa\" value=\"搜索\" />\n" +
+                    "      </div>\n" +
+                    "    </form>\n" +
+                    "    <script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>\n" +
+                    "    <script type=\"text/javascript\">google.load(\"elements\", \"1\", {packages: \"transliteration\"});</script>\n" +
+                    "    <script type=\"text/javascript\" src=\"http://www.google.com/cse/t13n?form=cse-search-box&t13n_langs=en\"></script>\n" +
+                    "  </div>\n" +
+                    "  <div class=\"cse-branding-logo\">\n" +
+                    "    <img src=\"http://www.google.com/images/poweredby_transparent/poweredby_FFFFFF.gif\" alt=\"Google\" />\n" +
+                    "  </div>\n" +
+                    "  <div class=\"cse-branding-text\">\n" +
+                    "    自定义搜索\n" +
+                    "  </div>\n" +
+                    "</div>\n");
+            siteService.set("site.version", "v20131006");
         }
 
     }

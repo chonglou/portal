@@ -20,6 +20,10 @@ import java.util.List;
  * Time: 下午10:19
  */
 public interface CacheService {
+    HashMap getShareCodes();
+
+    void popShareCodes();
+
     Pager getPager();
 
     Page getUserPage(long user);

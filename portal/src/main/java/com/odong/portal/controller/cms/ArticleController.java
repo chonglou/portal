@@ -165,6 +165,7 @@ public class ArticleController extends PageController {
             fillSiteInfo(map);
             map.put("title", a.getTitle());
             map.put("description", a.getSummary());
+            map.put("shareCodes", cacheService.getShareCodes());
 
             map.put("tagList", cacheService.getTagPagesByArticle(articleId));
 

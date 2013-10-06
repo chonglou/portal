@@ -54,8 +54,9 @@ public class SelfController extends PageController {
             nbSite.add("分页设置", "/admin/pager/");
             nbSite.add("定时任务", "/admin/task/");
             nbSite.add("邮件设置", "/admin/smtp/");
+            nbSite.add("分享代码", "/admin/share/");
+            nbSite.add("广告代码", "/admin/advert/");
             nbSite.add("友情链接", "/admin/friendLink/");
-            nbSite.add("广告设置", "/admin/advert/");
             nbSite.add("关于我们", "/admin/aboutMe/");
             nbSite.add("验证码", "/admin/captcha/");
             nbSite.add("数据库", "/admin/database/");

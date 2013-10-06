@@ -1,0 +1,34 @@
+<br>
+<div class="btn-group btn-group-sm">
+    <button id="edit-qq" class="btn btn-success" type="button">编辑QQ分享</button>
+    <button id="edit-qZone" class="btn btn-warning" type="button">编辑QZone分享</button>
+    <button id="edit-weiXin" class="btn btn-info" type="button">编辑微信分享</button>
+    <button id="edit-weiBo" class="btn btn-danger" type="button">编辑新浪WeiBo分享</button>
+    <button id="refresh" class="btn btn-primary" type="button">刷新代码</button>
+</div>
+<p>&nbsp;</p>
+<div id="share"></div>
+<!--#set(Map<String,String> codes)-->
+#for(s : ["qq":"QQ分享", "qZone":"QZone分享"])
+<h3><label for="code-${s.key}">${s.value}</label></h3>
+<hr>
+<textarea class="form-control" rows="10" id="code-${s.key}" readonly>
+    ${codes.get(s.key)}
+</textarea>
+<p>&nbsp;</p>
+#end
+
+<script type="text/javascript">
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/admin/share/");
+    });
+    $("button[id^='edit-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/admin/share/" + ss[1], undefined, undefined, undefined, undefined, "share");
+
+        });
+    });
+</script>

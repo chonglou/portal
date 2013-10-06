@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Date: 13-8-14
  * Time: 下午4:01
  */
-public class AdvertForm implements Serializable {
+public class ScriptForm implements Serializable {
     private static final long serialVersionUID = 6214354911516285796L;
     @NotNull
     private String id;

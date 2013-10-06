@@ -5,10 +5,10 @@ import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.service.AccountService;
-import com.odong.portal.util.CacheService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import com.odong.portal.web.Page;
@@ -33,6 +33,23 @@ import java.util.*;
  */
 @Component
 public class CacheServiceImpl implements CacheService {
+    @Override
+    public HashMap getShareCodes() {
+
+        return cacheHelper.get("shareCodes", HashMap.class, null, () -> {
+            HashMap<String, String> map = new HashMap<>();
+            for (String s : new String[]{"qq", "qZone", "weiBo", "weiXin"}) {
+                map.put(s, siteService.getString("site.share." + s));
+            }
+            return map;
+        });  //
+    }
+
+    @Override
+    public void popShareCodes() {
+        cacheHelper.delete("shareCodes");
+    }
+
     @Override
     public Pager getPager() {
         return cacheHelper.get("pager", Pager.class, null, () -> {
@@ -340,7 +357,7 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public void popPager() {
-        cacheHelper.delete("paper");
+        cacheHelper.delete("pager");
     }
 
 

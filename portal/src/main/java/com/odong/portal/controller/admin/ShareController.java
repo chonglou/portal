@@ -23,29 +23,30 @@ import java.util.Map;
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-8-14
- * Time: 下午3:48
+ * Date: 13-10-6
+ * Time: 上午9:38
  */
-@Controller("c.admin.advert")
-@RequestMapping(value = "/admin/advert")
+@Controller("c.admin.share")
+@RequestMapping(value = "/admin/share")
 @SessionAttributes(SessionItem.KEY)
-public class AdvertController {
+public class ShareController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    String getAdvert(Map<String, Object> map) {
-        Map<String, String> adverts = new HashMap<>();
-        for (String s : new String[]{"left", "bottom"}) {
-            adverts.put(s, siteService.getString("site.advert." + s));
+    String getCode(Map<String, Object> map) {
+        Map<String, String> codes = new HashMap<>();
+        for (String s : new String[]{"qq", "qZone", "weiBo", "weiXin"}) {
+            codes.put(s, siteService.getString("site.share." + s));
         }
-        map.put("adverts", adverts);
-        return "admin/advert";
+        map.put("codes", codes);
+        cacheService.popShareCodes();
+        return "admin/share";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    Form getLeft(@PathVariable String id) {
-        Form fm = new Form("advert", "编辑广告[" + id + "]", "/admin/advert/");
+    Form getForm(@PathVariable String id) {
+        Form fm = new Form("share", "编辑分享代码[" + id + "]", "/admin/share/");
         fm.addField(new HiddenField<>("id", id));
-        TextAreaField taf = new TextAreaField("script", "脚本", siteService.getString("site.advert." + id));
+        TextAreaField taf = new TextAreaField("script", "代码", siteService.getString("site.share." + id));
         taf.setHtml(false);
         fm.addField(taf);
         fm.setOk(true);
@@ -54,33 +55,25 @@ public class AdvertController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteSmtp(@Valid ScriptForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSizeForm(@Valid ScriptForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            siteService.set("site.advert." + form.getId(), form.getScript());
-            logService.add(si.getSsUserId(), "设置广告[" + form.getId() + "]", Log.Type.INFO);
-            cacheService.popSiteInfo();
+            siteService.set("site.share." + form.getId(), form.getScript());
+            logService.add(si.getSsUserId(), "更新分享代码", Log.Type.INFO);
+            cacheService.popShareCodes();
         }
         return ri;
     }
 
 
     @Resource
-    private FormHelper formHelper;
+    private CacheService cacheService;
     @Resource
     private SiteService siteService;
     @Resource
-    private LogService logService;
+    private FormHelper formHelper;
     @Resource
-    private CacheService cacheService;
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }
-
-    public void setFormHelper(FormHelper formHelper) {
-        this.formHelper = formHelper;
-    }
+    private LogService logService;
 
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -88,5 +81,13 @@ public class AdvertController {
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
+    }
+
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
+    }
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 }

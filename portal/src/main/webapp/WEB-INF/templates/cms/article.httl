@@ -20,7 +20,15 @@ ${left_nav_bar_1}
     #end
     <br>
     摘要：<b>$!{article.summary}</b>
-    <p>&nbsp;</p>
+    <table>
+        <tr>
+            <!--#set(Map<String,String> shareCodes)-->
+            #for(s : shareCodes.values)
+            <td>$!{s}</td>
+            #end
+        </tr>
+    </table>
+
     $!{article.body}
     <br>
     $!{gl_site.advertBottom}
