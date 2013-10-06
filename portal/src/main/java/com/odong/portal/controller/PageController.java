@@ -2,6 +2,7 @@ package com.odong.portal.controller;
 
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.*;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.NavBar;
 import com.odong.portal.web.ResponseItem;
@@ -38,7 +39,7 @@ public abstract class PageController {
     }
 
     protected void fillSiteInfo(Map<String, Object> map) {
-        map.put("gl_size", cacheService.getSiteInfo());
+        map.put("gl_site", cacheService.getSiteInfo());
 
     }
 

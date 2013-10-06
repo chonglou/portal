@@ -1,4 +1,4 @@
-package com.odong.portal.service;
+package com.odong.portal.util;
 
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Tag;

@@ -321,14 +321,14 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public List<Long> getArticleIdsByPage(int no, int size) {
-        return articleTagDao.list(no, size, "FROM Article i ORDER BY i.visit DESC", null, Long.class);
+        return articleTagDao.list(no, size, "SELECT i.id FROM Article i ORDER BY i.visits DESC", null, Long.class);
     }
 
     @Override
     public List<Long> getArticleIdsByUser(long user) {
         Map<String, Object> map = new HashMap<>();
         map.put("author", user);
-        return articleDao.list("SELECT a.id FROM Article WHERE a.author=:author", map, Long.class);
+        return articleDao.list("SELECT a.id FROM Article a WHERE a.author=:author", map, Long.class);
     }
 
     @Override
@@ -339,14 +339,14 @@ public class ContentServiceImpl implements ContentService {
         map.put("begin", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMinimumValue().secondOfDay().withMinimumValue().toDate());
         map.put("end", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMaximumValue().secondOfDay().withMaximumValue().toDate());
 
-        return articleDao.list("FROM Article  i WHERE i.created>=:begin AND i.created <=:end", map, Long.class);
+        return articleDao.list("SELECT i.id FROM Article  i WHERE i.created>=:begin AND i.created <=:end", map, Long.class);
     }
 
     @Override
     public List<Long> getArticleIdsBySearch(String key) {
         Map<String, Object> map = new HashMap<>();
         map.put("key", "%" + key + "%");
-        return articleDao.list("FROM Article a WHERE a.title LIKE :key OR a.summary LIKE :key", map, Long.class);
+        return articleDao.list("SELECT a.id FROM Article a WHERE a.title LIKE :key OR a.summary LIKE :key", map, Long.class);
 
     }
 

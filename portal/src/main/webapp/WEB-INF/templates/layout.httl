@@ -1,5 +1,31 @@
 $!{extends("/frame.httl")}
 
+#macro(pagerBar)
+<!--#set(Pager pager)-->
+<ul class="pagination pagination-lg">
+    #if(pager.index==1)
+    <li class="disabled"><a href="${pager.url}/1" target="_blank">&laquo;</a></li>
+    #else
+    <li><a href="${pager.url}/1" target="_blank">&laquo;</a></li>
+    #end
+
+    <!--#set(i=0)-->
+    <!--#for(i : 1 .. pager.total)-->
+    #if(i==pager.index)
+    <li class="active"><a href="${pager.url}/${i}" target="_blank">${i}</a></li>
+    #else
+    <li><a href="${pager.url}/${i}" target="_blank">${i}</a></li>
+    #end
+    <!--#end-->
+
+    #if(pager.index==pager.total)
+    <li class="disabled"><a href="${pager.url}/${pager.total}" target="_blank">&raquo;</a></li>
+    #else
+    <li><a href="${pager.url}/${pager.total}" target="_blank">&raquo;</a></li>
+    #end
+</ul>
+#end
+
 <!--#macro(top_left_bar)-->
 <ul class="nav navbar-nav">
     <!--#set(Map<String,Object> gl_site)-->

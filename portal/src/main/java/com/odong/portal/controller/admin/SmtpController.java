@@ -4,7 +4,7 @@ import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.SmtpForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.model.profile.SmtpProfile;
-import com.odong.portal.service.CacheService;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.EncryptHelper;

@@ -1,11 +1,11 @@
-package com.odong.portal.service.impl;
+package com.odong.portal.util.impl;
 
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.service.AccountService;
-import com.odong.portal.service.CacheService;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
@@ -36,7 +36,7 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public Pager getPager() {
         return cacheHelper.get("pager", Pager.class, null, () -> {
-            int size = siteService.getInteger("articlePageSize");
+            int size = siteService.getInteger("site.articlePageSize");
             long total = contentService.countArticle();
             int count = (int) (total / size);
             if (total % size != 0) {
@@ -57,7 +57,7 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public List<Page> getTagPagesByArticle(long article) {
-        ArrayList ids = cacheHelper.get("article/" + article + "/tags", ArrayList.class, null, () -> (ArrayList) contentService.getTagIdsByArticle(article));
+        HashSet ids = cacheHelper.get("article/" + article + "/tags", HashSet.class, null, () -> (HashSet) contentService.getTagIdsByArticle(article));
         List<Page> pages = new ArrayList<>();
         for (Object obj : ids) {
             pages.add(getTag((Long) obj).toPage());

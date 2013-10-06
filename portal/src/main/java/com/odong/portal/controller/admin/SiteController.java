@@ -6,7 +6,7 @@ import com.odong.portal.form.admin.GoogleForm;
 import com.odong.portal.form.admin.InfoForm;
 import com.odong.portal.form.admin.RegProtocolForm;
 import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.CacheService;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
