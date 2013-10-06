@@ -8,7 +8,7 @@ import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.util.DBHelper;
 import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.JsonHelper;
@@ -165,7 +165,7 @@ public class TaskListener implements MessageListener {
                         @Override
                         public void run() {
 
-                            SmtpProfile sp = cacheHelper.get("site/smtp", SmtpProfile.class, null, () -> encryptHelper.decode(siteService.getString("site.smtp"), SmtpProfile.class));
+                            SmtpProfile sp = cacheService.getSmtp();
                             if (sp == null) {
                                 logger.error("SMTP信息未设置");
                                 return;
@@ -257,7 +257,7 @@ public class TaskListener implements MessageListener {
     @Resource
     private TaskExecutor taskExecutor;
     @Resource
-    private CacheHelper cacheHelper;
+    private CacheService cacheService;
     @Resource
     private AccountService accountService;
     @Resource
@@ -282,8 +282,8 @@ public class TaskListener implements MessageListener {
         this.appStoreDir = appStoreDir;
     }
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public void setTaskExecutor(TaskExecutor taskExecutor) {

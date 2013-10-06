@@ -1,8 +1,7 @@
 package com.odong.portal.job;
 
 import com.odong.portal.entity.Task;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.JsonHelper;
 import org.slf4j.Logger;
@@ -89,8 +88,8 @@ public class TaskSender {
         }
 
 
-        String domain = cacheHelper.get("site/domain", String.class, null, () -> siteService.getString("site.domain"));
-        String title = cacheHelper.get("site/title", String.class, null, () -> siteService.getString("site.title"));
+        String domain = cacheService.getSiteDomain();
+        String title = cacheService.getSiteTitle();
 
         try {
 
@@ -148,17 +147,12 @@ public class TaskSender {
     @Resource
     private EncryptHelper encryptHelper;
     @Resource
-    private CacheHelper cacheHelper;
-    @Resource
-    private SiteService siteService;
+    private CacheService cacheService;
     private final static Logger logger = LoggerFactory.getLogger(TaskSender.class);
 
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public void setJsonHelper(JsonHelper jsonHelper) {

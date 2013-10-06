@@ -153,6 +153,7 @@ public class SiteController {
             siteService.set("site.copyright", form.getCopyright());
             logService.add(si.getSsUserId(), "修改站点基本信息", Log.Type.INFO);
             cacheService.popSiteInfo();
+            cacheService.popSiteTitle();
         }
         return ri;
     }

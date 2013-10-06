@@ -4,11 +4,13 @@ import com.odong.portal.entity.Article;
 import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.CacheService;
+import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import com.odong.portal.web.Page;
@@ -33,6 +35,21 @@ import java.util.*;
  */
 @Component
 public class CacheServiceImpl implements CacheService {
+    @Override
+    public String getSiteDomain() {
+        return cacheHelper.get("site/domain", String.class, null, () -> siteService.getString("site.domain"));
+    }
+
+    @Override
+    public String getSiteTitle() {
+        return cacheHelper.get("site/title", String.class, null, () -> siteService.getString("site.title"));  //
+    }
+
+    @Override
+    public SmtpProfile getSmtp() {
+        return cacheHelper.get("site/smtp", SmtpProfile.class, null, () -> encryptHelper.decode(siteService.getString("site.smtp"), SmtpProfile.class));
+    }
+
     @Override
     public HashMap getShareCodes() {
 
@@ -340,6 +357,11 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
+    public void popSiteTitle() {
+        cacheHelper.delete("site/title");
+    }
+
+    @Override
     public void popGoogleSearch() {
         cacheHelper.delete("site/google/search");
 
@@ -388,9 +410,15 @@ public class CacheServiceImpl implements CacheService {
     private ContentService contentService;
     @Resource
     private AccountService accountService;
+    @Resource
+    private EncryptHelper encryptHelper;
     @Value("${app.manager}")
     protected String manager;
     private final static Logger logger = LoggerFactory.getLogger(CacheServiceImpl.class);
+
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

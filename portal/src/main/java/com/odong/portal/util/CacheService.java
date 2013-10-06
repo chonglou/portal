@@ -3,6 +3,7 @@ package com.odong.portal.util;
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import com.odong.portal.web.Page;
@@ -20,6 +21,12 @@ import java.util.List;
  * Time: 下午10:19
  */
 public interface CacheService {
+    String getSiteDomain();
+
+    String getSiteTitle();
+
+    SmtpProfile getSmtp();
+
     HashMap getShareCodes();
 
     void popShareCodes();
@@ -83,6 +90,8 @@ public interface CacheService {
     void popSiteInfo();
 
     void popDomain();
+
+    void popSiteTitle();
 
     void popGoogleSearch();
 

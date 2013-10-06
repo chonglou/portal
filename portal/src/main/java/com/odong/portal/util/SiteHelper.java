@@ -123,7 +123,7 @@ public class SiteHelper {
                     "</div>\n");
 
             //社交网站分享代码
-            siteService.set("site.share.qq","   <script type=\"text/javascript\">\n" +
+            siteService.set("site.share.qq", "   <script type=\"text/javascript\">\n" +
                     "(function(){\n" +
                     "var p = {\n" +
                     "url:location.href, /*获取URL，可加上来自分享到QQ标识，方便统计*/\n" +
@@ -145,7 +145,7 @@ public class SiteHelper {
                     "})();\n" +
                     "</script>\n" +
                     "<script src=\"http://connect.qq.com/widget/loader/loader.js\" widget=\"shareqq\" charset=\"utf-8\"></script>\n");
-            siteService.set("site.share.qZone"," <script type=\"text/javascript\">\n" +
+            siteService.set("site.share.qZone", " <script type=\"text/javascript\">\n" +
                     "(function(){\n" +
                     "var p = {\n" +
                     "url:location.href,\n" +
