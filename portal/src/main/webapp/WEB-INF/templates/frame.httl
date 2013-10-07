@@ -15,8 +15,8 @@
     <link href="/jcloud/jcloud.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="/jcarousel/skins/tango/skin.css" />
     <link href="/style/css/main.css#if(gl_debug)?_=${random()}#end" rel="stylesheet"/>
-    <script type="text/javascript" src="/js/config.js#if(gl_debug)?_=${random()}#end"></script>
     <script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/js/config.js#if(gl_debug)?_=${random()}#end"></script>
     <script type="text/javascript" src="/jquery/masonry.pkgd.min.js"></script>
     <script type="text/javascript" src="/jcarousel/jquery.jcarousel.min.js"></script>
     <script type="text/javascript" src="/jcloud/jcloud.js"></script>

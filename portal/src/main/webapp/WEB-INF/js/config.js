@@ -1,5 +1,19 @@
 window.UEDITOR_HOME_URL = "/ueditor/";
 
+function getJSessionId(){
+    var ss = ';jsessionid=';
+    $.ajax({
+        url: "/sessionId",
+        type: "POST",
+        success: function(e){
+            ss+=e;
+        },
+        async: false,
+        cache: false
+    });
+    return ss;
+}
+
 /**
  *  ueditor完整配置项
  *  可以在这里配置整个编辑器的特性
@@ -149,7 +163,7 @@ window.UEDITOR_HOME_URL = "/ueditor/";
         , scrawlPath: URL + "../attachments/"                            //图片修正地址，同imagePath
 
         //附件上传配置区
-        , fileUrl: URL + "../editor/fileUp"               //附件上传提交地址
+        , fileUrl: URL + "../editor/fileUp"+getJSessionId()               //附件上传提交地址 修复swfupload session bug
         , filePath: URL + "../attachments/"                   //附件修正地址，同imagePath
         //,fileFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +27,6 @@ import java.util.Map;
 @Controller("c.site")
 public class SiteController extends PageController {
 
-
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     String getMain(Map<String, Object> map) {
         pager(map, 1);
@@ -42,22 +42,6 @@ public class SiteController extends PageController {
         return "cms/page";
     }
 
-    private void pager(Map<String, Object> map, int index) {
-        fillSiteInfo(map);
-        map.put("top_nav_key", "main");
-        map.put("navBars", getNavBars());
-
-        Pager pager = cacheService.getPager();
-        if (index < 1) {
-            index = 1;
-        } else if (index > pager.getTotal()) {
-            index = pager.getTotal();
-        }
-        pager.setIndex(index);
-        map.put("pager", pager);
-
-        map.put("articleList", cacheService.getArticleCardsByPager(index, pager.getSize()));
-    }
 
 
     @RequestMapping(value = "sitemap", method = RequestMethod.GET)
@@ -162,6 +146,30 @@ public class SiteController extends PageController {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
+    }
+
+    @RequestMapping(value = "/sessionId", method = RequestMethod.POST)
+    @ResponseBody
+    String getSessionId(HttpSession session){
+        return session.getId();
+    }
+
+
+    private void pager(Map<String, Object> map, int index) {
+        fillSiteInfo(map);
+        map.put("top_nav_key", "main");
+        map.put("navBars", getNavBars());
+
+        Pager pager = cacheService.getPager();
+        if (index < 1) {
+            index = 1;
+        } else if (index > pager.getTotal()) {
+            index = pager.getTotal();
+        }
+        pager.setIndex(index);
+        map.put("pager", pager);
+
+        map.put("articleList", cacheService.getArticleCardsByPager(index, pager.getSize()));
     }
 
     @Value("${search.space}")
