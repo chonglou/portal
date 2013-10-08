@@ -1,5 +1,7 @@
 package com.odong.portal.web;
 
+import org.jsoup.Jsoup;
+
 import java.io.Serializable;
 
 /**
@@ -12,8 +14,8 @@ public class Card implements Serializable {
     public Card(String logo, String title, String body, String url) {
         this.logo = logo;
         this.title = title;
-        this.body = body;
         this.url = url;
+        this.body = Jsoup.parse(body).body().text();
     }
 
     @Deprecated

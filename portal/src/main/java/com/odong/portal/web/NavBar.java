@@ -19,7 +19,6 @@ public class NavBar implements Serializable {
 
     public void add(String text, String url) {
 
-        //过滤掉html标签
         String name = Jsoup.parse(text).body().text();
         if (name.length() > MAX_LEN) {
             name = name.substring(0, MAX_LEN - 3) + "...";

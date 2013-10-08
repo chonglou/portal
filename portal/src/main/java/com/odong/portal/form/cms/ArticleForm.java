@@ -1,6 +1,7 @@
 package com.odong.portal.form.cms;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,7 @@ public class ArticleForm implements Serializable {
     private String body;
     @NotNull
     private String tags;
+    @Size(max = 500)
     private String summary;
     private Long id;
 
