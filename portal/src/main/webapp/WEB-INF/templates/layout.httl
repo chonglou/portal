@@ -101,7 +101,6 @@ $!{extends("/frame.httl")}
 <!--#set(Map<String,Object> gl_site)-->
 <div role="navigation" id="sidebar" class="col-lg-3 sidebar-offcanvas">
     <br>
-
     <div class="well sidebar-nav">
         <ul class="nav">
             #for(NavBar nb:navBars)
@@ -112,10 +111,28 @@ $!{extends("/frame.httl")}
             #end
         </ul>
     </div>
+    ${date_picker}
+    <br/>
     $!{gl_site.advertLeft}
     <br/>
     ${tag_cloud}
 </div>
+<!--#end-->
+
+<!--#macro(date_picker)-->
+<script type="text/javascript">
+    $(function(){
+        var dt = $("div#datePicker");
+        dt.datepicker({
+            onSelect:function(dateText){
+                var ss = dateText.split('-');
+                window.open("/archive/"+ss[0]+"-"+ss[1]);
+            }
+        });
+        dt.datepicker($.datepicker.regional[ "zh-CN" ]);
+    });
+</script>
+<div id="datePicker"></div>
 <!--#end-->
 
 <!--#macro(tag_cloud)-->
