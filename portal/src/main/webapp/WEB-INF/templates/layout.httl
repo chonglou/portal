@@ -125,8 +125,7 @@ $!{extends("/frame.httl")}
         var dt = $("div#datePicker");
         dt.datepicker({
             onSelect:function(dateText){
-                var ss = dateText.split('-');
-                window.open("/archive/"+ss[0]+"-"+ss[1]);
+                window.open("/archive/"+dateText.split('-').join('/'));
             }
         });
         dt.datepicker($.datepicker.regional[ "zh-CN" ]);

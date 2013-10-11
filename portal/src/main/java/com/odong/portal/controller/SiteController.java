@@ -43,7 +43,6 @@ public class SiteController extends PageController {
     }
 
 
-
     @RequestMapping(value = "sitemap", method = RequestMethod.GET)
     String getSitemap(Map<String, Object> map) {
         map.put("userList", cacheService.getUserCards());
@@ -150,7 +149,7 @@ public class SiteController extends PageController {
 
     @RequestMapping(value = "/sessionId", method = RequestMethod.POST)
     @ResponseBody
-    String getSessionId(HttpSession session){
+    String getSessionId(HttpSession session) {
         return session.getId();
     }
 

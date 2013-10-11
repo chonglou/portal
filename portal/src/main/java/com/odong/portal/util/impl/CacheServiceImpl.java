@@ -148,7 +148,23 @@ public class CacheServiceImpl implements CacheService {
                 cacheHelper.get("cards/article/archive/" + year + "-" + month,
                         ArrayList.class,
                         null,
-                        () -> (ArrayList) contentService.getArticleIdsByMonth(year, month))
+                        () -> (ArrayList) contentService.getArticleIdsByCreated(
+                                new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMinimumValue().secondOfDay().withMinimumValue().toDate(),
+                                new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMaximumValue().secondOfDay().withMaximumValue().toDate()
+                        ))
+        );
+    }
+
+    @Override
+    public List<Card> getArticleCardByDay(int year, int month, int day) {
+        return getCards(
+                cacheHelper.get("cards/article/archive/" + year + "-" + month + "-" + day,
+                        ArrayList.class,
+                        null,
+                        () -> (ArrayList) contentService.getArticleIdsByCreated(
+                                new DateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(day).secondOfDay().withMinimumValue().toDate(),
+                                new DateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(day).secondOfDay().withMaximumValue().toDate()
+                        ))
         );
     }
 
@@ -389,7 +405,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     private void addArchive2NavBar(NavBar nb, DateTime dt) {
-        nb.add(dt.toString("yyyy年MM月"), "/archive/" + dt.toString("yyyy-MM"));
+        nb.add(dt.toString("yyyy年MM月"), "/archive/" + dt.toString("yyyy/MM"));
     }
 
 

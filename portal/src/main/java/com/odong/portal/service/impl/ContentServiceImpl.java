@@ -332,13 +332,10 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public List<Long> getArticleIdsByMonth(int year, int month) {
-
-
+    public List<Long> getArticleIdsByCreated(Date begin, Date end) {
         Map<String, Object> map = new HashMap<>();
-        map.put("begin", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMinimumValue().secondOfDay().withMinimumValue().toDate());
-        map.put("end", new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMaximumValue().secondOfDay().withMaximumValue().toDate());
-
+        map.put("begin", begin);
+        map.put("end", end);
         return articleDao.list("SELECT i.id FROM Article  i WHERE i.created>=:begin AND i.created <=:end", map, Long.class);
     }
 

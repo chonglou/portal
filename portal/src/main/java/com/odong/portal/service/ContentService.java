@@ -106,7 +106,7 @@ public interface ContentService {
 
     List<Long> getArticleIdsByUser(long user);
 
-    List<Long> getArticleIdsByMonth(int year, int month);
+    List<Long> getArticleIdsByCreated(Date begin, Date end);
 
     List<Long> getArticleIdsBySearch(String key);
 

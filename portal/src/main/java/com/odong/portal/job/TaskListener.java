@@ -151,7 +151,7 @@ public class TaskListener implements MessageListener {
                             }
                             DateTime now = new DateTime();
                             for (DateTime dt = new DateTime(siteService.getDate("site.init")); dt.compareTo(now) <= 0; dt = dt.plusMonths(1)) {
-                                wsg.addUrl(new WebSitemapUrl.Options(domain + "/archive/" + dt.toString("yyyy-MM")).lastMod(dt.toDate()).priority(0.2).changeFreq(ChangeFreq.MONTHLY).build());
+                                wsg.addUrl(new WebSitemapUrl.Options(domain + "/archive/" + dt.toString("yyyy/MM")).lastMod(dt.toDate()).priority(0.2).changeFreq(ChangeFreq.MONTHLY).build());
                             }
 
                             wsg.write();

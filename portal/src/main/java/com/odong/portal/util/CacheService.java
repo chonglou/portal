@@ -51,6 +51,8 @@ public interface CacheService {
 
     List<Card> getArticleCardByMonth(int year, int month);
 
+    List<Card> getArticleCardByDay(int year, int month, int day);
+
     ArrayList getLeastArticleCards();
 
     ArrayList getUserCards();
