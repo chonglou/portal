@@ -30,21 +30,6 @@ function show_card_fall(id){
     });
 }
 
-function show_tag_cloud(id) {
-    $('ul#jcloud-' + id).jcloud({
-        radius: 200,
-        size: 30,
-        step: 2,
-        speed: 50,
-        flats: 2,
-        clock: 10,
-        areal: 100,
-        splitX: 100,
-        splitY: 100,
-        colors: ['#000000', '#DD2222', '#2267DD', '#2A872B', '#872A7B', '#CAC641']
-    });
-}
-
 function object2html(obj) {
     var context = "<ol class='list-group'>";
     for (var k in obj) {

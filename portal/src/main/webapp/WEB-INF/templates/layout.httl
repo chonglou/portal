@@ -114,15 +114,42 @@ $!{extends("/frame.httl")}
     </div>
     $!{gl_site.advertLeft}
     <br/>
-    <!-- #set(List<Page> tagCloud=gl_site.tagCloud) -->
-    <script type="text/javascript">
-        $(document).ready(function () {
-            show_tag_cloud("pages");
-        });
-    </script>
-    <div class="jcloud">
+    ${tag_cloud}
+</div>
+<!--#end-->
 
-        <ul id="jcloud-pages">
+<!--#macro(tag_cloud)-->
+<!-- #set(Map<String,Object> gl_site) -->
+<!-- #set(List<Page> tagCloud=gl_site.tagCloud) -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        try {
+            TagCanvas.Start('tagCanvas','tags',{
+                textColour: '#00f',
+                textHeight: 25,
+                outlineColour: '#ff9999',
+                outlineThickness: 3,
+                pulsateTo: 0.2,
+                pulsateTime: 0.5,
+                wheelZoom: false,
+                reverse: true,
+                decel: 0.9,
+                depth: 0.8,
+                maxSpeed: 0.08,
+                minSpeed:0.01,
+                shape:"sphere"
+            });
+        } catch(e) {
+            $("div#tagCanvasContainer").hide();
+        }
+    });
+</script>
+<div id="tagCanvasContainer">
+    <canvas id="tagCanvas" height="300px">
+        <p>标签云</p>
+    </canvas>
+    <div id="tags">
+        <ul>
             #for(Page p : tagCloud)
             <li><a href="${p.url}" target="_blank">${p.name}</a></li>
             #end
@@ -130,6 +157,7 @@ $!{extends("/frame.httl")}
     </div>
 </div>
 <!--#end-->
+
 
 <!--#macro(left_nav_bar_2)-->
 <!--#set(List<NavBar> navBars)-->
@@ -214,7 +242,7 @@ $!{extends("/frame.httl")}
 <div class="row row-offcanvas row-offcanvas-right">
     <!--#set(List<Page> pageList)-->
     #for(i : pageList)
-    <div class="col-lg-1">
+    <div class="col-lg-1 fall-item">
         <a href="${i.url}" target="_blank">
             <div class="thumbnail">
                 <div class="caption">

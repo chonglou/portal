@@ -12,14 +12,13 @@
     <meta name="author" content="${gl_site.author}">
     <title>${gl_site.title}#if(title)-${title}#end</title>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="/jcloud/jcloud.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="/jcarousel/skins/tango/skin.css" />
     <link href="/style/css/main.css#if(gl_debug)?_=${random()}#end" rel="stylesheet"/>
     <script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="/js/config.js#if(gl_debug)?_=${random()}#end"></script>
     <script type="text/javascript" src="/jquery/masonry.pkgd.min.js"></script>
     <script type="text/javascript" src="/jcarousel/jquery.jcarousel.min.js"></script>
-    <script type="text/javascript" src="/jcloud/jcloud.js"></script>
+    <script type="text/javascript" src="/jquery/jquery.tagcanvas.min.js"></script>
     <script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>

@@ -22,7 +22,7 @@ public class Web extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/jquery/**").addResourceLocations("/WEB-INF/jquery/");
         registry.addResourceHandler("/bootstrap/**").addResourceLocations("/WEB-INF/bootstrap-3.0.0/");
         registry.addResourceHandler("/ueditor/**").addResourceLocations("/WEB-INF/ueditor1_2_6_1-utf8/");
-        registry.addResourceHandler("/jcloud/**").addResourceLocations("/WEB-INF/jcloud/");
+        //registry.addResourceHandler("/jcloud/**").addResourceLocations("/WEB-INF/jcloud/");
         registry.addResourceHandler("/highcharts/**").addResourceLocations("/WEB-INF/Highcharts-3.0.1/");
         registry.addResourceHandler("/style/**").addResourceLocations("/WEB-INF/style/");
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
