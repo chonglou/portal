@@ -92,6 +92,9 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
                 query.setParameter(key, map.get(key));
             }
         }
+        if(pageNo <=1){
+            pageNo = 1;
+        }
         query.setFirstResult((pageNo - 1) * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();
