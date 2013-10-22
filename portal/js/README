@@ -1,0 +1,9 @@
+portal的nodejs版
+
+安装方法：
+cd portal
+npm install
+npm ls
+
+更新lib：
+npm info pkgname version
