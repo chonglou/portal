@@ -38,11 +38,19 @@ public class SeoController {
         return new FileSystemResource(rssF);
     }
 
+    @RequestMapping(value = "/site.png", method = RequestMethod.GET)
+    @ResponseBody
+    FileSystemResource qrCode() {
+        return new FileSystemResource(qrF);
+    }
+
+
 
     @PostConstruct
     void init() {
         rssF = appStoreDir + "/seo/rss.xml";
         mapF = appStoreDir + "/seo/sitemap.xml.gz";
+        qrF = appStoreDir+"/site.png";
 
         if (!new File(rssF).exists()) {
             taskSender.rss();
@@ -55,6 +63,7 @@ public class SeoController {
 
     private String rssF;
     private String mapF;
+    private String qrF;
     @Value("${app.store}")
     private String appStoreDir;
     @Resource

@@ -1,15 +1,17 @@
 package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.DomainForm;
-import com.odong.portal.form.admin.GoogleForm;
-import com.odong.portal.form.admin.InfoForm;
-import com.odong.portal.form.admin.RegProtocolForm;
+import com.odong.portal.form.admin.*;
+import com.odong.portal.form.personal.ContactForm;
+import com.odong.portal.job.TaskSender;
+import com.odong.portal.model.Contact;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.model.profile.QrCodeProfile;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheService;
 import com.odong.portal.util.FormHelper;
+import com.odong.portal.util.JsonHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.TextAreaField;
@@ -113,7 +115,6 @@ public class SiteController {
             cacheService.popSiteInfo();
             cacheService.popDomain();
 
-
             Path file = Paths.get(appStoreDir + "/seo/robots.txt");
             try (BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"))) {
                 writer.write("User-agent: *\n");
@@ -123,6 +124,35 @@ public class SiteController {
             } catch (IOException e) {
                 logger.error("生成robots.txt文件出错", e);
             }
+        }
+        return ri;
+    }
+
+    @RequestMapping(value = "/qrCode", method = RequestMethod.GET)
+    @ResponseBody
+    Form getContactForm() {
+        Form fm = new Form("qrCode", "二维码信息", "/admin/site/qrCode");
+        QrCodeProfile qcp = siteService.getObject("site.qrCode", QrCodeProfile.class);
+        if(qcp == null){
+            qcp = new QrCodeProfile("",300,300);
+        }
+        fm.addField(new TextField<Integer>("width", "宽度", qcp.getWidth()));
+        fm.addField(new TextField<Integer>("height", "高度", qcp.getHeight()));
+        TextAreaField taf = new TextAreaField("content", "内容", qcp.getContent());
+        taf.setHtml(false);
+        fm.addField(taf);
+        fm.setOk(true);
+        return fm;
+    }
+
+    @RequestMapping(value = "/qrCode", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postContactForm(@Valid QrCodeForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            siteService.set("site.qrCode", new QrCodeProfile(form.getContent(), form.getWidth(), form.getHeight()));
+            logService.add(si.getSsUserId(), "修改站点联系人信息", Log.Type.INFO);
+            taskSender.qrCode();
         }
         return ri;
     }
@@ -167,9 +197,21 @@ public class SiteController {
     private FormHelper formHelper;
     @Resource
     private CacheService cacheService;
+    @Resource
+    private JsonHelper jsonHelper;
+    @Resource
+    private TaskSender taskSender;
     @Value("${app.store}")
     private String appStoreDir;
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
+
+    public void setTaskSender(TaskSender taskSender) {
+        this.taskSender = taskSender;
+    }
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
     public void setAppStoreDir(String appStoreDir) {
         this.appStoreDir = appStoreDir;

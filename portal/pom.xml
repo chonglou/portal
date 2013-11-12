@@ -23,6 +23,7 @@
         <antlr.version>3.5</antlr.version>
         <httl.version>1.0.11</httl.version>
         <activemq.version>5.7.0</activemq.version>
+        <zxing.version>2.2</zxing.version>
         <jdk.version>1.8</jdk.version>
     </properties>
 
@@ -78,6 +79,18 @@
             <artifactId>jsoup</artifactId>
             <version>1.7.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxing.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>joda-time</groupId>

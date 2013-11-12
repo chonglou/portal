@@ -24,7 +24,7 @@
     <script type="text/javascript" src="/jquery/jquery.tagcanvas.min.js"></script>
     <script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js" async></script>
     <script type="text/javascript">
         var gl_captcha = "${gl_captcha}";
         var gl_reCaptcha_key = "${gl_reCaptcha_key}";

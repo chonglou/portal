@@ -1,9 +1,18 @@
 package com.odong.portal.job;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.Task;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.Contact;
+import com.odong.portal.model.profile.QrCodeProfile;
 import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
@@ -160,6 +169,29 @@ public class TaskListener implements MessageListener {
                         }
                     });
                     break;
+                case QR_CODE:
+                    taskExecutor.execute(()->{
+                        Hashtable<EncodeHintType,Object> hints = new Hashtable<>();
+                        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+                        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+                        QrCodeProfile qcp= siteService.getObject("site.qrCode",QrCodeProfile.class);
+                        try {
+
+                            BitMatrix matrix = new MultiFormatWriter().encode(
+                                    qcp.getContent(),
+                                    BarcodeFormat.QR_CODE,
+                                    qcp.getWidth(),
+                                    qcp.getHeight(),
+                                    hints);
+                            MatrixToImageWriter.writeToFile(matrix,
+                                    "png",
+                                    new File(appStoreDir+"/site.png"));
+                        }
+                        catch (IOException | WriterException e){
+                            logger.error("生成二维码出错", e);
+                        }
+                    });
+                    break;
                 case EMAIL:
                     taskExecutor.execute(new Runnable() {
                         @Override
@@ -225,6 +257,18 @@ public class TaskListener implements MessageListener {
                             }
                         }
                     });
+                    break;
+                case VISIT:
+                    switch (message.getString("type")){
+                        case "article":
+                            contentService.setArticleVisits(message.getLong("id"));
+                            break;
+                        case "tag":
+                            contentService.setTagVisits(message.getLong("id"));
+                            break;
+                        default:
+                            logger.error("未知的访问类型");
+                    }
                     break;
                 default:
                     logger.error("未知的任务类型[{}]", type);

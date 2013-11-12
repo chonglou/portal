@@ -2,7 +2,9 @@ package com.odong.portal.util;
 
 import com.odong.portal.entity.Task;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.Contact;
 import com.odong.portal.model.profile.KaptchaProfile;
+import com.odong.portal.model.profile.QrCodeProfile;
 import com.odong.portal.model.profile.ReCaptchaProfile;
 import com.odong.portal.model.task.ClockRequest;
 import com.odong.portal.service.*;
@@ -46,6 +48,7 @@ public class SiteHelper {
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
             siteService.set("site.google.valid", stringHelper.random(8));
+            siteService.set("site.qrCode", new QrCodeProfile("", 300, 300));
 
             //KAPTCHA
             KaptchaProfile kaptcha = new KaptchaProfile();

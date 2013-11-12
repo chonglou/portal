@@ -4,6 +4,7 @@
         <span class="btn-group btn-group-sm">
             <button id="details" class="btn btn-info">详细信息</button>
             <button id="domain" class="btn btn-warning">域名设置</button>
+            <button id="qrCode" class="btn btn-default">二维码设置</button>
             <button id="google" class="btn btn-success">Google设置</button>
             <button id="refresh" class="btn btn-primary">刷新</button>
         </span>
@@ -22,6 +23,9 @@
     });
     $("button#domain").click(function () {
         show("domain");
+    });
+    $("button#qrCode").click(function () {
+        show("qrCode");
     });
     $("button#details").click(function () {
         show("details");

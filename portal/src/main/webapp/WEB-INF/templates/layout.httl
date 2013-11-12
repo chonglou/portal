@@ -116,6 +116,10 @@ $!{extends("/frame.httl")}
     $!{gl_site.advertLeft}
     <br/>
     ${tag_cloud}
+    <br/>
+    <div>
+    <img src="/site.png" alt="二维码" title="手机扫描二维码获得更多信息">
+    </div>
 </div>
 <!--#end-->
 

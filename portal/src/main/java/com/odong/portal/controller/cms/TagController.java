@@ -2,6 +2,7 @@ package com.odong.portal.controller.cms;
 
 import com.odong.portal.controller.PageController;
 import com.odong.portal.entity.Tag;
+import com.odong.portal.job.TaskSender;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.web.NavBar;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class TagController extends PageController {
 
         Tag tag = cacheService.getTag(tagId);
         if (tag != null) {
-            contentService.setTagVisits(tagId);
+            taskSender.visitTag(tagId);
             List<NavBar> navBars = new ArrayList<>();
 
             navBars.add(cacheService.getTagNavBar());
@@ -48,4 +50,10 @@ public class TagController extends PageController {
         return "cms/tag";
     }
 
+    @Resource
+    private TaskSender taskSender;
+
+    public void setTaskSender(TaskSender taskSender) {
+        this.taskSender = taskSender;
+    }
 }

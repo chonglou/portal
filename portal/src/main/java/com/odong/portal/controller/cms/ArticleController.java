@@ -3,6 +3,7 @@ package com.odong.portal.controller.cms;
 import com.odong.portal.controller.PageController;
 import com.odong.portal.entity.*;
 import com.odong.portal.form.cms.ArticleForm;
+import com.odong.portal.job.TaskSender;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -158,7 +160,7 @@ public class ArticleController extends PageController {
     String getArticle(Map<String, Object> map, @PathVariable Long articleId, HttpServletResponse response) throws IOException {
         Article a = cacheService.getArticle(articleId);
         if (a != null) {
-            contentService.setArticleVisits(articleId);
+            taskSender.visitArticle(articleId);
             map.put("article", a);
             map.put("user", cacheService.getUserPage(a.getAuthor()));
             map.put("navBars", getNavBars());
@@ -190,5 +192,12 @@ public class ArticleController extends PageController {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.getElementsByTag("img");
         return elements.size() == 0 ? null : elements.get(0).attr("src");
+    }
+
+    @Resource
+    private TaskSender taskSender;
+
+    public void setTaskSender(TaskSender taskSender) {
+        this.taskSender = taskSender;
     }
 }
