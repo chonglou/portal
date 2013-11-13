@@ -78,7 +78,8 @@ public class InfoController {
             c.setWeb(form.getWeb());
             c.setWeixin(form.getWeixin());
             c.setDetails(form.getDetails());
-            accountService.setUserInfo(si.getSsUserId(), form.getUsername(), jsonHelper.object2json(c));
+            accountService.setUserName(si.getSsUserId(), form.getUsername());
+            accountService.setUserContact(si.getSsUserId(), c);
             si.setSsUsername(form.getUsername());
             ri.setType(ResponseItem.Type.redirect);
             ri.addData("/personal/self");

@@ -1,6 +1,8 @@
 package com.odong.portal.service;
 
+import com.odong.portal.entity.OpenId;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.Contact;
 
 import java.util.List;
 
@@ -11,6 +13,10 @@ import java.util.List;
  * Time: 下午2:28
  */
 public interface AccountService {
+
+    OpenId getOpenId(String openId, OpenId.Type type);
+
+    long addQQUser(String openId, String accessToken, String nickname);
 
     List<User> listUser();
 
@@ -24,7 +30,10 @@ public interface AccountService {
 
     long addUser(String email, String username, String password);
 
-    void setUserInfo(long user, String username, String contact);
+    void setUserContact(long user, Contact contact);
+    void setUserName(long user, String username);
+
+    //void setUserInfo(long user, String username, String contact);
 
     void setUserPassword(long user, String password);
 

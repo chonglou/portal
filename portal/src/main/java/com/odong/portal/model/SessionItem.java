@@ -16,9 +16,26 @@ public class SessionItem implements Serializable {
     private String ssEmail;
     private Date ssCreated;
     private boolean ssAdmin;
+    private boolean ssLocal;
     public final static String KEY = "d1s7e0wp";
+    public SessionItem(long userId, String email, String username){
+        this.ssUserId = userId;
+        this.ssEmail = email;
+        this.ssUsername = username;
+        this.ssCreated = new Date();
+        this.setSsLocal(true);
+    }
 
+    @Deprecated
     public SessionItem() {
+    }
+
+    public boolean isSsLocal() {
+        return ssLocal;
+    }
+
+    public void setSsLocal(boolean ssLocal) {
+        this.ssLocal = ssLocal;
     }
 
     public Long getSsUserId() {

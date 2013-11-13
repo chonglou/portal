@@ -1,9 +1,14 @@
 package com.odong.portal.service.impl;
 
+import com.odong.portal.dao.OpenIdDao;
 import com.odong.portal.dao.UserDao;
+import com.odong.portal.entity.OpenId;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.Contact;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.util.EncryptHelper;
+import com.odong.portal.util.JsonHelper;
+import com.odong.portal.util.StringHelper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,6 +25,35 @@ import java.util.Map;
  */
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
+    @Override
+    public OpenId getOpenId(String openId, OpenId.Type type) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("oid", openId);
+        map.put("type", type);
+        return openIdDao.select("FROM OpenId  i WHERE i.oid=:oid AND i.type=:type", map);
+    }
+
+    @Override
+    public long addQQUser(String openId, String accessToken, String nickname) {
+        User u = new User();
+        u.setEmail(stringHelper.random(8)+"@localhost");
+        u.setUsername(nickname);
+        u.setPassword(encryptHelper.encrypt(stringHelper.random(12)));
+        u.setCreated(new Date());
+        u.setState(User.State.ENABLE);
+        long uid= userDao.persist(u);
+
+        OpenId oi = new OpenId();
+        oi.setOid(openId);
+        oi.setToken(accessToken);
+        oi.setType(OpenId.Type.QQ);
+        oi.setUser(uid);
+        oi.setCreated(new Date());
+        openIdDao.insert(oi);
+
+        return uid;  //
+    }
+
     @Override
     public List<User> listUser() {
         return userDao.list();
@@ -66,12 +100,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void setUserInfo(long user, String username, String contact) {
+    public void setUserContact(long user, Contact contact) {
         User u = userDao.select(user);
-        u.setUsername(username);
-        u.setContact(contact);
+        u.setContact(jsonHelper.object2json(contact));
         userDao.update(u);
     }
+
+    @Override
+    public void setUserName(long user, String username) {
+        User u = userDao.select(user);
+        u.setUsername(username);
+        userDao.update(u);
+    }
+
+
 
     @Override
     public void setUserPassword(long user, String password) {
@@ -99,6 +141,24 @@ public class AccountServiceImpl implements AccountService {
     private UserDao userDao;
     @Resource
     private EncryptHelper encryptHelper;
+    @Resource
+    private OpenIdDao openIdDao;
+    @Resource
+    private StringHelper stringHelper;
+    @Resource
+    private JsonHelper jsonHelper;
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
+
+    public void setStringHelper(StringHelper stringHelper) {
+        this.stringHelper = stringHelper;
+    }
+
+    public void setOpenIdDao(OpenIdDao openIdDao) {
+        this.openIdDao = openIdDao;
+    }
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;

@@ -32,7 +32,9 @@ public class SelfController extends PageController {
 
         NavBar nbInfo = new NavBar("个人信息");
         nbInfo.add("基本信息", "/personal/info");
-        nbInfo.add("更改密码", "/personal/setPwd");
+        if(si.isSsLocal()){
+            nbInfo.add("更改密码", "/personal/setPwd");
+        }
         nbInfo.add("日志管理", "/personal/log");
         nbInfo.setAjax(true);
         navBars.add(nbInfo);

@@ -3,12 +3,16 @@ $!{extends("/frame.httl")}
 #macro(qqHead)
 <!--#set(Map<String,Object> gl_site)-->
 <!--#set(QQAuthProfile qap=gl_site.qqAuth)-->
+<!--#set(Boolean gl_debug)-->
 #if(qap.enable)
 <meta property="qc:admins" content="${qap.valid}"/>
-<script type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="${qap.id}"
+<script type="text/javascript"
+        src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js"
+        data-appid="${qap.id}" data-callback="true"
         data-redirecturi="http://${gl_site.domain}" charset="utf-8">
 </script>
-<script type="text/javascript" src="/js/qq-auth.js"></script>
+<script type="text/javascript" src="/js/qq-auth.js#if(gl_debug)?_=${random()}#end">
+</script>
 #end
 #end
 
@@ -16,10 +20,15 @@ $!{extends("/frame.httl")}
 <!--#set(Map<String,Object> gl_site)-->
 <!--#set(QQAuthProfile qap=gl_site.qqAuth)-->
 <!--#set(SessionItem gl_session)-->
-#if(!gl_session && qap.enable)
+#if((gl_session==null || !gl_session.ssLocal()) && qap.enable)
 <li id="qqLoginBar"></li>
 <script type="text/javascript">
     showQQLoginBar();
+</script>
+#end
+#if(gl_session==null && qap.enable)
+<script type="text/javascript">
+    checkQQLogin();
 </script>
 #end
 #end

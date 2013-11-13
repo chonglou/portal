@@ -63,12 +63,9 @@ public class LoginController {
             } else {
                 switch (u.getState()) {
                     case ENABLE:
-                        SessionItem si = new SessionItem();
-                        si.setSsUsername(u.getUsername());
-                        si.setSsEmail(u.getEmail());
-                        si.setSsUserId(u.getId());
+                        SessionItem si = new SessionItem(u.getId(), u.getEmail(), u.getUsername());
                         si.setSsAdmin(rbacService.authAdmin(u.getId()));
-                        si.setSsCreated(new Date());
+
                         ri.setType(ResponseItem.Type.redirect);
                         ri.addData("/personal/self");
                         session.setAttribute(SessionItem.KEY, si);

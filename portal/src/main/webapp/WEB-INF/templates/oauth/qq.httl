@@ -1,0 +1,10 @@
+$!{extends("/layout.httl")}
+
+#macro(main)
+${left_nav_bar_1}
+<div class="col-lg-9">
+<script type="text/javascript">
+    checkQQLogin();
+</script>
+</div>
+#end
