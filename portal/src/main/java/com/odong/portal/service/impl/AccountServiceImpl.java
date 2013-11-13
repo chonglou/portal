@@ -26,6 +26,14 @@ import java.util.Map;
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
     @Override
+    public void setOpenIdToken(long openId, String token) {
+        OpenId oi = openIdDao.select(openId);
+        oi.setToken(token);
+        oi.setLastEdit(new Date());
+        openIdDao.update(oi);
+    }
+
+    @Override
     public OpenId getOpenId(String openId, OpenId.Type type) {
         Map<String, Object> map = new HashMap<>();
         map.put("oid", openId);

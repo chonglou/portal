@@ -14,6 +14,7 @@ import java.util.List;
  */
 public interface AccountService {
 
+    void setOpenIdToken(long openId, String token);
     OpenId getOpenId(String openId, OpenId.Type type);
 
     long addQQUser(String openId, String accessToken, String nickname);

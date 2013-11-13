@@ -28,7 +28,7 @@ $!{extends("/frame.httl")}
 #end
 #if(gl_session==null && qap.enable)
 <script type="text/javascript">
-    checkQQLogin();
+        checkQQLogin();
 </script>
 #end
 #end

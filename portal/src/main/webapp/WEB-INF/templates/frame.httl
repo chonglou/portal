@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <!--#set(Map<String,Object> gl_site)-->
-<!--#set(gl_session=session.d1s7e0wp)-->
+<!--#set(SessionItem gl_session=session.d1s7e0wp)-->
 <!--#set(Boolean gl_debug)-->
 <head>
     <meta charset="UTF-8"/>
@@ -11,6 +11,7 @@
     <meta name="keywords" content="${gl_site.keywords}"/>
     <meta name="author" content="${gl_site.author}">
     <title>${gl_site.title}#if(title)-${title}#end</title>
+    <link rel="shortcut icon" href="/style/logo/32x32.ico" type="image/vnd.microsoft.icon">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="/jcarousel/skins/tango/skin.css" />

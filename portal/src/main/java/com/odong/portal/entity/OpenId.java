@@ -22,7 +22,7 @@ public class OpenId extends IdEntity {
         QQ
     }
     private static final long serialVersionUID = 8161901734311168752L;
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, unique = true)
     private String oid;
     @Column(nullable = false)
     private String token;

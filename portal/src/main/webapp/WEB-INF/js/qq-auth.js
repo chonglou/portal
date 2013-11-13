@@ -37,7 +37,6 @@ function checkQQLogin(){
             });
 
         });
-
     }
 }
 
@@ -51,7 +50,6 @@ function showQQLoginBar() {
             //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
             size: "B_S"
         }, function (reqData, opts) {//登录成功
-
 
             //根据返回数据，更换按钮显示状态方法
             $("li#qqLoginBar").css("dropdown");

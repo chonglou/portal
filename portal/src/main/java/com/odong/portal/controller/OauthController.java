@@ -46,15 +46,31 @@ public class OauthController extends PageController {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
 
         OpenId oi = accountService.getOpenId(id, OpenId.Type.QQ);
-        long uid = oi == null ? accountService.addQQUser(id, token, name) : oi.getUser();
-        User user = accountService.getUser(uid);
-        if(!name.equals(user.getUsername())){
-            accountService.setUserName(uid, name);
+
+        User user;
+        if(oi == null){
+            long uid=accountService.addQQUser(id, token, name);
+            user = accountService.getUser(uid);
+        }else {
+            long uid=oi.getUser();
+            user = accountService.getUser(uid);
+            if(!name.equals(user.getUsername())){
+                accountService.setUserName(uid, name);
+                logger.info("更新{}的昵称", id);
+            }
+            if(!token.equals(oi.getToken())){
+                accountService.setOpenIdToken(oi.getId(), token);
+                logger.info("更新{}的token", id);
+            }
         }
-        SessionItem si = new SessionItem(uid, user.getEmail(), name);
+
+
+
+        SessionItem si = new SessionItem(user.getId(), user.getEmail(), name);
         si.setSsLocal(false);
         session.setAttribute(SessionItem.KEY, si);
-        logService.add(uid, "用户登陆", Log.Type.INFO);
+        accountService.setUserLastLogin(user.getId());
+        logService.add(user.getId(), "用户登陆", Log.Type.INFO);
         ri.setOk(true);
 
         return ri;
