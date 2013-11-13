@@ -162,7 +162,7 @@ public class SiteController extends PageController {
         Pager pager = cacheService.getPager();
         if (index < 1) {
             index = 1;
-        } else if (pager.getTotal()>0 && index > pager.getTotal()) {
+        } else if (pager.getTotal() > 0 && index > pager.getTotal()) {
             index = pager.getTotal();
         }
         pager.setIndex(index);

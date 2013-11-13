@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<!--#set(Map<String,String> gl_site)-->
+<!--#set(Map<String,Object> gl_site)-->
 <!--#set(gl_session=session.d1s7e0wp)-->
 <!--#set(Boolean gl_debug)-->
 <head>
@@ -39,6 +39,7 @@
     #else
     <script type="text/javascript" src="/js/non-login.js#if(gl_debug)?_=${random()}#end"></script>
     #end
+    #macro($!qqHead)#end
     #macro($!head)#end
 </head>
 <body>

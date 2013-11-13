@@ -4,6 +4,7 @@ import com.odong.portal.entity.Article;
 import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.profile.QQAuthProfile;
 import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
@@ -210,7 +211,7 @@ public class CacheServiceImpl implements CacheService {
         return cacheHelper.get("site/info", HashMap.class, null,
                 () -> {
                     HashMap<String, Object> site = new HashMap<>();
-                    for (String s : new String[]{"title", "description", "copyright", "keywords", "author", "articlePageSize"}) {
+                    for (String s : new String[]{"title","domain", "description", "copyright", "keywords", "author", "articlePageSize"}) {
                         site.put(s, siteService.getString("site." + s));
                     }
 
@@ -233,6 +234,8 @@ public class CacheServiceImpl implements CacheService {
                     site.put("advertBottom", siteService.getString("site.advert.bottom"));
 
                     site.put("manager", manager);
+
+                    site.put("qqAuth", siteService.getObject("site.qqAuth", QQAuthProfile.class));
                     return site;
                 }
         );

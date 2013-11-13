@@ -2,9 +2,7 @@ package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.*;
-import com.odong.portal.form.personal.ContactForm;
 import com.odong.portal.job.TaskSender;
-import com.odong.portal.model.Contact;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.model.profile.QrCodeProfile;
 import com.odong.portal.service.LogService;
@@ -130,11 +128,11 @@ public class SiteController {
 
     @RequestMapping(value = "/qrCode", method = RequestMethod.GET)
     @ResponseBody
-    Form getContactForm() {
+    Form getQrForm() {
         Form fm = new Form("qrCode", "二维码信息", "/admin/site/qrCode");
         QrCodeProfile qcp = siteService.getObject("site.qrCode", QrCodeProfile.class);
-        if(qcp == null){
-            qcp = new QrCodeProfile("",300,300);
+        if (qcp == null) {
+            qcp = new QrCodeProfile("", 300, 300);
         }
         fm.addField(new TextField<Integer>("width", "宽度", qcp.getWidth()));
         fm.addField(new TextField<Integer>("height", "高度", qcp.getHeight()));
@@ -147,11 +145,11 @@ public class SiteController {
 
     @RequestMapping(value = "/qrCode", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postContactForm(@Valid QrCodeForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postQrForm(@Valid QrCodeForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.qrCode", new QrCodeProfile(form.getContent(), form.getWidth(), form.getHeight()));
-            logService.add(si.getSsUserId(), "修改站点联系人信息", Log.Type.INFO);
+            logService.add(si.getSsUserId(), "修改站点二维码信息", Log.Type.INFO);
             taskSender.qrCode();
         }
         return ri;

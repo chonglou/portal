@@ -1,0 +1,61 @@
+function getUserInfo() {
+    //从页面收集OpenAPI必要的参数。get_user_info不需要输入参数，因此paras中没有参数
+    var paras = {};
+
+    //用JS SDK调用OpenAPI
+    QC.api("get_user_info", paras)
+        //指定接口访问成功的接收函数，s为成功返回Response对象
+        .success(function (s) {
+            //成功回调，通过s.data获取OpenAPI的返回数据
+            alert("获取用户信息成功！当前用户昵称为：" + s.data.nickname);
+        })
+        //指定接口访问失败的接收函数，f为失败返回Response对象
+        .error(function (f) {
+            //失败回调
+            alert("获取用户信息失败！");
+        })
+        //指定接口完成请求后的接收函数，c为完成请求返回Response对象
+        .complete(function (c) {
+            //完成请求回调
+            alert("获取用户信息完成！");
+        });
+}
+
+function showQQLoginButton() {
+    //调用QC.Login方法，指定btnId参数将按钮绑定在容器节点中
+    QC.Login({
+            //btnId：插入按钮的节点id，必选
+            btnId: "qqLoginBtn",
+            //用户需要确认的scope授权项，可选，默认all
+            scope: "all",
+            //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+            size: "B_M"
+        }, function (reqData, opts) {//登录成功
+            //根据返回数据，更换按钮显示状态方法
+            $("li#personalBar").hide();
+            var dom = document.getElementById(opts['btnId']),
+                _logoutTemplate = '<a href="javascript:QC.Login.signOut();">{nickname},退出</a>';
+                    /*
+                    [
+                    //头像
+                    '<img src="{figureurl}"/>',
+                    //昵称
+                    '{nickname}',
+                    //退出
+                    '<a href="javascript:QC.Login.signOut();">退出</a>'
+                ].join("");
+            */
+            dom && (dom.innerHTML = QC.String.format(_logoutTemplate, {
+                nickname: QC.String.escHTML(reqData.nickname), //做xss过滤
+                figureurl: reqData.figureurl
+            }));
+        }, function (opts) {//注销成功
+            alert('QQ登录 注销成功');
+        }
+    );
+    /*
+     QC.Login({
+     btnId:"qqLoginBtn"
+     });
+     */
+}

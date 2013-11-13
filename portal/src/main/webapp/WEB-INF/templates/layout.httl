@@ -1,5 +1,29 @@
 $!{extends("/frame.httl")}
 
+#macro(qqHead)
+<!--#set(Map<String,Object> gl_site)-->
+<!--#set(QQAuthProfile qap=gl_site.qqAuth)-->
+#if(qap.enable)
+<meta property="qc:admins" content="${qap.valid}"/>
+<script type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="${qap.id}"
+        data-redirecturi="http://${gl_site.domain}" charset="utf-8">
+</script>
+<script type="text/javascript" src="/js/qq-auth.js"></script>
+#end
+#end
+
+#macro(qqLogin)
+<!--#set(Map<String,Object> gl_site)-->
+<!--#set(QQAuthProfile qap=gl_site.qqAuth)-->
+#if(qap.enable)
+<li id="qqLoginBtn"></li>
+<script type="text/javascript">
+showQQLoginButton();
+</script>
+#end
+#end
+
+
 #macro(pagerBar)
 <!--#set(Pager pager)-->
 <ul class="pagination pagination-lg">
@@ -62,13 +86,13 @@ $!{extends("/frame.httl")}
             var bookmarkTitle = this.title;
 
             if (window.sidebar) { // For Mozilla Firefox Bookmark
-                window.sidebar.addPanel(bookmarkTitle, bookmarkUrl,"");
-            } else if( window.external || document.all) { // For IE Favorite
-                window.external.AddFavorite( bookmarkUrl, bookmarkTitle);
-            } else if(window.opera) { // For Opera Browsers
-                this.attr("href",bookmarkUrl);
-                this.attr("title",bookmarkTitle);
-                this.attr("rel","sidebar");
+                window.sidebar.addPanel(bookmarkTitle, bookmarkUrl, "");
+            } else if (window.external || document.all) { // For IE Favorite
+                window.external.AddFavorite(bookmarkUrl, bookmarkTitle);
+            } else if (window.opera) { // For Opera Browsers
+                this.attr("href", bookmarkUrl);
+                this.attr("title", bookmarkTitle);
+                this.attr("rel", "sidebar");
             } else { // for other browsers which does not support
                 alert('您的浏览器不支持收藏夹功能，请手动使用Ctrl+D快捷键');
             }
@@ -78,7 +102,7 @@ $!{extends("/frame.httl")}
 </script>
 <ul class="nav navbar-nav navbar-right">
     <li><a href="#" id="favorites">收藏本页</a></li>
-    <li class="dropdown">
+    <li id="personalBar" class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             ${personal_bar_name} <b class="caret"></b>
         </a>
@@ -91,7 +115,9 @@ $!{extends("/frame.httl")}
             #end
         </ul>
     </li>
-    <li><a href="/rss.xml" target="_blank"><img title="收取站点更新通知" style="width: 20px;height: 20px" src="/style/rss.png"/></a>
+    ${qqLogin}
+    <li>
+        <a href="/rss.xml" target="_blank"><img title="收取站点更新通知" style="width: 20px;height: 20px" src="/style/rss.png"/></a>
     </li>
 </ul>
 <!--#end-->
@@ -101,6 +127,7 @@ $!{extends("/frame.httl")}
 <!--#set(Map<String,Object> gl_site)-->
 <div role="navigation" id="sidebar" class="col-lg-3 sidebar-offcanvas">
     <br>
+
     <div class="well sidebar-nav">
         <ul class="nav">
             #for(NavBar nb:navBars)
@@ -117,19 +144,20 @@ $!{extends("/frame.httl")}
     <br/>
     ${tag_cloud}
     <br/>
+
     <div>
-    <img src="/site.png" alt="二维码" title="手机扫描二维码获得更多信息">
+        <img src="/site.png" alt="二维码" title="手机扫描二维码获得更多信息">
     </div>
 </div>
 <!--#end-->
 
 <!--#macro(date_picker)-->
 <script type="text/javascript">
-    $(function(){
+    $(function () {
         var dt = $("div#datePicker");
         dt.datepicker({
-            onSelect:function(dateText){
-                window.open("/archive/"+dateText.split('-').join('/'));
+            onSelect: function (dateText) {
+                window.open("/archive/" + dateText.split('-').join('/'));
             }
         });
         dt.datepicker($.datepicker.regional[ "zh-CN" ]);
@@ -144,7 +172,7 @@ $!{extends("/frame.httl")}
 <script type="text/javascript">
     $(document).ready(function () {
         try {
-            TagCanvas.Start('tagCanvas','tags',{
+            TagCanvas.Start('tagCanvas', 'tags', {
                 textColour: '#00f',
                 textHeight: 25,
                 outlineColour: '#ff9999',
@@ -156,10 +184,10 @@ $!{extends("/frame.httl")}
                 decel: 0.9,
                 depth: 0.8,
                 maxSpeed: 0.08,
-                minSpeed:0.01,
-                shape:"sphere"
+                minSpeed: 0.01,
+                shape: "sphere"
             });
-        } catch(e) {
+        } catch (e) {
             $("div#tagCanvasContainer").hide();
         }
     });

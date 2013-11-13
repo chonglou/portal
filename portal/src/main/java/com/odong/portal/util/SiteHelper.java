@@ -2,8 +2,8 @@ package com.odong.portal.util;
 
 import com.odong.portal.entity.Task;
 import com.odong.portal.entity.User;
-import com.odong.portal.model.Contact;
 import com.odong.portal.model.profile.KaptchaProfile;
+import com.odong.portal.model.profile.QQAuthProfile;
 import com.odong.portal.model.profile.QrCodeProfile;
 import com.odong.portal.model.profile.ReCaptchaProfile;
 import com.odong.portal.model.task.ClockRequest;
@@ -34,9 +34,10 @@ public class SiteHelper {
         siteService.set("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
 
+            String title = "门户网站系统";
             siteService.set("site.init", new Date());
             siteService.set("site.version", "v20131006");
-            siteService.set("site.title", "门户网站系统");
+            siteService.set("site.title", title);
             siteService.set("site.description", "站点说明信息");
             siteService.set("site.keywords", "站点关键字");
             siteService.set("site.domain", "www.0-dong.com");
@@ -48,7 +49,11 @@ public class SiteHelper {
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
             siteService.set("site.google.valid", stringHelper.random(8));
-            siteService.set("site.qrCode", new QrCodeProfile("", 300, 300));
+
+            //二维码
+            siteService.set("site.qrCode", new QrCodeProfile(title, 300, 300));
+            //qq登录
+            siteService.set("site.qqAuth", new QQAuthProfile("","",""));
 
             //KAPTCHA
             KaptchaProfile kaptcha = new KaptchaProfile();
@@ -252,6 +257,8 @@ public class SiteHelper {
     }
 
     @Resource
+    private EncryptHelper encryptHelper;
+    @Resource
     private RbacService rbacService;
     @Resource
     private AccountService accountService;
@@ -272,6 +279,10 @@ public class SiteHelper {
     @Value("${app.manager}")
     private String manager;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
 
     public void setStringHelper(StringHelper stringHelper) {
         this.stringHelper = stringHelper;

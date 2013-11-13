@@ -45,12 +45,11 @@ public class SeoController {
     }
 
 
-
     @PostConstruct
     void init() {
         rssF = appStoreDir + "/seo/rss.xml";
         mapF = appStoreDir + "/seo/sitemap.xml.gz";
-        qrF = appStoreDir+"/site.png";
+        qrF = appStoreDir + "/site.png";
 
         if (!new File(rssF).exists()) {
             taskSender.rss();
@@ -58,6 +57,10 @@ public class SeoController {
         if (!new File(mapF).exists()) {
             taskSender.sitemap();
         }
+        if(!new File(qrF).exists()){
+            taskSender.qrCode();
+        }
+
 
     }
 
