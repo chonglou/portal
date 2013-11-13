@@ -21,36 +21,48 @@ function getUserInfo() {
         });
 }
 
-function showQQLoginButton() {
+function showQQLoginBar() {
     //调用QC.Login方法，指定btnId参数将按钮绑定在容器节点中
     QC.Login({
             //btnId：插入按钮的节点id，必选
-            btnId: "qqLoginBtn",
+            btnId: "qqLoginBar",
             //用户需要确认的scope授权项，可选，默认all
             scope: "all",
             //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
-            size: "B_M"
+            size: "B_S"
         }, function (reqData, opts) {//登录成功
             //根据返回数据，更换按钮显示状态方法
+            $("li#qqLoginBar").css("dropdown");
             $("li#personalBar").hide();
-            var dom = document.getElementById(opts['btnId']),
-                _logoutTemplate = '<a href="javascript:QC.Login.signOut();">{nickname},退出</a>';
-                    /*
-                    [
-                    //头像
-                    '<img src="{figureurl}"/>',
-                    //昵称
-                    '{nickname}',
-                    //退出
-                    '<a href="javascript:QC.Login.signOut();">退出</a>'
-                ].join("");
-            */
+            var dom = document.getElementById(opts['btnId']);
+            var _logoutTemplate = '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' +
+                '<img src="{figureurl}" class="navbar-icon" />QQ用户，{nickname}' + '<b class="caret"></b></a>';
+            _logoutTemplate +='<ul class="dropdown-menu">';
+            _logoutTemplate +='<li><a href="/personal/self">用户中心</a></li>';
+            _logoutTemplate +='<li class="divider"></li>';
+            _logoutTemplate +='<li><a href="javascript:QC.Login.signOut();">退出QQ登录</a></li>';
+            _logoutTemplate +='<li class="divider"></li>';
+            _logoutTemplate +='</ul>';
+
+
+            /*
+             '<a href="javascript:QC.Login.signOut();">{nickname},退出</a>';
+             [
+             //头像
+             '<img src="{figureurl}"/>',
+             //昵称
+             '{nickname}',
+             //退出
+             '<a href="javascript:QC.Login.signOut();">退出</a>'
+             ].join("");
+             */
             dom && (dom.innerHTML = QC.String.format(_logoutTemplate, {
                 nickname: QC.String.escHTML(reqData.nickname), //做xss过滤
                 figureurl: reqData.figureurl
             }));
+
         }, function (opts) {//注销成功
-            alert('QQ登录 注销成功');
+            alert('注销QQ登录成功');
         }
     );
     /*

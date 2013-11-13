@@ -15,10 +15,11 @@ $!{extends("/frame.httl")}
 #macro(qqLogin)
 <!--#set(Map<String,Object> gl_site)-->
 <!--#set(QQAuthProfile qap=gl_site.qqAuth)-->
-#if(qap.enable)
-<li id="qqLoginBtn"></li>
+<!--#set(SessionItem gl_session)-->
+#if(!gl_session && qap.enable)
+<li id="qqLoginBar"></li>
 <script type="text/javascript">
-showQQLoginButton();
+    showQQLoginBar();
 </script>
 #end
 #end
@@ -117,7 +118,9 @@ showQQLoginButton();
     </li>
     ${qqLogin}
     <li>
-        <a href="/rss.xml" target="_blank"><img title="收取站点更新通知" style="width: 20px;height: 20px" src="/style/rss.png"/></a>
+        <a href="/rss.xml" target="_blank">
+            <img title="收取站点更新通知" class="navbar-icon" src="/style/rss.png"/>
+        </a>
     </li>
 </ul>
 <!--#end-->
@@ -242,7 +245,9 @@ showQQLoginButton();
 
     <div class="list-group">
         #for(Page j: i.pages)
-        <a class="list-group-item #if(request.getRequestURI() == j.url) active #end" href="${j.url}" target="_blank">
+        <a
+                class="list-group-item #if(request.getRequestURI() == j.url) active #end"
+                href="${j.url}" target="_blank">
             $!{j.name}
         </a>
         #end
@@ -319,7 +324,9 @@ showQQLoginButton();
                     #for(card : cardList)
                     <!--#if(card.logo)-->
                     <li>
-                        <img title="${card.title}" id="carousel-${card.url}" src="${card.logo}"/>
+                        <img title="${card.title}"
+                             id="carousel-${card.url}"
+                             src="${card.logo}"/>
                     </li>
                     <!--#end-->
                     #end
