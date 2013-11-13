@@ -43,7 +43,8 @@ public abstract class PageController {
 
     protected void fillSiteInfo(Map<String, Object> map) {
         map.put("gl_site", cacheService.getSiteInfo());
-
+        map.put("gl_googleAuth", cacheService.getGoogleAuthProfile());
+        map.put("gl_qqAuth", cacheService.getQQAuthProfile());
     }
 
 

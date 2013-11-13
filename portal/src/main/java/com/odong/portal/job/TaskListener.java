@@ -11,7 +11,6 @@ import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.Task;
 import com.odong.portal.entity.User;
-import com.odong.portal.model.Contact;
 import com.odong.portal.model.profile.QrCodeProfile;
 import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
@@ -170,11 +169,11 @@ public class TaskListener implements MessageListener {
                     });
                     break;
                 case QR_CODE:
-                    taskExecutor.execute(()->{
-                        Hashtable<EncodeHintType,Object> hints = new Hashtable<>();
+                    taskExecutor.execute(() -> {
+                        Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
                         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
                         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-                        QrCodeProfile qcp= siteService.getObject("site.qrCode",QrCodeProfile.class);
+                        QrCodeProfile qcp = siteService.getObject("site.qrCode", QrCodeProfile.class);
                         try {
 
                             BitMatrix matrix = new MultiFormatWriter().encode(
@@ -185,9 +184,8 @@ public class TaskListener implements MessageListener {
                                     hints);
                             MatrixToImageWriter.writeToFile(matrix,
                                     "png",
-                                    new File(appStoreDir+"/site.png"));
-                        }
-                        catch (IOException | WriterException e){
+                                    new File(appStoreDir + "/site.png"));
+                        } catch (IOException | WriterException e) {
                             logger.error("生成二维码出错", e);
                         }
                     });
@@ -259,7 +257,7 @@ public class TaskListener implements MessageListener {
                     });
                     break;
                 case VISIT:
-                    switch (message.getString("type")){
+                    switch (message.getString("type")) {
                         case "article":
                             contentService.setArticleVisits(message.getLong("id"));
                             break;

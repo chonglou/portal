@@ -1,12 +1,12 @@
 window.UEDITOR_HOME_URL = "/ueditor/";
 
-function getJSessionId(){
+function getJSessionId() {
     var ss = ';jsessionid=';
     $.ajax({
         url: "/sessionId",
         type: "POST",
-        success: function(e){
-            ss+=e;
+        success: function (e) {
+            ss += e;
         },
         async: false,
         cache: false
@@ -163,7 +163,7 @@ function getJSessionId(){
         , scrawlPath: URL + "../attachments/"                            //图片修正地址，同imagePath
 
         //附件上传配置区
-        , fileUrl: URL + "../editor/fileUp"+getJSessionId()               //附件上传提交地址 修复swfupload session bug
+        , fileUrl: URL + "../editor/fileUp" + getJSessionId()               //附件上传提交地址 修复swfupload session bug
         , filePath: URL + "../attachments/"                   //附件修正地址，同imagePath
         //,fileFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 

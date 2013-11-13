@@ -2,10 +2,7 @@ package com.odong.portal.util;
 
 import com.odong.portal.entity.Task;
 import com.odong.portal.entity.User;
-import com.odong.portal.model.profile.KaptchaProfile;
-import com.odong.portal.model.profile.QQAuthProfile;
-import com.odong.portal.model.profile.QrCodeProfile;
-import com.odong.portal.model.profile.ReCaptchaProfile;
+import com.odong.portal.model.profile.*;
 import com.odong.portal.model.task.ClockRequest;
 import com.odong.portal.service.*;
 import httl.spi.resolvers.GlobalResolver;
@@ -53,7 +50,9 @@ public class SiteHelper {
             //二维码
             siteService.set("site.qrCode", new QrCodeProfile(title, 300, 300));
             //qq登录
-            siteService.set("site.qqAuth", new QQAuthProfile("","",""));
+            siteService.set("site.qqAuth", new QQAuthProfile("", "", "", ""));
+            //GOOGLE登录
+            siteService.set("site.googleAuth", new GoogleAuthProfile("", "", ""));
 
             //KAPTCHA
             KaptchaProfile kaptcha = new KaptchaProfile();

@@ -57,7 +57,7 @@ public class SeoController {
         if (!new File(mapF).exists()) {
             taskSender.sitemap();
         }
-        if(!new File(qrF).exists()){
+        if (!new File(qrF).exists()) {
             taskSender.qrCode();
         }
 

@@ -4,6 +4,7 @@ import com.odong.portal.entity.Article;
 import com.odong.portal.entity.FriendLink;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
+import com.odong.portal.model.profile.GoogleAuthProfile;
 import com.odong.portal.model.profile.QQAuthProfile;
 import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
@@ -39,8 +40,19 @@ public class CacheServiceImpl implements CacheService {
 
 
     @Override
+    public GoogleAuthProfile getGoogleAuthProfile() {
+
+        return cacheHelper.get("/oauth/google", GoogleAuthProfile.class, null, () -> siteService.getObject("site.googleAuth", GoogleAuthProfile.class));
+    }
+
+    @Override
+    public void popGoogleAuthProfile() {
+        cacheHelper.delete("oauth/google");
+    }
+
+    @Override
     public QQAuthProfile getQQAuthProfile() {
-        return cacheHelper.get("oauth/qq", QQAuthProfile.class, null, ()->siteService.getObject("site.qqAuth", QQAuthProfile.class));  //
+        return cacheHelper.get("oauth/qq", QQAuthProfile.class, null, () -> siteService.getObject("site.qqAuth", QQAuthProfile.class));  //
     }
 
     @Override
@@ -223,7 +235,7 @@ public class CacheServiceImpl implements CacheService {
         return cacheHelper.get("site/info", HashMap.class, null,
                 () -> {
                     HashMap<String, Object> site = new HashMap<>();
-                    for (String s : new String[]{"title","domain", "description", "copyright", "keywords", "author", "articlePageSize"}) {
+                    for (String s : new String[]{"title", "domain", "description", "copyright", "keywords", "author", "articlePageSize"}) {
                         site.put(s, siteService.getString("site." + s));
                     }
 

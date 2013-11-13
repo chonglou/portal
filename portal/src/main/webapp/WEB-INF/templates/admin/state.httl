@@ -31,6 +31,6 @@
     $("button#qqAuth").click(function () {
         clear_message_div();
         $("div#state").html("");
-        new Ajax("/admin/state/qqAuth", undefined,undefined,undefined,undefined, "state");
+        new Ajax("/admin/state/qqAuth", undefined, undefined, undefined, undefined, "state");
     });
 </script>

@@ -2,21 +2,19 @@ package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
 import com.odong.portal.form.admin.AllowForm;
+import com.odong.portal.form.admin.GoogleAuthForm;
 import com.odong.portal.form.admin.QqAuthForm;
-import com.odong.portal.form.admin.QrCodeForm;
 import com.odong.portal.model.SessionItem;
+import com.odong.portal.model.profile.GoogleAuthProfile;
 import com.odong.portal.model.profile.QQAuthProfile;
-import com.odong.portal.model.profile.QrCodeProfile;
 import com.odong.portal.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.CacheHelper;
 import com.odong.portal.util.CacheService;
-import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.RadioField;
-import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -47,21 +45,56 @@ public class StateController {
         return "admin/state";
     }
 
+    @RequestMapping(value = "/googleAuth", method = RequestMethod.GET)
+    @ResponseBody
+    Form getGoogleAuthForm(){
+        Form fm = new Form("qq", "二维码信息", "/admin/state/qqAuth");
+        GoogleAuthProfile gap = siteService.getObject("site.googleAuth", GoogleAuthProfile.class);
+        if (gap == null) {
+            gap = new GoogleAuthProfile("", "", "");
+        }
+        fm.addField(new TextField<>("id", "CLIENT ID", gap.getId()));
+        fm.addField(new TextField<>("secret", "CLIENT SECRET", gap.getSecret()));
+        fm.addField(new TextField<>("uri", "REDIRECT URI", gap.getUri()));
+        RadioField<Boolean> enable = new RadioField<Boolean>("enable", "状态", gap.isEnable());
+        enable.addOption("启用", Boolean.TRUE);
+        enable.addOption("停用", Boolean.FALSE);
+        fm.addField(enable);
+        fm.setOk(true);
+        return fm;
+    }
+
+    @RequestMapping(value = "/googleAuth", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postGoogleAuthForm(@Valid GoogleAuthForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            GoogleAuthProfile gap = new GoogleAuthProfile(form.getId(), form.getSecret(), form.getUri());
+            gap.setEnable(form.isEnable());
+            siteService.set("site.googleAuth", gap);
+            cacheService.popGoogleAuthProfile();
+            logService.add(si.getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
+        }
+        return ri;
+    }
+
+
     @RequestMapping(value = "/qqAuth", method = RequestMethod.GET)
     @ResponseBody
     Form getQqAuthForm() {
         Form fm = new Form("qq", "二维码信息", "/admin/state/qqAuth");
         QQAuthProfile qap = siteService.getObject("site.qqAuth", QQAuthProfile.class);
         if (qap == null) {
-            qap = new QQAuthProfile("","","");
+            qap = new QQAuthProfile("", "", "", "");
         }
         fm.addField(new TextField<>("valid", "验证代码", qap.getValid()));
         fm.addField(new TextField<>("id", "APP ID", qap.getId()));
         fm.addField(new TextField<>("key", "APP KEY", qap.getKey()));
+        fm.addField(new TextField<>("uri", "回调路径", qap.getUri()));
 
-        RadioField<Boolean> enable = new RadioField<Boolean>("enable","状态", qap.isEnable());
+        RadioField<Boolean> enable = new RadioField<Boolean>("enable", "状态", qap.isEnable());
         enable.addOption("启用", Boolean.TRUE);
-        enable.addOption("停用",Boolean.FALSE);
+        enable.addOption("停用", Boolean.FALSE);
         fm.addField(enable);
         fm.setOk(true);
         return fm;
@@ -72,10 +105,9 @@ public class StateController {
     ResponseItem postQqAuthForm(@Valid QqAuthForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            QQAuthProfile qap = new QQAuthProfile(form.getValid(),form.getId(),form.getKey());
+            QQAuthProfile qap = new QQAuthProfile(form.getValid(), form.getId(), form.getKey(), form.getUri());
             qap.setEnable(form.isEnable());
             siteService.set("site.qqAuth", qap);
-            cacheService.popSiteInfo();
             cacheService.popQQAuthProfile();
             logService.add(si.getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
         }

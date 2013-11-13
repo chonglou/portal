@@ -4,7 +4,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,13 +17,14 @@ import java.util.Date;
 @Table(name = "ucOpenId")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class OpenId extends IdEntity {
-    public enum  Type{
-        QQ
+    public enum Type {
+        QQ, GOOGLE
     }
+
     private static final long serialVersionUID = 8161901734311168752L;
     @Column(nullable = false, updatable = false, unique = true)
     private String oid;
-    @Column(nullable = false)
+    @Column(length = 512)
     private String token;
     @Column(nullable = false, updatable = false)
     private Long user;

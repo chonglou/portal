@@ -12,10 +12,10 @@
     <div id="info"></div>
 </fieldset>
 <script type="text/javascript">
-    function show(act){
+    function show(act) {
         clear_message_div();
         $("div#info").html("");
-        new Ajax("/admin/site/"+act, undefined, undefined, undefined, undefined, "info");
+        new Ajax("/admin/site/" + act, undefined, undefined, undefined, undefined, "info");
     }
     $("button#refresh").click(function () {
         clear_message_div();

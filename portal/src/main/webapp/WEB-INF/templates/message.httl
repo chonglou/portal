@@ -35,15 +35,15 @@ ${left_nav_bar_1}
     #end
 
     <script type="text/javascript">
-        function runtime(){
+        function runtime() {
             var t = $("label#time");
-            if(t.text()== 1){
-                window.location.href="/";
+            if (t.text() == 1) {
+                window.location.href = "/";
             }
-            else{
-                t.html(t.text()-1);
+            else {
+                t.html(t.text() - 1);
             }
-            setTimeout("runtime()",1000);
+            setTimeout("runtime()", 1000);
         }
         runtime();
     </script>

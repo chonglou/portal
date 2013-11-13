@@ -18,7 +18,8 @@ public class SessionItem implements Serializable {
     private boolean ssAdmin;
     private boolean ssLocal;
     public final static String KEY = "d1s7e0wp";
-    public SessionItem(long userId, String email, String username){
+
+    public SessionItem(long userId, String email, String username) {
         this.ssUserId = userId;
         this.ssEmail = email;
         this.ssUsername = username;

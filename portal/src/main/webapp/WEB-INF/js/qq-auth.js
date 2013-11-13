@@ -21,19 +21,20 @@ function getUserInfo() {
         });
 }
 
-function checkQQLogin(){
-    if(QC.Login.check()){
-        QC.Login.getMe(function(openId, accessToken){
-            QC.api("get_user_info", {}).success(function(user){
+function checkQQLogin() {
+    if (QC.Login.check()) {
+        QC.Login.getMe(function (openId, accessToken) {
+            QC.api("get_user_info", {}).success(function (user) {
                 new Ajax(
                     "/oauth/qq",
                     'POST',
                     {
-                        token:accessToken,
-                        id:openId,
-                        name:user.data.nickname
+                        token: accessToken,
+                        id: openId,
+                        name: user.data.nickname
                     },
-                    function(){});
+                    function () {
+                    });
             });
 
         });
@@ -57,12 +58,12 @@ function showQQLoginBar() {
             var dom = document.getElementById(opts['btnId']);
             var _logoutTemplate = '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' +
                 '<img src="{figureurl}" class="navbar-icon" /> {nickname}' + '<b class="caret"></b></a>';
-            _logoutTemplate +='<ul class="dropdown-menu">';
-            _logoutTemplate +='<li><a href="/personal/self">用户中心</a></li>';
-            _logoutTemplate +='<li class="divider"></li>';
-            _logoutTemplate +='<li><a href="javascript:QC.Login.signOut();">退出登录</a></li>';
-            _logoutTemplate +='<li class="divider"></li>';
-            _logoutTemplate +='</ul>';
+            _logoutTemplate += '<ul class="dropdown-menu">';
+            _logoutTemplate += '<li><a href="/personal/self">用户中心</a></li>';
+            _logoutTemplate += '<li class="divider"></li>';
+            _logoutTemplate += '<li><a href="javascript:QC.Login.signOut();">退出登录</a></li>';
+            _logoutTemplate += '<li class="divider"></li>';
+            _logoutTemplate += '</ul>';
 
             dom && (dom.innerHTML = QC.String.format(_logoutTemplate, {
                 nickname: QC.String.escHTML(reqData.nickname), //做xss过滤
@@ -71,7 +72,7 @@ function showQQLoginBar() {
 
         }, function (opts) {//注销成功
             alert('注销QQ登录成功');
-            window.location.href="/personal/logout";
+            window.location.href = "/personal/logout";
         }
     );
     /*

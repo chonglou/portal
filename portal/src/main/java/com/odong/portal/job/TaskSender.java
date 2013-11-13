@@ -29,9 +29,10 @@ import java.util.UUID;
 @Component
 public class TaskSender {
 
-    public void qrCode(){
+    public void qrCode() {
         send(Task.Type.QR_CODE, new HashMap<>());
     }
+
     public void visitArticle(long article) {
         Map<String, Object> map = new HashMap<>();
         map.put("type", "article");

@@ -1,4 +1,3 @@
-
 <!--#macro(carouseCard)-->
 <div id="myCarousel" class="carousel slide">
     <!--#set(List<Card> cardList)-->

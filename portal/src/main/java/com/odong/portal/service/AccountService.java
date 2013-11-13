@@ -13,8 +13,10 @@ import java.util.List;
  * Time: 下午2:28
  */
 public interface AccountService {
+    long addGoogleUser(String openId, String email);
 
     void setOpenIdToken(long openId, String token);
+
     OpenId getOpenId(String openId, OpenId.Type type);
 
     long addQQUser(String openId, String accessToken, String nickname);
@@ -32,6 +34,7 @@ public interface AccountService {
     long addUser(String email, String username, String password);
 
     void setUserContact(long user, Contact contact);
+
     void setUserName(long user, String username);
 
     //void setUserInfo(long user, String username, String contact);

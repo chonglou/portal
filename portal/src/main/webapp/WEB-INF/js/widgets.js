@@ -1,31 +1,31 @@
-function show_card_carousel(id){
-    $("div#"+id).jcarousel({
+function show_card_carousel(id) {
+    $("div#" + id).jcarousel({
         auto: 2,
-        scroll:1,
-        visible:1,
-        initCallback:function(carousel){
-            $("img[id^='"+id+"-']").each(function () {
+        scroll: 1,
+        visible: 1,
+        initCallback: function (carousel) {
+            $("img[id^='" + id + "-']").each(function () {
                 $(this).click(function () {
                     window.open($(this).attr('id').split('-')[1]);
                 });
             });
-            carousel.buttonNext.bind('click', function() {
+            carousel.buttonNext.bind('click', function () {
                 carousel.startAuto(0);
             });
-            carousel.buttonPrev.bind('click', function() {
+            carousel.buttonPrev.bind('click', function () {
                 carousel.startAuto(0);
             });
-            carousel.clip.hover(function() {
+            carousel.clip.hover(function () {
                 carousel.stopAuto();
-            }, function() {
+            }, function () {
                 carousel.startAuto();
             });
         },
         wrap: 'circular'
     });
 }
-function show_card_fall(id){
-    $('div#'+id).masonry({
+function show_card_fall(id) {
+    $('div#' + id).masonry({
         itemSelector: '.fall-item'
     });
 }

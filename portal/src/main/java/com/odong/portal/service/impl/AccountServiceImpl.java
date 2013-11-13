@@ -26,6 +26,26 @@ import java.util.Map;
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
     @Override
+    public long addGoogleUser(String openId, String email) {
+        User u = new User();
+        u.setEmail(email);
+        u.setUsername(email.split("@")[0]);
+        u.setPassword(encryptHelper.encrypt(stringHelper.random(12)));
+        u.setCreated(new Date());
+        u.setState(User.State.ENABLE);
+        long uid = userDao.persist(u);
+
+        OpenId oi = new OpenId();
+        oi.setOid(openId);
+        oi.setType(OpenId.Type.GOOGLE);
+        oi.setUser(uid);
+        oi.setCreated(new Date());
+        openIdDao.insert(oi);
+
+        return uid;  //
+    }
+
+    @Override
     public void setOpenIdToken(long openId, String token) {
         OpenId oi = openIdDao.select(openId);
         oi.setToken(token);
@@ -44,12 +64,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public long addQQUser(String openId, String accessToken, String nickname) {
         User u = new User();
-        u.setEmail(stringHelper.random(8)+"@localhost");
+        u.setEmail(stringHelper.random(8) + "@localhost");
         u.setUsername(nickname);
         u.setPassword(encryptHelper.encrypt(stringHelper.random(12)));
         u.setCreated(new Date());
         u.setState(User.State.ENABLE);
-        long uid= userDao.persist(u);
+        long uid = userDao.persist(u);
 
         OpenId oi = new OpenId();
         oi.setOid(openId);
@@ -120,7 +140,6 @@ public class AccountServiceImpl implements AccountService {
         u.setUsername(username);
         userDao.update(u);
     }
-
 
 
     @Override

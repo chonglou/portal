@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  * Time: 下午11:59
  */
 @Repository("openIdDao")
-public class OpenIdDaoImpl extends BaseJpa2DaoImpl<OpenId,Long> implements OpenIdDao {
+public class OpenIdDaoImpl extends BaseJpa2DaoImpl<OpenId, Long> implements OpenIdDao {
 }

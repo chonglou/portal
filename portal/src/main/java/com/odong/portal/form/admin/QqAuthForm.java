@@ -13,7 +13,16 @@ public class QqAuthForm implements Serializable {
     private String valid;
     private String id;
     private String key;
+    private String uri;
     private boolean enable;
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
     public boolean isEnable() {
         return enable;
