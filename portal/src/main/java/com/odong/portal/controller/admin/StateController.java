@@ -76,6 +76,7 @@ public class StateController {
             qap.setEnable(form.isEnable());
             siteService.set("site.qqAuth", qap);
             cacheService.popSiteInfo();
+            cacheService.popQQAuthProfile();
             logService.add(si.getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
         }
         return ri;

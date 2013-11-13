@@ -36,6 +36,18 @@ import java.util.*;
  */
 @Component
 public class CacheServiceImpl implements CacheService {
+
+
+    @Override
+    public QQAuthProfile getQQAuthProfile() {
+        return cacheHelper.get("oauth/qq", QQAuthProfile.class, null, ()->siteService.getObject("site.qqAuth", QQAuthProfile.class));  //
+    }
+
+    @Override
+    public void popQQAuthProfile() {
+        cacheHelper.delete("oauth/qq");
+    }
+
     @Override
     public String getSiteDomain() {
         return cacheHelper.get("site/domain", String.class, null, () -> siteService.getString("site.domain"));
