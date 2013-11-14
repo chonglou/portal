@@ -48,7 +48,7 @@ public class StateController {
     @RequestMapping(value = "/googleAuth", method = RequestMethod.GET)
     @ResponseBody
     Form getGoogleAuthForm(){
-        Form fm = new Form("qq", "二维码信息", "/admin/state/qqAuth");
+        Form fm = new Form("qq", "二维码信息", "/admin/state/googleAuth");
         GoogleAuthProfile gap = siteService.getObject("site.googleAuth", GoogleAuthProfile.class);
         if (gap == null) {
             gap = new GoogleAuthProfile("", "", "");

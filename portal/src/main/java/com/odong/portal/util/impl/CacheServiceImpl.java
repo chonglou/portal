@@ -1,9 +1,6 @@
 package com.odong.portal.util.impl;
 
-import com.odong.portal.entity.Article;
-import com.odong.portal.entity.FriendLink;
-import com.odong.portal.entity.Tag;
-import com.odong.portal.entity.User;
+import com.odong.portal.entity.*;
 import com.odong.portal.model.profile.GoogleAuthProfile;
 import com.odong.portal.model.profile.QQAuthProfile;
 import com.odong.portal.model.profile.SmtpProfile;
@@ -151,6 +148,11 @@ public class CacheServiceImpl implements CacheService {
         return cacheHelper.get("user/" + id, User.class, null, () -> accountService.getUser(id));
     }
 
+    @Override
+    public OpenId getOpenId(String openId, OpenId.Type type) {
+        return cacheHelper.get("openId/" + openId + "/" + type, OpenId.class, null, () -> accountService.getOpenId(openId, type));
+    }
+
 
     @Override
     public List<Card> getArticleCardsByPager(int no, int size) {
@@ -213,7 +215,7 @@ public class CacheServiceImpl implements CacheService {
             ArrayList<Card> cards = new ArrayList<>();
             accountService.listUser().forEach((u) -> {
                 if (u.getState() == User.State.ENABLE && !u.getEmail().equals(manager)) {
-                    cards.add(new Card(u.getLogo(), u.getUsername(), u.getEmail(), "/user/" + u.getId()));
+                    cards.add(new Card(u.getLogo(), u.getUsername(), u.getRealEmail(), "/user/" + u.getId()));
                 }
             });
             return cards;
@@ -382,6 +384,16 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public String getGoogleValidCode() {
         return cacheHelper.get("site/google/valid", String.class, null, () -> siteService.getString("site.google.valid"));  //
+    }
+
+    @Override
+    public void popUser(long user) {
+        cacheHelper.delete("user/" + user);
+    }
+
+    @Override
+    public void popOpenId(String openId, OpenId.Type type) {
+        cacheHelper.delete("openId/" + openId + "/" + type);
     }
 
     @Override

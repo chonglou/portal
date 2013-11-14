@@ -83,6 +83,9 @@ public class User extends IdEntity {
         return state;
     }
 
+    public String getRealEmail(){
+        return email.contains("localhost") ? "" : email;
+    }
 
     public String getEmail() {
         return email;

@@ -175,11 +175,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.17.0-rc</version>
-        </dependency>
 
         <dependency>
             <groupId>org.jasypt</groupId>

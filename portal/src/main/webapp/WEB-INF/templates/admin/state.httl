@@ -5,6 +5,7 @@
             <button id="runtime" class="btn btn-info">系统运行</button>
             <button id="service" class="btn btn-warning">站点服务</button>
             <button id="qqAuth" class="btn btn-success">QQ互联</button>
+            <button id="googleAuth" class="btn btn-warning">Google+</button>
             <button id="refresh" class="btn btn-primary">刷新</button>
         </span>
     </legend>
@@ -32,5 +33,10 @@
         clear_message_div();
         $("div#state").html("");
         new Ajax("/admin/state/qqAuth", undefined, undefined, undefined, undefined, "state");
+    });
+    $("button#googleAuth").click(function () {
+        clear_message_div();
+        $("div#state").html("");
+        new Ajax("/admin/state/googleAuth", undefined, undefined, undefined, undefined, "state");
     });
 </script>

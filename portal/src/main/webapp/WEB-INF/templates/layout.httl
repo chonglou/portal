@@ -20,16 +20,29 @@ $!{extends("/frame.httl")}
 <!--#set(Map<String,Object> gl_site)-->
 <!--#set(QQAuthProfile gl_qqAuth)-->
 <!--#set(SessionItem gl_session)-->
-#if((gl_session==null || !gl_session.ssLocal()) && gl_qqAuth.enable)
+#if(gl_session==null && gl_qqAuth.enable)
 <li id="qqLoginBar"></li>
 <script type="text/javascript">
     showQQLoginBar();
 </script>
 #end
-#if(gl_session==null && gl_qqAuth.enable)
-<script type="text/javascript">
-    checkQQLogin();
-</script>
+#end
+
+#macro(googleLogin)
+<!--#set(Map<String,Object> gl_site)-->
+<!--#set(GoogleAuthProfile gl_googleAuth)-->
+<!--#set(SessionItem gl_session)-->
+#if((gl_session==null || !gl_session.ssLocal()) && gl_googleAuth.enable)
+<li id="googleLoginBar">
+    <a
+            class="g-signin"
+            data-callback="signinCallback"
+            data-clientid="gl_googleAuth.id"
+            data-cookiepolicy="single_host_origin"
+            data-requestvisibleactions="http://schemas.google.com/AddActivity"
+            data-scope="https://www.googleapis.com/auth/plus.login">
+  </a>
+</li>
 #end
 #end
 

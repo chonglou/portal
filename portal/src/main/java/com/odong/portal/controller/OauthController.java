@@ -114,28 +114,35 @@ public class OauthController extends PageController {
                         @RequestParam("token") String token,
                         @RequestParam("name") String name,
                         HttpSession session) {
-        logger.debug("QQ登录 openid={} token={} name={}", id, token, name);
+
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        if(session.getAttribute(SessionItem.KEY) != null){
+            ri.addData("已经登录");
+            return ri;
+        }
+
         if (!checkQqOpenId(token, id)) {
             ri.addData("数据格式不正确");
             return ri;
         }
 
-        OpenId oi = accountService.getOpenId(id, OpenId.Type.QQ);
+        logger.debug("QQ登录 openid={} token={} name={}", id, token, name);
+        OpenId oi = cacheService.getOpenId(id, OpenId.Type.QQ);
 
         long uid;
         if (oi == null) {
             uid = accountService.addQQUser(id, token, name);
-
         } else {
             uid = oi.getUser();
-            User user = accountService.getUser(uid);
+            User user = cacheService.getUser(uid);
             if (!name.equals(user.getUsername())) {
                 accountService.setUserName(uid, name);
+                cacheService.popUser(uid);
                 logger.info("更新{}的昵称", id);
             }
             if (!token.equals(oi.getToken())) {
                 accountService.setOpenIdToken(oi.getId(), token);
+                cacheService.popOpenId(id, OpenId.Type.QQ);
                 logger.info("更新{}的token", id);
             }
         }
@@ -146,7 +153,7 @@ public class OauthController extends PageController {
     }
 
     void login(long uid, HttpSession session) {
-        User user = accountService.getUser(uid);
+        User user = cacheService.getUser(uid);
         SessionItem si = new SessionItem(user.getId(), user.getEmail(), user.getUsername());
         si.setSsLocal(false);
         session.setAttribute(SessionItem.KEY, si);
