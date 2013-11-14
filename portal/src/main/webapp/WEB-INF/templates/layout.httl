@@ -20,7 +20,7 @@ $!{extends("/frame.httl")}
 <!--#set(Map<String,Object> gl_site)-->
 <!--#set(QQAuthProfile gl_qqAuth)-->
 <!--#set(SessionItem gl_session)-->
-#if( gl_qqAuth.enable)
+#if(gl_qqAuth.enable)
 <li id="qqAuthBar"></li>
 <script type="text/javascript">
     showQQLoginBar();

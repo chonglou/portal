@@ -44,6 +44,10 @@ function draw_person_bar(fn_logout){
             }
             title+=result.name+'。';
 
+
+            $("li#qqAuthBar").hide();
+            $("li#googleAuthBar").hide();
+
             $("li#personalBar ul.dropdown-menu a").each(function () {
                 var id = $(this).attr("id");
                 if(id.indexOf('logout')>=0){
