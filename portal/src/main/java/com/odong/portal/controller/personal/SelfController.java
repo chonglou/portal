@@ -4,14 +4,14 @@ import com.odong.portal.controller.PageController;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.LogService;
 import com.odong.portal.web.NavBar;
+import com.odong.portal.web.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +25,33 @@ import java.util.Map;
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
 public class SelfController extends PageController {
+    @RequestMapping(value = "/bar", method = RequestMethod.GET)
+    @ResponseBody
+    Map<String,Object> getItems(HttpSession session){
+        Map<String,Object> map = new HashMap<>();
+        List<Page> pages = new ArrayList<>();
+        if(session.getAttribute(SessionItem.KEY)==null){
+            pages.add(new Page("用户登录", "/personal/login"));
+            pages.add(new Page("账户注册", "/personal/register"));
+            pages.add(new Page("账户激活", "/personal/active"));
+            pages.add(new Page("重置密码", "/personal/resetPwd"));
+            map.put("ok",false);
+        }
+        else {
+            SessionItem si = (SessionItem)session.getAttribute(SessionItem.KEY);
+            pages.add(new Page("用户中心","/personal/self"));
+            pages.add(new Page("安全退出", "/personal/logout"));
+            map.put("logo",si.getSsLogo());
+            map.put("name", si.getSsUsername());
+            map.put("type", si.getSsType());
+            map.put("ok", true);
+        }
+
+        map.put("items", pages);
+
+        return map;
+    }
+
 
     @RequestMapping(value = "/self", method = RequestMethod.GET)
     String getIndex(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {

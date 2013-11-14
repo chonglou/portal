@@ -46,6 +46,9 @@ public class SecurityInterceptor implements HandlerInterceptor {
         }
 
         if (url.startsWith("/personal/")) {
+            if("/personal/bar".equals(url)){
+                return true;
+            }
             if (si != null && "/personal/logout".equals(url)) {
                 logService.add(si.getSsUserId(), "注销登陆", Log.Type.INFO);
                 request.getSession().invalidate();

@@ -8,7 +8,7 @@ $!{extends("/frame.httl")}
 <meta property="qc:admins" content="${gl_qqAuth.valid}"/>
 <script type="text/javascript"
         src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js"
-        data-appid="${gl_qqAuth.id}" data-callback="true"
+        data-appid="${gl_qqAuth.id}"  data-callback="true"
         data-redirecturi="${gl_qqAuth.uri}" charset="utf-8">
 </script>
 <script type="text/javascript" src="/js/qq-auth.js#if(gl_debug)?_=${random()}#end">
@@ -16,32 +16,32 @@ $!{extends("/frame.httl")}
 #end
 #end
 
-#macro(qqLogin)
+#macro(qqAuthBar)
 <!--#set(Map<String,Object> gl_site)-->
 <!--#set(QQAuthProfile gl_qqAuth)-->
 <!--#set(SessionItem gl_session)-->
-#if(gl_session==null && gl_qqAuth.enable)
-<li id="qqLoginBar"></li>
+#if( gl_qqAuth.enable)
+<li id="qqAuthBar"></li>
 <script type="text/javascript">
     showQQLoginBar();
 </script>
 #end
 #end
 
-#macro(googleLogin)
+#macro(googleAuthBar1)
 <!--#set(Map<String,Object> gl_site)-->
 <!--#set(GoogleAuthProfile gl_googleAuth)-->
 <!--#set(SessionItem gl_session)-->
-#if((gl_session==null || !gl_session.ssLocal()) && gl_googleAuth.enable)
+#if(gl_session==null && gl_googleAuth.enable)
 <li id="googleLoginBar">
-    <a
+    <span
             class="g-signin"
             data-callback="signinCallback"
             data-clientid="gl_googleAuth.id"
             data-cookiepolicy="single_host_origin"
             data-requestvisibleactions="http://schemas.google.com/AddActivity"
             data-scope="https://www.googleapis.com/auth/plus.login">
-  </a>
+  </span>
 </li>
 #end
 #end
@@ -91,61 +91,29 @@ $!{extends("/frame.httl")}
 <!--#end-->
 
 <!--#macro(top_right_bar)-->
-#set(SessionItem gl_session)
-#if(gl_session)
-#set(personal_bar_items=["self":"用户中心","logout":"安全退出"])
-#set(personal_bar_sort=["self", "logout"])
-#set(personal_bar_name="欢迎你，"+gl_session.ssUsername+"。")
-#else
-#set(personal_bar_items=["login":"用户登录", "register":"账户注册", "active":"账户激活", "resetPwd":"重置密码"])
-#set(personal_bar_sort=["login", "register", "active", "resetPwd"])
-#set(personal_bar_name="登录/注册")
-#end
-<script>
-    $(document).ready(function () {
-        $("a#favorites").click(function (e) {
-            e.preventDefault(); // this will prevent the anchor tag from going the user off to the link
-            var bookmarkUrl = this.href;
-            var bookmarkTitle = this.title;
-
-            if (window.sidebar) { // For Mozilla Firefox Bookmark
-                window.sidebar.addPanel(bookmarkTitle, bookmarkUrl, "");
-            } else if (window.external || document.all) { // For IE Favorite
-                window.external.AddFavorite(bookmarkUrl, bookmarkTitle);
-            } else if (window.opera) { // For Opera Browsers
-                this.attr("href", bookmarkUrl);
-                this.attr("title", bookmarkTitle);
-                this.attr("rel", "sidebar");
-            } else { // for other browsers which does not support
-                alert('您的浏览器不支持收藏夹功能，请手动使用Ctrl+D快捷键');
-            }
-
-        });
-    });
-</script>
 <ul class="nav navbar-nav navbar-right">
     <li><a href="#" id="favorites">收藏本页</a></li>
     <li id="personalBar" class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            ${personal_bar_name} <b class="caret"></b>
+            <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
-            #for(i : personal_bar_sort)
-            <li><a id="personal_bar-${i}">${personal_bar_items[i]}</a></li>
-            #if(!for.last)
-            <li class="divider"></li>
-            #end
-            #end
         </ul>
     </li>
-    ${qqLogin}
+    ${qqAuthBar}
+    ${googleAuthBar}
     <li>
         <a href="/rss.xml" target="_blank">
             <img title="收取站点更新通知" class="navbar-icon" src="/style/rss.png"/>
         </a>
     </li>
 </ul>
+<script  type="text/javascript">
+    draw_person_bar();
+</script>
 <!--#end-->
+
+
 
 <!--#macro(left_nav_bar_1)-->
 <!--#set(List<NavBar> navBars)-->

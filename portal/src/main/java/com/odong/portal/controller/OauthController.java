@@ -66,7 +66,7 @@ public class OauthController extends PageController {
                     String openId = map.get("sub");
                     OpenId oi = accountService.getOpenId(openId, OpenId.Type.GOOGLE);
                     long uid = oi == null ? accountService.addGoogleUser(openId, email) : oi.getUser();
-                    login(uid, session);
+                    login(uid, session, "google");
                     response.sendRedirect("/");
                     return;
                 }
@@ -118,6 +118,7 @@ public class OauthController extends PageController {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         if(session.getAttribute(SessionItem.KEY) != null){
             ri.addData("已经登录");
+            ri.setOk(true);
             return ri;
         }
 
@@ -147,15 +148,15 @@ public class OauthController extends PageController {
             }
         }
 
-        login(uid, session);
+        login(uid, session, "qq");
         ri.setOk(true);
         return ri;
     }
 
-    void login(long uid, HttpSession session) {
+    void login(long uid, HttpSession session, String type) {
         User user = cacheService.getUser(uid);
         SessionItem si = new SessionItem(user.getId(), user.getEmail(), user.getUsername());
-        si.setSsLocal(false);
+        si.setSsType(type);
         session.setAttribute(SessionItem.KEY, si);
         accountService.setUserLastLogin(user.getId());
         logService.add(user.getId(), "用户登陆", Log.Type.INFO);
