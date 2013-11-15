@@ -39,7 +39,7 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public GoogleAuthProfile getGoogleAuthProfile() {
 
-        return cacheHelper.get("/oauth/google", GoogleAuthProfile.class, null, () -> siteService.getObject("site.googleAuth", GoogleAuthProfile.class));
+        return cacheHelper.get("oauth/google", GoogleAuthProfile.class, null, () -> siteService.getObject("site.googleAuth", GoogleAuthProfile.class));
     }
 
     @Override

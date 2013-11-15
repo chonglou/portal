@@ -15,7 +15,7 @@ public class GoogleAuthProfile implements Serializable {
     private String secret;
     private boolean enable;
 
-    public GoogleAuthProfile(String id, String uri, String secret) {
+    public GoogleAuthProfile(String id, String secret, String uri) {
         this.id = id;
         this.uri = uri;
         this.secret = secret;

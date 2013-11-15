@@ -36,7 +36,6 @@ $!{extends("/frame.httl")}
                                     draw_person_bar(function () {
                                         if (window.confirm("您确认要退出QQ登录么？")) {
                                             QC.Login.signOut();
-                                            //root.show();
                                             window.location.href = "/personal/logout";
                                         }
                                     });
@@ -61,6 +60,10 @@ $!{extends("/frame.httl")}
 <!--#set(GoogleAuthProfile gl_googleAuth)-->
 #if(gl_googleAuth.enable)
 <script type="text/javascript">
+    $(document).ready(function () {
+        $("li#googleAuthBar").html('<div id="googleAuthBtn"><img src="/style/google/base.png"></div>');
+    });
+
     (function () {
         var po = document.createElement('script');
         po.type = 'text/javascript';
@@ -81,21 +84,39 @@ $!{extends("/frame.httl")}
     }
     function loginCallback(authResult) {
         if (authResult['access_token']) {
-
+            new Ajax(
+                    "/oauth/google",
+                    "POST",
+                    {
+                        token: authResult['access_token'],
+                        info: authResult['id_token'],
+                        code: authResult['code']
+                    },
+                    function (result) {
+                        if(result.ok){
+                            draw_person_bar(function () {
+                                if (window.confirm("您确认要退出Google账户么？")) {
+                                    new Ajax("/personal/logout", undefined, undefined, function(){
+                                        window.location.href="https://accounts.google.com/Logout";
+                                    });
+                                }
+                            });
+                        }
+                    }
+            );
         }
         else {
-            console.log('存在错误：' + authResult['error']);
+            console.log('google未登录');
         }
     }
-
 </script>
 <style type="text/css">
-    #googleAuthBtn img{
+    #googleAuthBtn img {
         width: 88px;
         padding-top: 10px
     }
 
-    #googleAuthBtn :hover{
+    #googleAuthBtn :hover {
         cursor: pointer;
     }
 
@@ -158,11 +179,7 @@ $!{extends("/frame.httl")}
         </ul>
     </li>
     <li id="qqAuthBar"></li>
-    <li id="googleAuthBar">
-        <div id="googleAuthBtn">
-            <img src="/style/google/base.png">
-        </div>
-    </li>
+    <li id="googleAuthBar"></li>
     <li>
         <a href="/rss.xml" target="_blank">
             <img title="收取站点更新通知" class="navbar-icon" src="/style/rss.png"/>

@@ -13,7 +13,7 @@ import java.util.List;
  * Time: 下午2:28
  */
 public interface AccountService {
-    long addGoogleUser(String openId, String email);
+    long addGoogleUser(String openId, String token);
 
     void setOpenIdToken(long openId, String token);
 

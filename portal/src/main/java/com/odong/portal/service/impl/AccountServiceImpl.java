@@ -26,10 +26,11 @@ import java.util.Map;
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
     @Override
-    public long addGoogleUser(String openId, String email) {
+    public long addGoogleUser(String openId, String token) {
         User u = new User();
-        u.setEmail(email);
-        u.setUsername(email.split("@")[0]);
+        String name = stringHelper.random(8);
+        u.setEmail(name+"@localhost");
+        u.setUsername(name);
         u.setPassword(encryptHelper.encrypt(stringHelper.random(12)));
         u.setCreated(new Date());
         u.setState(User.State.ENABLE);
@@ -37,6 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
         OpenId oi = new OpenId();
         oi.setOid(openId);
+        oi.setToken(token);
         oi.setType(OpenId.Type.GOOGLE);
         oi.setUser(uid);
         oi.setCreated(new Date());
