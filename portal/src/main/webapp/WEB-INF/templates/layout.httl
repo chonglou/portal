@@ -61,6 +61,15 @@ $!{extends("/frame.httl")}
 <!--#set(GoogleAuthProfile gl_googleAuth)-->
 #if(gl_googleAuth.enable)
 <script type="text/javascript">
+    (function () {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js?onload=render';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+
     function render() {
         gapi.signin.render('googleAuthBtn', {
             'callback': 'loginCallback',
@@ -81,40 +90,16 @@ $!{extends("/frame.httl")}
 
 </script>
 <style type="text/css">
-    #googleAuthBtn {
-        background: url('/style/google.png') transparent 10px 50% no-repeat;
-        display: inline-block;
-        background: #cc3732;
-        color: white;
-        width: 50px;
-        border-radius: 5px;
+    #googleAuthBtn img{
+        width: 88px;
+        padding-top: 10px
     }
 
-    #googleAuthBtn:hover {
-        background: #e74b37;
-        cursor: hand;
+    #googleAuthBtn :hover{
+        cursor: pointer;
     }
 
-    span.label {
-        font-weight: bold;
-    }
-
-    span.icon {
-
-        display: inline-block;
-        vertical-align: middle;
-        width: 40px;
-        height: 40px;
-    }
-
-    span.buttonText {
-        display: inline-block;
-        vertical-align: middle;
-        padding-left: 40px;
-        padding-right: 40px;
-    }
 </style>
-
 #end
 #end
 
@@ -174,8 +159,9 @@ $!{extends("/frame.httl")}
     </li>
     <li id="qqAuthBar"></li>
     <li id="googleAuthBar">
-        <span ></span>
-        <span id="googleAuthBtn"></span>
+        <div id="googleAuthBtn">
+            <img src="/style/google/base.png">
+        </div>
     </li>
     <li>
         <a href="/rss.xml" target="_blank">
