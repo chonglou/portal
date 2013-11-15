@@ -176,3 +176,22 @@
      });
      */
 </script>
+
+==========================================================
+
+#macro(googleAuthBar)
+<!--#set(GoogleAuthProfile gl_googleAuth)-->
+#if(gl_googleAuth.enable)
+<li id="googleAuthBar">
+    <span
+            class="g-signin"
+            data-callback="loginCallback"
+            data-clientid="${gl_googleAuth.id}"
+            data-cookiepolicy="single_host_origin"
+            data-requestvisibleactions="http://schemas.google.com/AddActivity"
+            data-scope="https://www.googleapis.com/auth/plus.login">
+  </span>
+</li>
+#end
+#end
+=========================================================

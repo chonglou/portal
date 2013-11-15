@@ -32,7 +32,6 @@
     </script>
     <script type="text/javascript" src="/js/widgets.js#if(gl_debug)?_=${random()}#end"></script>
     <script type="text/javascript" src="/js/main.js#if(gl_debug)?_=${random()}#end"></script>
-    <script type="text/javascript" src="/js/google-auth.js#if(gl_debug)?_=${random()}#end"></script>
     #if(gl_debug)
     <script type="text/javascript" src="/js/test.js?_=${random()}"></script>
     #end
@@ -41,7 +40,7 @@
     #else
     <script type="text/javascript" src="/js/non-login.js#if(gl_debug)?_=${random()}#end"></script>
     #end
-    #macro($!qqHead)#end
+    #macro($!qqAuthHead)#end
     #macro($!head)#end
 </head>
 <body>
@@ -71,15 +70,6 @@
         <p>$!{gl_site.copyright} 使用<a href="https://code.google.com/p/latrop/" target="_blank">LATROP内容管理系统</a>搭建</p>
     </footer>
 </div>
-<!--#set(GoogleAuthProfile gl_googleAuth)-->
-#if(gl_session==null && gl_googleAuth.enable)
-<script type="text/javascript">
-    (function() {
-        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-        po.src = 'https://apis.google.com/js/client:plusone.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-    })();
-</script>
-#end
+#macro($!googleAuthHead)#end
 </body>
 </html>
