@@ -192,7 +192,7 @@ public class OauthController extends PageController {
                             logger.debug("更新google用户{}的token", id);
                         }
                     }
-                    login(uid, session, "google");
+                    login(uid, null, "google", session);
                     ri.setOk(true);
                     return ri;
 
@@ -217,6 +217,7 @@ public class OauthController extends PageController {
     ResponseItem qqAuth(@RequestParam("id") String id,
                         @RequestParam("token") String token,
                         @RequestParam("name") String name,
+                        @RequestParam("logo") String logo,
                         HttpSession session) {
 
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
@@ -252,14 +253,14 @@ public class OauthController extends PageController {
             }
         }
 
-        login(uid, session, "qq");
+        login(uid,logo, "qq", session);
         ri.setOk(true);
         return ri;
     }
 
-    void login(long uid, HttpSession session, String type) {
+    void login(long uid, String logo, String type, HttpSession session) {
         User user = cacheService.getUser(uid);
-        SessionItem si = new SessionItem(user.getId(), user.getEmail(), user.getUsername());
+        SessionItem si = new SessionItem(user.getId(), user.getEmail(), user.getUsername(), logo);
         si.setSsType(type);
         session.setAttribute(SessionItem.KEY, si);
         accountService.setUserLastLogin(user.getId());

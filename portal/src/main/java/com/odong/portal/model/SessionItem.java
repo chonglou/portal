@@ -20,12 +20,13 @@ public class SessionItem implements Serializable {
     private String ssLogo;
     public final static String KEY = "d1s7e0wp";
 
-    public SessionItem(long userId, String email, String username) {
+    public SessionItem(long userId, String email, String username, String logo) {
         this.ssUserId = userId;
         this.ssEmail = email;
         this.ssUsername = username;
         this.ssCreated = new Date();
         this.ssType = "local";
+        this.ssLogo = logo;
     }
 
 

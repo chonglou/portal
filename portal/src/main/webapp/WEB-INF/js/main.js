@@ -40,7 +40,7 @@ function draw_person_bar(fn_logout){
         if(result.ok){
             title = '欢迎你，';
             if(result.logo){
-                title+='<img alt="" class="navbar-icon" src="'+result.logo+'"/>'
+                title+='<img alt="" class="navbar-icon" src="'+result.logo+'"/> ';
             }
             title+=result.name+'。';
 

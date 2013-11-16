@@ -3,6 +3,7 @@ package com.odong.portal.controller.personal;
 import com.odong.portal.entity.Log;
 import com.odong.portal.entity.User;
 import com.odong.portal.form.personal.LoginForm;
+import com.odong.portal.model.Contact;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.LogService;
@@ -62,7 +63,7 @@ public class LoginController {
             } else {
                 switch (u.getState()) {
                     case ENABLE:
-                        SessionItem si = new SessionItem(u.getId(), u.getEmail(), u.getUsername());
+                        SessionItem si = new SessionItem(u.getId(), u.getEmail(), u.getUsername(), null);
                         si.setSsAdmin(rbacService.authAdmin(u.getId()));
 
                         ri.setType(ResponseItem.Type.redirect);
