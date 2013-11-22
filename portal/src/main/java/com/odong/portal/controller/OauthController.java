@@ -163,6 +163,7 @@ public class OauthController extends PageController {
 
     @RequestMapping(value = "/google", method = RequestMethod.POST)
     @ResponseBody
+    @SuppressWarnings("unchecked")
     ResponseItem postGoogleAuth(
             @RequestParam("info") String info,
             @RequestParam("token") String token,

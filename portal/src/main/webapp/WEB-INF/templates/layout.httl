@@ -40,6 +40,9 @@ $!{extends("/frame.httl")}
                                         }
                                     });
                                 }
+                                else{
+                                    alert('登录失败!'+result.data[0]);
+                                }
                             });
                 });
 

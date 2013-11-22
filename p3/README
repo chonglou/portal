@@ -1,0 +1,11 @@
+python版
+
+依赖：python3 virtualenv
+
+
+cd local
+virtualenv python3
+source python3/bin/activate
+pip install tornado
+
+

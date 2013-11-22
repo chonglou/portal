@@ -1,5 +1,6 @@
 package com.odong.portal.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odong.portal.entity.Tag;
@@ -122,9 +123,9 @@ public class DBHelper {
         logger.debug("导出数据库到文件", fileName);
         try (BufferedWriter writer = Files.newBufferedWriter(file, CHARSET)) {
             Map<String, String> env = new HashMap<>();
-            for (String s : SITE_KEYS) {
-                env.put(s, siteService.getString("site." + s));
-            }
+            siteService.listSetting().forEach((s)->{
+                env.put(s.getKey(), s.getValue());
+            });
             writer.write(mapper.writeValueAsString(env));
             writer.write('\n');
 
@@ -302,7 +303,6 @@ public class DBHelper {
     @Resource
     private StringHelper stringHelper;
     private final Charset CHARSET = Charset.forName("UTF-8");
-    private final String[] SITE_KEYS = {"domain", "title", "aboutMe", "keywords", "description", "copyright", "regProtocol"};
     private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
     public void setStringHelper(StringHelper stringHelper) {
