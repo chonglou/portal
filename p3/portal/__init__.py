@@ -5,6 +5,7 @@ import signal
 import logging
 import tornado.ioloop
 import tornado.web
+import tornado.options
 
 _is_closing = False
 
@@ -22,18 +23,34 @@ def _try_exit():
         logging.info("成功退出!")
 
 
-def start():
+def _setup():
     signal.signal(signal.SIGINT, _signal_handler)
+
+    from tornado.options import define
+    define("http_secret", type=str, help="COOKIE密钥")
+    define("http_port", type=int, help="HTTP Server 监听端口")
+    define("http_host", type=str, help="HTTP Server 监听地址")
+    define("app_debug", type=bool, help="调试模式")
+    define("app_store", type=str, help="站点数据存储目录")
+
+    from portal import utils
+    tornado.options.options.log_file_prefix = utils.path("../tmp/httpd.log")
+    tornado.options.parse_config_file(utils.path("../web.cfg"))
+
+
+def start():
+    _setup()
 
     from portal.views import items
     routes = []
     for i in items:
-        routes.extend(importlib.import_module("portal.views."+i).handlers)
+        routes.extend(importlib.import_module("portal.views." + i).handlers)
 
-    from portal import config
-    app = tornado.web.Application(routes,debug=config.app_debug)
-    logging.info("开始监听端口%d",config.http_port)
-    app.listen(port=config.http_port, address=config.http_host)
+    app = tornado.web.Application(routes, debug=tornado.options.options.app_debug)
+    logging.info("开始监听端口%d", tornado.options.options.http_port)
+    app.listen(
+        port=tornado.options.options.http_port,
+        address=tornado.options.options.http_host)
     tornado.ioloop.PeriodicCallback(_try_exit, 100).start()
     tornado.ioloop.IOLoop.instance().start()
 

@@ -1,10 +1,12 @@
-from portal import config
-
 __author__ = 'flamen'
 
+
+from tornado.options import options
+from portal import utils
+
 settings = {
-    "static_path": config.http_statics,
-    "cookie_secret": config.http_statics,
+    "static_path": utils.path("statics"),
+    "cookie_secret": options.http_secret,
     "login_url": "/personal/login",
     "xsrf_cookies": True,
 }

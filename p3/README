@@ -6,6 +6,11 @@ python版
 cd local
 virtualenv python3
 source python3/bin/activate
-pip install tornado
+pip install tornado redis SQLAlchemy Pycrypto
+pip install redis
+
+
+配置文件在：web.cfg
+app_secret需要16位
 
 
