@@ -7,10 +7,17 @@ $!{extends("/frame.httl")}
 <meta property="qc:admins" content="${gl_qqAuth.valid}"/>
 <script type="text/javascript"
         src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js"
-        data-appid="${gl_qqAuth.id}" data-callback="true"
+        data-appid="${gl_qqAuth.id}"
         data-redirecturi="${gl_qqAuth.uri}" charset="utf-8">
 </script>
 <script type="text/javascript">
+    function qqLogout() {
+        if (window.confirm("您确认要退出QQ登录么？")) {
+            QC.Login.signOut();
+            window.location.href = "/personal/logout";
+        }
+    }
+
     QC.Login(
             {
                 //插入按钮的节点id，必选
@@ -40,13 +47,16 @@ $!{extends("/frame.httl")}
                                         }
                                     });
                                 }
-                                else{
-                                    alert('登录失败!'+result.data[0]);
+                                else {
+                                    alert('登录失败!' + result.data[0]);
                                 }
                             });
                 });
-
-            });
+            },
+            function () {
+                console.log('qq互联退出');
+            }
+    );
 </script>
 <style type="text/css">
     #qqAuthBar  a {
@@ -96,11 +106,11 @@ $!{extends("/frame.httl")}
                         code: authResult['code']
                     },
                     function (result) {
-                        if(result.ok){
+                        if (result.ok) {
                             draw_person_bar(function () {
                                 if (window.confirm("您确认要退出Google账户么？")) {
-                                    new Ajax("/personal/logout", undefined, undefined, function(){
-                                        window.location.href="https://accounts.google.com/Logout";
+                                    new Ajax("/personal/logout", undefined, undefined, function () {
+                                        window.location.href = "https://accounts.google.com/Logout";
                                     });
                                 }
                             });

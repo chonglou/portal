@@ -158,6 +158,31 @@ public class OauthController extends PageController {
         return map;
     }
 
+    private String checkGoogleCode(String code) {
+        GoogleAuthProfile gap = cacheService.getGoogleAuthProfile();
+        if (gap != null && gap.isEnable()) {
+
+            try {
+                HttpPost post = new HttpPost("https://accounts.google.com/o/oauth2/token");
+                List<NameValuePair> nvps = new ArrayList<>();
+                nvps.add(new BasicNameValuePair("code", code));
+                nvps.add(new BasicNameValuePair("client_id", gap.getId()));
+                nvps.add(new BasicNameValuePair("client_secret", gap.getSecret()));
+                nvps.add(new BasicNameValuePair("redirect_uri", "http://" + cacheService.getSiteDomain() + "/oauth/google"));
+                nvps.add(new BasicNameValuePair("grant_type", "authorization_code"));
+                post.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+                return call(post);
+            } catch (UnsupportedEncodingException e) {
+                logger.error("路径编码错误", e);
+            }
+
+        } else {
+            logger.error("未启用google认证");
+        }
+        return null;
+    }
+
+
 
 */
 
@@ -212,6 +237,10 @@ public class OauthController extends PageController {
         return ri;
     }
 
+    @RequestMapping(value = "/qq", method = RequestMethod.GET)
+    String qqAuth(){
+        return "oauth/qq";
+    }
 
     @RequestMapping(value = "/qq", method = RequestMethod.POST)
     @ResponseBody
@@ -268,29 +297,6 @@ public class OauthController extends PageController {
         logService.add(user.getId(), "用户登陆", Log.Type.INFO);
     }
 
-    private String checkGoogleCode(String code) {
-        GoogleAuthProfile gap = cacheService.getGoogleAuthProfile();
-        if (gap != null && gap.isEnable()) {
-
-            try {
-                HttpPost post = new HttpPost("https://accounts.google.com/o/oauth2/token");
-                List<NameValuePair> nvps = new ArrayList<>();
-                nvps.add(new BasicNameValuePair("code", code));
-                nvps.add(new BasicNameValuePair("client_id", gap.getId()));
-                nvps.add(new BasicNameValuePair("client_secret", gap.getSecret()));
-                nvps.add(new BasicNameValuePair("redirect_uri", "http://" + cacheService.getSiteDomain() + "/oauth/google"));
-                nvps.add(new BasicNameValuePair("grant_type", "authorization_code"));
-                post.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
-                return call(post);
-            } catch (UnsupportedEncodingException e) {
-                logger.error("路径编码错误", e);
-            }
-
-        } else {
-            logger.error("未启用google认证");
-        }
-        return null;
-    }
 
 
     private String call(HttpUriRequest request) {

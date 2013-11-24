@@ -469,6 +469,17 @@
                     <webApp>
                         <contextPath>/</contextPath>
                     </webApp>
+                    <systemProperties>
+                        <force>true</force>
+                        <systemProperty>
+                            <name>httl.reloadable</name>
+                            <value>true</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>httl.precompiled</name>
+                            <value>false</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
             <plugin>
