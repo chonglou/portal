@@ -1,0 +1,29 @@
+#!/bin/sh
+
+alias ff=iptables
+
+ff -F 
+ff -X 
+ff -Z 
+ff -P INPUT DROP
+ff -P OUTPUT ACCEPT
+ff -P FORWARD DROP
+ff -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+ff -A INPUT -i lo -j ACCEPT
+
+AICMP="0 3 3/4 4 8 11 12 14 16 18"
+for tyicmp in $AICMP; do
+	ff -A INPUT -p icmp --icmp-type $tyicmp -j ACCEPT
+done
+
+PORTS="22 80 8080"
+for p in $PORTS; do
+	ff -A INPUT -p tcp --dport $p -j ACCEPT
+done
+
+
+#ff -A INPUT -s $host  -j ACCEPT
+#ff -A INPUT -p tcp --dport $port -s $host -j ACCEPT
+
