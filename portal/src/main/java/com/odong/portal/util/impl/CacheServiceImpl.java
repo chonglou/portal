@@ -339,12 +339,14 @@ public class CacheServiceImpl implements CacheService {
 
             NavBar nb = new NavBar("归档列表");
             nb.setType(NavBar.Type.LIST);
-            DateTime now = new DateTime();
 
-            for (DateTime init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
+
+
+            for (DateTime now = new DateTime(),
+                 init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
                  init.compareTo(now) <= 0;
-                 init = init.plusMonths(1)) {
-                addArchive2NavBar(nb, init);
+                 now = now.plusMonths(-1)) {
+                addArchive2NavBar(nb, now);
             }
             return nb;
         });
