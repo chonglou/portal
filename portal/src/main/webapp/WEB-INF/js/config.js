@@ -35,113 +35,7 @@ function getJSessionId() {
      * 因此，UEditor提供了针对不同页面的编辑器可单独配置的根路径，具体来说，在需要实例化编辑器的页面最顶部写上如下代码即可。当然，需要令此处的URL等于对应的配置。
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
-    var URL = window.UEDITOR_HOME_URL || (function () {
-
-        function PathStack() {
-
-            this.documentURL = self.document.URL || self.location.href;
-
-            this.separator = '/';
-            this.separatorPattern = /\\|\//g;
-            this.currentDir = './';
-            this.currentDirPattern = /^[.]\/]/;
-
-            this.path = this.documentURL;
-            this.stack = [];
-
-            this.push(this.documentURL);
-
-        }
-
-        PathStack.isParentPath = function (path) {
-            return path === '..';
-        };
-
-        PathStack.hasProtocol = function (path) {
-            return !!PathStack.getProtocol(path);
-        };
-
-        PathStack.getProtocol = function (path) {
-
-            var protocol = /^[^:]*:\/*/.exec(path);
-
-            return protocol ? protocol[0] : null;
-
-        };
-
-        PathStack.prototype = {
-            push: function (path) {
-
-                this.path = path;
-
-                update.call(this);
-                parse.call(this);
-
-                return this;
-
-            },
-            getPath: function () {
-                return this + "";
-            },
-            toString: function () {
-                return this.protocol + ( this.stack.concat(['']) ).join(this.separator);
-            }
-        };
-
-        function update() {
-
-            var protocol = PathStack.getProtocol(this.path || '');
-
-            if (protocol) {
-
-                //根协议
-                this.protocol = protocol;
-
-                //local
-                this.localSeparator = /\\|\//.exec(this.path.replace(protocol, ''))[0];
-
-                this.stack = [];
-            } else {
-                protocol = /\\|\//.exec(this.path);
-                protocol && (this.localSeparator = protocol[0]);
-            }
-
-        }
-
-        function parse() {
-
-            var parsedStack = this.path.replace(this.currentDirPattern, '');
-
-            if (PathStack.hasProtocol(this.path)) {
-                parsedStack = parsedStack.replace(this.protocol, '');
-            }
-
-            parsedStack = parsedStack.split(this.localSeparator);
-            parsedStack.length = parsedStack.length - 1;
-
-            for (var i = 0, tempPath, l = parsedStack.length, root = this.stack; i < l; i++) {
-                tempPath = parsedStack[i];
-                if (tempPath) {
-                    if (PathStack.isParentPath(tempPath)) {
-                        root.pop();
-                    } else {
-                        root.push(tempPath);
-                    }
-                }
-
-            }
-
-
-        }
-
-        var currentPath = document.getElementsByTagName('script');
-
-        currentPath = currentPath[ currentPath.length - 1 ].src;
-
-        return new PathStack().push(currentPath) + "";
-
-
-    })();
+    var URL = window.UEDITOR_HOME_URL || getUEBasePath();
 
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
@@ -149,52 +43,56 @@ function getJSessionId() {
     window.UEDITOR_CONFIG = {
 
         //为编辑器实例添加一个路径，这个不能被注释
-        UEDITOR_HOME_URL: URL
+        UEDITOR_HOME_URL : URL
 
         //图片上传配置区
-        , imageUrl: URL + "../editor/imageUp"             //图片上传提交地址
-        , imagePath: URL + "../attachments/"                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
+        ,imageUrl:URL+"../editor/imageUp"             //图片上传提交地址
+        ,imagePath:URL + "../attachments/"                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
         //,imageFieldName:"upfile"                   //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
         //,compressSide:0                            //等比压缩的基准，确定maxImageSideLength参数的参照对象。0为按照最长边，1为按照宽度，2为按照高度
         //,maxImageSideLength:900                    //上传图片最大允许的边长，超过会自动等比缩放,不缩放就设置一个比较大的值，更多设置在image.html中
+        //,savePath: [ 'upload1', 'upload2', 'upload3' ]      //图片保存在服务器端的目录， 默认为空， 此时在上传图片时会向服务器请求保存图片的目录列表，
+                                                            // 如果用户不希望发送请求， 则可以在这里设置与服务器端能够对应上的目录名称列表
+                                                            //比如： savePath: [ 'upload1', 'upload2' ]
 
         //涂鸦图片配置区
-        , scrawlUrl: URL + "../editor/scrawlUp"           //涂鸦上传地址
-        , scrawlPath: URL + "../attachments/"                            //图片修正地址，同imagePath
+        ,scrawlUrl:URL+"../editor/scrawlUp"           //涂鸦上传地址
+        ,scrawlPath:URL+"../attachments/"                            //图片修正地址，同imagePath
 
         //附件上传配置区
-        , fileUrl: URL + "../editor/fileUp" + getJSessionId()               //附件上传提交地址 修复swfupload session bug
-        , filePath: URL + "../attachments/"                   //附件修正地址，同imagePath
+        ,fileUrl:URL+"../editor/fileUp" + getJSessionId()               //附件上传提交地址
+        ,filePath:URL + "../attachments/"                    //附件修正地址，同imagePath
         //,fileFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 
         //远程抓取配置区
         //,catchRemoteImageEnable:true               //是否开启远程图片抓取,默认开启
-        , catcherUrl: URL + "../editor/getRemoteImage"   //处理远程图片抓取的地址
-        , catcherPath: URL + "../attachments/"                  //图片修正地址，同imagePath
+        ,catcherUrl:URL + "../editor/getRemoteImage"   //处理远程图片抓取的地址
+        ,catcherPath:URL + "../attachments/"                  //图片修正地址，同imagePath
         //,catchFieldName:"upfile"                   //提交到后台远程图片uri合集，若此处修改，需要在后台对应文件修改对应参数
         //,separater:'ue_separate_ue'               //提交至后台的远程图片地址字符串分隔符
         //,localDomain:[]                            //本地顶级域名，当开启远程图片抓取时，除此之外的所有其它域名下的图片都将被抓取到本地,默认不抓取127.0.0.1和localhost
 
         //图片在线管理配置区
-        , imageManagerUrl: URL + "../editor/imageManager"       //图片在线管理的处理地址
-        , imageManagerPath: URL + "../attachments/"                                    //图片修正地址，同imagePath
+        ,imageManagerUrl:URL + "../editor/imageManager"       //图片在线管理的处理地址
+        ,imageManagerPath:URL + "../attachments/"                                    //图片修正地址，同imagePath
 
         //屏幕截图配置区
-        , snapscreenHost: location.hostname                                 //屏幕截图的server端文件所在的网站地址或者ip，请不要加http://
-        , snapscreenServerUrl: URL + "../editor/imageUp" //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/jsp/snapImgUp.jsp"”
-        , snapscreenPath: URL + "../attachments/", snapscreenServerPort: location.port                                   //屏幕截图的server端端口
+        ,snapscreenHost: location.hostname                                 //屏幕截图的server端文件所在的网站地址或者ip，请不要加http://
+        ,snapscreenServerUrl: URL +"../editor/imageUp" //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/jsp/snapImgUp.jsp"”
+        ,snapscreenPath: URL + "../attachments/"
+        ,snapscreenServerPort: location.port                                   //屏幕截图的server端端口
         //,snapscreenImgAlign: ''                                //截图的图片默认的排版方式
 
         //word转存配置区
-        , wordImageUrl: URL + "../editor/imageUp"             //word转存提交地址
-        , wordImagePath: URL + "../attachments/"                       //
+        ,wordImageUrl:URL + "../editor/imageUp"             //word转存提交地址
+        ,wordImagePath:URL + "../attachments/"                       //
         //,wordImageFieldName:"upfile"                     //word转存表单名若此处修改，需要在后台对应文件修改对应参数
 
         //获取视频数据的地址
-        , getMovieUrl: URL + "../editor/getMovie"                   //视频数据获取地址
+        ,getMovieUrl:URL+"../editor/getMovie"                   //视频数据获取地址
 
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的从新定义
-        , toolbars: [
+        , toolbars:[
             ['fullscreen', 'source', '|', 'undo', 'redo', '|',
                 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
                 'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
@@ -202,10 +100,10 @@ function getJSessionId() {
                 'directionalityltr', 'directionalityrtl', 'indent', '|',
                 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
                 'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-                'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
+                'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe','insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
                 'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
-                'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
-                'print', 'preview', 'searchreplace', 'help']
+                'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+                'print', 'preview', 'searchreplace', 'help', 'drafts']
         ]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
 //        ,labelMap:{
@@ -219,6 +117,11 @@ function getJSessionId() {
         //lang值也可以通过自动获取 (navigator.language||navigator.browserLanguage ||navigator.userLanguage).toLowerCase()
         //,lang:"zh-cn"
         //,langPath:URL +"lang/"
+
+        //启用自动保存
+        //,enableAutoSave: true
+        //自动保存间隔时间， 单位ms
+        //,saveInterval: 500
 
         //主题配置项,默认是default。有需要的话也可以使用如下这样的方式来自动多主题切换，当然，前提条件是themes文件夹下存在对应的主题文件：
         //现有如下皮肤:default
@@ -261,7 +164,7 @@ function getJSessionId() {
         //,initialStyle:'p{line-height:1em}'//编辑器层级的基数,可以用来改变字体等
 
         //,autoSyncData:true //自动同步编辑器要提交的数据
-        , emotionLocalization: true //是否开启表情本地化，默认关闭。若要开启请确保emotion文件夹下包含官网提供的images表情文件夹
+        //,emotionLocalization:false //是否开启表情本地化，默认关闭。若要开启请确保emotion文件夹下包含官网提供的images表情文件夹
 
         //,pasteplain:false  //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
         //纯文本粘贴模式下的过滤规则
@@ -328,7 +231,7 @@ function getJSessionId() {
         //    'square' : ''   //'■ 小方块'
         //}
 //        ,listDefaultPaddingLeft : '30'//默认的左边缩进的基数倍
-        , listiconpath: URL + 'themes/ueditor-list/'//自定义标号的路径
+//        ,listiconpath : 'http://bs.baidu.com/listicon/'//自定义标号的路径
 //        ,maxListLevel : 3 //限制可以tab的级数-1不限制
         //fontfamily
         //字体设置 label留空支持多语言自动切换，若配置，则以配置值为准
@@ -444,6 +347,10 @@ function getJSessionId() {
         //,minFrameWidth:800    //编辑器拖动时最小宽度,默认800
         //,minFrameHeight:220  //编辑器拖动时最小高度,默认220
 
+        //tableDragable
+        //表格是否可以拖拽
+        //,tableDragable: true
+
         //autoFloatEnabled
         //是否保持toolbar的位置不动,默认true
         //,autoFloatEnabled:true
@@ -492,4 +399,65 @@ function getJSessionId() {
         //填写过滤规则
         //filterRules : {}
     };
+
+    function getUEBasePath ( docUrl, confUrl ) {
+
+        return getBasePath( docUrl || self.document.URL || self.location.href, confUrl || getConfigFilePath() );
+
+    }
+
+    function getConfigFilePath () {
+
+        var configPath = document.getElementsByTagName('script');
+
+        return configPath[ configPath.length -1 ].src;
+
+    }
+
+    function getBasePath ( docUrl, confUrl ) {
+
+        var basePath = confUrl;
+
+        if ( !/^[a-z]+:/i.test( confUrl ) ) {
+
+            docUrl = docUrl.split( "#" )[0].split( "?" )[0].replace( /[^\\\/]+$/, '' );
+
+            basePath = docUrl + "" + confUrl;
+
+        }
+
+        return optimizationPath( basePath );
+
+    }
+
+    function optimizationPath ( path ) {
+
+        var protocol = /^[a-z]+:\/\//.exec( path )[ 0 ],
+            tmp = null,
+            res = [];
+
+        path = path.replace( protocol, "" ).split( "?" )[0].split( "#" )[0];
+
+        path = path.replace( /\\/g, '/').split( /\// );
+
+        path[ path.length - 1 ] = "";
+
+        while ( path.length ) {
+
+            if ( ( tmp = path.shift() ) === ".." ) {
+                res.pop();
+            } else if ( tmp !== "." ) {
+                res.push( tmp );
+            }
+
+        }
+
+        return protocol + res.join( "/" );
+
+    }
+
+    window.UE = {
+        getUEBasePath: getUEBasePath
+    };
+
 })();
