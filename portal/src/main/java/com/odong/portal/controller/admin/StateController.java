@@ -47,7 +47,7 @@ public class StateController {
 
     @RequestMapping(value = "/googleAuth", method = RequestMethod.GET)
     @ResponseBody
-    Form getGoogleAuthForm(){
+    Form getGoogleAuthForm() {
         Form fm = new Form("google", "google账户", "/admin/state/googleAuth");
         GoogleAuthProfile gap = siteService.getObject("site.googleAuth", GoogleAuthProfile.class);
         if (gap == null) {
@@ -69,7 +69,7 @@ public class StateController {
     ResponseItem postGoogleAuthForm(@Valid GoogleAuthForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            GoogleAuthProfile gap = new GoogleAuthProfile(form.getId(), form.getSecret(),form.getUri());
+            GoogleAuthProfile gap = new GoogleAuthProfile(form.getId(), form.getSecret(), form.getUri());
             gap.setEnable(form.isEnable());
             siteService.set("site.googleAuth", gap);
             cacheService.popGoogleAuthProfile();

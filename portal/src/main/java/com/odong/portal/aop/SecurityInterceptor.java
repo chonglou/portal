@@ -46,7 +46,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
         }
 
         if (url.startsWith("/personal/")) {
-            if("/personal/bar".equals(url)){
+            if ("/personal/bar".equals(url)) {
                 return true;
             }
             if (si != null && "/personal/logout".equals(url)) {

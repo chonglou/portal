@@ -114,6 +114,25 @@ public class FileUploader {
         return "{'url':'" + att.getUrl() + "','fileType':'" + att.getType() + "','state':'" + att.getState() + "','original':'" + att.getOriginalName() + "'}";
     }
 
+
+    public List<String> listSubDir(HttpSession session) {
+        List<String> list = new ArrayList<>();
+        File f = new File(getPhysicalPath(getSelfPath(session)));
+        if (f.isDirectory()) {
+            File[] subs = f.listFiles();
+            if (subs == null) {
+                list.add(getDatePath());
+            } else {
+                for (File f1 : subs) {
+                    if (f1.isDirectory()) {
+                        list.add(f1.getName());
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
     private Attachment upload(HttpServletRequest request, String[] fileTypes) {
         Attachment attach = new Attachment();
         attach.setState(Attachment.State.SUCCESS);
@@ -289,6 +308,7 @@ public class FileUploader {
     private String getDatePath() {
         return FORMAT.format(new Date());
     }
+
 
     private String getFileExt(String fileName) {
         return fileName.substring(fileName.lastIndexOf("."));

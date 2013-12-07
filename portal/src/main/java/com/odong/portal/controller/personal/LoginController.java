@@ -3,7 +3,6 @@ package com.odong.portal.controller.personal;
 import com.odong.portal.entity.Log;
 import com.odong.portal.entity.User;
 import com.odong.portal.form.personal.LoginForm;
-import com.odong.portal.model.Contact;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.LogService;

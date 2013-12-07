@@ -1,6 +1,8 @@
 package com.odong.portal.controller.editor;
 
 import com.odong.portal.ueditor.FileUploader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -56,10 +59,31 @@ public class FileController {
         response.getWriter().print(fileUploader.imageManager(session));
     }
 
+    @RequestMapping(value = "/editor/imageUp", method = RequestMethod.GET)
+    void getImageUp(HttpServletRequest request, HttpSession session, HttpServletResponse response) throws IOException {
+        if (request.getParameter("fetch") != null) {
+            response.setHeader("Content-Type", "text/javascript");
+            String dirs = "[";
+            List<String> list = fileUploader.listSubDir(session);
+            for (int i = 0; ; ) {
+                dirs += "'" + list.get(i) + "'";
+                i++;
+                if (i < list.size()) {
+                    dirs += ",";
+                } else {
+                    break;
+                }
+            }
+            dirs += "]";
+            response.getWriter().print("updateSavePath( " + dirs + " );");
+        }
+    }
+
     @RequestMapping(value = "/editor/imageUp", method = RequestMethod.POST)
     void postImageUp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        logger.debug("上传路径：" + request.getParameter("dir"));
         response.getWriter().print(fileUploader.imageUp(request));
+
     }
 
     @RequestMapping(value = "/editor/scrawlUp", method = RequestMethod.POST)
@@ -69,7 +93,7 @@ public class FileController {
 
     @Resource
     private FileUploader fileUploader;
-
+    private final static Logger logger = LoggerFactory.getLogger(FileController.class);
 
     public void setFileUploader(FileUploader fileUploader) {
         this.fileUploader = fileUploader;

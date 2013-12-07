@@ -30,7 +30,7 @@ public class SessionItem implements Serializable {
     }
 
 
-    public boolean isSsLocal(){
+    public boolean isSsLocal() {
         return "local".equals(ssType);
     }
 

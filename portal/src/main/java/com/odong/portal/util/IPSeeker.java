@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * 纯真IP数据库格式详解：
  * http://lumaqq.linuxsir.org/article/qqwry_format_detail.html
- * <p/>
+ * <p>
  * Created with IntelliJ IDEA.
  * User: flamen
  * Date: 13-7-31

@@ -27,21 +27,20 @@ import java.util.Map;
 public class SelfController extends PageController {
     @RequestMapping(value = "/bar", method = RequestMethod.GET)
     @ResponseBody
-    Map<String,Object> getItems(HttpSession session){
-        Map<String,Object> map = new HashMap<>();
+    Map<String, Object> getItems(HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
         List<Page> pages = new ArrayList<>();
-        if(session.getAttribute(SessionItem.KEY)==null){
+        if (session.getAttribute(SessionItem.KEY) == null) {
             pages.add(new Page("用户登录", "/personal/login"));
             pages.add(new Page("账户注册", "/personal/register"));
             pages.add(new Page("账户激活", "/personal/active"));
             pages.add(new Page("重置密码", "/personal/resetPwd"));
-            map.put("ok",false);
-        }
-        else {
-            SessionItem si = (SessionItem)session.getAttribute(SessionItem.KEY);
-            pages.add(new Page("用户中心","/personal/self"));
+            map.put("ok", false);
+        } else {
+            SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
+            pages.add(new Page("用户中心", "/personal/self"));
             pages.add(new Page("安全退出", "/personal/logout"));
-            map.put("logo",si.getSsLogo());
+            map.put("logo", si.getSsLogo());
             map.put("name", si.getSsUsername());
             map.put("type", si.getSsType());
             map.put("ok", true);

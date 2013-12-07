@@ -8,17 +8,12 @@ import com.odong.portal.model.SessionItem;
 import com.odong.portal.model.profile.GoogleAuthProfile;
 import com.odong.portal.model.profile.QQAuthProfile;
 import com.odong.portal.web.ResponseItem;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +27,6 @@ import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -208,12 +198,11 @@ public class OauthController extends PageController {
                     String id = map.get("user_id");
                     OpenId oi = cacheService.getOpenId(id, OpenId.Type.GOOGLE);
                     long uid;
-                    if(oi == null){
+                    if (oi == null) {
                         uid = accountService.addGoogleUser(id, token);
-                    }
-                    else {
+                    } else {
                         uid = oi.getUser();
-                        if(!token.equals(oi.getToken())){
+                        if (!token.equals(oi.getToken())) {
                             accountService.setOpenIdToken(oi.getId(), token);
                             logger.debug("更新google用户{}的token", id);
                         }
@@ -238,7 +227,7 @@ public class OauthController extends PageController {
     }
 
     @RequestMapping(value = "/qq", method = RequestMethod.GET)
-    String qqAuth(){
+    String qqAuth() {
         return "oauth/qq";
     }
 
@@ -283,7 +272,7 @@ public class OauthController extends PageController {
             }
         }
 
-        login(uid,logo, "qq", session);
+        login(uid, logo, "qq", session);
         ri.setOk(true);
         return ri;
     }
@@ -296,7 +285,6 @@ public class OauthController extends PageController {
         accountService.setUserLastLogin(user.getId());
         logService.add(user.getId(), "用户登陆", Log.Type.INFO);
     }
-
 
 
     private String call(HttpUriRequest request) {

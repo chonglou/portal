@@ -29,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
     public long addGoogleUser(String openId, String token) {
         User u = new User();
         String name = stringHelper.random(8);
-        u.setEmail(name+"@localhost");
+        u.setEmail(name + "@localhost");
         u.setUsername(name);
         u.setPassword(encryptHelper.encrypt(stringHelper.random(12)));
         u.setCreated(new Date());

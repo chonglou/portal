@@ -19,14 +19,14 @@ import java.util.List;
 /**
  * pacman -S net-snmp
  * systemctl enable snmpd
- * <p/>
+ * <p>
  * mkdir /etc/snmp/
  * echo rouser read_only_user >> /etc/snmp/snmpd.conf
  * mkdir -p /var/net-snmp/
  * echo createUser read_only_user SHA password1 AES password2 > /var/net-snmp/snmpd.conf
- * <p/>
+ * <p>
  * snmpwalk -v 3 -u read_only_user -a SHA -A password1 -x DES -X password2 -l authNoPriv localhost | less
- * <p/>
+ * <p>
  * Created with IntelliJ IDEA.
  * User: flamen
  * Date: 13-9-23

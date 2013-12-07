@@ -341,9 +341,8 @@ public class CacheServiceImpl implements CacheService {
             nb.setType(NavBar.Type.LIST);
 
 
-
             for (DateTime now = new DateTime(),
-                 init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
+                         init = new DateTime(siteService.getDate("site.init")).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue();
                  init.compareTo(now) <= 0;
                  now = now.plusMonths(-1)) {
                 addArchive2NavBar(nb, now);
