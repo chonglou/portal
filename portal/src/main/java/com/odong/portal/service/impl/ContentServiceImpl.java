@@ -84,9 +84,11 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public Long addTag(String name, Date created, long visits) {
+    public Long addTag(String name,boolean keep, long visits, Date created) {
         Tag t = new Tag();
+        t.setName(name);
         t.setCreated(created);
+        t.setKeep(keep);
         t.setVisits(visits);
         return tagDao.persist(t);  //
     }

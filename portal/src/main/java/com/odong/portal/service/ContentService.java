@@ -35,7 +35,7 @@ public interface ContentService {
 
     Long addTag(String name, boolean keep);
 
-    Long addTag(String name, Date created, long visits);
+    Long addTag(String name, boolean keep, long visits, Date created);
 
     void setTagName(long id, String name);
 

@@ -3,6 +3,7 @@
         <span class="btn-group btn-group-sm">
             <button id="backup" class="btn btn-info">备份</button>
             <button id="export" class="btn btn-warning">导出</button>
+            <button id="import" class="btn btn-danger">导入</button>
             <button id="refresh" class="btn btn-primary">刷新</button>
         </span>
     </legend>
@@ -25,5 +26,9 @@
     $("button#export").click(function () {
         clear_message_div();
         new Ajax("/admin/database/export", "POST");
+    });
+    $("button#import").click(function () {
+        clear_message_div();
+        new Ajax("/admin/database/import");
     });
 </script>

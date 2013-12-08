@@ -2,6 +2,7 @@ package com.odong.portal.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
 import com.odong.portal.service.AccountService;
@@ -55,65 +56,83 @@ public class DBHelper {
         ObjectMapper mapper = new ObjectMapper();
         try (BufferedReader reader = Files.newBufferedReader(file, CHARSET)) {
 
-            //系统信息
-            String line = reader.readLine();
-            Map<String, String> env = mapper.readValue(line, new TypeReference<Map<String, String>>() {
-            });
-            for (String s : env.keySet()) {
-                siteService.set("site." + s, env.get(s));
-            }
+            importSetting(reader.readLine(), mapper);
+            importFriendLink(reader.readLine(), mapper);
+            importTag(reader.readLine(), mapper);
+            importUser(reader.readLine(), mapper);
 
-            //友情链接
-            line = reader.readLine();
-            List<Map<String, String>> friendLinks = mapper.readValue(line, new TypeReference<List<Map<String, String>>>() {
-            });
-            for (Map<String, String> fl : friendLinks) {
-                siteService.addFriendLink(fl.get("name"), fl.get("url"), fl.get("logo"));
-            }
-
-            //文章信息
+            //文章列表
+            String line;
             while ((line = reader.readLine()) != null) {
-                Map<String, String> map = mapper.readValue(line, new TypeReference<Map<String, Object>>() {
-                });
-
-                long aid = contentService.addArticle(getUser(map.get("author")), map.get("logo"), map.get("title"), map.get("summary"), map.get("body"), getDate(map.get("created")), getLong(map.get("visits")));
-                List<Map<String, String>> tags = mapper.readValue(map.get("tags"), new TypeReference<List<Map<String, String>>>() {
-                });
-                for (Map<String, String> t : tags) {
-                    contentService.bindArticleTag(aid, getTag(t.get("name"), getDate(t.get("created")), getLong(t.get("visits"))));
-                }
-                List<Map<String, String>> comments = mapper.readValue(map.get("comments"), new TypeReference<List<Map<String, String>>>() {
-                });
-                for (Map<String, String> c : comments) {
-                    contentService.addComment(getUser(c.get("user")), aid, c.get("content"), getDate(c.get("created")));
-                }
+               importArticle(line, mapper);
             }
         }
         logger.debug("成功导入数据[{}]", filename);
     }
 
-    private Date getDate(String time) {
-        return new Date(getLong(time));
+    private void importArticle(String line, ObjectMapper mapper) throws IOException {
+        //文章
+        Map<String, String> a = mapper.readValue(line, new TypeReference<Map<String, String>>() {
+        });
+        long aid = contentService.addArticle(accountService.getUser(a.get("author")).getId(), a.get("logo"), a.get("title"), a.get("summary"), a.get("body"), getDate(a.get("created")), getLong(a.get("visits")));
+
+        List<String> tags = mapper.readValue(a.get("tags"), new TypeReference<List<String>>() {
+        });
+        for (String t : tags) {
+            contentService.bindArticleTag(aid, contentService.getTag(t).getId());
+        }
+
+        List<Map<String, String>> comments = mapper.readValue(a.get("comments"), new TypeReference<List<Map<String, String>>>() {
+        });
+        for (Map<String, String> c : comments) {
+            contentService.addComment(accountService.getUser(c.get("user")).getId(), aid, c.get("content"), getDate(c.get("created")));
+        }
     }
 
-    private long getLong(String str) {
-        return Long.parseLong(str);
+    private void importUser(String line, ObjectMapper mapper) throws IOException {
+        //用户
+        List<Map<String, String>> users = mapper.readValue(line, new TypeReference<List<Map<String, String>>>() {
+        });
+        for (Map<String,String> u : users){
+            User user = accountService.getUser(u.get("email"));
+            if(user == null){
+                accountService.addUser(u.get("email"), u.get("username"), getLong(u.get("visits")), getDate(u.get("created")));
+            }
+        }
     }
 
-    private synchronized long getUser(String email) {
-        User user = accountService.getUser(email);
-        return user == null ? accountService.addUser(email, email, stringHelper.random(12)) : user.getId();
+    private void importTag(String line, ObjectMapper mapper) throws IOException {
+        //标签
+        List<Map<String, String>> tags = mapper.readValue(line, new TypeReference<List<Map<String, String>>>() {
+        });
+        for (Map<String,String> t : tags){
+            Tag tag = contentService.getTag(t.get("name"));
+            if(tag == null){
+                contentService.addTag(t.get("name"), getBoolean(t.get("keep")), getLong(t.get("visits")), getDate(t.get("created")));
+            }
+        }
     }
 
-    private synchronized long getTag(String name, Date created, long visits) {
-        Tag tag = contentService.getTag(name);
-        return tag == null ? contentService.addTag(name, created, visits) : tag.getId();
+    private void importFriendLink(String line, ObjectMapper mapper) throws IOException {
+        //友情链接
+        List<Map<String, String>> friendLinks = mapper.readValue(line, new TypeReference<List<Map<String, String>>>() {
+        });
+        for (Map<String, String> fl : friendLinks) {
+            siteService.addFriendLink(fl.get("name"), fl.get("url"), fl.get("logo"));
+        }
     }
 
+    private void importSetting(String line, ObjectMapper mapper) throws IOException {
+        //系统信息
+        Map<String, String> env = mapper.readValue(line, new TypeReference<Map<String, String>>() {
+        });
+        for (String s : env.keySet()) {
+            siteService.set("site." + s, env.get(s));
+        }
+    }
 
     /**
-     * 只导出文章
-     * 文章：title，summary，logo，body，author，tags,comments
+     * 数据库导出
      *
      * @throws IOException
      */
@@ -127,12 +146,31 @@ public class DBHelper {
             exportFriendLink(writer, mapper);
             exportTag(writer, mapper);
             exportUser(writer, mapper);
-            exportArticle(writer, mapper);
+            contentService.listArticle().forEach((article) -> {
+                try {
+                    exportArticle(writer, mapper, article);
+                } catch (IOException e) {
+                    logger.error("导出文章[{}]出错", article.getId(), e);
+                }
+            });
         }
 
         logger.debug("开始压缩文件[{}]", fileName);
         zipHelper.compress(fileName, true);
     }
+
+    private boolean getBoolean(String b){
+        return Boolean.valueOf(b);
+    }
+    private Date getDate(String time) {
+        return new Date(getLong(time));
+    }
+
+    private long getLong(String str) {
+        return Long.parseLong(str);
+    }
+
+
 
     private void exportUser(Writer writer, ObjectMapper mapper) throws IOException {
         //用户列表
@@ -141,7 +179,7 @@ public class DBHelper {
             Map<String, String> map = new HashMap<>();
             map.put("username", u.getUsername());
             map.put("email", u.getEmail());
-            map.put("created", "" + u.getCreated());
+            map.put("created", "" + u.getCreated().getTime());
             map.put("visits", "" + u.getVisits());
 
             users.add(map);
@@ -150,42 +188,36 @@ public class DBHelper {
         writer.write('\n');
     }
 
-    private void exportArticle(Writer writer, ObjectMapper mapper) throws IOException {
+    private void exportArticle(Writer writer, ObjectMapper mapper, Article article) throws IOException {
         //文章列表
-        contentService.listArticle().forEach((a) -> {
-            try {
-                Map<String, String> map = new HashMap<>();
-                map.put("author", accountService.getUser(a.getAuthor()).getEmail());
-                map.put("title", a.getTitle());
-                map.put("summary", a.getSummary());
-                map.put("logo", a.getLogo());
-                map.put("body", a.getBody());
-                map.put("created", "" + a.getCreated().getTime());
-                map.put("visits", "" + a.getVisits());
+        Map<String, String> map = new HashMap<>();
+        map.put("author", accountService.getUser(article.getAuthor()).getEmail());
+        map.put("title", article.getTitle());
+        map.put("summary", article.getSummary());
+        map.put("logo", article.getLogo());
+        map.put("body", article.getBody());
+        map.put("created", "" + article.getCreated().getTime());
+        map.put("visits", "" + article.getVisits());
 
-                List<String> tags = new ArrayList<>();
-                contentService.listTagByArticle(a.getId()).forEach((t) -> {
-                    tags.add(t.getName());
-                });
-                map.put("tags", mapper.writeValueAsString(tags));
-
-                List<Map<String, String>> comments = new ArrayList<>();
-                contentService.listComment().forEach((c) -> {
-                    Map<String, String> comment = new HashMap<>();
-                    comment.put("content", c.getContent());
-                    comment.put("created", "" + c.getCreated().getTime());
-                    comment.put("user", accountService.getUser(c.getUser()).getEmail());
-                    comments.add(comment);
-                });
-                map.put("comments", mapper.writeValueAsString(comments));
-
-                writer.write(mapper.writeValueAsString(map));
-                writer.write('\n');
-            } catch (IOException e) {
-                logger.error("导出文章[{}]出错", a.getId(), e);
-            }
+        List<String> tags = new ArrayList<>();
+        contentService.listTagByArticle(article.getId()).forEach((t) -> {
+            tags.add(t.getName());
         });
+        map.put("tags", mapper.writeValueAsString(tags));
+
+        List<Map<String, String>> comments = new ArrayList<>();
+        contentService.listComment().forEach((c) -> {
+            Map<String, String> comment = new HashMap<>();
+            comment.put("content", c.getContent());
+            comment.put("created", "" + c.getCreated().getTime());
+            comment.put("user", accountService.getUser(c.getUser()).getEmail());
+            comments.add(comment);
+        });
+        map.put("comments", mapper.writeValueAsString(comments));
+
+        writer.write(mapper.writeValueAsString(map));
         writer.write('\n');
+
     }
 
     private void exportTag(Writer writer, ObjectMapper mapper) throws IOException {
@@ -195,7 +227,7 @@ public class DBHelper {
             Map<String, String> map = new HashMap<>();
             map.put("name", t.getName());
             map.put("visits", "" + t.getVisits());
-            map.put("created", "" + t.getCreated());
+            map.put("created", "" + t.getCreated().getTime());
             map.put("keep", "" + t.isKeep());
             tags.add(map);
         });
@@ -211,8 +243,7 @@ public class DBHelper {
         //站点信息
         Map<String, String> env = new HashMap<>();
         for (String k : new String[]{"domain", "title", "keywords", "description", "copyright", "aboutMe", "regProtocol"}) {
-            k = "site."+k;
-            env.put(k, siteService.getString(k));
+            env.put(k, siteService.getString("site." + k));
         }
         writer.write(mapper.writeValueAsString(env));
         writer.write('\n');

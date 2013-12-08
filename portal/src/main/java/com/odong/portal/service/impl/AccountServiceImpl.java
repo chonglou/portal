@@ -130,6 +130,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public long addUser(String email, String username, long visits, Date created) {
+        User u = new User();
+        u.setEmail(email);
+        u.setUsername(username);
+        u.setPassword(encryptHelper.encrypt(stringHelper.random(12)));
+        u.setVisits(visits);
+        u.setCreated(created);
+        u.setState(User.State.SUBMIT);
+        return userDao.persist(u);
+    }
+
+    @Override
     public void setUserContact(long user, Contact contact) {
         User u = userDao.select(user);
         u.setContact(jsonHelper.object2json(contact));

@@ -4,6 +4,7 @@ import com.odong.portal.entity.OpenId;
 import com.odong.portal.entity.User;
 import com.odong.portal.model.Contact;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,7 @@ public interface AccountService {
     User getUser(String email);
 
     long addUser(String email, String username, String password);
+    long addUser(String email, String username, long visits, Date created);
 
     void setUserContact(long user, Contact contact);
 
