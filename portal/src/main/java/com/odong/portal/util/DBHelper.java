@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,6 +110,7 @@ public class DBHelper {
         return tag == null ? contentService.addTag(name, created, visits) : tag.getId();
     }
 
+
     /**
      * 只导出文章
      * 文章：title，summary，logo，body，author，tags,comments
@@ -121,65 +123,113 @@ public class DBHelper {
         ObjectMapper mapper = new ObjectMapper();
         logger.debug("导出数据库到文件", fileName);
         try (BufferedWriter writer = Files.newBufferedWriter(file, CHARSET)) {
-            Map<String, String> env = new HashMap<>();
-            siteService.listSetting().forEach((s) -> {
-                env.put(s.getKey(), s.getValue());
-            });
-            writer.write(mapper.writeValueAsString(env));
-            writer.write('\n');
-
-            List<Map<String, String>> friendLinks = new ArrayList<>();
-            siteService.listFriendLink().forEach((fl) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("url", fl.getUrl());
-                map.put("logo", fl.getLogo());
-                map.put("name", fl.getName());
-                friendLinks.add(map);
-            });
-            writer.write(mapper.writeValueAsString(friendLinks));
-            writer.write('\n');
-
-            contentService.listArticle().forEach((a) -> {
-
-                try {
-                    Map<String, String> map = new HashMap<>();
-                    map.put("author", accountService.getUser(a.getAuthor()).getEmail());
-                    map.put("title", a.getTitle());
-                    map.put("summary", a.getSummary());
-                    map.put("logo", a.getLogo());
-                    map.put("body", a.getBody());
-                    map.put("created", "" + a.getCreated().getTime());
-                    map.put("visits", "" + a.getVisits());
-
-                    List<Map<String, String>> tags = new ArrayList<>();
-                    contentService.listTagByArticle(a.getId()).forEach((t) -> {
-                        Map<String, String> tag = new HashMap<>();
-                        tag.put("name", t.getName());
-                        tag.put("visits", "" + t.getVisits());
-                        tags.add(tag);
-                    });
-                    map.put("tags", mapper.writeValueAsString(tags));
-
-                    List<Map<String, String>> comments = new ArrayList<>();
-                    contentService.listComment().forEach((c) -> {
-                        Map<String, String> comment = new HashMap<>();
-                        comment.put("content", c.getContent());
-                        comment.put("created", "" + c.getCreated().getTime());
-                        comment.put("user", accountService.getUser(c.getUser()).getEmail());
-                        comments.add(comment);
-                    });
-                    map.put("comments", mapper.writeValueAsString(comments));
-
-                    writer.write(mapper.writeValueAsString(map));
-                    writer.write('\n');
-                } catch (IOException e) {
-                    logger.error("导出文章[{}]出错", a.getId(), e);
-                }
-            });
+            exportSetting(writer, mapper);
+            exportFriendLink(writer, mapper);
+            exportTag(writer, mapper);
+            exportUser(writer, mapper);
+            exportArticle(writer, mapper);
         }
 
         logger.debug("开始压缩文件[{}]", fileName);
         zipHelper.compress(fileName, true);
+    }
+
+    private void exportUser(Writer writer, ObjectMapper mapper) throws IOException {
+        //用户列表
+        List<Map<String, String>> users = new ArrayList<>();
+        accountService.listUser().forEach((u) -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("username", u.getUsername());
+            map.put("email", u.getEmail());
+            map.put("created", "" + u.getCreated());
+            map.put("visits", "" + u.getVisits());
+
+            users.add(map);
+        });
+        writer.write(mapper.writeValueAsString(users));
+        writer.write('\n');
+    }
+
+    private void exportArticle(Writer writer, ObjectMapper mapper) throws IOException {
+        //文章列表
+        contentService.listArticle().forEach((a) -> {
+            try {
+                Map<String, String> map = new HashMap<>();
+                map.put("author", accountService.getUser(a.getAuthor()).getEmail());
+                map.put("title", a.getTitle());
+                map.put("summary", a.getSummary());
+                map.put("logo", a.getLogo());
+                map.put("body", a.getBody());
+                map.put("created", "" + a.getCreated().getTime());
+                map.put("visits", "" + a.getVisits());
+
+                List<String> tags = new ArrayList<>();
+                contentService.listTagByArticle(a.getId()).forEach((t) -> {
+                    tags.add(t.getName());
+                });
+                map.put("tags", mapper.writeValueAsString(tags));
+
+                List<Map<String, String>> comments = new ArrayList<>();
+                contentService.listComment().forEach((c) -> {
+                    Map<String, String> comment = new HashMap<>();
+                    comment.put("content", c.getContent());
+                    comment.put("created", "" + c.getCreated().getTime());
+                    comment.put("user", accountService.getUser(c.getUser()).getEmail());
+                    comments.add(comment);
+                });
+                map.put("comments", mapper.writeValueAsString(comments));
+
+                writer.write(mapper.writeValueAsString(map));
+                writer.write('\n');
+            } catch (IOException e) {
+                logger.error("导出文章[{}]出错", a.getId(), e);
+            }
+        });
+        writer.write('\n');
+    }
+
+    private void exportTag(Writer writer, ObjectMapper mapper) throws IOException {
+        //标签列表
+        List<Map<String, String>> tags = new ArrayList<>();
+        contentService.listTag().forEach((t) -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("name", t.getName());
+            map.put("visits", "" + t.getVisits());
+            map.put("created", "" + t.getCreated());
+            map.put("keep", "" + t.isKeep());
+            tags.add(map);
+        });
+        try {
+            writer.write(mapper.writeValueAsString(tags));
+            writer.write('\n');
+        } catch (IOException e) {
+            logger.error("导出标签列表出错", e);
+        }
+    }
+
+    private void exportSetting(Writer writer, ObjectMapper mapper) throws IOException {
+        //站点信息
+        Map<String, String> env = new HashMap<>();
+        for (String k : new String[]{"domain", "title", "keywords", "description", "copyright", "aboutMe", "regProtocol"}) {
+            k = "site."+k;
+            env.put(k, siteService.getString(k));
+        }
+        writer.write(mapper.writeValueAsString(env));
+        writer.write('\n');
+    }
+
+    private void exportFriendLink(Writer writer, ObjectMapper mapper) throws IOException {
+        //友情链接
+        List<Map<String, String>> friendLinks = new ArrayList<>();
+        siteService.listFriendLink().forEach((fl) -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("url", fl.getUrl());
+            map.put("logo", fl.getLogo());
+            map.put("name", fl.getName());
+            friendLinks.add(map);
+        });
+        writer.write(mapper.writeValueAsString(friendLinks));
+        writer.write('\n');
     }
 
     public void export2json_all() throws IOException {

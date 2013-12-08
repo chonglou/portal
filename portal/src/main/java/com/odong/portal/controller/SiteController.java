@@ -27,6 +27,7 @@ import java.util.Map;
 @Controller("c.site")
 public class SiteController extends PageController {
 
+
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     String getMain(Map<String, Object> map) {
         pager(map, 1);

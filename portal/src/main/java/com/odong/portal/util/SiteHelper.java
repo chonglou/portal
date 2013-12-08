@@ -33,11 +33,11 @@ public class SiteHelper {
 
             String title = "门户网站系统";
             siteService.set("site.init", new Date());
-            siteService.set("site.version", "v20131006");
+            siteService.set("site.version", "v20131207");
             siteService.set("site.title", title);
             siteService.set("site.description", "站点说明信息");
             siteService.set("site.keywords", "站点关键字");
-            siteService.set("site.domain", "www.0-dong.com");
+            siteService.set("site.domain", "");
             siteService.set("site.copyright", "&copy;2013");
             siteService.set("site.allowRegister", true);
             siteService.set("site.allowLogin", true);
@@ -81,53 +81,10 @@ public class SiteHelper {
             siteService.set("site.topTag", contentService.addTag("置顶", true));
 
             //广告
-            siteService.set("site.advert.bottom", "<script type=\"text/javascript\"><!--\n" +
-                    "google_ad_client = \"ca-pub-5028403610236620\";\n" +
-                    "/* 全局横幅 */\n" +
-                    "google_ad_slot = \"8184321813\";\n" +
-                    "google_ad_width = 728;\n" +
-                    "google_ad_height = 90;\n" +
-                    "//-->\n" +
-                    "</script>\n" +
-                    "<script type=\"text/javascript\"\n" +
-                    "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n" +
-                    "</script>");
-            siteService.set("site.advert.left", "<script type=\"text/javascript\"><!--\n" +
-                    "google_ad_client = \"ca-pub-5028403610236620\";\n" +
-                    "/* 底部商铺（discuz） */\n" +
-                    "google_ad_slot = \"6080910921\";\n" +
-                    "google_ad_width = 300;\n" +
-                    "google_ad_height = 250;\n" +
-                    "//-->\n" +
-                    "</script>\n" +
-                    "<script type=\"text/javascript\"\n" +
-                    "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n" +
-                    "</script>");
+            siteService.set("site.advert.bottom", "");
+            siteService.set("site.advert.left", "");
             //GOOGLE SEARCH
-            siteService.set("site.google.search", "<style type=\"text/css\">\n" +
-                    "@import url(http://www.google.com/cse/api/branding.css);\n" +
-                    "</style>\n" +
-                    "<div class=\"cse-branding-right\" style=\"background-color:#FFFFFF;color:#000000\">\n" +
-                    "  <div class=\"cse-branding-form\">\n" +
-                    "    <form action=\"http://www.google.com.hk\" id=\"cse-search-box\" target=\"_blank\">\n" +
-                    "      <div>\n" +
-                    "        <input type=\"hidden\" name=\"cx\" value=\"partner-pub-5028403610236620:4707578439\" />\n" +
-                    "        <input type=\"hidden\" name=\"ie\" value=\"UTF-8\" />\n" +
-                    "        <input type=\"text\" name=\"q\" size=\"55\" />\n" +
-                    "        <input type=\"submit\" name=\"sa\" value=\"搜索\" />\n" +
-                    "      </div>\n" +
-                    "    </form>\n" +
-                    "    <script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>\n" +
-                    "    <script type=\"text/javascript\">google.load(\"elements\", \"1\", {packages: \"transliteration\"});</script>\n" +
-                    "    <script type=\"text/javascript\" src=\"http://www.google.com/cse/t13n?form=cse-search-box&t13n_langs=en\"></script>\n" +
-                    "  </div>\n" +
-                    "  <div class=\"cse-branding-logo\">\n" +
-                    "    <img src=\"http://www.google.com/images/poweredby_transparent/poweredby_FFFFFF.gif\" alt=\"Google\" />\n" +
-                    "  </div>\n" +
-                    "  <div class=\"cse-branding-text\">\n" +
-                    "    自定义搜索\n" +
-                    "  </div>\n" +
-                    "</div>\n");
+            siteService.set("site.google.search", "");
 
             //社交网站分享代码
             siteService.set("site.share.qq", "   <script type=\"text/javascript\">\n" +
@@ -209,33 +166,7 @@ public class SiteHelper {
     private void checkUpdate() {
 
         if ("v20130522".equals(siteService.getString("site.version"))) {
-            //升级默认配置
-            siteService.set("site.latestArticleCount", 10);
-            siteService.set("site.google.search", "<style type=\"text/css\">\n" +
-                    "@import url(http://www.google.com/cse/api/branding.css);\n" +
-                    "</style>\n" +
-                    "<div class=\"cse-branding-right\" style=\"background-color:#FFFFFF;color:#000000\">\n" +
-                    "  <div class=\"cse-branding-form\">\n" +
-                    "    <form action=\"http://www.google.com.hk\" id=\"cse-search-box\" target=\"_blank\">\n" +
-                    "      <div>\n" +
-                    "        <input type=\"hidden\" name=\"cx\" value=\"partner-pub-5028403610236620:4707578439\" />\n" +
-                    "        <input type=\"hidden\" name=\"ie\" value=\"UTF-8\" />\n" +
-                    "        <input type=\"text\" name=\"q\" size=\"55\" />\n" +
-                    "        <input type=\"submit\" name=\"sa\" value=\"搜索\" />\n" +
-                    "      </div>\n" +
-                    "    </form>\n" +
-                    "    <script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>\n" +
-                    "    <script type=\"text/javascript\">google.load(\"elements\", \"1\", {packages: \"transliteration\"});</script>\n" +
-                    "    <script type=\"text/javascript\" src=\"http://www.google.com/cse/t13n?form=cse-search-box&t13n_langs=en\"></script>\n" +
-                    "  </div>\n" +
-                    "  <div class=\"cse-branding-logo\">\n" +
-                    "    <img src=\"http://www.google.com/images/poweredby_transparent/poweredby_FFFFFF.gif\" alt=\"Google\" />\n" +
-                    "  </div>\n" +
-                    "  <div class=\"cse-branding-text\">\n" +
-                    "    自定义搜索\n" +
-                    "  </div>\n" +
-                    "</div>\n");
-            siteService.set("site.version", "v20131006");
+
         }
 
     }
