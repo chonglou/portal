@@ -242,7 +242,7 @@ public class DBHelper {
     private void exportSetting(Writer writer, ObjectMapper mapper) throws IOException {
         //站点信息
         Map<String, String> env = new HashMap<>();
-        for (String k : new String[]{"domain", "title", "keywords", "description", "copyright", "aboutMe", "regProtocol"}) {
+        for (String k : new String[]{"domain", "title", "keywords", "description", "copyright", "aboutMe", "regProtocol", "init"}) {
             env.put(k, siteService.getString("site." + k));
         }
         writer.write(mapper.writeValueAsString(env));

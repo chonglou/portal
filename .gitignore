@@ -6,3 +6,4 @@ target
 *.log
 *.pyc
 node_modules
+local.properties
