@@ -4,16 +4,23 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
-    <TextView
+    
+    <Button
+            android:id="@+id/mainRss"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/string_color"
-            android:text="@string/title"
-            />
-    <TextView
+            android:text="@string/lbl_rss"/>
+    <Button
+            android:id="@+id/mainSetting"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World, 你好"
-            />
+            android:text="@string/lbl_setting"/>
+    <Button
+            android:id="@+id/mainAboutMe"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_aboutMe"/>
+
+
 </LinearLayout>
 

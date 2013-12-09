@@ -34,8 +34,8 @@ tomcat:
 
 clean:
 	cd portal; mvn clean
-	cd httpd; mvn clean
-	-rm -r tmp
+	#cd httpd; mvn clean
+	#-rm -r tmp
 
 
 

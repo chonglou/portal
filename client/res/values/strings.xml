@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">client</string>
-    <string name="title">门户网站系统</string>
+    <string name="lbl_return">返回</string>
+    <string name="lbl_rss_error">抓取文章列表出错</string>
+    <string name="lbl_rss">文章列表</string>
+    <string name="lbl_setting">设置</string>
+    <string name="lbl_aboutMe">关于我们</string>
 </resources>

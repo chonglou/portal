@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.odong.client"
-          android:versionCode="1"
-          android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="19"/>
-    <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
-        <activity android:name="MyActivity"
-                  android:label="@string/app_name">
+          android:versionCode="20131209"
+          android:versionName="v20131209">
+    <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="16"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application android:allowBackup="true" android:label="@string/app_name" android:icon="@drawable/ic_launcher">
+        <activity android:name=".MainA"
+                  android:label="@string/title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".RssFeedA"/>
+        <activity android:name=".RssItemA"/>
+
     </application>
 </manifest>
