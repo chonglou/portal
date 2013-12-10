@@ -351,6 +351,9 @@ function FormWindow(form, parent) {
                     for (var j in field.options) {
                         var item = field.options[j];
                         input += "<label class='radio-inline'><input class='form-control' type='radio' name='" + _id(field.id) + "'  value='" + item.value + "' ";
+                        if(field.readonly){
+                            input+="disabled ";
+                        }
                         if (item.value == field.value) {
                             input += "checked='true' ";
                         }

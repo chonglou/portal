@@ -49,16 +49,17 @@ public class StaticsController {
         return fm;
     }
 
-    @RequestMapping(value = "/{saticId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{staticsId}", method = RequestMethod.GET)
     @ResponseBody
-    Form getEdit(@PathVariable long staticId) {
-        Statics s = contentService.getStatics(staticId);
-        Form fm = new Form("statics", "修改静态资源[" + staticId + "]", "/admin/statics/");
+    Form getEdit(@PathVariable long staticsId) {
+        Statics s = contentService.getStatics(staticsId);
+        Form fm = new Form("statics", "修改静态资源[" + staticsId + "]", "/admin/statics/");
 
         fm.addField(new HiddenField<Long>("id", s.getId()));
         RadioField<Statics.Type> type = new RadioField<>("type", "类型", s.getType());
         type.addOption("视频", Statics.Type.VIDEO);
         type.addOption("电子书", Statics.Type.BOOK);
+        type.setReadonly(true);
         fm.addField(type);
         fm.addField(new TextField<>("name", "名称", s.getName()));
         fm.addField(new TextField<>("url", "路径", s.getUrl()));

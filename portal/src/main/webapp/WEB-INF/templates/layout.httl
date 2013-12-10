@@ -59,7 +59,7 @@ $!{extends("/frame.httl")}
     );
 </script>
 <style type="text/css">
-    #qqAuthBar  a {
+    #qqAuthBar a {
         padding-top: 13px;
         padding-bottom: 13px;
     }

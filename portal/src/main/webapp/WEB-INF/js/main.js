@@ -27,22 +27,22 @@ function bind_left_nav_click() {
     });
 }
 
-function draw_person_bar(fn_logout){
-    new Ajax("/personal/bar", undefined, undefined, function(result){
+function draw_person_bar(fn_logout) {
+    new Ajax("/personal/bar", undefined, undefined, function (result) {
         var title = '登录/注册';
-        var items=[];
-        for(var k in result.items){
+        var items = [];
+        for (var k in result.items) {
             var v = result.items[k];
-            items.push('<li><a href="#" id="'+v.url+'">'+ v.name+'</a></li>');
+            items.push('<li><a href="#" id="' + v.url + '">' + v.name + '</a></li>');
         }
         $("li#personalBar ul.dropdown-menu").html(items.join('<li class="divider"></li>'));
 
-        if(result.ok){
+        if (result.ok) {
             title = '欢迎你，';
-            if(result.logo){
-                title+='<img alt="" class="navbar-icon" src="'+result.logo+'"/> ';
+            if (result.logo) {
+                title += '<img alt="" class="navbar-icon" src="' + result.logo + '"/> ';
             }
-            title+=result.name+'。';
+            title += result.name + '。';
 
 
             $("li#qqAuthBar").hide();
@@ -50,9 +50,9 @@ function draw_person_bar(fn_logout){
 
             $("li#personalBar ul.dropdown-menu a").each(function () {
                 var id = $(this).attr("id");
-                if(id.indexOf('logout')>=0){
-                    if(fn_logout == undefined){
-                        fn_logout = function(){
+                if (id.indexOf('logout') >= 0) {
+                    if (fn_logout == undefined) {
+                        fn_logout = function () {
                             if (window.confirm("您确认要退出系统么？")) {
                                 window.location.href = id;
                             }
@@ -60,7 +60,7 @@ function draw_person_bar(fn_logout){
                     }
                     $(this).click(fn_logout);
                 }
-                else{
+                else {
                     $(this).click(function () {
                         window.location.href = id;
                     });
@@ -69,7 +69,7 @@ function draw_person_bar(fn_logout){
 
             });
         }
-        else{
+        else {
             $("li#personalBar ul.dropdown-menu a").each(function () {
                 $(this).click(function () {
                     clear_root_div();
@@ -80,6 +80,6 @@ function draw_person_bar(fn_logout){
             });
         }
 
-        $("li#personalBar a.dropdown-toggle").html(title+'<b class="caret"></b>');
+        $("li#personalBar a.dropdown-toggle").html(title + '<b class="caret"></b>');
     });
 }
