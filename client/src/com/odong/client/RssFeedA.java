@@ -27,18 +27,17 @@ public class RssFeedA extends Activity {
         new Thread(runnable).start();
     }
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             Bundle data = msg.getData();
-            if(data != null){
-            RSSFeed feed = (RSSFeed)data.get("feed");
-            Log.d(Constants.LOG_NAME, "请求结果:"+feed.getSize());
-            show(feed);
-            }
-            else {
-                Log.e(Constants.LOG_NAME,"RSS数据为空");
+            if (data != null) {
+                RSSFeed feed = (RSSFeed) data.get("feed");
+                Log.d(Constants.LOG_NAME, "请求结果:" + feed.getSize());
+                show(feed);
+            } else {
+                Log.e(Constants.LOG_NAME, "RSS数据为空");
             }
         }
     };
@@ -55,27 +54,26 @@ public class RssFeedA extends Activity {
     };
 
 
-    private RSSFeed getFeed(String url){
-        RSSFeed feed=null;
-        try{
+    private RSSFeed getFeed(String url) {
+        RSSFeed feed = null;
+        try {
             RSSHandler handler = new RSSHandler();
             RSSHelper.get().parse(url, handler);
-            feed= handler.getFeed();
-        }
-        catch (Exception e){
+            feed = handler.getFeed();
+        } catch (Exception e) {
 
             Log.i(Constants.LOG_NAME, "抓取RSS", e);
         }
         return feed;
     }
 
-    private Intent createIntent(){
+    private Intent createIntent() {
         return new Intent(this, RssItemA.class);
     }
 
-    private void show(final RSSFeed feed){
-        ListView lv = (ListView)findViewById(R.id.rssFeedList);
-        if (feed == null){
+    private void show(final RSSFeed feed) {
+        ListView lv = (ListView) findViewById(R.id.rssFeedList);
+        if (feed == null) {
             setTitle(R.string.lbl_rss_error);
             return;
         }
@@ -83,7 +81,7 @@ public class RssFeedA extends Activity {
         lv.setAdapter(new SimpleAdapter(
                 this,
                 feed.getData(),
-                android.R.layout.simple_list_item_2, new String[]{RSSItem.TITLE,RSSItem.PUB_DATE},
+                android.R.layout.simple_list_item_2, new String[]{RSSItem.TITLE, RSSItem.PUB_DATE},
                 new int[]{android.R.id.text1, android.R.id.text2}));
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -4,12 +4,21 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
-    
     <Button
             android:id="@+id/mainRss"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/lbl_rss"/>
+    <Button
+            android:id="@+id/mainVideo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_video"/>
+    <Button
+            android:id="@+id/mainBook"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_book"/>
     <Button
             android:id="@+id/mainSetting"
             android:layout_width="fill_parent"
@@ -20,6 +29,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/lbl_aboutMe"/>
+
+    <Button
+            android:id="@+id/mainExit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_exit"/>
 
 
 </LinearLayout>
