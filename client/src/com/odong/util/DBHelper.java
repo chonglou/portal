@@ -18,15 +18,15 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "CREATE TABLE Settings (kkk VARCHAR(255) NOT NULL, vvv TEXT NOT NULL);";
-        Log.d(Constants.LOG_NAME,"创建表:"+sql);
+        Log.d(Constants.LOG_NAME, "创建表:" + sql);
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(Constants.LOG_NAME,"暂未");
+        Log.d(Constants.LOG_NAME, "暂未");
     }
 
-    private final static int VERSION=1;
-    private final static String NAME="portal.db";
+    private final static int VERSION = 1;
+    private final static String NAME = "portal.db";
 }

@@ -16,10 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".RssFeedA"/>
+        <activity android:name=".RssFeedA" android:label="@string/lbl_rss"/>
         <activity android:name=".RssItemA"/>
-        <activity android:name=".VideoA"/>
-        <activity android:name=".BookA"/>
+        <activity android:name=".VideoItemA"/>
+        <activity android:name=".BookItemA"/>
+        <activity android:name=".ListFeedA"/>
 
     </application>
 </manifest>

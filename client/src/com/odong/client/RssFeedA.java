@@ -23,7 +23,7 @@ import com.odong.util.RSSHelper;
 public class RssFeedA extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rss_feed);
+        setContentView(R.layout.feed);
         new Thread(runnable).start();
     }
 
@@ -46,7 +46,7 @@ public class RssFeedA extends Activity {
         public void run() {
             Message msg = new Message();
             Bundle data = new Bundle();
-            RSSFeed feed = getFeed(getText(R.string.rss_url).toString());
+            RSSFeed feed = getFeed("http://" + getText(R.string.domain) + "/rss.xml");
             data.putSerializable("feed", feed);
             msg.setData(data);
             handler.sendMessage(msg);
@@ -55,14 +55,14 @@ public class RssFeedA extends Activity {
 
 
     private RSSFeed getFeed(String url) {
-        RSSFeed feed = null;
+        RSSFeed feed;
         try {
             RSSHandler handler = new RSSHandler();
             RSSHelper.get().parse(url, handler);
             feed = handler.getFeed();
         } catch (Exception e) {
-
             Log.i(Constants.LOG_NAME, "抓取RSS", e);
+            feed = new RSSFeed();
         }
         return feed;
     }
@@ -72,7 +72,7 @@ public class RssFeedA extends Activity {
     }
 
     private void show(final RSSFeed feed) {
-        ListView lv = (ListView) findViewById(R.id.rssFeedList);
+        ListView lv = (ListView) findViewById(R.id.feedList);
         if (feed == null) {
             setTitle(R.string.lbl_rss_error);
             return;
@@ -94,7 +94,7 @@ public class RssFeedA extends Activity {
                 bundle.putString("description", item.getDescription());
                 bundle.putString("link", item.getLink());
                 bundle.putString("pubDate", item.getPubDate());
-                intent.putExtra("android.intent.extra.portal.rssItem", bundle);
+                intent.putExtra(Constants.RSS_2_ITEM, bundle);
                 startActivityForResult(intent, 0);
             }
         });

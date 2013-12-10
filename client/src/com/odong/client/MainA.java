@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
+import com.odong.Constants;
+import com.odong.model.Feed;
 
 public class MainA extends Activity {
     /**
@@ -30,21 +32,36 @@ public class MainA extends Activity {
         return new Intent(this, clazz);
     }
 
-    private View.OnClickListener createListener(final Class<?> clazz) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = createIntent(clazz);
-                startActivityForResult(intent, 0);
-            }
-        };
-    }
 
     private void initEvents() {
         SparseArray<View.OnClickListener> events = new SparseArray<View.OnClickListener>();
-        events.put(R.id.mainRss, createListener(RssFeedA.class));
-        events.put(R.id.mainVideo, createListener(VideoA.class));
-        events.put(R.id.mainBook, createListener(BookA.class));
+        events.put(R.id.mainRss, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = createIntent(RssFeedA.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+        events.put(R.id.mainVideo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = createIntent(ListFeedA.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("type", Feed.Type.VIDEO.toString());
+                intent.putExtra(Constants.MAIN_2_LIST, bundle);
+                startActivityForResult(intent, 0);
+            }
+        });
+        events.put(R.id.mainBook, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = createIntent(ListFeedA.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("type", Feed.Type.BOOK.toString());
+                intent.putExtra(Constants.MAIN_2_LIST, bundle);
+                startActivityForResult(intent, 0);
+            }
+        });
         events.put(R.id.mainExit, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -20,9 +20,10 @@ public class StaticsController {
 
     @RequestMapping(value = "/player/{id}", method = RequestMethod.GET)
     String getPlayer(Map<String, Object> map, @PathVariable int id) {
-        map.put("url", "");
+        Statics s = contentService.getStatics(id);
+        map.put("url", s.getUrl());
         map.put("type", "flv");
-        map.put("title", "");
+        map.put("title", s.getName());
         return "player";
     }
 
@@ -46,6 +47,7 @@ public class StaticsController {
 
     @Resource
     private ContentService contentService;
+
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;

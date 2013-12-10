@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.odong.Constants;
 
 /**
  * Created by flamen on 13-12-9.
@@ -17,12 +18,13 @@ public class RssItemA extends Activity {
         Intent intent = getIntent();
         String content = "程序出错";
         if (intent != null) {
-            Bundle bundle = intent.getBundleExtra("android.intent.extra.portal.rssItem");
+            Bundle bundle = intent.getBundleExtra(Constants.RSS_2_ITEM);
             if (bundle != null) {
-                content = bundle.getString("title") + "\n\n" +
+                setTitle(bundle.getString("title"));
+                content =
                         bundle.getString("pubDate") + "\n\n" +
-                        bundle.getString("description") +
-                        "\n\n详细信息请访问以下网址：\n" + bundle.getString("link");
+                                bundle.getString("description") +
+                                "\n\n详细信息请访问以下网址：\n" + bundle.getString("link");
 
             }
         }

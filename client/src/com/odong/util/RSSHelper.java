@@ -1,6 +1,5 @@
 package com.odong.util;
 
-import android.util.Log;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -21,13 +20,13 @@ public class RSSHelper {
         factory = SAXParserFactory.newInstance();
     }
 
-    public void parse(String url, ContentHandler handler) throws ParserConfigurationException,SAXException,IOException{
+    public void parse(String url, ContentHandler handler) throws ParserConfigurationException, SAXException, IOException {
 
-            SAXParser parser = factory.newSAXParser();
-            XMLReader reader = parser.getXMLReader();
-            reader.setContentHandler(handler);
-            InputSource is = new InputSource(new URL(url).openStream());
-            reader.parse(is);
+        SAXParser parser = factory.newSAXParser();
+        XMLReader reader = parser.getXMLReader();
+        reader.setContentHandler(handler);
+        InputSource is = new InputSource(new URL(url).openStream());
+        reader.parse(is);
 
 
     }

@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class RSSItem implements Serializable {
     private static final long serialVersionUID = 1687779784478973789L;
-    public final static String TITLE="title";
+    public final static String TITLE = "title";
     public final static String PUB_DATE = "pubDate";
     private String title;
     private String pubDate;

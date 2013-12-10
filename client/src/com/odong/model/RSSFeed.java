@@ -10,22 +10,26 @@ import java.util.Map;
  * Created by flamen on 13-12-9.
  */
 public class RSSFeed implements Serializable {
-    public RSSFeed(){
+    public RSSFeed() {
         items = new ArrayList<RSSItem>();
     }
-    public void addItem(RSSItem item){
+
+    public void addItem(RSSItem item) {
         items.add(item);
     }
-    public int getSize(){
+
+    public int getSize() {
         return items.size();
     }
-    public RSSItem getItem(int i){
+
+    public RSSItem getItem(int i) {
         return items.get(i);
     }
-    public List<Map<String,Object>> getData(){
-        List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
-        for(RSSItem item : items){
-            Map<String,Object> map = new HashMap<String,Object>();
+
+    public List<Map<String, Object>> getData() {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for (RSSItem item : items) {
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put(RSSItem.TITLE, item.getTitle());
             map.put(RSSItem.PUB_DATE, item.getPubDate());
             list.add(map);
@@ -38,6 +42,7 @@ public class RSSFeed implements Serializable {
     private String title;
     private String pubDate;
     private List<RSSItem> items;
+
     public List<RSSItem> getItems() {
         return items;
     }

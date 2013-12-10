@@ -11,7 +11,7 @@ import android.webkit.WebView;
 /**
  * Created by flamen on 13-12-9.
  */
-public class VideoA extends Activity {
+public class VideoItemA extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
