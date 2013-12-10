@@ -1,6 +1,7 @@
-package com.odong.portal.dao;
+package com.odong.portal.dao.cms;
 
-import com.odong.portal.entity.Article;
+import com.odong.portal.dao.BaseDao;
+import com.odong.portal.entity.cms.Article;
 
 /**
  * Created with IntelliJ IDEA.

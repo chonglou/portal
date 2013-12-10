@@ -1,7 +1,8 @@
-package com.odong.portal.dao.impl;
+package com.odong.portal.dao.cms.impl;
 
-import com.odong.portal.dao.TagDao;
-import com.odong.portal.entity.Tag;
+import com.odong.portal.dao.cms.TagDao;
+import com.odong.portal.dao.impl.BaseJpa2DaoImpl;
+import com.odong.portal.entity.cms.Tag;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * Date: 13-5-24
  * Time: 下午11:33
  */
-@Repository("tagDao")
+@Repository("cms.tagDao")
 public class TagDaoImpl extends BaseJpa2DaoImpl<Tag, Long> implements TagDao {
 }

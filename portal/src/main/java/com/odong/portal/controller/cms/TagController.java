@@ -1,7 +1,7 @@
 package com.odong.portal.controller.cms;
 
 import com.odong.portal.controller.PageController;
-import com.odong.portal.entity.Tag;
+import com.odong.portal.entity.cms.Tag;
 import com.odong.portal.job.TaskSender;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.web.NavBar;

@@ -76,6 +76,7 @@ public class SelfController extends PageController {
             NavBar nbSite = new NavBar("站点管理");
             nbSite.add("用户管理", "/admin/user/");
             nbSite.add("标签管理", "/admin/tag/");
+            nbSite.add("静态资源", "/admin/statics/");
             nbSite.add("站点信息", "/admin/site/info");
             nbSite.add("用户协议", "/admin/site/regProtocol");
             nbSite.add("站点状态", "/admin/state/");

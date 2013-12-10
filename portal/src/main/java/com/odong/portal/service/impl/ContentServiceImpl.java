@@ -1,10 +1,7 @@
 package com.odong.portal.service.impl;
 
-import com.odong.portal.dao.*;
-import com.odong.portal.entity.Article;
-import com.odong.portal.entity.ArticleTag;
-import com.odong.portal.entity.Comment;
-import com.odong.portal.entity.Tag;
+import com.odong.portal.dao.cms.*;
+import com.odong.portal.entity.cms.*;
 import com.odong.portal.service.ContentService;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
@@ -20,6 +17,58 @@ import java.util.*;
  */
 @Service("contentService")
 public class ContentServiceImpl implements ContentService {
+
+    @Override
+    public List<Statics> listStatics() {
+        return staticsDao.list();
+    }
+
+    @Override
+    public List<Statics> listStatics(Statics.Type type) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", type);
+        return staticsDao.list("From Statics r WHERE r.type=:type", map);
+    }
+
+    @Override
+    public Statics getStatics(long id) {
+        return staticsDao.select(id);
+    }
+
+    @Override
+    public void delStatics(long id) {
+        staticsDao.delete(id);
+    }
+
+    @Override
+    public void addStatics(String name, Statics.Type type, String details, String url) {
+        Statics r = new Statics();
+        r.setName(name);
+        r.setType(type);
+        r.setDetails(details);
+        r.setUrl(url);
+        r.setCreated(new Date());
+        r.setVisits(0);
+        r.setVersion(0);
+        staticsDao.insert(r);
+    }
+
+    @Override
+    public void visitStatics(long id) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        staticsDao.update("UPDATE Statics r SET r.visits=r.visits+1 WHERE r.id=:id", map);
+    }
+
+    @Override
+    public void setStatics(long id, String name, String details, String url) {
+        Statics r = staticsDao.select(id);
+        r.setName(name);
+        r.setDetails(details);
+        r.setUrl(url);
+        staticsDao.update(r);
+    }
+
     @Override
     public List<Article> search(String key) {
         Map<String, Object> map = new HashMap<>();
@@ -84,7 +133,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public Long addTag(String name,boolean keep, long visits, Date created) {
+    public Long addTag(String name, boolean keep, long visits, Date created) {
         Tag t = new Tag();
         t.setName(name);
         t.setCreated(created);
@@ -434,7 +483,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Resource
-    private UserDao userDao;
+    private StaticsDao staticsDao;
     @Resource
     private ArticleDao articleDao;
     @Resource
@@ -443,6 +492,10 @@ public class ContentServiceImpl implements ContentService {
     private CommentDao commentDao;
     @Resource
     private ArticleTagDao articleTagDao;
+
+    public void setStaticsDao(StaticsDao staticsDao) {
+        this.staticsDao = staticsDao;
+    }
 
     public void setArticleDao(ArticleDao articleDao) {
         this.articleDao = articleDao;

@@ -1,8 +1,8 @@
 package com.odong.portal.controller.admin;
 
-import com.odong.portal.entity.Article;
 import com.odong.portal.entity.Log;
 import com.odong.portal.entity.User;
+import com.odong.portal.entity.cms.Article;
 import com.odong.portal.form.admin.AuthorForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.AccountService;

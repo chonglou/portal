@@ -1,9 +1,9 @@
 package com.odong.portal.controller.cms;
 
 import com.odong.portal.controller.PageController;
-import com.odong.portal.entity.Article;
-import com.odong.portal.entity.Comment;
 import com.odong.portal.entity.Log;
+import com.odong.portal.entity.cms.Article;
+import com.odong.portal.entity.cms.Comment;
 import com.odong.portal.form.cms.CommentForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.web.ResponseItem;

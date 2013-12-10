@@ -1,7 +1,8 @@
-package com.odong.portal.dao.impl;
+package com.odong.portal.dao.cms.impl;
 
-import com.odong.portal.dao.ArticleDao;
-import com.odong.portal.entity.Article;
+import com.odong.portal.dao.cms.ArticleDao;
+import com.odong.portal.dao.impl.BaseJpa2DaoImpl;
+import com.odong.portal.entity.cms.Article;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * Date: 13-5-24
  * Time: 下午11:33
  */
-@Repository("articleDao")
+@Repository("cms.articleDao")
 public class ArticleDaoImpl extends BaseJpa2DaoImpl<Article, Long> implements ArticleDao {
 
 }

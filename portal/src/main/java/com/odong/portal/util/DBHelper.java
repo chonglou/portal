@@ -2,9 +2,9 @@ package com.odong.portal.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.odong.portal.entity.Article;
-import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
+import com.odong.portal.entity.cms.Article;
+import com.odong.portal.entity.cms.Tag;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.LogService;
@@ -64,7 +64,7 @@ public class DBHelper {
             //文章列表
             String line;
             while ((line = reader.readLine()) != null) {
-               importArticle(line, mapper);
+                importArticle(line, mapper);
             }
         }
         logger.debug("成功导入数据[{}]", filename);
@@ -93,9 +93,9 @@ public class DBHelper {
         //用户
         List<Map<String, String>> users = mapper.readValue(line, new TypeReference<List<Map<String, String>>>() {
         });
-        for (Map<String,String> u : users){
+        for (Map<String, String> u : users) {
             User user = accountService.getUser(u.get("email"));
-            if(user == null){
+            if (user == null) {
                 accountService.addUser(u.get("email"), u.get("username"), getLong(u.get("visits")), getDate(u.get("created")));
             }
         }
@@ -105,9 +105,9 @@ public class DBHelper {
         //标签
         List<Map<String, String>> tags = mapper.readValue(line, new TypeReference<List<Map<String, String>>>() {
         });
-        for (Map<String,String> t : tags){
+        for (Map<String, String> t : tags) {
             Tag tag = contentService.getTag(t.get("name"));
-            if(tag == null){
+            if (tag == null) {
                 contentService.addTag(t.get("name"), getBoolean(t.get("keep")), getLong(t.get("visits")), getDate(t.get("created")));
             }
         }
@@ -159,9 +159,10 @@ public class DBHelper {
         zipHelper.compress(fileName, true);
     }
 
-    private boolean getBoolean(String b){
+    private boolean getBoolean(String b) {
         return Boolean.valueOf(b);
     }
+
     private Date getDate(String time) {
         return new Date(getLong(time));
     }
@@ -169,7 +170,6 @@ public class DBHelper {
     private long getLong(String str) {
         return Long.parseLong(str);
     }
-
 
 
     private void exportUser(Writer writer, ObjectMapper mapper) throws IOException {

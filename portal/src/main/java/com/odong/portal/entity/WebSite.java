@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
+ * 用于爬虫
  * Created with IntelliJ IDEA.
  * User: flamen
  * Date: 13-11-18

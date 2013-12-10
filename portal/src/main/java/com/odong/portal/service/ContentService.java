@@ -1,9 +1,6 @@
 package com.odong.portal.service;
 
-import com.odong.portal.entity.Article;
-import com.odong.portal.entity.ArticleTag;
-import com.odong.portal.entity.Comment;
-import com.odong.portal.entity.Tag;
+import com.odong.portal.entity.cms.*;
 
 import java.util.Date;
 import java.util.List;
@@ -16,6 +13,21 @@ import java.util.Set;
  * Time: 下午2:28
  */
 public interface ContentService {
+    List<Statics> listStatics();
+
+    List<Statics> listStatics(Statics.Type type);
+
+    Statics getStatics(long id);
+
+    void delStatics(long id);
+
+    void addStatics(String name, Statics.Type type, String details, String url);
+
+    void visitStatics(long id);
+
+    void setStatics(long id, String name, String details, String url);
+
+
     List<Article> search(String key);
 
     long countTag();

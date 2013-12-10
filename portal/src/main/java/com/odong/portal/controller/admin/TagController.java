@@ -1,12 +1,11 @@
 package com.odong.portal.controller.admin;
 
 import com.odong.portal.entity.Log;
-import com.odong.portal.entity.Tag;
+import com.odong.portal.entity.cms.Tag;
 import com.odong.portal.form.admin.TagForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
@@ -113,17 +112,12 @@ public class TagController {
     }
 
     @Resource
-    private SiteService siteService;
-    @Resource
     private ContentService contentService;
     @Resource
     private FormHelper formHelper;
     @Resource
     private LogService logService;
 
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;

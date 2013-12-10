@@ -1,9 +1,9 @@
 package com.odong.portal.util;
 
-import com.odong.portal.entity.Article;
 import com.odong.portal.entity.OpenId;
-import com.odong.portal.entity.Tag;
 import com.odong.portal.entity.User;
+import com.odong.portal.entity.cms.Article;
+import com.odong.portal.entity.cms.Tag;
 import com.odong.portal.model.profile.GoogleAuthProfile;
 import com.odong.portal.model.profile.QQAuthProfile;
 import com.odong.portal.model.profile.SmtpProfile;

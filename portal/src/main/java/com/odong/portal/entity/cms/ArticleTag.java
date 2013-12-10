@@ -1,5 +1,6 @@
-package com.odong.portal.entity;
+package com.odong.portal.entity.cms;
 
+import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
