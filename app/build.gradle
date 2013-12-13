@@ -19,6 +19,19 @@ android {
         minSdkVersion 7
         targetSdkVersion 19
     }
+
+    productFlavors {
+        flavor {
+            packageName "com.odong.app19"
+            versionCode 1
+        }
+
+        flavor14 {
+            packageName "com.odong.app14"
+            minSdkVersion 14
+        }
+    }
+
     compileOptions {
         //sourceCompatibility JavaVersion.VERSION_1_7
         //targetCompatibility JavaVersion.VERSION_1_7
@@ -36,6 +49,11 @@ android {
         }
 
         instrumentTest.setRoot('tests')
+    }
+
+
+    task idea(overwrite: true) {
+        println 'IDEA project generation should be triggererd from IDEA via "Import project..."'
     }
 
 }

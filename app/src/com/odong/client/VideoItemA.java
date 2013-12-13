@@ -24,7 +24,7 @@ public class VideoItemA extends Activity {
         settings.setJavaScriptEnabled(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setLoadsImagesAutomatically(true);
-        settings.setPluginState(WebSettings.PluginState.ON);
+        //settings.setPluginState(WebSettings.PluginState.ON);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         wv.setWebChromeClient(new WebChromeClient());
