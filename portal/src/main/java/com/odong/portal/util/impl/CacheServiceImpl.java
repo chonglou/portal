@@ -266,6 +266,8 @@ public class CacheServiceImpl implements CacheService {
                     site.put("manager", manager);
 
                     site.put("qqAuth", siteService.getObject("site.qqAuth", QQAuthProfile.class));
+
+                    site.put("apkVersion", siteService.getString("apk.version"));
                     return site;
                 }
         );

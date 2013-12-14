@@ -1,6 +1,7 @@
 package com.odong.client;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,11 @@ public class RssFeedA extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
+
+        progressDlg = new ProgressDialog(this);
+        progressDlg.setMessage(getText(R.string.lbl_wait));
+        progressDlg.show();
+
         new Thread(runnable).start();
     }
 
@@ -33,12 +39,16 @@ public class RssFeedA extends Activity {
             super.handleMessage(msg);
             Bundle data = msg.getData();
             if (data != null) {
-                RSSFeed feed = (RSSFeed) data.get("feed");
-                Log.d(Constants.LOG_NAME, "请求结果:" + feed.getSize());
-                show(feed);
-            } else {
-                Log.e(Constants.LOG_NAME, "RSS数据为空");
+                RSSFeed feed = (RSSFeed) data.getSerializable("feed");
+                if (feed != null) {
+                    Log.d(Constants.LOG_NAME, "请求结果:" + feed.getSize());
+                    show(feed);
+                    return;
+                }
+
             }
+            Log.e(Constants.LOG_NAME, "RSS数据为空");
+
         }
     };
     private Runnable runnable = new Runnable() {
@@ -47,6 +57,7 @@ public class RssFeedA extends Activity {
             Message msg = new Message();
             Bundle data = new Bundle();
             RSSFeed feed = getFeed("http://" + getText(R.string.domain) + "/rss.xml");
+            progressDlg.cancel();
             data.putSerializable("feed", feed);
             msg.setData(data);
             handler.sendMessage(msg);
@@ -81,7 +92,8 @@ public class RssFeedA extends Activity {
         lv.setAdapter(new SimpleAdapter(
                 this,
                 feed.getData(),
-                android.R.layout.simple_list_item_2, new String[]{RSSItem.TITLE, RSSItem.PUB_DATE},
+                android.R.layout.simple_list_item_2,
+                new String[]{RSSItem.TITLE, RSSItem.PUB_DATE},
                 new int[]{android.R.id.text1, android.R.id.text2}));
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -102,5 +114,6 @@ public class RssFeedA extends Activity {
         lv.setSelection(0);
     }
 
+    ProgressDialog progressDlg;
 
 }

@@ -7,6 +7,7 @@
     <string name="lbl_book">电子书</string>
     <string name="lbl_setting">设置</string>
     <string name="lbl_exit">退出</string>
+    <string name="lbl_wait">处理中，请稍候...</string>
 
     <string name="dlg_exit_title">确认退出么？</string>
     <string name="dlg_ok">确定</string>

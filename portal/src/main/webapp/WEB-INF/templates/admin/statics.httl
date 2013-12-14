@@ -4,9 +4,9 @@
     <legend>
         资源列表[${staticsList.size}]
         <span class="btn-group btn-group-sm">
-        <button id="add" class="btn btn-success" type="button">添加</button>
-
-        <button id="refresh" class="btn btn-primary" type="button">刷新</button>
+            <button id="add" class="btn btn-success" type="button">添加</button>
+            <button id="refresh" class="btn btn-primary" type="button">刷新</button>
+            <button id="update" class="btn btn-danger" type="button">更新APK</button>
         </span>
     </legend>
     <table class="table table-bordered table-hover">
@@ -41,6 +41,10 @@
     $("button#refresh").click(function () {
         clear_message_div();
         new Ajax("/admin/statics/");
+    });
+    $("button#update").click(function () {
+        clear_message_div();
+        new Ajax("/admin/statics/apk", "POST");
     });
     $("button#add").click(function () {
         clear_message_div();

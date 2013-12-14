@@ -6,6 +6,8 @@ import com.odong.portal.form.cms.StaticsForm;
 import com.odong.portal.model.SessionItem;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.LogService;
+import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CacheService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -29,6 +34,16 @@ public class StaticsController {
     String getTagList(Map<String, Object> map) {
         map.put("staticsList", contentService.listStatics());
         return "admin/statics";
+    }
+    @RequestMapping(value = "/apk", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postApk(){
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+        siteService.set("apk.version", df.format(new Date()));
+        cacheService.popSiteInfo();
+        ri.setOk(true);
+        return ri;
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
@@ -101,12 +116,23 @@ public class StaticsController {
 
 
     @Resource
+    private CacheService cacheService;
+    @Resource
     private ContentService contentService;
     @Resource
     private FormHelper formHelper;
     @Resource
     private LogService logService;
+    @Resource
+    private SiteService siteService;
 
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;

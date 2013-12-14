@@ -1,24 +1,22 @@
 package com.odong.client;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import com.odong.Constants;
 import com.odong.model.Feed;
 import com.odong.model.Item;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.odong.util.HttpHelper;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * Created by flamen on 13-12-10 下午12:31.
@@ -27,22 +25,61 @@ public class ListFeedA extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
-        Feed feed = getFeed();
-        if (feed != null) {
-            switch (feed.getType()) {
-                case BOOK:
-                    setTitle(R.string.lbl_book);
-                    break;
-                case VIDEO:
-                    setTitle(R.string.lbl_video);
-                    break;
-            }
 
-            initList(feed);
-        }
+        progressDlg = new ProgressDialog(this);
+        progressDlg.setMessage(getText(R.string.lbl_wait));
+        progressDlg.show();
+
+        new Thread(runnable).start();
     }
 
-    private void initList(Feed feed) {
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            if (data != null) {
+                Feed feed = (Feed) data.getSerializable("feed");
+                if (feed != null) {
+                    Log.d(Constants.LOG_NAME, "请求结果" + feed.getType() + " " + feed.getSize());
+                    show(feed);
+                    return;
+                }
+            }
+            Log.e(Constants.LOG_NAME, "数据为空");
+
+        }
+    };
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Message msg = new Message();
+            Bundle data = new Bundle();
+            Feed feed = getFeed();
+            progressDlg.cancel();
+            data.putSerializable("feed", feed);
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
+
+    private void show(final Feed feed) {
+        if (feed == null) {
+            return;
+        }
+        switch (feed.getType()) {
+            case BOOK:
+                setTitle(R.string.lbl_book);
+                break;
+            case VIDEO:
+                setTitle(R.string.lbl_video);
+                break;
+            default:
+                Log.e(Constants.LOG_NAME, "未知的类型" + feed.getType());
+                return;
+        }
+
         ListView lv = (ListView) findViewById(R.id.feedList);
         lv.setAdapter(new SimpleAdapter(
                 this,
@@ -51,6 +88,37 @@ public class ListFeedA extends Activity {
                 new String[]{Item.NAME, Item.DETAILS},
                 new int[]{android.R.id.text1, android.R.id.text2})
         );
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent;
+                Bundle data = new Bundle();
+                Item item = feed.getItem(position);
+                data.putString("title", item.getName());
+                data.putString("url", item.getUrl());
+
+                switch (feed.getType()) {
+                    case VIDEO:
+                        intent = createIntent(VideoItemA.class);
+                        intent.putExtra(Constants.LIST_2_VIDEO, data);
+                        break;
+                    case BOOK:
+                        intent = createIntent(BookItemA.class);
+                        intent.putExtra(Constants.LIST_2_BOOK, data);
+                        break;
+                    default:
+                        return;
+                }
+                startActivityForResult(intent, 0);
+
+            }
+        });
+
+    }
+
+    private Intent createIntent(Class<?> clazz) {
+        return new Intent(this, clazz);
     }
 
     private Feed getFeed() {
@@ -58,49 +126,34 @@ public class ListFeedA extends Activity {
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(Constants.MAIN_2_LIST);
         if (bundle != null) {
-            String type = bundle.getString("type");
-            String json = httpGet("http://" + getText(R.string.domain) + "/" + type);
-            if (json != null) {
-                try {
-
-                    Feed feed = new Feed(Feed.Type.valueOf(type));
-                    JSONArray array = new JSONArray(json);
-                    for (int i = 0; i < array.length(); i++) {
-                        JSONObject object = array.getJSONObject(i);
-                        Item item = new Item();
-                        item.setUrl(object.getString("url"));
-                        item.setName(object.getString("name"));
-                        item.setDetails(object.getString("details"));
-                        feed.addItem(item);
+            try {
+                String type = bundle.getString("type");
+                if (type != null) {
+                    Log.d(Constants.LOG_NAME, "http://" + getText(R.string.domain) + "/" + type.toLowerCase());
+                    String json = HttpHelper.get("http://" + getText(R.string.domain) + "/" + type.toLowerCase());
+                    Log.d(Constants.LOG_NAME, json);
+                    if (json != null) {
+                        Feed feed = new Feed(Feed.Type.valueOf(type));
+                        JSONArray array = new JSONArray(json);
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject object = array.getJSONObject(i);
+                            Item item = new Item();
+                            item.setUrl(object.getString("url"));
+                            item.setName(object.getString("name"));
+                            item.setDetails(object.getString("details"));
+                            feed.addItem(item);
+                        }
+                        return feed;
                     }
-                } catch (JSONException e) {
-                    Log.e(Constants.LOG_NAME, "JSON解析出错", e);
                 }
-
+            } catch (Exception e) {
+                Log.e(Constants.LOG_NAME, "取数据出错", e);
             }
         }
         return null;
     }
 
 
-    private String httpGet(String url) {
-        try {
-            HttpGet get = new HttpGet(url);
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpResponse response = client.execute(get);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                StringBuilder sb = new StringBuilder();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                return sb.toString();
-            }
-        } catch (IOException e) {
-            Log.e(Constants.LOG_NAME, "HTTP CLIENT出错", e);
-        }
-        return null;
-    }
+    private ProgressDialog progressDlg;
 
 }
