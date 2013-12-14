@@ -14,5 +14,13 @@
     <string name="dlg_cancel">取消</string>
 
     <string name="dlg_aboutMe_title">关于我们</string>
-    <string name="dlg_aboutMe_message">详细信息</string>
+
+    <string name="dlg_networkError_title">出错</string>
+    <string name="dlg_networkError_message">网络链接异常！</string>
+
+    <string name="dlg_update_title">自动更新</string>
+    <string name="dlg_update_message">发现新的版本，要更新么？</string>
+
+    <string name="dlg_download_title">正在下载</string>
+
 </resources>
