@@ -6,7 +6,7 @@
         <span class="btn-group btn-group-sm">
             <button id="add" class="btn btn-success" type="button">添加</button>
             <button id="refresh" class="btn btn-primary" type="button">刷新</button>
-            <button id="update" class="btn btn-danger" type="button">更新APK</button>
+            <button id="update" class="btn btn-danger" type="button">客户端</button>
         </span>
     </legend>
     <table class="table table-bordered table-hover">
@@ -44,17 +44,19 @@
     });
     $("button#update").click(function () {
         clear_message_div();
-        new Ajax("/admin/statics/apk", "POST");
+        $("div#statics").html("");
+        new Ajax("/admin/statics/apk", undefined, undefined, undefined, undefined, "statics");
     });
     $("button#add").click(function () {
         clear_message_div();
+        $("div#statics").html("");
         new Ajax("/admin/statics/add", undefined, undefined, undefined, undefined, "statics");
     });
     $("button[id^='edit-']").each(function () {
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-
+            $("div#statics").html("");
             new Ajax("/admin/statics/" + ss[1], undefined, undefined, undefined, undefined, "statics");
 
         });

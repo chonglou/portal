@@ -132,6 +132,8 @@ public class SiteHelper {
                     "</script>\n" +
                     "<script src=\"http://qzonestyle.gtimg.cn/qzone/app/qzlike/qzopensl.js#jsdate=20111201\" charset=\"utf-8\"></script>\n");
 
+            siteService.set("apk.version", 0l);
+
             addClockTask(Task.Type.SITE_MAP, 3);
             addClockTask(Task.Type.RSS, 3);
             addClockTask(Task.Type.GC, 2);
