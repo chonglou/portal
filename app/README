@@ -1,1 +1,5 @@
 'echo 1024 > /proc/sys/dev/hpet/max-user-freq' as root.
+
+
+编译：
+gradule build
