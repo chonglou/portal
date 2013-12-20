@@ -1,2 +1,6 @@
 查看依赖关系：
 mvn dependency:tree
+
+redis命令
+清空：FLUSHDB
+查看keys:KEYS *

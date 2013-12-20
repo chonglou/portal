@@ -22,11 +22,22 @@
     </bean>
     -->
 
-    <bean id="cacheHelper" class="com.odong.portal.cache.impl.CacheHelperRedisImpl" destroy-method="destroy" init-method="init">
+    <bean id="cacheHelper" class="com.odong.portal.cache.impl.CacheHelperRedisImpl">
         <property name="appName" value="${app.name}"/>
-        <property name="host" value="${redis.host}"/>
-        <property name="port" value="${redis.port}"/>
-        <property name="maxConn" value="${redis.max_conn}"/>
+        <property name="pool" ref="jedisPool"/>
     </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+        <constructor-arg name="poolConfig">
+            <bean class="redis.clients.jedis.JedisPoolConfig">
+                <property name="maxActive" value="${redis.max_conn}"/>
+                <property name="maxIdle" value="20"/>
+                <property name="maxWait" value="10001"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg name="host" value="${redis.host}"/>
+        <constructor-arg name="port" value="${redis.port}"/>
+    </bean>
+
 
 </beans>

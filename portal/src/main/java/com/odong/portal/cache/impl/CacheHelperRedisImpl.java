@@ -1,6 +1,8 @@
 package com.odong.portal.cache.impl;
 
 import com.odong.portal.cache.CacheHelper;
+import com.odong.portal.redis.RedisHelper;
+import com.odong.portal.redis.RedisPool;
 import com.odong.portal.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,7 @@ import java.util.Map;
 /**
  * Created by flamen on 13-12-19.
  */
-public class CacheHelperRedisImpl implements CacheHelper {
+public class CacheHelperRedisImpl extends RedisHelper implements CacheHelper {
     @Override
     public Map<InetSocketAddress, Map<String, String>> status() {
         return new HashMap<>();
@@ -25,39 +27,26 @@ public class CacheHelperRedisImpl implements CacheHelper {
 
     @Override
     public void delete(String key) {
-        Jedis client = pool.getResource();
-        try {
-            client.del(key(key));
-        } finally {
-            pool.returnResource(client);
-        }
+        execute((Jedis client) -> client.del(key2id(key)));
     }
 
     @Override
     public void touch(String key, int timeout) {
-        Jedis client = pool.getResource();
-        try {
-            client.expire(key(key), timeout);
-        } finally {
-            pool.returnResource(client);
-        }
+        execute((Jedis client) -> client.expire(key2id(key), timeout));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T get(String key, Class<T> clazz) {
-        Jedis client = pool.getResource();
-        try {
-            byte[] buf = client.get(key(key));
-            return buf == null ? null : (T) bin2obj(buf);
-        } finally {
-            pool.returnResource(client);
-        }
+        return (T) execute((Jedis client) -> {
+            byte[] buf = client.get(key2id(key));
+            return buf == null ? null : bin2obj(buf);
+        });
     }
 
 
     @Override
-    public <T> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback) {
+    public <T> T get(String key, Class<T> clazz, Integer timeout, CacheHelper.Callback<T> callback) {
         T t = get(key, clazz);
         if (t == null) {
             t = callback.call();
@@ -73,7 +62,7 @@ public class CacheHelperRedisImpl implements CacheHelper {
     public void set(String key, int timeout, Object object) {
         Jedis client = pool.getResource();
         try {
-            byte[] k = key(key);
+            byte[] k = key2id(key);
 
             client.set(k, obj2bin(object));
             client.expire(k, timeout);
@@ -82,64 +71,33 @@ public class CacheHelperRedisImpl implements CacheHelper {
         }
     }
 
-    void init() {
-        JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxActive(100);
-        config.setMaxIdle(20);
-        config.setMaxWait(10001);
-        pool = new JedisPool(config, host, port);
+
+    @Override
+    protected JedisPool getPool() {
+        return pool;
     }
 
-    void destroy() {
-        pool.destroy();
+    @Override
+    protected String getAppName() {
+        return appName;
     }
 
-    private byte[] key(String key) {
-        return ("cache://" + appName + "/" + key).getBytes();
-    }
-
-    private byte[] obj2bin(Object obj) {
-        try (
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-            oos.writeObject(obj);
-            return baos.toByteArray();
-        } catch (IOException e) {
-            logger.error("序列化对象出错", e);
-        }
-        return null;
-    }
-
-    private Object bin2obj(byte[] bytes) {
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-            return ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            logger.error("反序列化对象出错", e);
-        }
-        return null;
+    @Override
+    protected String getPrefix() {
+        return "cache";
     }
 
     private JedisPool pool;
-    private String host;
-    private int port;
-    private int maxConn;
     private String appName;
     private final static Logger logger = LoggerFactory.getLogger(CacheHelperRedisImpl.class);
 
-    public void setMaxConn(int maxConn) {
-        this.maxConn = maxConn;
+    public void setPool(JedisPool pool) {
+        this.pool = pool;
     }
 
     public void setAppName(String appName) {
         this.appName = appName;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
 
 }
