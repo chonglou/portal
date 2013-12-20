@@ -22,11 +22,11 @@
     </bean>
     -->
 
-    <bean id="cacheHelper" class="com.odong.portal.cache.impl.CacheHelperRedisImpl" init-method="init">
+    <bean id="cacheHelper" class="com.odong.portal.cache.impl.CacheHelperRedisImpl" destroy-method="destroy" init-method="init">
         <property name="appName" value="${app.name}"/>
         <property name="host" value="${redis.host}"/>
         <property name="port" value="${redis.port}"/>
-        <property name="jsonHelper" ref="jsonHelper"/>
+        <property name="maxConn" value="${redis.max_conn}"/>
     </bean>
 
 </beans>

@@ -5,6 +5,8 @@ import com.odong.portal.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
@@ -23,21 +25,35 @@ public class CacheHelperRedisImpl implements CacheHelper {
 
     @Override
     public void delete(String key) {
-        client.del(key(key));
+        Jedis client = pool.getResource();
+        try {
+            client.del(key(key));
+        } finally {
+            pool.returnResource(client);
+        }
     }
 
     @Override
     public void touch(String key, int timeout) {
-        client.expire(key(key), timeout);
+        Jedis client = pool.getResource();
+        try {
+            client.expire(key(key), timeout);
+        } finally {
+            pool.returnResource(client);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T get(String key, Class<T> clazz) {
-        byte[] buf = client.get(key(key));
-        return buf == null ? null : (T)bin2obj(buf);
+        Jedis client = pool.getResource();
+        try {
+            byte[] buf = client.get(key(key));
+            return buf == null ? null : (T) bin2obj(buf);
+        } finally {
+            pool.returnResource(client);
+        }
     }
-
 
 
     @Override
@@ -55,48 +71,64 @@ public class CacheHelperRedisImpl implements CacheHelper {
 
     @Override
     public void set(String key, int timeout, Object object) {
-        byte[] k = key(key);
-        client.set(k, obj2bin(object));
-        client.expire(k, timeout);
+        Jedis client = pool.getResource();
+        try {
+            byte[] k = key(key);
+
+            client.set(k, obj2bin(object));
+            client.expire(k, timeout);
+        } finally {
+            pool.returnResource(client);
+        }
     }
 
-    void init(){
-        client = new Jedis(host, port);
+    void init() {
+        JedisPoolConfig config = new JedisPoolConfig();
+        config.setMaxActive(100);
+        config.setMaxIdle(20);
+        config.setMaxWait(10001);
+        pool = new JedisPool(config, host, port);
+    }
+
+    void destroy() {
+        pool.destroy();
     }
 
     private byte[] key(String key) {
-        return ("cache://" + appName + "/"+key).getBytes();
+        return ("cache://" + appName + "/" + key).getBytes();
     }
-    private byte[] obj2bin(Object obj){
-        try(
+
+    private byte[] obj2bin(Object obj) {
+        try (
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(baos)){
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(obj);
             return baos.toByteArray();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             logger.error("序列化对象出错", e);
         }
         return null;
     }
 
-    private Object bin2obj(byte[] bytes){
-        try(ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))){
+    private Object bin2obj(byte[] bytes) {
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             return ois.readObject();
-        }
-        catch (IOException|ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             logger.error("反序列化对象出错", e);
         }
         return null;
     }
 
+    private JedisPool pool;
     private String host;
     private int port;
+    private int maxConn;
     private String appName;
-
-    private Jedis client;
-    private JsonHelper jsonHelper;
     private final static Logger logger = LoggerFactory.getLogger(CacheHelperRedisImpl.class);
+
+    public void setMaxConn(int maxConn) {
+        this.maxConn = maxConn;
+    }
 
     public void setAppName(String appName) {
         this.appName = appName;
@@ -110,7 +142,4 @@ public class CacheHelperRedisImpl implements CacheHelper {
         this.port = port;
     }
 
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
-    }
 }
