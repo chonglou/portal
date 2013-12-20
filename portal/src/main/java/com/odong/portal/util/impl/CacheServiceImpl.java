@@ -18,6 +18,7 @@ import com.odong.portal.web.Card;
 import com.odong.portal.web.NavBar;
 import com.odong.portal.web.Page;
 import com.odong.portal.web.Pager;
+import com.odong.portal.wiki.WikiHelper;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,6 +250,7 @@ public class CacheServiceImpl implements CacheService {
                     topNavs.put("main", "站点首页");
                     topNavs.put("personal/self", "用户中心");
                     topNavs.put("sitemap", "网站地图");
+                    topNavs.put("wiki/", "知识库");
                     topNavs.put("aboutMe", "关于我们");
                     site.put("topNavs", topNavs);
 
@@ -334,6 +336,18 @@ public class CacheServiceImpl implements CacheService {
                 if (u.getState() == User.State.ENABLE && !u.getEmail().equals(manager)) {
                     nb.add(u.getUsername(), "/user/" + u.getId());
                 }
+            }
+            return nb;
+        });
+    }
+
+    @Override
+    public NavBar getWikiNavBar() {
+        return cacheHelper.get("navBar/wiki", NavBar.class, null, () -> {
+            Map<String, String> pages = wikiHelper.listPage();
+            NavBar nb = new NavBar("知识库");
+            for (String k : pages.keySet()) {
+                nb.add(pages.get(k), "/wiki/" + k);
             }
             return nb;
         });
@@ -474,9 +488,15 @@ public class CacheServiceImpl implements CacheService {
     private AccountService accountService;
     @Resource
     private EncryptHelper encryptHelper;
+    @Resource
+    private WikiHelper wikiHelper;
     @Value("${app.manager}")
     protected String manager;
     private final static Logger logger = LoggerFactory.getLogger(CacheServiceImpl.class);
+
+    public void setWikiHelper(WikiHelper wikiHelper) {
+        this.wikiHelper = wikiHelper;
+    }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;

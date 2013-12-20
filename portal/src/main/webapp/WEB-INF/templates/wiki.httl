@@ -1,0 +1,31 @@
+$!{extends("/layout.httl")}
+#macro(main)
+${left_nav_bar_1}
+<div class="col-lg-9">
+    <!--#set(Map<String,Object> gl_site)-->
+    <!--#set(WikiPage page)-->
+    <!--#set(SessionItem gl_session)-->
+    ${mainGL}
+    $!{gl_site.advertBottom}
+    <h3>
+        #if(page.title)
+        ${page.title}
+        #else
+        文章[${page.name}]
+        #end
+        #if(gl_session.ssAdmin)
+        ，<a id="edit">点击此处进行编辑。
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("a#edit").click(function () {
+                    new Ajax("/wiki/", "PUT", {name: "${page.name}"});
+                });
+            });
+        </script>
+        #end
+    </a>
+    </h3>
+    <hr/>
+    $!{page.body}
+</div>
+#end

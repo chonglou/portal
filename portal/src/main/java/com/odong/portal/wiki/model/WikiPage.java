@@ -1,4 +1,4 @@
-package com.odong.portal.wiki;
+package com.odong.portal.wiki.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Created by flamen on 13-12-19下午8:27.
  */
-public class Page implements Serializable {
+public class WikiPage implements Serializable {
     public enum State {
         PUBLIC, PROTECTED, PRIVATE
     }

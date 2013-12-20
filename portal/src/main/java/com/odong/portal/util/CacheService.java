@@ -84,6 +84,8 @@ public interface CacheService {
 
     NavBar getUserNavBar();
 
+    NavBar getWikiNavBar();
+
     NavBar getArchiveNavBar();
 
     User getUser(long user);

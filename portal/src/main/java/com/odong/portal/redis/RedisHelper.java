@@ -27,7 +27,7 @@ public abstract class RedisHelper {
     }
 
 
-    protected String id2key(byte[] id){
+    protected String id2key(byte[] id) {
         return new String(id).substring(prefix().length());
     }
 
@@ -35,8 +35,8 @@ public abstract class RedisHelper {
         return (prefix() + key).getBytes();
     }
 
-    private String prefix(){
-        return getAppName() + "://" +getPrefix()+"/";
+    private String prefix() {
+        return getAppName() + "://" + getPrefix() + "/";
     }
 
     protected byte[] obj2bin(Object obj) {
