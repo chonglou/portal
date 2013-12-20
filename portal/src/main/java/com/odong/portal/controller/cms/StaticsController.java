@@ -31,15 +31,16 @@ public class StaticsController {
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     @ResponseBody
-    Map<String,Object> getStatus(){
+    Map<String, Object> getStatus() {
         HashMap info = cacheService.getSiteInfo();
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("title", info.get("title"));
         map.put("description", info.get("description"));
         map.put("aboutMe", cacheService.getAboutMe());
         map.put("version", info.get("apkVersion"));
         return map;
     }
+
     @RequestMapping(value = "/video", method = RequestMethod.GET)
     @ResponseBody
     List<Statics> getVideoList() {

@@ -25,6 +25,7 @@
         <activemq.version>5.7.0</activemq.version>
         <zxing.version>2.2</zxing.version>
         <jedis.version>2.2.1</jedis.version>
+        <bliki.version>3.0.19</bliki.version>
         <jdk.version>1.8</jdk.version>
     </properties>
 
@@ -357,6 +358,17 @@
             <version>3.18.0-GA</version>
         </dependency>
 
+        <dependency>
+            <groupId>info.bliki.wiki</groupId>
+            <artifactId>bliki-core</artifactId>
+            <version>${bliki.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -518,6 +530,16 @@
             <id>repository.jboss.org</id>
             <name>Repository hosting the jboss artifacts</name>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>info-bliki-repository</id>
+            <url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 </project>

@@ -35,17 +35,19 @@ public class StaticsController {
         map.put("staticsList", contentService.listStatics());
         return "admin/statics";
     }
+
     @RequestMapping(value = "/apk", method = RequestMethod.GET)
     @ResponseBody
-    Form getApk(){
-        Form fm = new Form("apk","Android 客户端", "/admin/statics/apk");
+    Form getApk() {
+        Form fm = new Form("apk", "Android 客户端", "/admin/statics/apk");
         fm.addField(new TextField<Long>("version", "版本号", siteService.getLong("apk.version")));
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/apk", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postApk(@RequestParam Long version){
+    ResponseItem postApk(@RequestParam Long version) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         siteService.set("apk.version", version);
         cacheService.popSiteInfo();
