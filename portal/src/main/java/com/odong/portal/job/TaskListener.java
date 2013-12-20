@@ -20,6 +20,7 @@ import com.odong.portal.util.CacheService;
 import com.odong.portal.util.DBHelper;
 import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.util.JsonHelper;
+import com.odong.portal.wiki.WikiHelper;
 import com.redfin.sitemapgenerator.ChangeFreq;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import com.redfin.sitemapgenerator.WebSitemapUrl;
@@ -157,6 +158,9 @@ public class TaskListener implements MessageListener {
                             for (User u : accountService.listUser()) {
                                 wsg.addUrl(new WebSitemapUrl.Options(domain + "/user/" + u.getId()).lastMod(u.getCreated()).priority(0.7).changeFreq(ChangeFreq.WEEKLY).build());
                             }
+                            for (String p : wikiHelper.listPage().keySet()) {
+                                wsg.addUrl(new WebSitemapUrl.Options(domain + "/wiki/" + p).priority(0.7).changeFreq(ChangeFreq.WEEKLY).build());
+                            }
                             DateTime now = new DateTime();
                             for (DateTime dt = new DateTime(siteService.getDate("site.init")); dt.compareTo(now) <= 0; dt = dt.plusMonths(1)) {
                                 wsg.addUrl(new WebSitemapUrl.Options(domain + "/archive/" + dt.toString("yyyy/MM")).lastMod(dt.toDate()).priority(0.2).changeFreq(ChangeFreq.MONTHLY).build());
@@ -289,6 +293,8 @@ public class TaskListener implements MessageListener {
 
 
     @Resource
+    private WikiHelper wikiHelper;
+    @Resource
     private DBHelper dbHelper;
     @Resource
     private EncryptHelper encryptHelper;
@@ -307,6 +313,10 @@ public class TaskListener implements MessageListener {
     @Value("${app.store}")
     private String appStoreDir;
     private final static Logger logger = LoggerFactory.getLogger(TaskListener.class);
+
+    public void setWikiHelper(WikiHelper wikiHelper) {
+        this.wikiHelper = wikiHelper;
+    }
 
     public void setDbHelper(DBHelper dbHelper) {
         this.dbHelper = dbHelper;
