@@ -57,6 +57,7 @@ public class WikiHelperImpl extends RedisHelper implements WikiHelper {
             page.setName(name);
             page.setTitle(title);
             page.setBody(body);
+            page.setVersion(page.getVersion()+1);
 
             client.set(k, obj2bin(page));
             return null;
