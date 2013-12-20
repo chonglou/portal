@@ -11,7 +11,7 @@ import com.odong.portal.model.profile.SmtpProfile;
 import com.odong.portal.service.AccountService;
 import com.odong.portal.service.ContentService;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheHelper;
+import com.odong.portal.cache.CacheHelper;
 import com.odong.portal.util.CacheService;
 import com.odong.portal.util.EncryptHelper;
 import com.odong.portal.web.Card;

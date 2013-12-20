@@ -1,6 +1,6 @@
-package com.odong.portal.util.impl;
+package com.odong.portal.cache.impl;
 
-import com.odong.portal.util.CacheHelper;
+import com.odong.portal.cache.CacheHelper;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 import org.slf4j.Logger;
@@ -20,7 +20,6 @@ import java.util.concurrent.TimeoutException;
  * Date: 13-5-23
  * Time: 上午12:28
  */
-@Component("cache.memcached")
 public class CacheHelperMemcachedImpl implements CacheHelper {
     @Override
     public Map<InetSocketAddress, Map<String, String>> status() {
@@ -98,9 +97,8 @@ public class CacheHelperMemcachedImpl implements CacheHelper {
         return "cache://" + appName + "/" + key;
     }
 
-    @Resource
+
     private MemcachedClient client;
-    @Value("${app.name}")
     private String appName;
     private final static Logger logger = LoggerFactory.getLogger(CacheHelperMemcachedImpl.class);
 

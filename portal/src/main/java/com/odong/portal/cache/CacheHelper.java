@@ -1,4 +1,4 @@
-package com.odong.portal.util;
+package com.odong.portal.cache;
 
 import java.net.InetSocketAddress;
 import java.util.Map;

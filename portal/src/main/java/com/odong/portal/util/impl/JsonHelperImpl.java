@@ -22,7 +22,7 @@ import java.util.Map;
  * Time: 上午12:53
  */
 
-@Component
+@Component("jsonHelper")
 public class JsonHelperImpl implements JsonHelper {
 
     @Override

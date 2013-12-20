@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--
+    <bean id="cacheHelper" class="com.odong.portal.cache.impl.CacheHelperMemcachedImpl">
+        <property name="appName" value="${app.name}"/>
+        <property name="client" ref="memcachedClient"/>
+    </bean>
+    <bean id="memcachedClient" class="net.rubyeye.xmemcached.utils.XMemcachedClientFactoryBean" destroy-method="shutdown">
+        <property name="servers" value="${memcached.servers}"/>
+         <property name="connectionPoolSize" value="${memcached.pool_size}"/>
+        <property name="commandFactory">
+            <bean class="net.rubyeye.xmemcached.command.BinaryCommandFactory"/>
+        </property>
+        <property name="sessionLocator">
+            <bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"/>
+        </property>
+        <property name="transcoder">
+            <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder"/>
+        </property>
+    </bean>
+    -->
+
+    <bean id="cacheHelper" class="com.odong.portal.cache.impl.CacheHelperRedisImpl" init-method="init">
+        <property name="appName" value="${app.name}"/>
+        <property name="host" value="${redis.host}"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="jsonHelper" ref="jsonHelper"/>
+    </bean>
+
+</beans>

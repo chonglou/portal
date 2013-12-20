@@ -24,6 +24,7 @@
         <httl.version>1.0.11</httl.version>
         <activemq.version>5.7.0</activemq.version>
         <zxing.version>2.2</zxing.version>
+        <jedis.version>2.2.1</jedis.version>
         <jdk.version>1.8</jdk.version>
     </properties>
 
@@ -186,7 +187,7 @@
         <dependency>
             <groupId>com.googlecode.xmemcached</groupId>
             <artifactId>xmemcached</artifactId>
-            <version>1.4.2</version>
+            <version>1.4.3</version>
         </dependency>
 
         <dependency>
@@ -296,6 +297,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.derby</groupId>
@@ -492,7 +500,6 @@
 
 
     <repositories>
-
         <repository>
             <id>oosnmp.net</id>
             <name>SNMP4j Repository</name>
