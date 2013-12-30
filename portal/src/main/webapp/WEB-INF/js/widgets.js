@@ -1,4 +1,9 @@
 function show_card_carousel(id) {
+
+    $('div#'+id).carousel({
+        interval: 2000
+    });
+    /*
     $("div#" + id).jcarousel({
         auto: 2,
         scroll: 1,
@@ -23,6 +28,7 @@ function show_card_carousel(id) {
         },
         wrap: 'circular'
     });
+    */
 }
 function show_card_fall(id) {
     $('div#' + id).masonry({
