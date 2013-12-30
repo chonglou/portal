@@ -4,16 +4,20 @@ bak=${TOMCAT_HOME}/`date +%F`
 
 all:
 	cd portal; mvn package
-	cd httpd; mvn package
-	-mkdir -p tmp/etc
-	-cp httpd/src/main/resources/config.properties tmp/etc
-	-cp httpd/src/main/resources/logback.xml tmp/etc
-	-mkdir -p tmp/var/log
-	-mkdir -p tmp/var/apps
-	-cp portal/target/portal.war tmp/var/apps/ROOT.war
-	-cp httpd/target/httpd-jar-with-dependencies.jar tmp/httpd.jar
-	-cp tools/run.sh tmp/
+	#-mkdir -p tmp/var/log
+	#-mkdir -p tmp/var/apps
+	#-cp portal/target/portal.war tmp/var/apps/ROOT.war
 	@echo JDK路径：${JAVA_HOME}
+
+
+rpcd:
+	cd daemon; mvn package
+	-mkdir -p tmp/daemon/etc
+	-cp daemon/src/main/resources/config.properties tmp/daemon/etc
+	-cp daemon/src/main/resources/logback.xml tmp/daemon/etc
+	-cp daemon/target/daemon-jar-with-dependencies.jar tmp/daemon/portal.jar
+	-cp tools/daemon.sh tmp/daemon/run.sh
+
 
 
 tomcat:
@@ -34,8 +38,8 @@ tomcat:
 
 clean:
 	cd portal; mvn clean
-	#cd httpd; mvn clean
-	#-rm -r tmp
+	cd daemon; mvn clean
+	-rm -r tmp/daemon
 
 
 

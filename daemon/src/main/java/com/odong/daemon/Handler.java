@@ -64,7 +64,7 @@ public class Handler extends AbstractHandler {
     private void command(HttpServletRequest request, Map<String, Object> map) {
         List<String> lines = new ArrayList<>();
         for(String line : request.getParameterValues("line")){
-            lines.add(encryptHelper.decrypt(line));
+            lines.add(encryptHelper.decode(line));
         }
 
         if(debug){
@@ -76,14 +76,14 @@ public class Handler extends AbstractHandler {
         finish(true, map);
     }
     private void file(HttpServletRequest request, Map<String, Object> map) {
-        String name = encryptHelper.decrypt(request.getParameter("name"));
+        String name = encryptHelper.decode(request.getParameter("name"));
 
         if(debug){
             name = "/tmp"+name;
         }
         List<String> lines = new ArrayList<>();
         for(String line : request.getParameterValues("line")){
-            lines.add(encryptHelper.decrypt(line));
+            lines.add(encryptHelper.decode(line));
         }
         logger.debug("写入文件{}", name);
         FileHelper.write(name, lines.toArray(new String[1]));
