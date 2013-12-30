@@ -1,13 +1,32 @@
 apply plugin: 'java'
+apply plugin: 'application'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 version = '1.0'
+mainClassName = "com.odong.daemon.App"
+
+
+project.ext {
+    jettyVersion = '9.1.0.v20131115'
+    logbackVersion = '1.0.13'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    compile(
+            'org.slf4j:slf4j-api:1.7.5',
+            'org.slf4j:log4j-over-slf4j:1.7.5',
+            'org.slf4j:jul-to-slf4j:1.7.5',
+            'org.slf4j:jcl-over-slf4j:1.7.5',
+
+            "ch.qos.logback:logback-core:${logbackVersion}",
+            "ch.qos.logback:logback-classic:${logbackVersion}",
+
+            "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    )
     testCompile group: 'org.testng', name: 'testng', version: '6.8.7'
 }
 
