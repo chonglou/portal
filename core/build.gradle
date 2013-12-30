@@ -1,0 +1,26 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven{
+        url "http://httl.github.io/maven"
+    }
+}
+
+dependencies {
+    //compile group:'', name:'',version:''
+    //compile group:'', name:'',version:''
+    compile (
+        'org.slf4j:slf4j-api:1.7.5',
+        'com.googlecode.xmemcached:xmemcached:1.4.3'
+    )
+    testCompile group: 'org.testng', name: 'testng', version: '6.8.7'
+}
+
+task "create-dirs" << {
+    sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
