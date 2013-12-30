@@ -254,23 +254,21 @@ $!{extends("/frame.httl")}
 <!-- #set(List<Page> tagCloud=gl_site.tagCloud) -->
 <script type="text/javascript">
     $(document).ready(function () {
-        try {
-            TagCanvas.Start('tagCanvas', 'tags', {
-                textColour: '#00f',
-                textHeight: 25,
-                outlineColour: '#ff9999',
-                outlineThickness: 3,
-                pulsateTo: 0.2,
-                pulsateTime: 0.5,
-                wheelZoom: false,
-                reverse: true,
-                decel: 0.9,
-                depth: 0.8,
-                maxSpeed: 0.08,
-                minSpeed: 0.01,
-                shape: "sphere"
-            });
-        } catch (e) {
+        if(!$('#tagCanvas').tagcanvas({
+            textColour: '#00f',
+            textHeight: 25,
+            outlineColour: '#ff9999',
+            outlineThickness: 3,
+            pulsateTo: 0.2,
+            pulsateTime: 0.5,
+            wheelZoom: false,
+            reverse: true,
+            decel: 0.9,
+            depth: 0.8,
+            maxSpeed: 0.08,
+            minSpeed: 0.01,
+            shape: "sphere"
+        },'tags')) {
             $("div#tagCanvasContainer").hide();
         }
     });
@@ -279,13 +277,13 @@ $!{extends("/frame.httl")}
     <canvas id="tagCanvas" height="300px">
         <p>标签云</p>
     </canvas>
-    <div id="tags">
-        <ul>
-            #for(Page p : tagCloud)
-            <li><a href="${p.url}" target="_blank">${p.name}</a></li>
-            #end
-        </ul>
-    </div>
+</div>
+<div id="tags">
+    <ul>
+        #for(Page p : tagCloud)
+        <li><a href="${p.url}" target="_blank">${p.name}</a></li>
+        #end
+    </ul>
 </div>
 <!--#end-->
 
