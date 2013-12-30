@@ -57,32 +57,33 @@ public class Handler extends AbstractHandler {
 
     }
 
-    private void finish(boolean ok, Map<String,Object>map){
+    private void finish(boolean ok, Map<String, Object> map) {
         map.put("ok", ok);
         map.put("created", new Date());
     }
+
     private void command(HttpServletRequest request, Map<String, Object> map) {
         List<String> lines = new ArrayList<>();
-        for(String line : request.getParameterValues("line")){
+        for (String line : request.getParameterValues("line")) {
             lines.add(encryptHelper.decode(line));
         }
 
-        if(debug){
+        if (debug) {
             logger.debug("收到命令{}", lines);
-        }
-        else {
+        } else {
             map.put("data", CommandHelper.execute(lines.toArray(new String[1])));
         }
         finish(true, map);
     }
+
     private void file(HttpServletRequest request, Map<String, Object> map) {
         String name = encryptHelper.decode(request.getParameter("name"));
 
-        if(debug){
-            name = "/tmp"+name;
+        if (debug) {
+            name = "/tmp" + name;
         }
         List<String> lines = new ArrayList<>();
-        for(String line : request.getParameterValues("line")){
+        for (String line : request.getParameterValues("line")) {
             lines.add(encryptHelper.decode(line));
         }
         logger.debug("写入文件{}", name);
@@ -90,6 +91,7 @@ public class Handler extends AbstractHandler {
         finish(true, map);
 
     }
+
     private void status(HttpServletRequest request, Map<String, Object> map) {
         map.put("date", new Date());
     }
