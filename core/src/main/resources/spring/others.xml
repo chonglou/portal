@@ -48,4 +48,6 @@
     </bean>
     -->
 
+    <bean id="encryptHelper" class="com.odong.core.encrypt.impl.EncryptJasyptHelperImpl"/>
+
 </beans>

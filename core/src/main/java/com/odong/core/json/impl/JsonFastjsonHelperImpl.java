@@ -30,7 +30,7 @@ public class JsonFastjsonHelperImpl implements JsonHelper {
     }
 
     @Override
-    public void init(){
+    public void init() {
 
     }
 }

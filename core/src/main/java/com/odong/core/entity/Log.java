@@ -1,14 +1,13 @@
 package com.odong.core.entity;
 
-import java.io.Serializable;
-
 /**
  * Created by flamen on 13-12-30上午2:20.
  */
 public class Log extends IdEntity {
-    public enum Type{
-        DEBUG,ERROR,INFO
+    public enum Type {
+        DEBUG, ERROR, INFO
     }
+
     private static final long serialVersionUID = -1830152528089278813L;
     private Long user;
     private String message;

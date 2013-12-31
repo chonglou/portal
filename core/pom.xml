@@ -16,7 +16,9 @@
       <jackson.version>2.2.2</jackson.version>
       <mysql.version>5.1.25</mysql.version>
       <derby.version>10.10.1.1</derby.version>
+      <activemq.version>5.7.0</activemq.version>
       <jedis.version>2.2.1</jedis.version>
+      <aspectj.version>1.8.0.M1</aspectj.version>
        <spring.version>4.0.0.RELEASE</spring.version>
       <slf4j.version>1.7.5</slf4j.version>
       <logback.version>1.0.13</logback.version>
@@ -63,6 +65,19 @@
       </dependency>
 
       <dependency>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>activemq-core</artifactId>
+          <version>${activemq.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>activemq-pool</artifactId>
+          <version>${activemq.version}</version>
+          <scope>provided</scope>
+      </dependency>
+
+      <dependency>
           <groupId>redis.clients</groupId>
           <artifactId>jedis</artifactId>
           <version>${jedis.version}</version>
@@ -96,8 +111,53 @@
       </dependency>
 
       <dependency>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
+          <version>1.0</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.aspectj</groupId>
+          <artifactId>aspectjrt</artifactId>
+          <version>${aspectj.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.aspectj</groupId>
+          <artifactId>aspectjweaver</artifactId>
+          <version>${aspectj.version}</version>
+          <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.quartz-scheduler</groupId>
+          <artifactId>quartz</artifactId>
+          <version>2.2.1</version>
+          <scope>provided</scope>
+      </dependency>
+
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-jdbc</artifactId>
+          <version>${spring.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-jms</artifactId>
+          <version>${spring.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-context</artifactId>
+          <version>${spring.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context-support</artifactId>
           <version>${spring.version}</version>
           <scope>provided</scope>
       </dependency>
@@ -165,4 +225,37 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>oosnmp.net</id>
+            <name>SNMP4j Repository</name>
+            <url>https://oosnmp.net/dist/release/</url>
+        </repository>
+        <repository>
+            <id>httl-repository</id>
+            <name>Httl Repository</name>
+            <url>http://httl.github.io/maven</url>
+        </repository>
+        <repository>
+            <id>opencast-public</id>
+            <url>http://repository.opencastproject.org/nexus/content/repositories/public/</url>
+        </repository>
+        <repository>
+            <id>repository.jboss.org</id>
+            <name>Repository hosting the jboss artifacts</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>info-bliki-repository</id>
+            <url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 </project>

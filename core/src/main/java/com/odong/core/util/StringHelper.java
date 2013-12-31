@@ -53,7 +53,7 @@ public class StringHelper {
         return sb.toString();
     }
 
-    public void init(){
+    public void init() {
         random = new Random();
     }
 

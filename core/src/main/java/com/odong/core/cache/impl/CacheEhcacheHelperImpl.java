@@ -3,13 +3,10 @@ package com.odong.core.cache.impl;
 import com.odong.core.cache.CacheHelper;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.util.logging.resources.logging;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,12 +27,12 @@ public class CacheEhcacheHelperImpl implements CacheHelper {
 
     @Override
     public Map<String, Map<String, String>> status() {
-        Map<String,Map<String,String>> status = new HashMap<>();
+        Map<String, Map<String, String>> status = new HashMap<>();
         Cache cache = getCache();
-        Map<String,String> map = new HashMap<>();
-        map.put("size", ""+cache.getSize());
-        map.put("inMemory", ""+cache.getMemoryStoreSize());
-        map.put("inDisk", ""+cache.getDiskStoreSize());
+        Map<String, String> map = new HashMap<>();
+        map.put("size", "" + cache.getSize());
+        map.put("inMemory", "" + cache.getMemoryStoreSize());
+        map.put("inDisk", "" + cache.getDiskStoreSize());
         status.put(cache.getName(), map);
 
         return status;
@@ -53,13 +50,13 @@ public class CacheEhcacheHelperImpl implements CacheHelper {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Serializable> T get(String key, Class<T> clazz) {
+    public <T> T get(String key, Class<T> clazz) {
         Element e = getCache().get(key(key));
-        return e == null ? null : (T)e.getObjectValue();
+        return e == null ? null : (T) e.getObjectValue();
     }
 
     @Override
-    public <T extends Serializable> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback) {
+    public <T> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback) {
         T t = get(key, clazz);
         if (t == null) {
             t = callback.call();
@@ -76,10 +73,12 @@ public class CacheEhcacheHelperImpl implements CacheHelper {
         Element el = new Element(key(key), object);
         getCache().put(el);
     }
-    private String key(String key){
-        return "cache://"+key;
+
+    private String key(String key) {
+        return "cache://" + key;
     }
-    private Cache getCache(){
+
+    private Cache getCache() {
         return manager.getCache(appName);
     }
 

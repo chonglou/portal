@@ -4,7 +4,7 @@
 
     <groupId>com.odong</groupId>
     <artifactId>daemon</artifactId>
-    <version>v20131230</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>daemon</name>

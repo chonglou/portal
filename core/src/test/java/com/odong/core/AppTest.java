@@ -1,7 +1,9 @@
 package com.odong.core;
 
 import com.odong.core.cache.CacheHelper;
+import com.odong.core.entity.Log;
 import com.odong.core.json.JsonHelper;
+import com.odong.core.service.LogService;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.springframework.context.ApplicationContext;
@@ -25,10 +27,10 @@ public class AppTest {
         }
     }
     @Test
-    public void testHttpClient() {
+    public void testLog() {
         try {
-            log(new Date());
-
+            LogService logService = ctx.getBean(LogService.class);
+            logService.add(1l, "测试啊", Log.Type.INFO);
         } catch (Exception e) {
             e.printStackTrace();
         }

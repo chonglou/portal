@@ -6,12 +6,14 @@ import java.util.Date;
  * Created by flamen on 13-12-30上午2:22.
  */
 public class User extends IdEntity {
-    public enum Type{
-        EMAIL,QQ,GOOGLE
+    public enum Type {
+        EMAIL, QQ, GOOGLE
     }
-    public enum State{
+
+    public enum State {
         LOCKED, SUBMIT, ENABLE, DISABLE
     }
+
     private static final long serialVersionUID = 1231841634861834208L;
     private String uid;
     private String username;

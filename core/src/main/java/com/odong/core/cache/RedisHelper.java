@@ -11,7 +11,7 @@ import java.io.*;
  * Created by flamen on 13-12-30下午1:33.
  */
 public abstract class RedisHelper {
-     protected abstract JedisPool getPool();
+    protected abstract JedisPool getPool();
 
     protected abstract String getAppName();
 

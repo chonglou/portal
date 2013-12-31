@@ -1,12 +1,14 @@
 package com.odong.core.util;
 
 import org.joda.time.DateTime;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 /**
  * Created by flamen on 13-12-30上午2:29.
  */
+@Component("core.util.time")
 public class TimeHelper {
 
     public Date plus(Date date, int second) {

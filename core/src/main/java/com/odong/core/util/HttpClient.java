@@ -7,7 +7,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
  */
 public class HttpClient {
 
-    private String encode(String key, String plain){
+    private String encode(String key, String plain) {
         BasicTextEncryptor te = new BasicTextEncryptor();
         te.setPassword(key);
         return te.encrypt(plain);

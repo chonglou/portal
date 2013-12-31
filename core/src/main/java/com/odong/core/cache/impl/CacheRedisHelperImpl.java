@@ -7,14 +7,13 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by flamen on 13-12-30上午2:26.
  */
-public class CacheRedisHelperImpl extends RedisHelper implements CacheHelper{
+public class CacheRedisHelperImpl extends RedisHelper implements CacheHelper {
     @Override
     public void destroy() {
 
@@ -44,7 +43,7 @@ public class CacheRedisHelperImpl extends RedisHelper implements CacheHelper{
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Serializable> T get(String key, Class<T> clazz) {
+    public <T> T get(String key, Class<T> clazz) {
 
         return (T) execute((Jedis client) -> {
             byte[] buf = client.get(key2id(key));
@@ -53,7 +52,7 @@ public class CacheRedisHelperImpl extends RedisHelper implements CacheHelper{
     }
 
     @Override
-    public <T extends Serializable> T get(String key, Class<T> clazz, Integer timeout, CacheHelper.Callback<T> callback) {
+    public <T> T get(String key, Class<T> clazz, Integer timeout, CacheHelper.Callback<T> callback) {
         T t = get(key, clazz);
         if (t == null) {
             t = callback.call();
@@ -95,7 +94,7 @@ public class CacheRedisHelperImpl extends RedisHelper implements CacheHelper{
 
     private JedisPool pool;
     private String appName;
- private final static Logger logger = LoggerFactory.getLogger(CacheRedisHelperImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(CacheRedisHelperImpl.class);
 
     public void setPool(JedisPool pool) {
         this.pool = pool;

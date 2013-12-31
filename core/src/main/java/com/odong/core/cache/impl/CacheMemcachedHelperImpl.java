@@ -3,11 +3,9 @@ package com.odong.core.cache.impl;
 import com.odong.core.cache.CacheHelper;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +27,10 @@ public class CacheMemcachedHelperImpl implements CacheHelper {
 
     @Override
     public Map<String, Map<String, String>> status() {
-        Map<String,Map<String,String>> map = new HashMap<>();
+        Map<String, Map<String, String>> map = new HashMap<>();
         try {
-            Map<InetSocketAddress, Map<String,String>> status = client.getStats();
-            for(InetSocketAddress ia : status.keySet()){
+            Map<InetSocketAddress, Map<String, String>> status = client.getStats();
+            for (InetSocketAddress ia : status.keySet()) {
                 map.put(ia.toString(), status.get(ia));
             }
         } catch (MemcachedException | InterruptedException | TimeoutException e) {
@@ -64,7 +62,7 @@ public class CacheMemcachedHelperImpl implements CacheHelper {
     }
 
     @Override
-    public <T extends Serializable> T get(String key, Class<T> clazz) {
+    public <T> T get(String key, Class<T> clazz) {
         try {
             logger.debug("GET " + key);
             return client.get(key(key));
@@ -75,7 +73,7 @@ public class CacheMemcachedHelperImpl implements CacheHelper {
     }
 
     @Override
-    public <T extends Serializable> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback) {
+    public <T> T get(String key, Class<T> clazz, Integer timeout, Callback<T> callback) {
         T t = get(key, clazz);
         if (t == null) {
             t = callback.call();
