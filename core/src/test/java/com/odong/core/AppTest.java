@@ -4,15 +4,13 @@ import com.odong.core.cache.CacheHelper;
 import com.odong.core.entity.Log;
 import com.odong.core.json.JsonHelper;
 import com.odong.core.service.LogService;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
+import com.odong.core.service.SiteService;
+import com.odong.core.store.DbUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import java.util.Date;
 
 public class AppTest {
     @Test
@@ -26,11 +24,39 @@ public class AppTest {
             e.printStackTrace();
         }
     }
+
     @Test
+    public void testSetting(){
+        try{
+            SiteService siteService = ctx.getBean(SiteService.class);
+            siteService.put("sss", "ddd");
+            log(siteService.get("sss"));
+            siteService.put("sss", "eee");
+            log(siteService.get("sss"));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public void testLog() {
         try {
             LogService logService = ctx.getBean(LogService.class);
+            /*
+            for(Log l : logService.list(1l, 20l, 10)){
+                log(l);
+            }
+
+            for(Log l : logService.list(1l, 120l, 50)){
+                log(l);
+            }
+            */
+
+            for(int i=0; i<5; i++){
             logService.add(1l, "测试啊", Log.Type.INFO);
+            }
+            log(logService.count(1l));
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,6 +80,7 @@ public class AppTest {
     }
 
     private void log(Object... objects) {
+        System.out.println("########################################################");
         JsonHelper jsonHelper = ctx.getBean(JsonHelper.class);
         for (Object obj : objects) {
             System.out.println(jsonHelper.object2json(obj));

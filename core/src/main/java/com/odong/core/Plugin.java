@@ -47,6 +47,7 @@ public interface Plugin {
 
     /**
      * 处理定时任务
+     *
      * @param message 任务信息
      * @throws JMSException
      */

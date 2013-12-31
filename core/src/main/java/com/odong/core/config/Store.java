@@ -1,7 +1,8 @@
 package com.odong.core.config;
 
 import com.jolbox.bonecp.BoneCPDataSource;
-import com.odong.core.store.JdbcUtil;
+import com.odong.core.store.DbUtil;
+import com.odong.core.store.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +38,8 @@ public class Store {
 
         ds.setDriverClass(jdbcDriver);
         ds.setJdbcUrl(jdbcUtil.getJdbcUrl());
-        switch (jdbcUtil.getType()) {
-            case MYSQL:
+        switch (jdbcDriver) {
+            case Driver.MYSQL:
                 ds.setUsername(jdbcUsername);
                 ds.setPassword(jdbcPassword);
                 break;
@@ -80,11 +81,11 @@ public class Store {
 
 
     @Resource
-    private JdbcUtil jdbcUtil;
+    private DbUtil jdbcUtil;
 
     private final static Logger logger = LoggerFactory.getLogger(Store.class);
 
-    public void setJdbcUtil(JdbcUtil jdbcUtil) {
+    public void setJdbcUtil(DbUtil jdbcUtil) {
         this.jdbcUtil = jdbcUtil;
     }
 

@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.odong</groupId>
-    <artifactId>platform</artifactId>
+    <artifactId>cms</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
-    <name>platform</name>
+    <name>cms</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -20,18 +20,8 @@
             <groupId>com.odong</groupId>
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
@@ -46,9 +36,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
-        <finalName>platform</finalName>
+        <finalName>cms</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -63,36 +52,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>oosnmp.net</id>
-            <name>SNMP4j Repository</name>
-            <url>https://oosnmp.net/dist/release/</url>
-        </repository>
-        <repository>
-            <id>httl-repository</id>
-            <name>Httl Repository</name>
-            <url>http://httl.github.io/maven</url>
-        </repository>
-        <repository>
-            <id>opencast-public</id>
-            <url>http://repository.opencastproject.org/nexus/content/repositories/public/</url>
-        </repository>
-        <repository>
-            <id>repository.jboss.org</id>
-            <name>Repository hosting the jboss artifacts</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>info-bliki-repository</id>
-            <url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>

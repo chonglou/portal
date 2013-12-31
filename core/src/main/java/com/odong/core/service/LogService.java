@@ -8,7 +8,7 @@ import java.util.List;
  * Created by flamen on 13-12-30下午3:50.
  */
 public interface LogService {
-    List<Log> list(int no, int size);
+    List<Log> list(Long user, long start, int size);
 
     void add(Long user, String message, Log.Type type);
 

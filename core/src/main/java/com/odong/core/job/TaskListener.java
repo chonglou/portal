@@ -47,7 +47,7 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
             String type = message.getStringProperty("type");
             String module = message.getStringProperty("module");
             String itemId = message.getJMSCorrelationID();
-            switch (type){
+            switch (type) {
                 case "email":
                     taskExecutor.execute(new Runnable() {
                         @Override
@@ -117,7 +117,7 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                     System.gc();
                     break;
                 default:
-                    ((Plugin)ctx.getBean(module+".job.listener")).onMessage(message);
+                    ((Plugin) ctx.getBean(module + ".job.listener")).onMessage(message);
                     break;
             }
 

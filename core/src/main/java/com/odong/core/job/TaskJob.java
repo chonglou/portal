@@ -18,7 +18,7 @@ public class TaskJob {
     public void execute() {
         taskService.listRunnableTask().forEach((t) -> {
             Date now = new Date();
-            taskSender.send(t.getModule(),t.getType(), jsonHelper.json2map(t.getRequest(), String.class, Object.class));
+            taskSender.send(t.getModule(), t.getType(), jsonHelper.json2map(t.getRequest(), String.class, Object.class));
             Date nextRun = timeHelper.plus(now, t.getSpace());
             if (nextRun.compareTo(t.getEnd()) < 0 && (t.getTotal() != 0 && t.getIndex() < t.getTotal())) {
                 taskService.setTaskNextRun(t.getId(), nextRun);
