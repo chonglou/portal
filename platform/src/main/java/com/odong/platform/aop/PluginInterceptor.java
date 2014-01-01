@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PluginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
-        return false;
+        return true;
     }
 
     @Override

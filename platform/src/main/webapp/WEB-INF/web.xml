@@ -29,6 +29,10 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>httl.spi.loaders.ServletLoader</listener-class>
+    </listener>
+
 
     <servlet>
         <servlet-name>dispatcher</servlet-name>
@@ -44,7 +48,7 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
-    <!--
+
     <error-page>
         <error-code>400</error-code>
         <location>/error/400</location>
@@ -65,7 +69,6 @@
         <error-code>500</error-code>
         <location>/error/500</location>
     </error-page>
-    -->
 
     <session-config>
         <session-timeout>30</session-timeout>

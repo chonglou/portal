@@ -19,11 +19,11 @@
     <mvc:annotation-driven/>
 
     <mvc:default-servlet-handler/>
-
     <mvc:interceptors>
         <bean class="com.odong.platform.aop.SecurityInterceptor"/>
         <bean class="com.odong.platform.aop.PluginInterceptor"/>
     </mvc:interceptors>
+
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages"/>
@@ -34,11 +34,53 @@
     </bean>
     <mvc:annotation-driven validator="validator"/>
 
-    <bean id="viewResolver" class="httl.web.springmvc.HttlViewResolver">
-        <property name="contentType" value="text/html; charset=UTF-8"/>
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="1"/>
+        <property name="contentNegotiationManager">
+            <bean class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+                <property name="ignoreAcceptHeader" value="true"/>
+                <property name="favorPathExtension" value="true"/>
+                <property name="favorParameter" value="true"/>
+                <property name="defaultContentType" value="text/html"/>
+                <property name="mediaTypes">
+                    <map>
+                        <entry key="html" value="text/html"/>
+                        <entry key="json" value="application/json"/>
+                        <entry key="xml" value="application/xml"/>
+                        <!--
+                        <entry key="atom" value="application/atom+xml"/>
+                        <entry key="pdf" value="application/pdf"/>
+                        -->
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="viewResolvers">
+            <list>
+                <bean class="httl.web.springmvc.HttlViewResolver">
+                    <property name="contentType" value="text/html; charset=UTF-8" />
+                </bean>
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+                <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+                    <constructor-arg>
+                        <bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+                            <property name="aliases">
+                                <props>
+                                    <prop key="ResponseItem">com.odong.web.ResponseItem</prop>
+                                </props>
+                            </property>
+                        </bean>
+                    </constructor-arg>
+                </bean>
+            </list>
+        </property>
     </bean>
-    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
-    <bean id="rssView" class="com.odong.core.rss.RssView"/>
+
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
     <!--

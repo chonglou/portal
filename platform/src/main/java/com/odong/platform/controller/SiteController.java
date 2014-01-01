@@ -1,12 +1,15 @@
 package com.odong.platform.controller;
 
 import com.odong.platform.util.CacheService;
+import com.odong.web.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,21 +21,20 @@ import java.util.Map;
 /**
  * Created by flamen on 13-12-30下午9:40.
  */
-@Controller("cms.c.site")
+@Controller("platform.c.site")
 public class SiteController {
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-    String getInstall(HttpServletResponse response) throws IOException {
+    String getInstall(Map<String,Object>map, HttpServletResponse response) throws IOException {
         return "install";
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    @ResponseBody
-    String getMain(Map<String, Object> map) {
+    ResponseItem getMain() {
         //pager(map, 1);
-        map.put("title", "首页");
+        //map.put("title", "首页");
         //map.put("defArticles", cacheService.getArticleCardsByTag(cacheService.getTopTag()));
-        logger.debug("$$$$$$$$$$$$$$$$");
-        return "main";
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        return ri;
     }
 
     /*

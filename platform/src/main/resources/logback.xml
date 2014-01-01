@@ -25,6 +25,8 @@
 
 
     <logger name="org.springframework" level="WARN"/>
+    <logger name="httl" level="WARN"/>
+
 
     <logger name="com.opensymphony" level="WARN"/>
     <logger name="org.apache" level="WARN"/>
@@ -43,9 +45,6 @@
 
     <logger name="net.sf.ehcache" level="WARN"/>
     <logger name="org.quartz" level="WARN"/>
-
-    <logger name="httl" level="WARN"/>
-
 
     <root level="DEBUG">
         <appender-ref ref="stdout"/>
