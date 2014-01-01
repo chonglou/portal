@@ -55,7 +55,7 @@ public class SiteServiceImpl extends JdbcHelper implements SiteService {
     }
 
     private String get(String key) {
-        return select("SELECT val_ FROM settings WHERE key_=?", key);
+        return select("SELECT val_ FROM settings WHERE key_=?", new Object[]{key}, String.class);
     }
 
 
@@ -66,12 +66,6 @@ public class SiteServiceImpl extends JdbcHelper implements SiteService {
                 textColumn("val_", true),
                 dateColumn("created_", true),
                 versionColumn());
-    }
-
-
-    @Resource
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
 
@@ -92,4 +86,11 @@ public class SiteServiceImpl extends JdbcHelper implements SiteService {
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;
     }
+
+
+    @Resource
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
 }

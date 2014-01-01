@@ -4,6 +4,7 @@ import com.odong.core.cache.CacheHelper;
 import com.odong.core.entity.Log;
 import com.odong.core.json.JsonHelper;
 import com.odong.core.service.LogService;
+import com.odong.core.service.RbacService;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import org.springframework.context.ApplicationContext;
@@ -12,8 +13,22 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.Date;
+
 public class AppTest {
-    //@Test
+    @Test
+    public void testRbac(){
+        try{
+            RbacService rs = ctx.getBean(RbacService.class);
+            rs.bind("aaa","bbb", "ccc", new Date(), new Date(), true);
+            rs.bind("aaa","bbb", "ccc", new Date(), new Date(), false);
+            rs.bind("aaa","bbb", "ccc1", new Date(), new Date(), true);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @Test
     public void testCache() {
         try{
             CacheHelper cacheHelper = ctx.getBean(CacheHelper.class);

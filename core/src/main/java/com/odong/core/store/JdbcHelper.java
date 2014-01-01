@@ -7,6 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -157,6 +159,21 @@ public abstract class JdbcHelper {
         jdbcTemplate.update(sql);
     }
 
+
+    @SuppressWarnings("unchecked")
+    protected <PK> PK insert(String sql, Object[] objects, String pkName, Class<PK> clazz) {
+        logger.debug(sql);
+        KeyHolder kh = new GeneratedKeyHolder();
+        jdbcTemplate.update((Connection connection) -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{pkName});
+            for (int i = 0; i < objects.length; i++) {
+                ps.setObject(i + 1, objects[i]);
+            }
+            return ps;
+        }, kh);
+        return (PK) kh.getKey();
+    }
+
     protected void execute(String sql, Object... objects) {
         logger.debug(sql);
         jdbcTemplate.update(sql, objects);
@@ -191,15 +208,16 @@ public abstract class JdbcHelper {
         }
     }
 
-    protected String select(String sql, Object... objects) {
+    protected <T> T select(String sql, Object[] objects, Class<T> clazz) {
         logger.debug(sql);
         try {
-            return jdbcTemplate.queryForObject(sql, objects, String.class);
+            return jdbcTemplate.queryForObject(sql, objects, clazz);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
 
     }
+
 
     protected int count(String sql, Object... objects) {
         logger.debug(sql);

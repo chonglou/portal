@@ -43,7 +43,7 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
 
     @Override
     public String getTaskRequest(long task) {
-        return select("SELECT request_ FROM tasks WHERE id=?", task);
+        return select("SELECT request_ FROM tasks WHERE id=?", new Object[]{task}, String.class);
     }
 
     @Override

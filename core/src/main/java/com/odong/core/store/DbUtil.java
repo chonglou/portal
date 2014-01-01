@@ -19,7 +19,7 @@ public class DbUtil {
 
     @PostConstruct
     void init() throws ClassNotFoundException, SQLException {
-        logger.debug("检查数据库");
+        logger.debug("检查数据库[{}]:", jdbcDriver);
 
         switch (jdbcDriver) {
             case Driver.MYSQL:

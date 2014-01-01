@@ -85,7 +85,7 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
 
     @Override
     public boolean auth(String email, String password) {
-        String pwd = select("SELECT password_ FROM users WHERE email_=?", email);
+        String pwd = select("SELECT password_ FROM users WHERE email_=?", new Object[]{email}, String.class);
         return pwd != null && encryptHelper.check(password, pwd);
     }
 
