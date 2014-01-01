@@ -15,16 +15,32 @@ public class User extends IdEntity {
     }
 
     private static final long serialVersionUID = 1231841634861834208L;
-    private String uid;
+    private String openId;
+    private String email;
     private String username;
     private String password;
     private String logo;
-    private String nickname;
     private Date lastLogin;
     private String extra;
     private Type type;
     private State state;
     private int version;
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public int getVersion() {
         return version;
@@ -50,14 +66,6 @@ public class User extends IdEntity {
         this.state = state;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -80,14 +88,6 @@ public class User extends IdEntity {
 
     public void setLogo(String logo) {
         this.logo = logo;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
 
     public Date getLastLogin() {

@@ -3,6 +3,7 @@ package com.odong.core.store;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,35 +26,89 @@ public abstract class JdbcHelper {
         return "version BIGINT NOT NULL DEFAULT 0";
     }
 
-    protected String longIdColumn() {
+    protected String longIdColumn(String name) {
         switch (jdbcDriver) {
             case Driver.DERBY:
-                return "id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY";
+                return name + " BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY";
             default:
-                return "id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY";
+                return name + " BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY";
         }
     }
 
     protected String longColumn(String name, boolean notNull) {
         String sql = name + " BIGINT";
         if (notNull) {
+            sql += " NOT NULL DEFAULT 0";
+        }
+        return sql;
+    }
+
+    protected String intColumn(String name, boolean notNull) {
+        String sql = name + " INT";
+        if (notNull) {
+            sql += " NOT NULL DEFAULT 0";
+        }
+        return sql;
+    }
+
+    protected String textColumn(String name, boolean notNull) {
+        String sql;
+        switch (jdbcDriver) {
+            case Driver.MYSQL:
+                sql = name + " TEXT";
+                break;
+            default:
+                sql = name + " VARCHAR(8000)";
+                break;
+        }
+        if (notNull) {
             sql += " NOT NULL";
         }
         return sql;
     }
 
-    protected String stringColumn(String name, int len, boolean notNull) {
+    protected String enumColumn(String name) {
+        return name + " CHAR(8) NOT NULL";
+    }
+
+    protected String charsColumn(String name, int len, boolean notNull) {
+        String sql = name + " CHAR(" + len + ")";
+        if (notNull) {
+            sql += " NOT NULL";
+        }
+        return sql;
+    }
+
+    protected String stringColumn(String name, int len, boolean notNull, boolean unique) {
         String sql = name + " VARCHAR(" + len + ")";
         if (notNull) {
             sql += " NOT NULL";
+        }
+        if (unique) {
+            sql += " UNIQUE";
         }
         return sql;
     }
 
     protected String dateColumn(String name, boolean notNull) {
-        String sql = name + " TIMESTAMP";
+        String sql = name;
+        switch (jdbcDriver) {
+            case Driver.MYSQL:
+                sql += " DATETIME";
+                break;
+            default:
+                sql += " TIMESTAMP";
+                break;
+        }
         if (notNull) {
-            sql += " NOT NULL DEFAULT CURRENT_TIMESTAMP";
+            switch (jdbcDriver) {
+                case Driver.MYSQL:
+                    sql += " NOT NULL DEFAULT '0000-00-00 00:00:00'";
+                    break;
+                default:
+                    sql += " NOT NULL DEFAULT CURRENT_TIMESTAMP";
+                    break;
+            }
         }
         return sql;
     }
@@ -62,7 +117,7 @@ public abstract class JdbcHelper {
         if (isTableExist(name)) {
             logger.info("表{}已存在", name);
         } else {
-            String sql = String.format("CREATE TABLE %s(%s)", name, StringUtils.join(columns, ","));
+            String sql = String.format("CREATE TABLE %s(%s)", name, StringUtils.join(columns, ", "));
             logger.info("创建表{}：{}", name, sql);
             jdbcTemplate.execute(sql);
         }
@@ -127,9 +182,23 @@ public abstract class JdbcHelper {
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
-    protected String select(String sql, Object...objects){
+    protected <T> T select(String sql, Object[] objects, RowMapper<T> mapper) {
         logger.debug(sql);
-        return jdbcTemplate.queryForObject(sql, objects, String.class);
+        try {
+            return jdbcTemplate.queryForObject(sql, objects, mapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    protected String select(String sql, Object... objects) {
+        logger.debug(sql);
+        try {
+            return jdbcTemplate.queryForObject(sql, objects, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
     }
 
     protected int count(String sql, Object... objects) {

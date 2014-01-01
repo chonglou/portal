@@ -1,5 +1,7 @@
 package com.odong.core.util;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,19 +9,20 @@ import java.util.regex.Pattern;
 /**
  * Created by flamen on 13-12-30上午2:30.
  */
+@Component("core.stringHelper")
 public class StringHelper {
     public String underScore2CamelCase(String strs) {
-        String[] elems = strs.split("_");
-        for (int i = 0; i < elems.length; i++) {
-            elems[i] = elems[i].toLowerCase();
+        String[] ss = strs.split("_");
+        for (int i = 0; i < ss.length; i++) {
+            ss[i] = ss[i].toLowerCase();
             if (i != 0) {
-                String elem = elems[i];
+                String elem = ss[i];
                 char first = elem.toCharArray()[0];
-                elems[i] = "" + (char) (first - 32) + elem.substring(1);
+                ss[i] = "" + (char) (first - 32) + elem.substring(1);
             }
         }
         StringBuilder sb = new StringBuilder();
-        for (String e : elems) {
+        for (String e : ss) {
             sb.append(e);
         }
         return sb.toString();

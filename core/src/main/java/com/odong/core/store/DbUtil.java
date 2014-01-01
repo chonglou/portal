@@ -44,7 +44,9 @@ public class DbUtil {
             case Driver.MYSQL:
                 try (Connection conn = DriverManager.getConnection(String.format("jdbc:mysql://%s:%d", jdbcHost, jdbcPort), jdbcUsername, jdbcPassword);
                      Statement stat = conn.createStatement()) {
-                    stat.executeUpdate(String.format("CREATE DATABASE IF NOT EXISTS %s CHARACTER SET  utf8", jdbcName));
+                    String sql = String.format("CREATE DATABASE IF NOT EXISTS %s CHARACTER SET  utf8", jdbcName);
+                    logger.debug(sql);
+                    stat.executeUpdate(sql);
                 }
                 break;
 

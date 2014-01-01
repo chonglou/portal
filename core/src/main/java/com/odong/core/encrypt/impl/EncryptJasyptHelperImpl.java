@@ -31,7 +31,6 @@ public class EncryptJasyptHelperImpl implements EncryptHelper {
 
     @Override
     public void init() {
-
         pe = new StrongPasswordEncryptor();
         //ste = new StrongTextEncryptor(); NEED JCE
         te = new BasicTextEncryptor();

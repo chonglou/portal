@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 13-6-3
  * Time: 上午11:21
  */
-public class NavBar implements Serializable {
+public class SideBar implements Serializable {
     public enum Type {
         LIST, MENU
     }
@@ -24,10 +24,10 @@ public class NavBar implements Serializable {
             name = name.substring(0, MAX_LEN - 3) + "...";
         }
 
-        this.pages.add(new Page(name, url));
+        this.pages.add(new Link(name, url));
     }
 
-    public NavBar(String title) {
+    public SideBar(String title) {
         this.title = title;
         this.pages = new ArrayList<>();
         this.type = Type.MENU;
@@ -38,7 +38,7 @@ public class NavBar implements Serializable {
     private Type type;
     private String title;
     private boolean ajax;
-    private List<Page> pages;
+    private List<Link> pages;
 
     public Type getType() {
         return type;
@@ -64,11 +64,11 @@ public class NavBar implements Serializable {
         this.title = title;
     }
 
-    public List<Page> getPages() {
+    public List<Link> getPages() {
         return pages;
     }
 
-    public void setPages(List<Page> pages) {
+    public void setPages(List<Link> pages) {
         this.pages = pages;
     }
 }

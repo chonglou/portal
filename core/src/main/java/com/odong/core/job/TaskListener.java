@@ -1,8 +1,8 @@
 package com.odong.core.job;
 
 import com.odong.core.Plugin;
-import com.odong.core.cache.CacheHelper;
-import com.odong.core.encrypt.EncryptHelper;
+import com.odong.core.model.SmtpProfile;
+import com.odong.core.util.CacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -42,6 +42,7 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
         this.ctx = applicationContext;
     }
 
+    @SuppressWarnings("unchecked")
     private void map(MapMessage message) {
         try {
             String type = message.getStringProperty("type");
@@ -52,13 +53,15 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                     taskExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
-                            Map map = cacheHelper.get("site.smtp", Map.class);
-                            if (map == null) {
+                            SmtpProfile sp = cacheService.getSmtp();
+
+                            if (sp == null) {
                                 logger.error("SMTP信息未设置");
                                 return;
                             }
                             try {
-                                email((String) map.get("host"), (Integer) map.get("port"), (String) map.get("username"), (String) map.get("password"), (Boolean) map.get("ssl"), (String) map.get("bcc"),
+                                email(sp.getHost(), sp.getPort(), sp.getUsername(), sp.getPassword(),
+                                        sp.isSsl(), sp.getBcc(),
                                         message.getString("to"), message.getString("title"), message.getString("body"), message.getBoolean("html"),
                                         (Map<String, String>) message.getObject("attachs"));
                             } catch (JMSException ex) {
@@ -140,15 +143,14 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
     @Resource
     private TaskExecutor taskExecutor;
     @Resource
-    private CacheHelper cacheHelper;
-    @Resource
-    private EncryptHelper encryptHelper;
+    private CacheService cacheService;
+
     private ApplicationContext ctx;
     private final static Logger logger = LoggerFactory.getLogger(TaskListener.class);
 
 
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public void setTaskExecutor(TaskExecutor taskExecutor) {

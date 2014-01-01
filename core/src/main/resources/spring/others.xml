@@ -6,7 +6,8 @@
     <bean id="jsonJackson" class="com.odong.core.json.impl.JsonJacksonHelperImpl" init-method="init"/>
     <!--<bean id="jsonJackson" class="com.odong.core.json.impl.JsonFastjsonHelperImpl" init-method="init"/>-->
 
-    <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheEhcacheHelperImpl" init-method="init" destroy-method="destroy">
+    <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheEhcacheHelperImpl" init-method="init"
+          destroy-method="destroy">
         <property name="appName" value="${app.name}"/>
     </bean>
     <!--
@@ -48,6 +49,8 @@
     </bean>
     -->
 
-    <bean id="encryptHelper" class="com.odong.core.encrypt.impl.EncryptJasyptHelperImpl"/>
+    <bean id="encryptHelper" class="com.odong.core.encrypt.impl.EncryptJasyptHelperImpl" init-method="init">
+        <property name="key" value="${app.key}"/>
+    </bean>
 
 </beans>

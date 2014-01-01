@@ -7,4 +7,67 @@ import java.io.Serializable;
  */
 public class SmtpProfile implements Serializable {
     private static final long serialVersionUID = 759955314067258522L;
+    private String host;
+    private String username;
+    private String password;
+    private int port;
+    private String bcc;
+    private String from;
+    private boolean ssl;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getBcc() {
+        return bcc;
+    }
+
+    public void setBcc(String bcc) {
+        this.bcc = bcc;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public boolean isSsl() {
+        return ssl;
+    }
+
+    public void setSsl(boolean ssl) {
+        this.ssl = ssl;
+    }
 }

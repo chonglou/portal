@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class LogServiceImpl extends JdbcHelper implements LogService {
 
     @Override
     public void add(Long user, String message, Log.Type type) {
-        execute("INSERT INTO logs(user_, message, type_) VALUES (?, ?, ?)", user, message, type.toString());
+        execute("INSERT INTO logs(user_, message_, type_, created_) VALUES (?, ?, ?, ?)", user, message, type.toString(), new Date());
     }
 
     @Override
@@ -42,11 +43,11 @@ public class LogServiceImpl extends JdbcHelper implements LogService {
     @PostConstruct
     void init() {
         install("logs",
-                longIdColumn(),
+                longIdColumn("id"),
                 longColumn("user_", false),
-                stringColumn("type_", 255, true),
-                stringColumn("message", 1024, true),
-                dateColumn("created", true));
+                enumColumn("type_"),
+                stringColumn("message_", 1024, true, false),
+                dateColumn("created_", true));
     }
 
     private RowMapper<Log> mapperLog() {
@@ -54,8 +55,8 @@ public class LogServiceImpl extends JdbcHelper implements LogService {
             Log log = new Log();
             log.setId(rs.getLong("id"));
             log.setType(Log.Type.valueOf(rs.getString("type_")));
-            log.setMessage(rs.getString("message"));
-            log.setCreated(rs.getTimestamp("created"));
+            log.setMessage(rs.getString("message_"));
+            log.setCreated(rs.getTimestamp("created_"));
             log.setUser(rs.getLong("user_"));
             return log;
         };

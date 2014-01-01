@@ -5,7 +5,7 @@ import com.odong.core.entity.Log;
 import com.odong.core.json.JsonHelper;
 import com.odong.core.service.LogService;
 import com.odong.core.service.SiteService;
-import com.odong.core.store.DbUtil;
+import com.odong.core.service.TaskService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterTest;
@@ -13,7 +13,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class AppTest {
-    @Test
+    //@Test
     public void testCache() {
         try{
             CacheHelper cacheHelper = ctx.getBean(CacheHelper.class);
@@ -26,18 +26,29 @@ public class AppTest {
     }
 
     @Test
-    public void testSetting(){
+    public void testTask(){
         try{
-            SiteService siteService = ctx.getBean(SiteService.class);
-            siteService.put("sss", "ddd");
-            log(siteService.get("sss"));
-            siteService.put("sss", "eee");
-            log(siteService.get("sss"));
+            TaskService taskService = ctx.getBean(TaskService.class);
+            taskService.addTask(null, "GC", "", 3);
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
+    @Test
+    public void testSetting(){
+        try{
+            SiteService siteService = ctx.getBean(SiteService.class);
+            siteService.set("sss", "ddd");
+            log(siteService.get("sss", String.class));
+            siteService.set("sss", "eee");
+            log(siteService.get("sss", String.class));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @Test
     public void testLog() {
         try {
             LogService logService = ctx.getBean(LogService.class);

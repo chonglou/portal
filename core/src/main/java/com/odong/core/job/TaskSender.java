@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Component("core.job.sender")
 public class TaskSender {
-    public void email(String module, String to, String title, String body, boolean html, Map<String, String> attachs) {
+    public void email(String to, String title, String body, boolean html, Map<String, String> attachs) {
         Map<String, Object> map = new HashMap<>();
         map.put("to", to);
         map.put("title", title);
