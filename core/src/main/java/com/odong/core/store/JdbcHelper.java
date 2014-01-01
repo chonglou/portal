@@ -28,12 +28,12 @@ public abstract class JdbcHelper {
         return "version BIGINT NOT NULL DEFAULT 0";
     }
 
-    protected String longIdColumn(String name) {
+    protected String longIdColumn() {
         switch (jdbcDriver) {
             case Driver.DERBY:
-                return name + " BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY";
+                return "id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY";
             default:
-                return name + " BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY";
+                return "id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY";
         }
     }
 
@@ -90,6 +90,10 @@ public abstract class JdbcHelper {
             sql += " UNIQUE";
         }
         return sql;
+    }
+
+    protected String booleanColumn(String name) {
+        return name + " BOOLEAN NOT NULL";
     }
 
     protected String dateColumn(String name, boolean notNull) {
@@ -179,6 +183,7 @@ public abstract class JdbcHelper {
         jdbcTemplate.update(sql, objects);
     }
 
+
     protected <T> List<T> list(String sql, Object[] objects, int size, RowMapper<T> mapper) {
         logger.debug(sql);
         return jdbcTemplate.query(pageStatementCreator(sql, objects, size), mapper);
@@ -187,6 +192,11 @@ public abstract class JdbcHelper {
     protected <T> List<T> list(String sql, RowMapper<T> mapper) {
         logger.debug(sql);
         return jdbcTemplate.query(sql, mapper);
+    }
+
+    protected <T> List<T> list(String sql, Object[] objects, Class<T> clazz) {
+        logger.debug(sql);
+        return jdbcTemplate.queryForList(sql, objects, clazz);
     }
 
     protected <T> List<T> list(String sql, Object[] objects, RowMapper<T> mapper) {

@@ -92,7 +92,7 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
     @PostConstruct
     void init() {
         install("users",
-                longIdColumn("id"),
+                longIdColumn(),
                 stringColumn("openId_", 255, true, true),
                 stringColumn("email_", 255, true, true),
                 stringColumn("username_", 255, true, false),
@@ -102,6 +102,7 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
                 textColumn("contact_", true),
                 enumColumn("type_"),
                 enumColumn("state_"),
+                longColumn("visits_", true),
                 dateColumn("lastLogin_", false),
                 dateColumn("created_", true),
                 versionColumn()
@@ -119,6 +120,7 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
             u.setCreated(rs.getTimestamp("created_"));
             u.setType(User.Type.valueOf(rs.getString("type_")));
             u.setLastLogin(rs.getTimestamp("lastLogin_"));
+            u.setVisits(rs.getLong("visits_"));
             u.setState(User.State.valueOf(rs.getString("state_")));
             return u;
         };

@@ -82,19 +82,19 @@ public class RbacServiceImpl extends JdbcHelper implements RbacService {
     @PostConstruct
     void init() {
         install("roles",
-                longIdColumn("id"),
+                longIdColumn(),
                 stringColumn("name_", 255, true, true),
                 dateColumn("created_", true));
         install("operations",
-                longIdColumn("id"),
+                longIdColumn(),
                 stringColumn("name_", 255, true, true),
                 dateColumn("created_", true));
         install("resources",
-                longIdColumn("id"),
+                longIdColumn(),
                 stringColumn("name_", 255, true, true),
                 dateColumn("created_", true));
         install("permissions",
-                longIdColumn("id"),
+                longIdColumn(),
                 longColumn("role_", true),
                 longColumn("resource_", true),
                 longColumn("operation_", true),

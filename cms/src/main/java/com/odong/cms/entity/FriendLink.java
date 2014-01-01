@@ -1,16 +1,15 @@
-package com.odong.platform.entity;
+package com.odong.cms.entity;
 
 import com.odong.core.entity.IdEntity;
 
 /**
- * Created by flamen on 13-12-30下午9:42.
+ * Created by flamen on 13-12-31下午7:47.
  */
 public class FriendLink extends IdEntity {
-    private static final long serialVersionUID = 904088314641403216L;
+    private static final long serialVersionUID = -6334818554812210989L;
     private String name;
     private String url;
     private String logo;
-    private String details;
 
     public String getName() {
         return name;
@@ -36,11 +35,4 @@ public class FriendLink extends IdEntity {
         this.logo = logo;
     }
 
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
 }

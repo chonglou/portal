@@ -43,7 +43,7 @@ public class LogServiceImpl extends JdbcHelper implements LogService {
     @PostConstruct
     void init() {
         install("logs",
-                longIdColumn("id"),
+                longIdColumn(),
                 longColumn("user_", false),
                 enumColumn("type_"),
                 stringColumn("message_", 1024, true, false),

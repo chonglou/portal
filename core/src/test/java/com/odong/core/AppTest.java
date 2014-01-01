@@ -3,10 +3,7 @@ package com.odong.core;
 import com.odong.core.cache.CacheHelper;
 import com.odong.core.entity.Log;
 import com.odong.core.json.JsonHelper;
-import com.odong.core.service.LogService;
-import com.odong.core.service.RbacService;
-import com.odong.core.service.SiteService;
-import com.odong.core.service.TaskService;
+import com.odong.core.service.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterTest;
@@ -16,9 +13,20 @@ import org.testng.annotations.Test;
 import java.util.Date;
 
 public class AppTest {
-    @Test
+    //@Test
+    public void testUser(){
+        try {
+            UserService us = ctx.getBean(UserService.class);
+            log(us.listUser());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    //@Test
     public void testRbac(){
         try{
+
             RbacService rs = ctx.getBean(RbacService.class);
             rs.bind("aaa","bbb", "ccc", new Date(), new Date(), true);
             rs.bind("aaa","bbb", "ccc", new Date(), new Date(), false);
@@ -28,7 +36,7 @@ public class AppTest {
             e.printStackTrace();
         }
     }
-    @Test
+   // @Test
     public void testCache() {
         try{
             CacheHelper cacheHelper = ctx.getBean(CacheHelper.class);
@@ -40,7 +48,7 @@ public class AppTest {
         }
     }
 
-    @Test
+    //@Test
     public void testTask(){
         try{
             TaskService taskService = ctx.getBean(TaskService.class);
@@ -50,7 +58,7 @@ public class AppTest {
             e.printStackTrace();
         }
     }
-    @Test
+    //@Test
     public void testSetting(){
         try{
             SiteService siteService = ctx.getBean(SiteService.class);
@@ -63,7 +71,7 @@ public class AppTest {
             e.printStackTrace();
         }
     }
-    @Test
+    //@Test
     public void testLog() {
         try {
             LogService logService = ctx.getBean(LogService.class);
@@ -90,7 +98,7 @@ public class AppTest {
     }
 
 
-    @BeforeTest
+   // @BeforeTest
     public void init() {
         try {
             ctx = new ClassPathXmlApplicationContext("classpath*:/spring/*.xml");

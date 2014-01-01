@@ -11,6 +11,14 @@ import java.util.Date;
 @Component("core.util.time")
 public class TimeHelper {
 
+    public Date mouthMin(int year, int month) {
+        return new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue().toDate();
+    }
+
+    public Date mouthMax(int year, int month) {
+        return new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMaximumValue().millisOfDay().withMaximumValue().toDate();
+    }
+
     public Date plus(Date date, int second) {
         return new DateTime(date).plusSeconds(second).toDate();
     }

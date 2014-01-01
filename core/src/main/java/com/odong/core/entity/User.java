@@ -25,6 +25,15 @@ public class User extends IdEntity {
     private Type type;
     private State state;
     private int version;
+    private long visits;
+
+    public long getVisits() {
+        return visits;
+    }
+
+    public void setVisits(long visits) {
+        this.visits = visits;
+    }
 
     public String getOpenId() {
         return openId;

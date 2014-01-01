@@ -71,7 +71,7 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
     @PostConstruct
     void init() {
         install("tasks",
-                longIdColumn("id"),
+                longIdColumn(),
                 charsColumn("module_", 12, false),
                 enumColumn("type_"),
                 textColumn("request_", true),

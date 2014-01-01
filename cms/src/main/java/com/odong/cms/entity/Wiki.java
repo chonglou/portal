@@ -2,8 +2,6 @@ package com.odong.cms.entity;
 
 import com.odong.core.entity.IdEntity;
 
-import java.util.Date;
-
 /**
  * Created by flamen on 13-12-31上午11:16.
  */
@@ -12,7 +10,6 @@ public class Wiki extends IdEntity {
     private String name;
     private String title;
     private String body;
-    private Date lastEdit;
     private int version;
     private long user;
 
@@ -38,14 +35,6 @@ public class Wiki extends IdEntity {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public Date getLastEdit() {
-        return lastEdit;
-    }
-
-    public void setLastEdit(Date lastEdit) {
-        this.lastEdit = lastEdit;
     }
 
     public int getVersion() {
