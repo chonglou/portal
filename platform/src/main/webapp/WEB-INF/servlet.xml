@@ -34,6 +34,20 @@
     </bean>
     <mvc:annotation-driven validator="validator"/>
 
+    <bean class="httl.web.springmvc.HttlViewResolver">
+        <property name="contentType" value="text/html; charset=UTF-8" />
+    </bean>
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+    <bean id="rssView" class="com.odong.core.rss.RssView"/>
+
+    <bean id="exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="${upload.max}"/>
+    </bean>
+
+    <!--
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="order" value="1"/>
         <property name="contentNegotiationManager">
@@ -47,10 +61,8 @@
                         <entry key="html" value="text/html"/>
                         <entry key="json" value="application/json"/>
                         <entry key="xml" value="application/xml"/>
-                        <!--
                         <entry key="atom" value="application/atom+xml"/>
                         <entry key="pdf" value="application/pdf"/>
-                        -->
                     </map>
                 </property>
             </bean>
@@ -79,19 +91,6 @@
                 </bean>
             </list>
         </property>
-    </bean>
-
-    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
-
-    <!--
-    <bean id="exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
-    -->
-
-
-    <!--
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-
-        <property name="maxUploadSize" value="1000000"/>
     </bean>
     -->
 </beans>

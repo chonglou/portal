@@ -230,6 +230,10 @@ function GridWindow(grid, parent) {
 function FormWindow(form, parent) {
     var _form_id;
     var _field = function (id, label, input) {
+        if(input == undefined){
+            return "<h4 class='glyphicon glyphicon-ok-sign'>"+label+"</h4>";
+        }
+
         if (label == undefined) {
             return input;
         }
@@ -280,7 +284,7 @@ function FormWindow(form, parent) {
         _form_id = form.id;
 
         var content = "<form class='form-horizontal' method='" + form.method + "'  action='" + form.action + "'>";
-        content += "<fieldset><legend>" + form.title + "</legend>";
+        content += "<fieldset><legend><h3 class='glyphicon glyphicon-save'>" + form.title + "</h3></legend>";
         content += _hidden_field("created", form.created);
         for (var i in form.fields) {
             var field = form.fields[i];
@@ -317,6 +321,9 @@ function FormWindow(form, parent) {
                     if (field.required) {
                         field.label += "(*)";
                     }
+                    break;
+                case "splitter":
+                    input = undefined;
                     break;
                 case "select":
                     input = "<select style='width: "
@@ -399,7 +406,6 @@ function FormWindow(form, parent) {
                         + "' type='checkbox'>我同意</label></div>";
                     field.label += "(*)";
                     break;
-
                 default:
                     input = _hidden_field(field.id, field.value);
                     break;

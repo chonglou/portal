@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:52
  */
-public final class SelectField<T> extends Field<T> {
+public final class SelectField<T> extends AField<T> {
     public SelectField(String id, String name) {
         this(id, name, null, null);
     }

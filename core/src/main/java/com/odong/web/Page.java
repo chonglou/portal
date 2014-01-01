@@ -35,6 +35,15 @@ public class Page implements Serializable {
     private List<SideBar> sideBars;
     private QqAuthProfile qqAuth;
     private GoogleAuthProfile googleAuth;
+    private boolean debug;
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
 
     public String getIndex() {
         return index;

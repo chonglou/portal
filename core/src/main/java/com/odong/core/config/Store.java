@@ -57,7 +57,7 @@ public class Store {
     }
 
     @Bean(name = "db.txManager")
-    DataSourceTransactionManager transactionManager() {
+    public DataSourceTransactionManager transactionManager() {
         DataSourceTransactionManager manager = new DataSourceTransactionManager();
         manager.setDataSource(getDataSource());
         return manager;

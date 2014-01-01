@@ -10,6 +10,7 @@ import com.odong.core.service.SiteService;
 import com.odong.core.util.CacheService;
 import com.odong.web.Link;
 import com.odong.web.Page;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -39,6 +40,8 @@ public class CacheServiceImpl implements CacheService {
             page.getTopLinks().add(new Link("网站地图", "/site/map"));
             page.getTopLinks().add(new Link("知识库", "/wiki"));
             page.getTopLinks().add(new Link("关于我们", "/aboutMe"));
+
+            page.setDebug(appDebug);
             return page;
         });
     }
@@ -67,6 +70,8 @@ public class CacheServiceImpl implements CacheService {
     private SiteService siteService;
     @Resource
     private CacheHelper cacheHelper;
+    @Value("${app.debug}")
+    private boolean appDebug;
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;

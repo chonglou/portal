@@ -6,7 +6,7 @@ package com.odong.web.form;
  * Date: 13-5-26
  * Time: 下午5:38
  */
-public final class TextField<T> extends Field<T> {
+public final class TextField<T> extends AField<T> {
     private static final long serialVersionUID = 5436830171467555708L;
 
 

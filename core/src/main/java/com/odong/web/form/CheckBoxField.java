@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:45
  */
-public final class CheckBoxField<T> extends Field<T> {
+public final class CheckBoxField<T> extends AField<T> {
 
     public CheckBoxField(String id, String label, String tooltip) {
         super(id, label, "checkbox", null, true, tooltip);

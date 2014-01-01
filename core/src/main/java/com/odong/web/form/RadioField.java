@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 13-5-26
  * Time: 下午5:41
  */
-public final class RadioField<T> extends Field<T> {
+public final class RadioField<T> extends AField<T> {
 
     public RadioField(String id, String label, T value) {
         super(id, label, "radio", value, true, null);

@@ -26,21 +26,9 @@ public class SiteHelper {
     }
 
     @Resource
-    private TaskService taskService;
-    @Resource
     private SiteService siteService;
-    @Resource
-    private UserService userService;
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
     }
 
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
-    }
 }

@@ -6,7 +6,7 @@ package com.odong.web.form;
  * Date: 13-5-26
  * Time: 下午5:42
  */
-public final class PasswordField extends Field<String> {
+public final class PasswordField extends AField<String> {
     private static final long serialVersionUID = 4601649521987736108L;
     private int width;
 

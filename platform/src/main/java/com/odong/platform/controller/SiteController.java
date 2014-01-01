@@ -1,15 +1,20 @@
 package com.odong.platform.controller;
 
+import com.odong.core.Constants;
+import com.odong.core.service.SiteService;
+import com.odong.core.service.TaskService;
+import com.odong.core.service.UserService;
 import com.odong.platform.util.CacheService;
 import com.odong.web.ResponseItem;
+import com.odong.web.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +29,59 @@ import java.util.Map;
 @Controller("platform.c.site")
 public class SiteController {
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-    String getInstall(Map<String,Object>map, HttpServletResponse response) throws IOException {
+    String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException {
+        if (siteService.get("site.version", String.class) == null) {
+        map.put("title", "PORTAL系统安装");
+            map.put("author", Constants.AUTHOR);
+            map.put("copyright", Constants.COPYRIGHT);
+        }
+        else {
+            response.sendRedirect("/main");
+        }
         return "install";
+    }
+
+    @RequestMapping(value = "/install", method = RequestMethod.PUT)
+    @ResponseBody
+    Form putInstall() {
+        Form fm = new Form("install", "系统初始化", "/install");
+        if (siteService.get("site.version", String.class) == null) {
+            logger.debug("数据库尚未初始化");
+            fm.addField(new SplitterField("站点信息"));
+            fm.addField(new TextField<String>("domain", "域名"));
+            TextField<String> keywords = new TextField<>("keywords", "关键字");
+            keywords.setWidth(800);
+            fm.addField(keywords);
+            TextAreaField description = new TextAreaField("description", "说明信息");
+            description.setHtml(false);
+            fm.addField(description);
+
+            fm.addField(new SplitterField("管理员信息"));
+            fm.addField(new TextField<String>("email", "管理员邮箱"));
+            fm.addField(new TextField<String>("password", "登录密码"));
+
+            fm.addField(new SplitterField("邮件系统"));
+            fm.addField(new TextField<>("smtpHost", "主机"));
+            fm.addField(new TextField<>("smtpPort", "端口"));
+            fm.addField(new TextField<>("smtpUsername", "用户名"));
+            fm.addField(new TextField<>("smtpPassword", "密码"));
+            RadioField<Boolean> ssl = new RadioField<>("smtpSsl", "启用SSL", false);
+
+            ssl.addOption("是", true);
+            ssl.addOption("否", false);
+            fm.addField(ssl);
+            TextField<String> bcc = new TextField<>("smtpBcc", "密送");
+            bcc.setRequired(false);
+            fm.addField(bcc);
+
+            fm.addField(new SplitterField("其他"));
+            fm.addField(new AgreeField("agree", "用户协议", agreement));
+            fm.setCaptcha(true);
+            fm.setOk(true);
+        } else {
+            fm.addData("已经安装");
+        }
+        return fm;
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
@@ -35,6 +91,26 @@ public class SiteController {
         //map.put("defArticles", cacheService.getArticleCardsByTag(cacheService.getTopTag()));
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         return ri;
+    }
+
+    @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)
+    String getError(@PathVariable int code, Map<String, Object> map) {
+        ResponseItem item = new ResponseItem(ResponseItem.Type.message);
+        switch (code) {
+            case 400:
+                item.addData("错误的请求");
+                break;
+            case 404:
+                item.addData("资源不存在");
+                break;
+            case 500:
+                item.addData("服务器内部错误");
+                break;
+            default:
+                item.addData("未知错误[" + code + "]");
+                break;
+        }
+        return "message";
     }
 
     /*
@@ -127,28 +203,7 @@ public class SiteController {
     }
 
 
-    @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)
-    String getError(@PathVariable int code, Map<String, Object> map) {
-        ResponseItem item = new ResponseItem(ResponseItem.Type.message);
-        switch (code) {
-            case 400:
-                item.addData("错误的请求");
-                break;
-            case 404:
-                item.addData("资源不存在");
-                break;
-            case 500:
-                item.addData("服务器内部错误");
-                break;
-            default:
-                item.addData("未知错误[" + code + "]");
-                break;
-        }
-        map.put("navBars", getNavBars());
-        fillSiteInfo(map);
-        map.put("item", item);
-        return "message";
-    }
+
     */
     /*
     @ResponseBody
@@ -211,6 +266,31 @@ public class SiteController {
 
     @Resource
     private CacheService cacheService;
+
+    @Resource
+    private SiteService siteService;
+    @Resource
+    private TaskService taskService;
+    @Resource
+    private UserService userService;
+    @Value("${app.agreement}")
+    private String agreement;
+
+    public void setAgreement(String agreement) {
+        this.agreement = agreement;
+    }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
