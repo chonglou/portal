@@ -48,7 +48,7 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
 
     @Override
     public List<Task> listRunnableTask() {
-        return list("SELECT * FROM tasks WHERE nextRun<=?", new Object[]{new Date()}, mapperTask());
+        return list("SELECT * FROM tasks WHERE nextRun_<=?", new Object[]{new Date()}, mapperTask());
     }
 
     @Override
