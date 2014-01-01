@@ -1,6 +1,5 @@
 package com.odong.platform.util;
 
-import com.odong.core.Constants;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;

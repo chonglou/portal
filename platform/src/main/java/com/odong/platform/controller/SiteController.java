@@ -1,23 +1,18 @@
 package com.odong.platform.controller;
 
-import com.odong.core.Constants;
 import com.odong.platform.util.CacheService;
-import com.odong.web.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sun.util.logging.resources.logging;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -26,11 +21,13 @@ import java.util.Map;
 @Controller("cms.c.site")
 public class SiteController {
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-    String getInstall(HttpServletResponse response) throws IOException{
+    String getInstall(HttpServletResponse response) throws IOException {
         return "install";
     }
+
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-        String getMain(Map<String, Object> map) {
+    @ResponseBody
+    String getMain(Map<String, Object> map) {
         //pager(map, 1);
         map.put("title", "首页");
         //map.put("defArticles", cacheService.getArticleCardsByTag(cacheService.getTopTag()));

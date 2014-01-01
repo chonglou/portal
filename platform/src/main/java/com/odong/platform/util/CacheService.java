@@ -5,5 +5,6 @@ package com.odong.platform.util;
  */
 public interface CacheService {
     String getGoogleValidCode();
+
     void popGoogleValidCode();
 }

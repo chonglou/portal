@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 public class CacheServiceImpl implements CacheService {
     @Override
     public String getGoogleValidCode() {
-        return cacheHelper.get("site/googleValidCode", String.class, null, ()->siteService.get("site.googleValidCode", String.class));
+        return cacheHelper.get("site/googleValidCode", String.class, null, () -> siteService.get("site.googleValidCode", String.class));
     }
 
     @Override
