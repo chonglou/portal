@@ -3,7 +3,7 @@ package com.odong.cms.service.impl;
 import com.odong.cms.entity.Wiki;
 import com.odong.cms.service.WikiService;
 import com.odong.core.store.JdbcHelper;
-import com.odong.web.Link;
+import com.odong.web.model.Link;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

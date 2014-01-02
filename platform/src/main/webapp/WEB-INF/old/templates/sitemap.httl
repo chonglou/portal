@@ -1,0 +1,24 @@
+$!{extends("/layout.httl")}
+#macro(main)
+<!--#set(List<Card> userList)-->
+<!--#set(List<Page> tagList)-->
+<!--#set(List<Card> articleList)-->
+<!--#set(Map<String,Object> gl_site)-->
+${left_nav_bar_1}
+<div class="col-lg-9">
+    ${mainGL}
+    $!{gl_site.advertBottom}
+    <h3>用户列表</h3>
+    <hr>
+    #set(cardList = userList)
+    ${fallCard}
+    <p>&nbsp;</p>
+
+    <h3>标签列表</h3>
+    <hr>
+    #set(pageList = tagList)
+    ${fallPage}
+    <p>&nbsp;</p>
+
+</div>
+#end

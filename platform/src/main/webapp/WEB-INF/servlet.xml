@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="platform.propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>classpath:config.properties</value>
@@ -13,84 +13,83 @@
     </bean>
 
 
+
     <context:component-scan base-package="com.odong">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven validator="platform.validator" content-negotiation-manager="platform.contentNegotiationManager" />
 
-    <mvc:default-servlet-handler/>
     <mvc:interceptors>
         <bean class="com.odong.platform.aop.SecurityInterceptor"/>
         <bean class="com.odong.platform.aop.PluginInterceptor"/>
     </mvc:interceptors>
 
+    <bean id="platform.contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="platform.contentNegotiationManager"/>
+        <property name="viewResolvers">
+            <list>
+                <bean id="platform.httlViewResolver" class="httl.web.springmvc.HttlViewResolver">
+                    <property name="contentType" value="text/html; charset=UTF-8" />
+                </bean>
+                <bean id="platform.jsonViewResolver" class="com.odong.web.resolver.JsonViewResolver">
+                    <property name="view" ref="platform.jsonViewer"/>
+                </bean>
+                <bean id="platform.xmlViewResolver" class="com.odong.web.resolver.XmlViewResolver">
+                    <property name="view" ref="platform.xmlViewer"/>
+                </bean>
+                <bean id="platform.beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="platform.contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="favorPathExtension" value="true"/>
+        <property name="favorParameter" value="false"/>
+        <property name="useJaf" value="false"/>
+        <property name="defaultContentType"  value="text/html"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json"/>
+                <entry key="xml" value="application/xml"/>
+                <entry key="html" value="text/html"/>
+            </map>
+        </property>
+    </bean>
 
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <bean id="platform.messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages"/>
     </bean>
 
-    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <property name="validationMessageSource" ref="messageSource"/>
+    <bean id="platform.validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="platform.messageSource"/>
     </bean>
-    <mvc:annotation-driven validator="validator"/>
 
-    <bean class="httl.web.springmvc.HttlViewResolver">
-        <property name="contentType" value="text/html; charset=UTF-8" />
+
+
+
+
+
+
+
+    <bean id="platform.jsonViewer" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+    <bean id="platform.rssViewer" class="com.odong.web.view.rss.RssView"/>
+    <bean id="platform.formViewer" class="com.odong.web.view.form.FormView"/>
+    <bean id="platform.xmlViewer" class="org.springframework.web.servlet.view.xml.MarshallingView">
+        <constructor-arg>
+            <bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+                <property name="aliases">
+                    <props>
+                        <prop key="ResponseItem">com.odong.web.model.ResponseItem</prop>
+                    </props>
+                </property>
+            </bean>
+        </constructor-arg>
     </bean>
-    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
-    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
-    <bean id="rssView" class="com.odong.core.rss.RssView"/>
 
-    <bean id="exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
+    <bean id="platform.exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
 
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <bean id="platform.multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="${upload.max}"/>
     </bean>
 
-    <!--
-    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="order" value="1"/>
-        <property name="contentNegotiationManager">
-            <bean class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-                <property name="ignoreAcceptHeader" value="true"/>
-                <property name="favorPathExtension" value="true"/>
-                <property name="favorParameter" value="true"/>
-                <property name="defaultContentType" value="text/html"/>
-                <property name="mediaTypes">
-                    <map>
-                        <entry key="html" value="text/html"/>
-                        <entry key="json" value="application/json"/>
-                        <entry key="xml" value="application/xml"/>
-                        <entry key="atom" value="application/atom+xml"/>
-                        <entry key="pdf" value="application/pdf"/>
-                    </map>
-                </property>
-            </bean>
-        </property>
-        <property name="viewResolvers">
-            <list>
-                <bean class="httl.web.springmvc.HttlViewResolver">
-                    <property name="contentType" value="text/html; charset=UTF-8" />
-                </bean>
-                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
-            </list>
-        </property>
-        <property name="defaultViews">
-            <list>
-                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
-                <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
-                    <constructor-arg>
-                        <bean class="org.springframework.oxm.xstream.XStreamMarshaller">
-                            <property name="aliases">
-                                <props>
-                                    <prop key="ResponseItem">com.odong.web.ResponseItem</prop>
-                                </props>
-                            </property>
-                        </bean>
-                    </constructor-arg>
-                </bean>
-            </list>
-        </property>
-    </bean>
-    -->
 </beans>

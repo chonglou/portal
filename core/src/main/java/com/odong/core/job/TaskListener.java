@@ -119,8 +119,18 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                 case "gc":
                     System.gc();
                     break;
+                case "rss":
+                    //FIXME
+                    break;
+                case "qrcode":
+                    //FIXME
+                    break;
+                case "sitemap":
+                    //FIXME
+                    break;
                 default:
-                    ((Plugin) ctx.getBean(module + ".job.listener")).onMessage(message);
+                    //((Plugin) ctx.getBean(module + ".job.listener")).onMessage(message);
+                    logger.debug("未处理的任务");
                     break;
             }
 

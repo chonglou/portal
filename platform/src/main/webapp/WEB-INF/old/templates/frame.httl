@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--#set(Map<String,Object> gl_site)-->
+<!--#set(SessionItem gl_session=session.d1s7e0wp)-->
+<!--#set(Boolean gl_debug)-->
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="${gl_site.description}"/>
+    <meta name="keywords" content="${gl_site.keywords}"/>
+    <meta name="author" content="${gl_site.author}">
+    <title>${gl_site.title}#if(title)-${title}#end</title>
+    <link rel="shortcut icon" href="/style/logo/32x32.ico" type="image/vnd.microsoft.icon">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet"/>
+    <link href="/style/css/main.css#if(gl_debug)?_=${random()}#end" rel="stylesheet"/>
+    <script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/js/config.js#if(gl_debug)?_=${random()}#end"></script>
+    <script type="text/javascript" src="/jquery/masonry.pkgd.min.js"></script>
+    <script type="text/javascript" src="/jquery-ui/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jquery-ui/js/i18n/jquery.ui.datepicker-zh-CN.min.js"></script>
+    <script type="text/javascript" src="/jquery/jquery.tagcanvas.min.js"></script>
+    <script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js" async></script>
+    <script type="text/javascript">
+        var gl_captcha = "${gl_captcha}";
+        var gl_reCaptcha_key = "${gl_reCaptcha_key}";
+    </script>
+    <script type="text/javascript" src="/js/widgets.js#if(gl_debug)?_=${random()}#end"></script>
+    <script type="text/javascript" src="/js/main.js#if(gl_debug)?_=${random()}#end"></script>
+    #if(gl_debug)
+    <script type="text/javascript" src="/js/test.js?_=${random()}"></script>
+    #end
+    #if(gl_session)
+    <script type="text/javascript" src="/js/personal.js#if(gl_debug)?_=${random()}#end"></script>
+    #else
+    <script type="text/javascript" src="/js/non-login.js#if(gl_debug)?_=${random()}#end"></script>
+    #end
+    #macro($!qqAuthHead)#end
+    #macro($!head)#end
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">${gl_site.title}</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            #macro($!top_left_bar)#end
+            #macro($!top_right_bar)#end
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        #macro($!main)#end
+    </div>
+    <hr>
+    <footer>
+        <p>$!{gl_site.copyright} 使用<a href="https://code.google.com/p/latrop/" target="_blank">LATROP内容管理系统</a>搭建</p>
+    </footer>
+</div>
+#macro($!googleAuthHead)#end
+</body>
+</html>

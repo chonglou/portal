@@ -1,0 +1,53 @@
+$!{extends("/layout.httl")}
+
+<!--#macro(showItem)-->
+<ol>
+    #for(i : data)
+    <li>${i}</li>
+    #end
+</ol>
+<!--#end-->
+
+<!--#macro(showHead)-->
+#set(ResponseItem item)
+<h4>#if(item.ok)操作成功#else发生错误#end：[<label id="time">5</label>秒钟之后跳转至首页]</h4>
+<!--#end-->
+
+#macro(main)
+<!--#set(Map<String,String> gl_site)-->
+${left_nav_bar_1}
+<div class="col-lg-9">
+    #set(ResponseItem item)
+    ${mainGL}
+    <br>
+    <!--#set(ok=item.ok)-->
+    <!--#set(List<String> data=item.data)-->
+    #if(item.ok)
+    <div class='alert alert-success'>
+        ${showHead}
+        ${showItem}
+    </div>
+    #else
+    <div class='alert alert-danger'>
+        ${showHead}
+        ${showItem}
+    </div>
+    #end
+
+    <script type="text/javascript">
+        function runtime() {
+            var t = $("label#time");
+            if (t.text() == 1) {
+                window.location.href = "/";
+            }
+            else {
+                t.html(t.text() - 1);
+            }
+            setTimeout("runtime()", 1000);
+        }
+        runtime();
+    </script>
+    <br>
+    $!{gl_site.advertBottom}
+</div>
+#end

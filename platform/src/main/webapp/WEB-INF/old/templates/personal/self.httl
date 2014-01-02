@@ -1,0 +1,13 @@
+$!{extends("/layout.httl")}
+#macro(main)
+<!--#set(Map<String,String> gl_site)-->
+${left_nav_bar_2}
+<div class="col-lg-9">
+    ${mainGL}
+    <script type="text/javascript">
+        $("#left_nav-\\/personal\\/log").parent().addClass("active");
+        new Ajax("/personal/log");
+    </script>
+    $!{gl_site.advertBottom}
+</div>
+#end

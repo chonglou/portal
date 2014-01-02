@@ -1,7 +1,7 @@
 package com.odong.cms.service;
 
 import com.odong.cms.entity.Wiki;
-import com.odong.web.Link;
+import com.odong.web.model.Link;
 
 import java.util.List;
 

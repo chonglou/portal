@@ -1,0 +1,448 @@
+$!{extends("/frame.httl")}
+
+#macro(qqAuthHead)
+<!--#set(QQAuthProfile gl_qqAuth)-->
+<!--#set(Boolean gl_debug)-->
+#if(gl_qqAuth.enable)
+<meta property="qc:admins" content="${gl_qqAuth.valid}"/>
+<script type="text/javascript"
+        src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js"
+        data-appid="${gl_qqAuth.id}"
+        data-redirecturi="${gl_qqAuth.uri}" charset="utf-8">
+</script>
+<script type="text/javascript">
+    function qqLogout() {
+        if (window.confirm("您确认要退出QQ登录么？")) {
+            QC.Login.signOut();
+            window.location.href = "/personal/logout";
+        }
+    }
+
+    QC.Login(
+            {
+                //插入按钮的节点id，必选
+                btnId: "qqAuthBar",
+                //用户需要确认的scope授权项，可选，默认all
+                scope: "all",
+                //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+                size: "B_M"
+            },
+            function (reqData, opts) {
+                QC.Login.getMe(function (openId, accessToken) {
+                    new Ajax(
+                            "/oauth/qq",
+                            'POST',
+                            {
+                                token: accessToken,
+                                id: openId,
+                                name: reqData.nickname,
+                                logo: reqData.figureurl_qq_1
+                            },
+                            function (result) {
+                                if (result.ok) {
+                                    draw_person_bar(function () {
+                                        if (window.confirm("您确认要退出QQ登录么？")) {
+                                            QC.Login.signOut();
+                                            window.location.href = "/personal/logout";
+                                        }
+                                    });
+                                }
+                                else {
+                                    alert('登录失败!' + result.data[0]);
+                                }
+                            });
+                });
+            },
+            function () {
+                console.log('qq互联退出');
+            }
+    );
+</script>
+<style type="text/css">
+    #qqAuthBar a {
+        padding-top: 13px;
+        padding-bottom: 13px;
+    }
+</style>
+#end
+#end
+
+
+#macro(googleAuthHead)
+<!--#set(Boolean gl_debug)-->
+<!--#set(GoogleAuthProfile gl_googleAuth)-->
+#if(gl_googleAuth.enable)
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("li#googleAuthBar").html('<div id="googleAuthBtn"><img src="/style/google/base.png"></div>');
+    });
+
+    (function () {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js?onload=render';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+
+    function render() {
+        gapi.signin.render('googleAuthBtn', {
+            'callback': 'loginCallback',
+            'clientid': '${gl_googleAuth.id}',
+            'cookiepolicy': 'single_host_origin',
+            'requestvisibleactions': 'http://schemas.google.com/AddActivity',
+            'scope': 'https://www.googleapis.com/auth/plus.login'
+        });
+    }
+    function loginCallback(authResult) {
+        if (authResult['access_token']) {
+            new Ajax(
+                    "/oauth/google",
+                    "POST",
+                    {
+                        token: authResult['access_token'],
+                        info: authResult['id_token'],
+                        code: authResult['code']
+                    },
+                    function (result) {
+                        if (result.ok) {
+                            draw_person_bar(function () {
+                                if (window.confirm("您确认要退出Google账户么？")) {
+                                    new Ajax("/personal/logout", undefined, undefined, function () {
+                                        window.location.href = "https://accounts.google.com/Logout";
+                                    });
+                                }
+                            });
+                        }
+                    }
+            );
+        }
+        else {
+            console.log('google未登录');
+        }
+    }
+</script>
+<style type="text/css">
+    #googleAuthBtn img {
+        width: 88px;
+        padding-top: 10px
+    }
+
+    #googleAuthBtn :hover {
+        cursor: pointer;
+    }
+
+</style>
+#end
+#end
+
+
+#macro(pagerBar)
+<!--#set(Pager pager)-->
+<ul class="pagination pagination-lg">
+    #if(pager.index==1)
+    <li class="disabled"><a href="${pager.url}/1" target="_blank">&laquo;</a></li>
+    #else
+    <li><a href="${pager.url}/1" target="_blank">&laquo;</a></li>
+    #end
+
+    <!--#set(i=0)-->
+    <!--#for(i : 1 .. pager.total)-->
+    #if(i==pager.index)
+    <li class="active"><a href="${pager.url}/${i}" target="_blank">${i}</a></li>
+    #else
+    <li><a href="${pager.url}/${i}" target="_blank">${i}</a></li>
+    #end
+    <!--#end-->
+
+    #if(pager.index==pager.total)
+    <li class="disabled"><a href="${pager.url}/${pager.total}" target="_blank">&raquo;</a></li>
+    #else
+    <li><a href="${pager.url}/${pager.total}" target="_blank">&raquo;</a></li>
+    #end
+</ul>
+#end
+
+<!--#macro(top_left_bar)-->
+<ul class="nav navbar-nav">
+    <!--#set(Map<String,Object> gl_site)-->
+    <!--#set(Map<String,String> topNavs=gl_site.topNavs)-->
+    #for(i : ["main", "personal/self", "sitemap", "wiki/", "aboutMe"])
+    #if(top_nav_key == i)
+    <li class="active"><a href="/${i}">${topNavs.get(i)}</a></li>
+    #else
+    <li><a href="/${i}">${topNavs.get(i)}</a></li>
+    #end
+    #end
+    <form method="post" target="_blank" action="/search" class="navbar-form form-inline pull-left">
+        <input class="form-control col-lg-8" name="keyword" type="text" placeholder="点击此处进行搜索">
+    </form>
+</ul>
+<!--#end-->
+
+<!--#macro(top_right_bar)-->
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="#" id="favorites">收藏本页</a></li>
+    <li id="personalBar" class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+        </ul>
+    </li>
+    <li id="qqAuthBar"></li>
+    <li id="googleAuthBar"></li>
+    <li>
+        <a href="/rss.xml" target="_blank">
+            <img title="收取站点更新通知" class="navbar-icon" src="/style/rss.png"/>
+        </a>
+    </li>
+</ul>
+<script type="text/javascript">
+    draw_person_bar();
+</script>
+<!--#end-->
+
+
+<!--#macro(left_nav_bar_1)-->
+<!--#set(List<NavBar> navBars)-->
+<!--#set(Map<String,Object> gl_site)-->
+<div role="navigation" id="sidebar" class="col-lg-3 sidebar-offcanvas">
+    <br>
+
+    <div class="well sidebar-nav">
+        <ul class="nav">
+            #for(NavBar nb:navBars)
+            <li>${nb.title}</li>
+            #for(Page p: nb.pages)
+            <li class="warp"><a href="${p.url}" target="_blank">${p.name}</a></li>
+            #end
+            #end
+        </ul>
+    </div>
+    ${date_picker}
+    <br/>
+    $!{gl_site.advertLeft}
+    <br/>
+    ${tag_cloud}
+    <br/>
+
+    <div>
+        <img src="/site.png" alt="二维码" title="手机扫描二维码获得更多信息">
+    </div>
+</div>
+<!--#end-->
+
+<!--#macro(date_picker)-->
+<script type="text/javascript">
+    $(function () {
+        var dt = $("div#datePicker");
+        dt.datepicker({
+            onSelect: function (dateText) {
+                window.open("/archive/" + dateText.split('-').join('/'));
+            }
+        });
+        dt.datepicker($.datepicker.regional[ "zh-CN" ]);
+    });
+</script>
+<div id="datePicker"></div>
+<!--#end-->
+
+<!--#macro(tag_cloud)-->
+<!-- #set(Map<String,Object> gl_site) -->
+<!-- #set(List<Page> tagCloud=gl_site.tagCloud) -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (!$('#tagCanvas').tagcanvas({
+            textColour: '#00f',
+            textHeight: 25,
+            outlineColour: '#ff9999',
+            outlineThickness: 3,
+            pulsateTo: 0.2,
+            pulsateTime: 0.5,
+            wheelZoom: false,
+            reverse: true,
+            decel: 0.9,
+            depth: 0.8,
+            maxSpeed: 0.08,
+            minSpeed: 0.01,
+            shape: "sphere"
+        }, 'tags')) {
+            $("div#tagCanvasContainer").hide();
+        }
+    });
+</script>
+<div id="tagCanvasContainer">
+    <canvas id="tagCanvas" height="300px">
+        <p>标签云</p>
+    </canvas>
+</div>
+<div id="tags">
+    <ul>
+        #for(Page p : tagCloud)
+        <li><a href="${p.url}" target="_blank">${p.name}</a></li>
+        #end
+    </ul>
+</div>
+<!--#end-->
+
+
+<!--#macro(left_nav_bar_2)-->
+<!--#set(List<NavBar> navBars)-->
+<!--#set(Map<String,Object> gl_site)-->
+<div class="col-lg-3">
+    <br/>
+    #for(NavBar i:navBars)
+    #if(i.type.toString() == "MENU")
+    <ul class="nav nav-pills nav-stacked">
+        #if(i.pages.size == 0)
+        <li><a>${i.title}</a></li>
+        #else
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">
+                ${i.title}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                #if(i.ajax)
+                #for(Page j: i.pages)
+                <li><a id="left_nav-${j.url}">${j.name}</a></li>
+                #end
+                #else
+                #for(Page j: i.pages)
+                <li><a href="${j.url}" target="_blank">${j.name}</a></li>
+                #end
+                #end
+            </ul>
+        </li>
+        #end
+    </ul>
+    #else(i.type.toString()=="LIST")
+    <label>${i.title}</label>
+
+    <div class="list-group">
+        #for(Page j: i.pages)
+        <a
+                class="list-group-item #if(request.getRequestURI() == j.url) active #end"
+                href="${j.url}" target="_blank">
+            $!{j.name}
+        </a>
+        #end
+    </div>
+    #end
+    #end
+    <br/>
+    $!{gl_site.advertLeft}
+</div>
+<!--#end-->
+
+<!--#macro(mainGL)-->
+<div id="gl_message"></div>
+<div id="gl_root"></div>
+<!--#end-->
+
+<!--#macro(fallCard)-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        show_card_fall("fall-container");
+    });
+</script>
+<div id="fall-container" class="row row-offcanvas row-offcanvas-right">
+    <!--#set(List<Card> cardList)-->
+    #for(i : cardList)
+    <div class="col-lg-3 fall-item">
+        <a href="${i.url}" target="_blank">
+            <div class="thumbnail">
+                #if(i.logo)
+                <img src="${i.logo}" class="img-thumbnail" alt=""/>
+                #end
+                <div class="caption">
+                    <h4>${i.title}</h4>
+
+                    <p>${i.body}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    #end
+</div>
+<!--#end-->
+
+<!--#macro(fallPage)-->
+<div class="row row-offcanvas row-offcanvas-right">
+    <!--#set(List<Page> pageList)-->
+    #for(i : pageList)
+    <div class="col-lg-1 fall-item">
+        <a href="${i.url}" target="_blank">
+            <div class="thumbnail">
+                <div class="caption">
+                    ${i.name}
+                </div>
+            </div>
+        </a>
+    </div>
+    #end
+</div>
+<!--#end-->
+
+<!--#macro(carouselCard)-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        show_card_carousel("carouselContainer");
+    });
+</script>
+<!--#set(List<Card> cardList)-->
+<div id="carouselContainer" class="jumbotron carousel slide" data-ride="carousel">
+    <!--#set(i=0)-->
+    <ol class="carousel-indicators">
+        #for(card : cardList)
+        <!--#if(card.logo)-->
+        <li data-target="#carouselContainer" data-slide-to="${i}" class="#if(i==0)active#endif"></li>
+        <!--#set(i=i+1)-->
+        <!--#end-->
+        #end
+    </ol>
+    <div class="carousel-inner">
+        <!--#set(i=0)-->
+        #for(card : cardList)
+        <!--#if(card.logo)-->
+        <div class="item #if(i==0)active#end">
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-5">
+                    <a href="${card.url}" target="_blank">
+                        <img title="${card.title}" style="width: 100%;height: 400px;"
+                             id="carousel-${card.url}"
+                             src="${card.logo}"/>
+                    </a>
+                </div>
+                <div class="col-lg-5">
+                    <h3>${card.title}</h3>
+
+                    <p>${card.body}</p>
+
+                    <p class="pull-right">
+                        <a target="_blank" href="${card.url}" class="btn btn-primary btn-large">
+                            更多信息 &raquo;
+                        </a>
+                    </p>
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+        </div>
+        <!--#set(i=i+1)-->
+        <!--#end-->
+        #end
+    </div>
+    <br>
+    <a class="left carousel-control" href="#carouselContainer" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a class="right carousel-control" href="#carouselContainer" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+</div>
+<!--#end-->
+
+

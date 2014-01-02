@@ -1,7 +1,7 @@
 package com.odong.core.util;
 
 import com.odong.core.model.SmtpProfile;
-import com.odong.web.Page;
+import com.odong.web.model.Page;
 
 /**
  * Created by flamen on 13-12-31下午2:33.

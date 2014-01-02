@@ -8,8 +8,8 @@ import com.odong.core.model.QqAuthProfile;
 import com.odong.core.model.SmtpProfile;
 import com.odong.core.service.SiteService;
 import com.odong.core.util.CacheService;
-import com.odong.web.Link;
-import com.odong.web.Page;
+import com.odong.web.model.Link;
+import com.odong.web.model.Page;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

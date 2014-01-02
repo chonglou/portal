@@ -5,16 +5,15 @@ import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;
 import com.odong.platform.util.CacheService;
-import com.odong.web.ResponseItem;
-import com.odong.web.form.*;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,7 @@ import java.util.Map;
  */
 @Controller("platform.c.site")
 public class SiteController {
-    @RequestMapping(value = "/install", method = RequestMethod.GET)
+    //@RequestMapping(value = "/install", method = RequestMethod.GET)
     String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException {
         if (siteService.get("site.version", String.class) == null) {
         map.put("title", "PORTAL系统安装");
@@ -41,9 +40,10 @@ public class SiteController {
         return "install";
     }
 
-    @RequestMapping(value = "/install", method = RequestMethod.PUT)
+    @RequestMapping(value = "/install", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    Form putInstall() {
+    Form getInstall(Map<String, Object> map){
         Form fm = new Form("install", "系统初始化", "/install");
         if (siteService.get("site.version", String.class) == null) {
             logger.debug("数据库尚未初始化");

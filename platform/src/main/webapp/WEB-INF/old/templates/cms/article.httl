@@ -1,0 +1,61 @@
+$!{extends("/layout.httl")}
+#macro(main)
+<!--#set(Map<String,String> gl_site)-->
+${left_nav_bar_1}
+<div class="col-lg-9">
+    ${mainGL}
+    <!--#set(Article article)-->
+    <!--#set(Page user)-->
+    <!--#set(List<Page> tagList)-->
+    <!--#set(List<Comment> commentList)-->
+    <!--#set(Map<Long,User> userMap)-->
+    <h3>${article.title}[${article.visits}]</h3>
+    <hr>
+    作者：<a target="_blank" href="${user.url}">${user.name}</a> &nbsp;
+    最后修改时间：${article.publishDate}
+    <br>
+    标签：
+    #for(t : tagList)
+    <a target="_blank" href="${t.url}">${t.name}</a> &nbsp;
+    #end
+    <br>
+    摘要：<b>$!{article.summary}</b>
+    <table>
+        <tr>
+            <!--#set(Map<String,String> shareCodes)-->
+            #for(s : shareCodes.values)
+            <td>$!{s}</td>
+            #end
+        </tr>
+    </table>
+
+    $!{article.body}
+    <br>
+    $!{gl_site.advertBottom}
+    <div id="comment">
+        #if(!gl_session)
+        请登录以发表评论。
+        #end
+    </div>
+    #for(c : commentList)
+    <a name="#c${c.id}"></a>
+    <blockquote>
+        <p>$!{c.content}</p>
+        <!--#set(u=userMap.get(c.user))-->
+        <small>
+            ${c.publishDate} &nbsp;
+            <cite><a target="_blank" href="/user/${u.id}">${u.username}</a></cite>
+        </small>
+    </blockquote>
+    #else
+    暂无评论
+    #end
+</div>
+
+#if(gl_session)
+<script type="text/javascript">
+    new Ajax("/comment/a-${article.id}", undefined, undefined, undefined, undefined, "comment");
+</script>
+#end
+
+#end

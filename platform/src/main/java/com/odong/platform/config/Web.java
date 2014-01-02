@@ -1,7 +1,22 @@
 package com.odong.platform.config;
 
+import com.odong.web.resolver.JsonViewResolver;
+import com.odong.web.view.rss.RssView;
+import httl.web.springmvc.HttlViewResolver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by flamen on 13-12-31下午10:39.
@@ -9,6 +24,7 @@ import org.springframework.web.servlet.config.annotation.*;
 @EnableWebMvc
 @Configuration("platform.config.web")
 public class Web extends WebMvcConfigurerAdapter {
+
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -33,5 +49,6 @@ public class Web extends WebMvcConfigurerAdapter {
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
+
 
 }

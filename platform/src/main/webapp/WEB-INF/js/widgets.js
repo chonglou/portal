@@ -1,65 +1,3 @@
-function show_card_carousel(id) {
-
-    $('div#'+id).carousel({
-        interval: 2000
-    });
-    /*
-    $("div#" + id).jcarousel({
-        auto: 2,
-        scroll: 1,
-        visible: 1,
-        initCallback: function (carousel) {
-            $("img[id^='" + id + "-']").each(function () {
-                $(this).click(function () {
-                    window.open($(this).attr('id').split('-')[1]);
-                });
-            });
-            carousel.buttonNext.bind('click', function () {
-                carousel.startAuto(0);
-            });
-            carousel.buttonPrev.bind('click', function () {
-                carousel.startAuto(0);
-            });
-            carousel.clip.hover(function () {
-                carousel.stopAuto();
-            }, function () {
-                carousel.startAuto();
-            });
-        },
-        wrap: 'circular'
-    });
-    */
-}
-function show_card_fall(id) {
-    $('div#' + id).masonry({
-        itemSelector: '.fall-item'
-    });
-}
-
-function object2html(obj) {
-    var context = "<ol class='list-group'>";
-    for (var k in obj) {
-        var v = obj[k];
-        var s;
-        switch (typeof v) {
-            case "number":
-            case "string":
-                s = v;
-                break;
-            case "object":
-                s += object2html(v);
-                break;
-            default :
-                s = "未知类型：" + k;
-                break;
-        }
-
-        context += "<li class='list-group-item'>" + k + "：" + s + "</li>";
-    }
-    context += "</ol>";
-    return context;
-}
-
 function Ajax(url, type, data, success, async, parent) {
     var _init = function () {
         if (type == undefined) {
@@ -68,7 +6,7 @@ function Ajax(url, type, data, success, async, parent) {
         if (data == undefined) {
             data = [];
         }
-        if (parent == undefined) {
+        if(parent == undefined){
             parent = "gl_root";
         }
         if (success == undefined) {
@@ -97,7 +35,6 @@ function Ajax(url, type, data, success, async, parent) {
                 else {
                     $("div#" + parent).html(result);
                 }
-
             }
         }
         if (async == undefined) {
@@ -119,119 +56,11 @@ function Ajax(url, type, data, success, async, parent) {
     _init();
 }
 
-
-function GridWindow(grid, parent) {
-    var _grid_id;
-    var _id = function (id) {
-        return "grid-" + _grid_id + "-" + id;
-    };
-    var _c_id = function (id) {
-        return id.split('-')[3];
-    };
-    var _init = function () {
-        _grid_id = grid.id;
-        var content = "<h4>" + grid.name;
-        if (grid.add) {
-            content += "[<button title='新增' id='" + _id("add") + "'>新增</button>]";
-        }
-        content += "</h4><hr/><table width='98%' align='center'><thead><tr class='grid-tr'>";
-
-        for (var i in grid.cols) {
-            var col = grid.cols[i];
-            content += "<td";
-            if (col.width != undefined) {
-                content += " width='" + col.width + "'";
-            }
-            content += "><b>" + col.label + "</b></td>"
-        }
-        if (grid.action) {
-            content += "<td>操作</td>";
-        }
-        content += "</tr></thead><tbody>";
-        for (var i = 0; i < grid.items.length;) {
-            if (grid.action) {
-                if (i % (grid.cols.length + 1) == 0) {
-                    content += "<tr class='grid-tr'>";
-                }
-            }
-            else {
-
-                if (i % grid.cols.length == 0) {
-                    content += "<tr class='grid-tr'>";
-                }
-            }
-            content += "<td>" + grid.items[i] + "</td>";
-            i++;
-            if (grid.action) {
-                if ((i + 1) % (grid.cols.length + 1) == 0) {
-                    content += "<td class='grid-td-opt'>";
-                    if (grid.view) {
-                        content += "<button title='查看' id='" + _id("view") + "-" + grid.items[i] + "'>查看</button>";
-                    }
-                    if (grid.edit) {
-                        content += "<button title='编辑' id='" + _id("edit") + "-" + grid.items[i] + "'>编辑</button>";
-                    }
-                    if (grid.delete) {
-                        content += "<button title='删除' id='" + _id("delete") + "-" + grid.items[i] + "'>删除</button>";
-                    }
-                    content += "</td>";
-                    content += "</tr>";
-                    i++;
-                }
-            }
-            else {
-                if (i % (grid.cols.length) == 0) {
-                    content += "</tr>";
-                }
-            }
-        }
-        content += "</tbody></table>";
-
-        new HtmlDiv("grid-" + grid.id, content, parent);
-
-        if (grid.action != undefined) {
-            if (grid.add) {
-                var addBtn = $("button#" + _id("add"));
-                addBtn.addClass("btn btn-primary btn-mini");
-                addBtn.click(function () {
-                    new Ajax(grid.action + "/add");
-                });
-            }
-            if (grid.view) {
-
-                $("button[id^='" + _id("view") + "']").each(function () {
-                    $(this).addClass("btn btn-info btn-mini");
-                    $(this).click(function () {
-                        new Ajax(grid.action + "/" + _c_id($(this).attr("id")), "PUT");
-                    });
-                });
-            }
-            if (grid.edit) {
-                $("button[id^='" + _id("edit") + "']").each(function () {
-                    $(this).addClass("btn btn-warning btn-mini");
-                    $(this).click(function () {
-                        new Ajax(grid.action + "/" + _c_id($(this).attr("id")));
-                    });
-                });
-            }
-            if (grid.delete) {
-                $("button[id^='" + _id("delete") + "']").each(function () {
-                    $(this).addClass("btn btn-danger btn-mini");
-                    $(this).click(function () {
-                        new Ajax(grid.action + "/" + _c_id($(this).attr("id")), "DELETE");
-                    });
-                });
-            }
-        }
-    };
-    _init();
-}
-
 function FormWindow(form, parent) {
     var _form_id;
     var _field = function (id, label, input) {
-        if(input == undefined){
-            return "<h4 class='glyphicon glyphicon-ok-sign'>"+label+"</h4>";
+        if (input == undefined) {
+            return "<h4 class='glyphicon glyphicon-ok-sign'>" + label + "</h4>";
         }
 
         if (label == undefined) {
@@ -364,8 +193,8 @@ function FormWindow(form, parent) {
                     for (var j in field.options) {
                         var item = field.options[j];
                         input += "<label class='radio-inline'><input class='form-control' type='radio' name='" + _id(field.id) + "'  value='" + item.value + "' ";
-                        if(field.readonly){
-                            input+="disabled ";
+                        if (field.readonly) {
+                            input += "disabled ";
                         }
                         if (item.value == field.value) {
                             input += "checked='true' ";
@@ -445,7 +274,7 @@ function FormWindow(form, parent) {
 
         content += _button_group(form.buttons);
         content += "</fieldset></form>";
-        //alert(content);
+        //console.log(content);
         new HtmlDiv("fm-" + form.id, content, parent);
 
 
@@ -566,6 +395,7 @@ function FormWindow(form, parent) {
     _init();
 }
 
+
 function HtmlDiv(id, content, parent) {
     var _init = function () {
         var root = "div#" + id;
@@ -576,7 +406,54 @@ function HtmlDiv(id, content, parent) {
     };
     _init();
 }
-function MessageDialog(messages, type) {
+
+function MessageDialog(messages, type, okFun) {
+    var _init = function () {
+        if (type == undefined) {
+            type = "info";
+        }
+        var name;
+        switch (type) {
+            case "warning":
+                name = "警告";
+                break;
+            case "success":
+                name = "成功";
+                break;
+            case "danger":
+                name = "错误";
+                break;
+            default:
+                type = "info";
+                name = "提示";
+                break;
+        }
+        var content = "<div id='gl_modal' class='modal fade'><div class='modal-dialog'><div class='modal-content'>";
+        content += "<div class='modal-header alert alert-" + type + "'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title'>";
+        content += name + "</h4></div>";
+        content += "<div class='modal-body'><p>";
+        content += (messages instanceof Array ? messages.join("<br/>") : messages);
+        content += "&hellip;</p></div>";
+        content += "<div class='modal-footer'>";
+        if (okFun == undefined) {
+            content += "<button id='gl_modal_ok' type='button' class='btn btn-primary' data-dismiss='modal'>确定</button>";
+        }
+        else {
+            content += "<button id='gl_modal_cancel' type='button' class='btn btn-default' data-dismiss='modal'>取消</button>";
+            content += "<button  id='gl_modal_ok' type='button' class='btn btn-primary'>确定</button>";
+        }
+
+        content += "</div></div></div></div>";
+        $("div#gl_message").html(content);
+        if (okFun != undefined) {
+            $("button#gl_modal_ok").click(okFun);
+        }
+        $('div#gl_modal').modal({backdrop: false});
+    };
+    _init();
+}
+
+function MessageDialog1(messages, type) {
     var _init = function () {
         var name;
         switch (type) {
@@ -602,47 +479,4 @@ function MessageDialog(messages, type) {
 
     };
     _init();
-}
-
-
-function showRecaptcha(element) {
-    Recaptcha.create(
-        gl_reCaptcha_key, element, {
-            theme: "red",
-            callback: Recaptcha.focus_response_field}
-    );
-}
-
-Date.prototype.pattern = function (fmt) {
-    var o = {
-        "M+": this.getMonth() + 1, //月份
-        "d+": this.getDate(), //日
-        "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
-        "H+": this.getHours(), //小时
-        "m+": this.getMinutes(), //分
-        "s+": this.getSeconds(), //秒
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-        "S": this.getMilliseconds() //毫秒
-    };
-    var week = {
-        "0": "/u65e5",
-        "1": "/u4e00",
-        "2": "/u4e8c",
-        "3": "/u4e09",
-        "4": "/u56db",
-        "5": "/u4e94",
-        "6": "/u516d"
-    };
-    if (/(y+)/.test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    }
-    if (/(E+)/.test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
-    }
-    for (var k in o) {
-        if (new RegExp("(" + k + ")").test(fmt)) {
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-        }
-    }
-    return fmt;
 }

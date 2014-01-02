@@ -1,0 +1,237 @@
+
+<!--#macro(carouselCard1)-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        show_card_carousel("carousel");
+    });
+</script>
+<!--#set(List<Card> cardList)-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-lg-7">
+            <div id="carousel" class="jcarousel-skin-tango">
+                <ul>
+                    #for(card : cardList)
+                    <!--#if(card.logo)-->
+                    <li>
+                        <img title="${card.title}"
+                             id="carousel-${card.url}"
+                             src="${card.logo}"/>
+                    </li>
+                    <!--#end-->
+                    #end
+                </ul>
+            </div>
+        </div>
+        #if(cardList)
+        <!--#set(card = cardList[cardList.size-1])-->
+        <div class="col-lg-5">
+            <h2>${card.title}</h2>
+            ${card.body}
+        </div>
+        #end
+    </div>
+    <p class="pull-right">
+        <a target="_blank" href="${card.url}" class="btn btn-primary btn-large">
+            更多信息 &raquo;
+        </a>
+    </p>
+</div>
+<!--#end-->
+
+<!--#macro(top_right_bar1)-->
+#set(SessionItem gl_session)
+#if(gl_session)
+#set(personal_bar_items=["self":"用户中心","logout":"安全退出"])
+#set(personal_bar_sort=["self", "logout"])
+#set(personal_bar_name="欢迎你，"+gl_session.ssUsername+"。")
+#else
+#set(personal_bar_items=["login":"用户登录", "register":"账户注册", "active":"账户激活", "resetPwd":"重置密码"])
+#set(personal_bar_sort=["login", "register", "active", "resetPwd"])
+#set(personal_bar_name="登录/注册")
+#end
+<script>
+    $(document).ready(function () {
+        $("a#favorites").click(function (e) {
+            e.preventDefault(); // this will prevent the anchor tag from going the user off to the link
+            var bookmarkUrl = this.href;
+            var bookmarkTitle = this.title;
+
+            if (window.sidebar) { // For Mozilla Firefox Bookmark
+                window.sidebar.addPanel(bookmarkTitle, bookmarkUrl, "");
+            } else if (window.external || document.all) { // For IE Favorite
+                window.external.AddFavorite(bookmarkUrl, bookmarkTitle);
+            } else if (window.opera) { // For Opera Browsers
+                this.attr("href", bookmarkUrl);
+                this.attr("title", bookmarkTitle);
+                this.attr("rel", "sidebar");
+            } else { // for other browsers which does not support
+                alert('您的浏览器不支持收藏夹功能，请手动使用Ctrl+D快捷键');
+            }
+
+        });
+    });
+</script>
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="#" id="favorites">收藏本页</a></li>
+    <li id="personalBar" class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            ${personal_bar_name} <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            #for(i : personal_bar_sort)
+            <li><a id="personal_bar-${i}">${personal_bar_items[i]}</a></li>
+            #if(!for.last)
+            <li class="divider"></li>
+            #end
+            #end
+        </ul>
+    </li>
+    ${qqLogin}
+    <li>
+        <a href="/rss.xml" target="_blank">
+            <img title="收取站点更新通知" class="navbar-icon" src="/style/rss.png"/>
+        </a>
+    </li>
+</ul>
+<!--#end-->
+
+
+<script>
+    /*
+     function getUserInfo() {
+     //从页面收集OpenAPI必要的参数。get_user_info不需要输入参数，因此paras中没有参数
+     var paras = {};
+
+     //用JS SDK调用OpenAPI
+     QC.api("get_user_info", paras)
+     //指定接口访问成功的接收函数，s为成功返回Response对象
+     .success(function (s) {
+     //成功回调，通过s.data获取OpenAPI的返回数据
+     alert("获取用户信息成功！当前用户昵称为：" + s.data.nickname);
+     })
+     //指定接口访问失败的接收函数，f为失败返回Response对象
+     .error(function (f) {
+     //失败回调
+     alert("获取用户信息失败！");
+     })
+     //指定接口完成请求后的接收函数，c为完成请求返回Response对象
+     .complete(function (c) {
+     //完成请求回调
+     alert("获取用户信息完成！");
+     });
+     }
+     */
+
+
+    function bind_personal_bar_click() {
+        $("a[id^='personal_bar-']").each(function () {
+            $(this).click(function () {
+                clear_root_div();
+                clear_message_div();
+                new Ajax("/personal/" + $(this).attr("id").split('-')[1]);
+            });
+        });
+
+    }
+    QC.Login(
+            {
+                //插入按钮的节点id，必选
+                btnId: "qqLoginBar",
+                //用户需要确认的scope授权项，可选，默认all
+                scope: "all",
+                //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+                size: "B_S"
+            },
+            function (reqData, opts) {
+                $("li#qqLoginBar").hide();
+                QC.Login.getMe(function (openId, accessToken) {
+                    new Ajax(
+                            "/oauth/qq",
+                            'POST',
+                            {
+                                token: accessToken,
+                                id: openId,
+                                name: reqData.nickname,
+                                logo: reqData.figureurl_qq_1
+                            },
+                            function (result) {
+                                if (result.ok) {
+                                    $("li#qqAuthBar").show();
+                                    draw_person_bar();
+                                }
+                            });
+                });
+
+                /*
+                 QC.Login.getMe(function (openId, accessToken) {
+                 QC.api("get_user_info", {}).success(function (user) {
+                 new Ajax(
+                 "/oauth/qq",
+                 'POST',
+                 {
+                 token: accessToken,
+                 id: openId,
+                 name: user.data.nickname,
+                 logo: user.data.figureurl_qq_1
+                 },
+                 function (result) {
+                 if (result.ok) {
+                 $("li#qqAuthBar").hide();
+                 draw_person_bar();
+                 }
+                 });
+                 });
+
+                 });
+                 */
+
+                /*
+                 $("li#qqLoginBar").hide();
+                 draw_person_bar();
+                 //checkQQLogin();
+                 var _temp ='欢迎你，<img src="{figureurl}" class="navbar-icon" /> {nickname}' + '<b class="caret"></b>';
+                 $("li#personalBar a.dropdown-toggle").html(QC.String.format(_temp, {
+                 nickname: QC.String.escHTML(reqData.nickname), //做xss过滤
+                 figureurl: reqData.figureurl_qq_1
+                 }));
+                 var logout =$("a#personal_bar-logout");
+                 logout.unbind();
+                 logout.click(function(){
+                 if (window.confirm("您确认要退出系统么？")) {
+                 QC.Login.signOut();
+                 window.location.href = "/personal/logout";
+                 }
+                 });
+                 */
+            },
+            function (opts) {
+                //alert('注销QQ登录成功');
+                window.location.href = "/personal/logout";
+            }
+    );
+    /*
+     QC.Login({
+     btnId:"qqLoginBtn"
+     });
+     */
+</script>
+
+==========================================================
+
+#macro(googleAuthBar)
+<!--#set(GoogleAuthProfile gl_googleAuth)-->
+#if(gl_googleAuth.enable)
+<li id="googleAuthBar">
+    <span
+            class="g-signin"
+            data-callback="loginCallback"
+            data-clientid="${gl_googleAuth.id}"
+            data-cookiepolicy="single_host_origin"
+            data-requestvisibleactions="http://schemas.google.com/AddActivity"
+            data-scope="https://www.googleapis.com/auth/plus.login">
+  </span>
+</li>
+#end
+#end
+=========================================================

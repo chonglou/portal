@@ -32,6 +32,9 @@ public class TaskSender {
     }
 
     public void send(String module, String type, Map<String, Object> map) {
+        if(map == null){
+            map = new HashMap<>();
+        }
         jmsTemplate.convertAndSend(taskQueue, map, (message) -> {
             message.setStringProperty("type", type);
             message.setStringProperty("module", module);

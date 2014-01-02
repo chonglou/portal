@@ -21,10 +21,10 @@
         </triggeringPolicy>
     </appender>
 
-
+<!--
     <logger name="org.springframework" level="WARN"/>
     <logger name="httl" level="WARN"/>
-
+-->
 
     <logger name="com.opensymphony" level="WARN"/>
     <logger name="org.apache" level="WARN"/>
