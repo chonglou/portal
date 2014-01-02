@@ -1,13 +1,16 @@
 package com.odong.platform.controller;
 
 import com.odong.core.Constants;
+import com.odong.core.entity.User;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;
 import com.odong.platform.util.CacheService;
+import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.form.*;
 
+import com.odong.web.template.TemplateHelper;
 import httl.Engine;
 import httl.Template;
 import org.slf4j.Logger;
@@ -25,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -47,11 +51,37 @@ public class SiteController {
     }
 
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-    String getInstall(Map<String, Object> map){
-        map.put("title", "测试标题");
-        return "/platform/install";
+    String getInstall(Map<String,Object> map) throws IOException, ParseException{
+
+        Page page = new Page();
+        page.setDebug(true);
+        page.setTitle("标题");
+        page.setAuthor("zhengjitang@gmail.com");
+        page.setCopyright("@2013");
+        page.setDescription("说明信息");
+        page.setCaptcha("kaptcha");
+
+        map.put("glPage", page);
+        map.put("title", "title");
+        /*
+        logger.debug("#######################################################");
+        logger.debug(templateHelper.evaluate("/core/base.httl", map));
+        logger.debug("#######################################################");
+        logger.debug(templateHelper.evaluate("/platform/install.httl", map));
+        logger.debug("#######################################################");
+        */
+        //map.put("glMain", th.evaluate("/widgets/form.httl", new HashMap<String, Object>()));
+        map.put("created", new Date());
+        return "/core/message.httl";
     }
-/*
+
+    @Resource
+    private TemplateHelper templateHelper;
+
+    public void setTemplateHelper(TemplateHelper templateHelper) {
+        this.templateHelper = templateHelper;
+    }
+    /*
     Form getInstall(Map<String, Object> map) {
         Form fm = new Form("install", "系统初始化", "/install");
         if (siteService.get("site.version", String.class) == null) {
@@ -121,7 +151,7 @@ public class SiteController {
                 item.addData("未知错误[" + code + "]");
                 break;
         }
-        return "message";
+        return "/core/message.httl";
     }
 
     /*

@@ -21,7 +21,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
         Map<String, Object> map = new HashMap<>();
         map.put("message", ex.getMessage());
         map.put("created", new Date());
-        return new ModelAndView("message", map);
+        return new ModelAndView("/core/message.httl", map);
     }
 
     private final static Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);

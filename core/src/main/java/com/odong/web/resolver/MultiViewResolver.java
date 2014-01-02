@@ -1,5 +1,7 @@
 package com.odong.web.resolver;
 
+import com.odong.web.template.TemplateHelper;
+import com.odong.web.view.HtmlView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -19,7 +21,18 @@ public class MultiViewResolver extends AbstractCachingViewResolver implements Or
     protected View loadView(String viewName, Locale locale) throws Exception {
         //logger.debug("VIEW NAME:{}", viewName);
         String ext = StringUtils.getFilenameExtension(viewName);
-        return ext == null ? null : resolvers.get(ext);
+        if(ext == null){
+            return null;
+        }
+        switch (ext){
+            case "httl":
+                return new HtmlView(viewName, templateHelper);
+            case "json":
+                return jsonView;
+            case "xml":
+                return xmlView;
+        }
+        return null;
     }
 
     @Override
@@ -27,11 +40,21 @@ public class MultiViewResolver extends AbstractCachingViewResolver implements Or
         return Integer.MIN_VALUE;
     }
 
-    private Map<String, View> resolvers;
+
+    private View jsonView;
+    private View xmlView;
+    private TemplateHelper templateHelper;
     private final static Logger logger = LoggerFactory.getLogger(MultiViewResolver.class);
 
+    public void setTemplateHelper(TemplateHelper templateHelper) {
+        this.templateHelper = templateHelper;
+    }
 
-    public void setResolvers(Map<String, View> resolvers) {
-        this.resolvers = resolvers;
+    public void setJsonView(View jsonView) {
+        this.jsonView = jsonView;
+    }
+
+    public void setXmlView(View xmlView) {
+        this.xmlView = xmlView;
     }
 }

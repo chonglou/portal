@@ -1,8 +1,10 @@
-package com.odong.daemon;
+package com.odong;
 
+import com.odong.daemon.Handler;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -14,6 +16,7 @@ import java.util.Properties;
  */
 public class App {
     public static void main(String[] args) throws Exception {
+        SLF4JBridgeHandler.install();
         Properties props = new Properties();
         try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(System.getProperty("user.dir") + "/etc/config.properties"))) {
             props.load(is);

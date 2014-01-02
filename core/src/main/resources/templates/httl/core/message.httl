@@ -1,0 +1,7 @@
+${extends("/base.httl")}
+
+<!--#macro(gl_main)-->
+message ${message} <br> ${created}
+${glMain}
+<!--#end-->
+

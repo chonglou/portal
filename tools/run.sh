@@ -4,4 +4,4 @@ CLASSPATH=.:$JAVA_HOME/lib
 PATH=$JAVA_HOME/bin:$PATH
 export JAVA_HOME CLASSPATH PATH
 
-java -server -cp etc:portal.jar com.odong.daemon.App
+java -server -cp etc:portal.jar com.odong.App

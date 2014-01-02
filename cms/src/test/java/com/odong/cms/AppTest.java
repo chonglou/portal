@@ -33,11 +33,11 @@ public class AppTest
             //map.put("glMain", th.evaluate("/widgets/form.httl", new HashMap<String, Object>()));
 
 
-            log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            System.out.println("#################################################################");
             System.out.println(th.evaluate("/core/base.httl", map));
-            log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            System.out.println("#################################################################");
             System.out.println(th.evaluate("/cms/base.httl", map));
-            log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            System.out.println("#################################################################");
         }
         catch (Exception e){
             e.printStackTrace();

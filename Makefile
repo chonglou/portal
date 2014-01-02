@@ -11,12 +11,12 @@ all:
 
 
 rpcd:
-	cd daemon; mvn package
+	cd daemon; mvn clean; mvn package
 	-mkdir -p tmp/daemon/etc
 	-cp daemon/src/main/resources/config.properties tmp/daemon/etc
 	-cp daemon/src/main/resources/logback.xml tmp/daemon/etc
 	-cp daemon/target/daemon-jar-with-dependencies.jar tmp/daemon/portal.jar
-	-cp tools/daemon.sh tmp/daemon/run.sh
+	-cp tools/run.sh tmp/daemon/
 
 
 
@@ -39,8 +39,26 @@ tomcat:
 clean:
 	cd portal; mvn clean
 	cd daemon; mvn clean
+	cd server; mvn clean
 	-rm -r tmp/daemon
+	-rm -r tmp/server
 
+
+
+
+
+
+auto:
+	cd core;mvn clean; mvn install
+	cd platform; mvn clean
+
+httpd:
+	cd server; mvn clean; mvn package
+	-mkdir -p tmp/server/etc
+	-cp server/src/main/resources/config.properties tmp/server/etc
+	-cp server/src/main/resources/logback.xml tmp/server/etc
+	-cp server/target/server-jar-with-dependencies.jar tmp/server/portal.jar
+	-cp tools/run.sh tmp/server/
 
 
 

@@ -52,5 +52,5 @@
     <bean id="encryptHelper" class="com.odong.core.encrypt.impl.EncryptJasyptHelperImpl" init-method="init">
         <property name="key" value="${app.key}"/>
     </bean>
-
+    <bean id="templateHelper" class="com.odong.web.template.impl.TemplateHttlHelperImpl" init-method="init"/>
 </beans>
