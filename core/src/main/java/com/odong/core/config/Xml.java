@@ -14,9 +14,9 @@ import java.util.Map;
 @Configuration("core.config.xml")
 public class Xml {
     @Bean(name = "core.xStreamMarshaller")
-    public XStreamMarshaller getxStreamMarshaller(){
+    public XStreamMarshaller getxStreamMarshaller() {
         XStreamMarshaller marshaller = new XStreamMarshaller();
-        Map<String,Class<?>> map = new HashMap<>();
+        Map<String, Class<?>> map = new HashMap<>();
         map.put("ResponseItem", ResponseItem.class);
         marshaller.setAliases(map);
         return marshaller;

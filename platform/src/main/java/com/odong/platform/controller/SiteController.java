@@ -7,20 +7,27 @@ import com.odong.core.service.UserService;
 import com.odong.platform.util.CacheService;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.form.*;
+import com.odong.web.template.TemplateHelper;
+import httl.Engine;
+import httl.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by flamen on 13-12-30下午9:40.
@@ -30,21 +37,23 @@ public class SiteController {
     //@RequestMapping(value = "/install", method = RequestMethod.GET)
     String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException {
         if (siteService.get("site.version", String.class) == null) {
-        map.put("title", "PORTAL系统安装");
+            map.put("title", "PORTAL系统安装");
             map.put("author", Constants.AUTHOR);
             map.put("copyright", Constants.COPYRIGHT);
-        }
-        else {
+        } else {
             response.sendRedirect("/main");
         }
         return "install";
     }
 
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-            ResponseItem getInstall(){
-        return new ResponseItem(ResponseItem.Type.message);
+    void getInstall(HttpServletResponse response) throws IOException, ParseException{
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", "测试标题");
+        templateHelper.render(map, response);
     }
-    Form getInstall(Map<String, Object> map){
+
+    Form getInstall(Map<String, Object> map) {
         Form fm = new Form("install", "系统初始化", "/install");
         if (siteService.get("site.version", String.class) == null) {
             logger.debug("数据库尚未初始化");
@@ -276,6 +285,12 @@ public class SiteController {
     private UserService userService;
     @Value("${app.agreement}")
     private String agreement;
+    @Resource
+    private TemplateHelper templateHelper;
+
+    public void setTemplateHelper(TemplateHelper templateHelper) {
+        this.templateHelper = templateHelper;
+    }
 
     public void setAgreement(String agreement) {
         this.agreement = agreement;

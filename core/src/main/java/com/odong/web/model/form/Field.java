@@ -6,10 +6,11 @@ import java.io.Serializable;
  * Created by flamen on 14-1-1上午4:58.
  */
 public abstract class Field implements Serializable {
-    protected Field(String label, String type){
+    protected Field(String label, String type) {
         this.label = label;
-        this.type =type;
+        this.type = type;
     }
+
     private static final long serialVersionUID = 2379566022203187803L;
     private String label;
     private String type;

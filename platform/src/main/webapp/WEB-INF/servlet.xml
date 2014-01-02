@@ -30,7 +30,7 @@
             <property name="viewResolvers">
                 <list>
                     <bean  class="com.odong.web.resolver.MultiViewResolver">
-                        <property name="cache" value="false"/>
+                        <property name="cache" value="true"/>
                         <property name="resolvers">
                             <map>
                                 <entry key="html" value-ref="platform.htmlViewer"/>

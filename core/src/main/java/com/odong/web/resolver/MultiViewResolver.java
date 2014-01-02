@@ -21,12 +21,13 @@ public class MultiViewResolver extends AbstractCachingViewResolver implements Or
         String ext = StringUtils.getFilenameExtension(viewName);
         return ext == null ? null : resolvers.get(ext);
     }
+
     @Override
     public int getOrder() {
         return Integer.MIN_VALUE;
     }
 
-    private Map<String,View> resolvers;
+    private Map<String, View> resolvers;
     private final static Logger logger = LoggerFactory.getLogger(MultiViewResolver.class);
 
 

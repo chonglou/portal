@@ -1,6 +1,5 @@
 package com.odong.core.job;
 
-import com.odong.core.Plugin;
 import com.odong.core.model.SmtpProfile;
 import com.odong.core.util.CacheService;
 import org.slf4j.Logger;

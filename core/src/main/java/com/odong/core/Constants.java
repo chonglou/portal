@@ -7,7 +7,7 @@ public final class Constants {
     private Constants() {
     }
 
-    public final static String COPYRIGHT ="&copy;2013";
+    public final static String COPYRIGHT = "&copy;2013";
     public final static String AUTHOR = "zhengjitang@gmail.com";
     public final static String VERSION = "v20131230";
 }

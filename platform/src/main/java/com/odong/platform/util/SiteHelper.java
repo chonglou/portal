@@ -1,8 +1,6 @@
 package com.odong.platform.util;
 
 import com.odong.core.service.SiteService;
-import com.odong.core.service.TaskService;
-import com.odong.core.service.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +25,7 @@ public class SiteHelper {
 
     @Resource
     private SiteService siteService;
+
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
     }

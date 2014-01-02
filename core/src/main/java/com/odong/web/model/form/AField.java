@@ -56,7 +56,6 @@ public abstract class AField<T> extends Field {
     }
 
 
-
     public T getValue() {
         return value;
     }
