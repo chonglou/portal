@@ -63,5 +63,5 @@
     </bean>
     -->
 
-    <bean id="core.templateHelper" class="com.odong.web.template.impl.TemplateHttlHelper" init-method="init"/>
+    <bean id="core.templateHelper" class="com.odong.web.template.impl.TemplateHttlHelperImpl" init-method="init"/>
 </beans>

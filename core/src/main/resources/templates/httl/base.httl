@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--#set(Page glPage)-->
+<!--#macro(gl_debug_flag)?_=${random()}#end-->
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="${glPage.description}">
+    <meta name="keywords" content="${glPage.keywords}">
+    <meta name="author" content="${glPage.author}">
+    <title>${glPage.title}<!--#if(title)-${title}#endif--></title>
+    <link rel="shortcut icon" href="/style/logo/32x32.ico" type="image/vnd.microsoft.icon">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet"/>
+    <link href="/style/css/main.css${gl_debug_flag}" rel="stylesheet"/>
+    <!--#macro($gl_extra_css)-->
+    <!--#end-->
+</head>
+<body>
+<!--#macro($gl_nav_bar)-->
+<!--#end-->
+<div class="container">
+    <!--#macro($gl_main)-->
+    <div id="gl_message"></div>
+    <div id="gl_root"></div>
+    <!--#end-->
+</div>
+<script type="text/javascript">
+    var gl_captcha = "${glPage.captcha}";
+</script>
+<script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<!--#macro($gl_extra_js)-->
+<!--#end-->
+</body>
+</html>

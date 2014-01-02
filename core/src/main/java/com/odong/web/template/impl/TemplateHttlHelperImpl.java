@@ -7,6 +7,7 @@ import httl.Template;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,19 +17,20 @@ import java.util.Properties;
  * Created by flamen on 14-1-1下午8:54.
  */
 
-public class TemplateHttlHelper implements TemplateHelper {
+public class TemplateHttlHelperImpl implements TemplateHelper {
 
     @Override
-    public void render(Map<String, Object> map, HttpServletResponse response) throws IOException, ParseException{
-        response.setContentType("text/html");
-        Template template = engine.getTemplate("/install.httl");
-        template.render(map, response.getOutputStream());
-
+    public void render(String view, Map<String, Object> map, OutputStream output) throws IOException, ParseException{
+        Template template = engine.getTemplate(view);
+        template.render(map, output);
     }
 
-    private void render(String view, Map<String, Object> map, HttpServletResponse response){
-
+    @Override
+    public String evaluate(String view, Map<String, Object> map) throws IOException, ParseException {
+        Template template = engine.getTemplate(view);
+        return (String)template.evaluate(map);
     }
+
 
     public void init(){
         engine = Engine.getEngine();

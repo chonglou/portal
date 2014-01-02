@@ -53,5 +53,5 @@
         <property name="key" value="${app.key}"/>
     </bean>
 
-    <bean id="templateHelper" class="com.odong.web.template.impl.TemplateHttlHelper" init-method="init"/>
+    <bean id="templateHelper" class="com.odong.web.template.impl.TemplateHttlHelperImpl" init-method="init"/>
 </beans>

@@ -4,7 +4,10 @@ import com.odong.core.cache.CacheHelper;
 import com.odong.core.entity.Log;
 import com.odong.core.json.JsonHelper;
 import com.odong.core.service.*;
+import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
+import com.odong.web.template.TemplateHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterTest;
@@ -21,47 +24,33 @@ import java.util.Map;
 
 public class AppTest {
 
-    public void testJar() {
-        try {
-            String pkg = ResponseItem.class.getPackage().getName();
-            String relPath = pkg.replace('.', '/');
+    @Test
+    public void testTemplate(){
+        try{
+            Page page = new Page();
+            page.setDebug(true);
+            page.setTitle("标题");
+            page.setAuthor("zhengjitang@gmail.com");
+            page.setCopyright("@2013");
+            page.setDescription("说明信息");
+            page.setCaptcha("kaptcha");
 
-            URL resource = ClassLoader.getSystemClassLoader().getResource(relPath);
-            if (resource == null) {
-                throw new RuntimeException("Unexpected problem: No resource for "
-                        + relPath);
-            }
+            TemplateHelper th = ctx.getBean(TemplateHelper.class);
+            Map<String,Object> map = new HashMap<>();
+            map.put("glPage", page);
+            map.put("title", "title");
+            map.put("glMain", th.evaluate("/widgets/form.httl", new HashMap<String, Object>()));
 
-            File f = new File(resource.getPath());
 
-            String[] files = f.list();
-
-            Map<String, String> tabClasses = new HashMap<>();
-            for (int i = 0; i < files.length; i++) {
-
-                String fileName = files[i];
-                String className = null;
-                String fileNm = null;
-
-                if (fileName.endsWith(".class")) {
-
-                    fileNm = fileName.substring(0, fileName.length() - 6);
-                    className = pkg + '.' + fileNm;
-                }
-
-                if (className != null) {
-
-                    if (!tabClasses.containsKey(className))
-                        tabClasses.put(fileNm, className);
-                }
-            }
-
-            log(tabClasses);
-
-        } catch (Exception e) {
+            log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            System.out.println(th.evaluate("/main.httl", map));
+            log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
     }
+
 
     //@Test
     public void testUser() {

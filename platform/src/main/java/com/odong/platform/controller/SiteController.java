@@ -50,7 +50,7 @@ public class SiteController {
     void getInstall(HttpServletResponse response) throws IOException, ParseException{
         Map<String, Object> map = new HashMap<>();
         map.put("title", "测试标题");
-        templateHelper.render(map, response);
+        templateHelper.render("/platform/install", map, response.getOutputStream());
     }
 
     Form getInstall(Map<String, Object> map) {

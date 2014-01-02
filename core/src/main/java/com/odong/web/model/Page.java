@@ -36,6 +36,15 @@ public class Page implements Serializable {
     private QqAuthProfile qqAuth;
     private GoogleAuthProfile googleAuth;
     private boolean debug;
+    private String captcha;
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
+    }
 
     public boolean isDebug() {
         return debug;
