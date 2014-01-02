@@ -7,7 +7,7 @@ import com.odong.core.service.UserService;
 import com.odong.platform.util.CacheService;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.form.*;
-import com.odong.web.template.TemplateHelper;
+
 import httl.Engine;
 import httl.Template;
 import org.slf4j.Logger;
@@ -47,12 +47,11 @@ public class SiteController {
     }
 
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-    void getInstall(HttpServletResponse response) throws IOException, ParseException{
-        Map<String, Object> map = new HashMap<>();
+    String getInstall(Map<String, Object> map){
         map.put("title", "测试标题");
-        templateHelper.render("/platform/install", map, response.getOutputStream());
+        return "/platform/install";
     }
-
+/*
     Form getInstall(Map<String, Object> map) {
         Form fm = new Form("install", "系统初始化", "/install");
         if (siteService.get("site.version", String.class) == null) {
@@ -93,6 +92,8 @@ public class SiteController {
         }
         return fm;
     }
+
+    */
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     ResponseItem getMain() {
@@ -285,12 +286,6 @@ public class SiteController {
     private UserService userService;
     @Value("${app.agreement}")
     private String agreement;
-    @Resource
-    private TemplateHelper templateHelper;
-
-    public void setTemplateHelper(TemplateHelper templateHelper) {
-        this.templateHelper = templateHelper;
-    }
 
     public void setAgreement(String agreement) {
         this.agreement = agreement;

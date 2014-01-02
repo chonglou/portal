@@ -33,12 +33,16 @@
                         <property name="cache" value="true"/>
                         <property name="resolvers">
                             <map>
-                                <entry key="html" value-ref="platform.htmlViewer"/>
+                                <!--<entry key="html" value-ref="platform.htmlViewer"/>-->
                                 <entry key="json" value-ref="platform.jsonViewer"/>
                                 <entry key="xml" value-ref="platform.xmlViewer"/>
                             </map>
                         </property>
                     </bean>
+                    <bean id="platform.httlViewResolver" class="httl.web.springmvc.HttlViewResolver">
+                        <property name="contentType" value="text/html; charset=UTF-8" />
+                    </bean>
+
                     <!--
                     <bean id="platform.httlViewResolver" class="httl.web.springmvc.HttlViewResolver">
                         <property name="contentType" value="text/html; charset=UTF-8" />
@@ -80,7 +84,7 @@
 
     <bean id="platform.jsonViewer" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
     <bean id="platform.rssViewer" class="com.odong.web.view.rss.RssView"/>
-    <bean id="platform.htmlViewer" class="com.odong.web.view.form.HtmlView"/>
+    <!--<bean id="platform.htmlViewer" class="com.odong.web.view.form.HtmlView"/>-->
     <bean id="platform.xmlViewer" class="org.springframework.web.servlet.view.xml.MarshallingView">
         <constructor-arg ref="core.xStreamMarshaller"/>
         <!--

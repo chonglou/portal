@@ -24,6 +24,7 @@ import java.util.Map;
 
 public class AppTest {
 
+
     @Test
     public void testTemplate(){
         try{
@@ -39,17 +40,18 @@ public class AppTest {
             Map<String,Object> map = new HashMap<>();
             map.put("glPage", page);
             map.put("title", "title");
-            map.put("glMain", th.evaluate("/widgets/form.httl", new HashMap<String, Object>()));
+            //map.put("glMain", th.evaluate("/widgets/form.httl", new HashMap<String, Object>()));
 
 
             log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-            System.out.println(th.evaluate("/main.httl", map));
+            System.out.println(th.evaluate("/core/base.httl", map));
             log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
+
 
 
     //@Test
