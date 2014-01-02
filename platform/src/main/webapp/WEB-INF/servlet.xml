@@ -24,20 +24,33 @@
         <bean class="com.odong.platform.aop.PluginInterceptor"/>
     </mvc:interceptors>
 
-    <bean id="platform.contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="contentNegotiationManager" ref="platform.contentNegotiationManager"/>
-        <property name="viewResolvers">
-            <list>
-                <bean id="platform.httlViewResolver" class="httl.web.springmvc.HttlViewResolver">
-                    <property name="contentType" value="text/html; charset=UTF-8" />
-                </bean>
-                <bean id="platform.jsonViewResolver" class="com.odong.web.resolver.JsonViewResolver">
-                    <property name="view" ref="platform.jsonViewer"/>
-                </bean>
-                <bean id="platform.xmlViewResolver" class="com.odong.web.resolver.XmlViewResolver">
-                    <property name="view" ref="platform.xmlViewer"/>
-                </bean>
-                <bean id="platform.beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+
+        <bean id="platform.contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+            <property name="contentNegotiationManager" ref="platform.contentNegotiationManager"/>
+            <property name="viewResolvers">
+                <list>
+                    <bean  class="com.odong.web.resolver.MultiViewResolver">
+                        <property name="cache" value="false"/>
+                        <property name="resolvers">
+                            <map>
+                                <entry key="html" value-ref="platform.htmlViewer"/>
+                                <entry key="json" value-ref="platform.jsonViewer"/>
+                                <entry key="xml" value-ref="platform.xmlViewer"/>
+                            </map>
+                        </property>
+                    </bean>
+                    <!--
+                    <bean id="platform.httlViewResolver" class="httl.web.springmvc.HttlViewResolver">
+                        <property name="contentType" value="text/html; charset=UTF-8" />
+                    </bean>
+                    <bean id="platform.jsonViewResolver" class="com.odong.web.resolver.JsonViewResolver">
+                        <property name="view" ref="platform.jsonViewer"/>
+                    </bean>
+                    <bean id="platform.xmlViewResolver" class="com.odong.web.resolver.XmlViewResolver">
+                        <property name="view" ref="platform.xmlViewer"/>
+                    </bean>
+                    <bean id="platform.beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+                    -->
             </list>
         </property>
     </bean>
@@ -65,25 +78,22 @@
     </bean>
 
 
-
-
-
-
-
-
     <bean id="platform.jsonViewer" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
     <bean id="platform.rssViewer" class="com.odong.web.view.rss.RssView"/>
-    <bean id="platform.formViewer" class="com.odong.web.view.form.FormView"/>
+    <bean id="platform.htmlViewer" class="com.odong.web.view.form.HtmlView"/>
     <bean id="platform.xmlViewer" class="org.springframework.web.servlet.view.xml.MarshallingView">
+        <constructor-arg ref="core.xStreamMarshaller"/>
+        <!--
         <constructor-arg>
-            <bean class="org.springframework.oxm.xstream.XStreamMarshaller">
-                <property name="aliases">
-                    <props>
-                        <prop key="ResponseItem">com.odong.web.model.ResponseItem</prop>
-                    </props>
+            <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+                <property name="packagesToScan">
+                    <list>
+                        <value>com.odong.web.model</value>
+                    </list>
                 </property>
             </bean>
         </constructor-arg>
+        -->
     </bean>
 
     <bean id="platform.exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>

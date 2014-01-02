@@ -4,8 +4,8 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
     <aop:aspectj-autoproxy expose-proxy="true"/>
-    <tx:annotation-driven transaction-manager="db.txManager"/>
-    <tx:advice id="txAdvice" transaction-manager="db.txManager">
+    <tx:annotation-driven transaction-manager="core.db.txManager"/>
+    <tx:advice id="core.txAdvice" transaction-manager="core.db.txManager">
         <tx:attributes>
             <tx:method name="save*" propagation="REQUIRED"/>
             <tx:method name="add*" propagation="REQUIRED"/>
@@ -30,8 +30,8 @@
         </tx:attributes>
     </tx:advice>
     <aop:config expose-proxy="true">
-        <aop:pointcut id="txPointcut" expression="execution(* com.odong.*..service..*.*(..))"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+        <aop:pointcut id="core.txPointcut" expression="execution(* com.odong.*..service..*.*(..))"/>
+        <aop:advisor advice-ref="core.txAdvice" pointcut-ref="core.txPointcut"/>
     </aop:config>
 
 </beans>

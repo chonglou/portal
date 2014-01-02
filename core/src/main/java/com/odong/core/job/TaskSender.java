@@ -48,7 +48,7 @@ public class TaskSender {
 
     @Resource
     private JmsTemplate jmsTemplate;
-    @Resource(name = "taskQueue")
+    @Resource(name = "core.taskQueue")
     private Queue taskQueue;
 
     @Resource

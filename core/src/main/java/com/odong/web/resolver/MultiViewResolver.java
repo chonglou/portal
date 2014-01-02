@@ -17,7 +17,7 @@ public class MultiViewResolver extends AbstractCachingViewResolver implements Or
 
     @Override
     protected View loadView(String viewName, Locale locale) throws Exception {
-        logger.debug("VIEW NAME:{}", viewName);
+        //logger.debug("VIEW NAME:{}", viewName);
         String ext = StringUtils.getFilenameExtension(viewName);
         return ext == null ? null : resolvers.get(ext);
     }

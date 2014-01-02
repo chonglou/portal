@@ -41,8 +41,9 @@ public class SiteController {
     }
 
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
+            ResponseItem getInstall(){
+        return new ResponseItem(ResponseItem.Type.message);
+    }
     Form getInstall(Map<String, Object> map){
         Form fm = new Form("install", "系统初始化", "/install");
         if (siteService.get("site.version", String.class) == null) {

@@ -98,7 +98,7 @@ public class AppTest {
     }
 
 
-   // @BeforeTest
+    @BeforeTest
     public void init() {
         try {
             ctx = new ClassPathXmlApplicationContext("classpath*:/spring/*.xml");
