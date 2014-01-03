@@ -25,12 +25,12 @@ public class SiteServiceImpl extends JdbcHelper implements SiteService {
     }
 
     @Override
-    public void set(String key, Serializable obj) {
+    public void set(String key, Object obj) {
         set(key, obj, false);
     }
 
     @Override
-    public void set(String key, Serializable obj, boolean encrypt) {
+    public void set(String key, Object obj, boolean encrypt) {
         String json = jsonHelper.object2json(obj);
         set(key, encrypt ? encryptHelper.encode(json) : json);
     }

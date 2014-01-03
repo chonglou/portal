@@ -1,6 +1,8 @@
 package com.odong.core.job;
 
 import com.odong.core.model.SmtpProfile;
+import com.odong.core.plugin.Plugin;
+import com.odong.core.plugin.PluginUtil;
 import com.odong.core.util.CacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +40,7 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.ctx = applicationContext;
+        this.context = applicationContext;
     }
 
     @SuppressWarnings("unchecked")
@@ -128,8 +130,12 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                     //FIXME
                     break;
                 default:
-                    //((Plugin) ctx.getBean(module + ".job.listener")).onMessage(message);
-                    logger.debug("未处理的任务");
+                    if (pluginUtil.isEnable(module)) {
+                        logger.debug("任务转送至模块[{}]", module);
+                        context.getBean("plugin."+module, Plugin.class).onMessage(message);
+                    } else {
+                        logger.debug("模块[{}]未启用", module);
+                    }
                     break;
             }
 
@@ -153,10 +159,14 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
     private TaskExecutor taskExecutor;
     @Resource
     private CacheService cacheService;
-
-    private ApplicationContext ctx;
+    @Resource
+    private PluginUtil pluginUtil;
+    private ApplicationContext context;
     private final static Logger logger = LoggerFactory.getLogger(TaskListener.class);
 
+    public void setPluginUtil(PluginUtil pluginUtil) {
+        this.pluginUtil = pluginUtil;
+    }
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;

@@ -10,7 +10,6 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractCachingViewResolver;
 
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by flamen on 14-1-1下午4:26.
@@ -21,10 +20,10 @@ public class MultiViewResolver extends AbstractCachingViewResolver implements Or
     protected View loadView(String viewName, Locale locale) throws Exception {
         //logger.debug("VIEW NAME:{}", viewName);
         String ext = StringUtils.getFilenameExtension(viewName);
-        if(ext == null){
+        if (ext == null) {
             return null;
         }
-        switch (ext){
+        switch (ext) {
             case "httl":
                 return new HtmlView(viewName, templateHelper);
             case "json":

@@ -24,8 +24,8 @@ public class AppTest {
 
 
     //@Test
-    public void testForm(){
-        Map<String,Object> map = new HashMap<>();
+    public void testForm() {
+        Map<String, Object> map = new HashMap<>();
         Form fm = new Form("install", "系统初始化", "/install");
         fm.addField(new SplitterField("站点信息"));
         fm.addField(new TextField<String>("domain", "域名"));
@@ -66,9 +66,9 @@ public class AppTest {
 
 
     @Test
-    public void testPage(){
+    public void testPage() {
 
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         Page page = new Page();
         page.setDebug(true);
         page.setTitle("标题");
@@ -90,13 +90,12 @@ public class AppTest {
         map.put("title", "title");
 
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        for(int i=0; i<5;i++){
-            ri.addData("提示信息"+i);
+        for (int i = 0; i < 5; i++) {
+            ri.addData("提示信息" + i);
         }
         map.put("message", ri);
         template("/core/message.httl", map);
     }
-
 
 
     //@Test
@@ -206,14 +205,13 @@ public class AppTest {
         }
     }
 
-    private void template(String view, Map<String, Object> map){
-        try{
+    private void template(String view, Map<String, Object> map) {
+        try {
             TemplateHelper th = ctx.getBean(TemplateHelper.class);
             System.out.println("#################################################################");
             System.out.println(th.evaluate(view, map));
             System.out.println("#################################################################");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

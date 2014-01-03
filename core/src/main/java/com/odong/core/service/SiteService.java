@@ -8,9 +8,10 @@ import java.io.Serializable;
 public interface SiteService {
     void pop(String key);
 
-    void set(String key, Serializable obj);
+    void set(String key, Object obj);
 
-    void set(String key, Serializable obj, boolean encrypt);
+
+    void set(String key, Object obj, boolean encrypt);
 
     <T extends Serializable> T get(String key, Class<T> clazz);
 

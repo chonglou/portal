@@ -1,17 +1,12 @@
 package com.odong.web.view;
 
-import com.odong.web.model.form.Form;
 import com.odong.web.template.TemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
-import org.springframework.web.servlet.view.AbstractView;
-import sun.util.logging.resources.logging;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.util.Map;
 
 /**
@@ -30,7 +25,7 @@ public class HtmlView extends AbstractUrlBasedView {
         response.setContentType(CONTENT_TYPE);
         //response.setHeader("Cache-Control", "no-cache");
         logger.debug("VIEW URL:{}", getUrl());
-        templateHelper.render(getUrl(), map,response.getOutputStream());
+        templateHelper.render(getUrl(), map, response.getOutputStream());
     }
 
     @Override

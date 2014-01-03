@@ -4,13 +4,14 @@ ${extends("/core/layout.httl")}
 <!--#set(ResponseItem message)-->
 <div class="page-header">
     <h1>提示信息[${message.created}]：</h1>
+
     <p class="lead">[<label id="time">5</label>秒钟之后跳转至首页]</p>
     <ul class="list-group">
         <!--#for(msg : message.data)-->
         <li class="list-group-item">${msg}</li>
         <!--#end-->
     </ul>
-    <div ></div>
+    <div></div>
 </div>
 <!--#end-->
 <!--#macro(gl_extra_js)-->

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <!--#set(Page page)-->
-<!--#macro(gl_debug_flag)?_=${random()}#end-->
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,6 +28,7 @@
             width: 88px;
             padding-top: 10px
         }
+
         #googleAuthBtn :hover {
             cursor: pointer;
         }

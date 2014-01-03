@@ -1,4 +1,4 @@
 ${extends("/base.httl")}
 <!--#macro(gl_main)-->
-        ${glMain}
+${glMain}
 <!--#end-->
