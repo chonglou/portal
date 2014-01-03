@@ -36,7 +36,43 @@ public class Page implements Serializable {
     private QqAuthProfile qqAuth;
     private GoogleAuthProfile googleAuth;
     private boolean debug;
+    private boolean login;
+    private String sessionId;
+    private String userLogo;
+    private String userName;
     private String captcha;
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getUserLogo() {
+        return userLogo;
+    }
+
+    public void setUserLogo(String userLogo) {
+        this.userLogo = userLogo;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public boolean isLogin() {
+        return login;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
+    }
 
     public String getCaptcha() {
         return captcha;

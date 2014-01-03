@@ -1,0 +1,9 @@
+${extends("/core/base.httl")}
+<!--#macro(gl_base_extra_head)-->
+<!--#end-->
+<!--#macro(gl_base_navbar)-->
+<!--#end-->
+<!--#macro(gl_base_main)-->
+<!--#end-->
+<!--#macro(gl_base_extra_js)-->
+<!--#end-->

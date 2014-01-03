@@ -74,7 +74,6 @@ function draw_person_bar(fn_logout) {
                 $(this).click(function () {
                     clear_root_div();
                     clear_message_div();
-                    //alert($(this).attr("id"));
                     new Ajax($(this).attr("id"));
                 });
             });

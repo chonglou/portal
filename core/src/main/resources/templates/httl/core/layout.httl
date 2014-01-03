@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--#set(Page page)-->
+<!--#macro(gl_debug_flag)?_=${random()}#end-->
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="${page.description}">
+    <meta name="keywords" content="${page.keywords}">
+    <meta name="author" content="${page.author}">
+    <title>${page.title}<!--#if(title)-${title}#endif--></title>
+    <link rel="shortcut icon" href="/style/logo/32x32.ico" type="image/vnd.microsoft.icon">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet"/>
+    <link href="/style/css/main.css${gl_debug_flag}" rel="stylesheet"/>
+    <!--#if(page.qqAuth.enable)-->
+    <meta property="qc:admins" content="${page.qqAuth.valid}"/>
+    <style type="text/css">
+        #qqAuthBar a {
+            padding-top: 13px;
+            padding-bottom: 13px;
+        }
+    </style>
+    <!--#end-->
+    <!--#if(page.googleAuth.enable)-->
+    <style type="text/css">
+        #googleAuthBtn img {
+            width: 88px;
+            padding-top: 10px
+        }
+        #googleAuthBtn :hover {
+            cursor: pointer;
+        }
+    </style>
+    <!--#end-->
+    <!--#macro($gl_extra_head)--><!--#end-->
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">${page.title}</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <!--#for(Link l : page.topLinks)-->
+                <!--#if(page.index==l.url)-->
+                <li class="active"><a href="${l.url}">${l.name}</a></li>
+                <!--#else-->
+                <li><a href="${l.url}">${l.name}</a></li>
+                <!--#end-->
+                <!--#end-->
+                <li>
+                    <form method="post" target="_blank" action="/search" class="navbar-form form-inline pull-left">
+                        <input class="form-control col-lg-8" name="keyword" type="text" placeholder="点击此处进行搜索">
+                    </form>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" id="favorites">收藏本页</a></li>
+                <li id="personalBar" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                    </ul>
+                </li>
+                <li id="qqAuthBar"></li>
+                <li id="googleAuthBar"></li>
+                <li>
+                    <a href="/rss.xml" target="_blank">
+                        <img title="收取站点更新通知" class="navbar-icon" src="/style/rss.png"/>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <!--#macro($gl_main)-->
+    <div id="gl_message"></div>
+    <div id="gl_root"></div>
+    <!--#end-->
+    <hr>
+    <footer>
+        <p>${page.copyright}</p>
+    </footer>
+</div>
+<script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    var gl_captcha = "${page.captcha}";
+    function getJSessionId() {
+        return ';jsessionid=${gl_session_id}';
+    }
+</script>
+<script type="text/javascript" src="/js/config.js${gl_debug_flag}"></script>
+<script type="text/javascript" src="/jquery/masonry.pkgd.min.js"></script>
+<script type="text/javascript" src="/jquery-ui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/jquery-ui/js/i18n/jquery.ui.datepicker-zh-CN.min.js"></script>
+<script type="text/javascript" src="/jquery/jquery.tagcanvas.min.js"></script>
+<script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/widgets.js"></script>
+<!--#if(page.login)-->
+<script type="text/javascript" src="/js/personal.js${gl_debug_flag}"></script>
+<!--#else-->
+<script type="text/javascript" src="/js/non-login.js${gl_debug_flag}"></script>
+<!--#end-->
+<script type="application/javascript">
+    draw_person_bar();
+</script>
+<!--#if(page.qqAuth.enable)-->
+<script type="text/javascript"
+        src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js"
+        data-appid="${page.qqAuth.id}"
+        data-redirecturi="${page.qqAuth.uri}" charset="utf-8">
+</script>
+<script type="text/javascript">
+    function qqLogout() {
+        if (window.confirm("您确认要退出QQ登录么？")) {
+            QC.Login.signOut();
+            window.location.href = "/personal/logout";
+        }
+    }
+    QC.Login(
+            {
+                //插入按钮的节点id，必选
+                btnId: "qqAuthBar",
+                //用户需要确认的scope授权项，可选，默认all
+                scope: "all",
+                //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+                size: "B_M"
+            },
+            function (reqData, opts) {
+                QC.Login.getMe(function (openId, accessToken) {
+                    new Ajax(
+                            "/oauth/qq",
+                            'POST',
+                            {
+                                token: accessToken,
+                                id: openId,
+                                name: reqData.nickname,
+                                logo: reqData.figureurl_qq_1
+                            },
+                            function (result) {
+                                if (result.ok) {
+                                    draw_person_bar(function () {
+                                        if (window.confirm("您确认要退出QQ登录么？")) {
+                                            QC.Login.signOut();
+                                            window.location.href = "/personal/logout";
+                                        }
+                                    });
+                                }
+                                else {
+                                    alert('登录失败!' + result.data[0]);
+                                }
+                            });
+                });
+            },
+            function () {
+                console.log('qq互联退出');
+            }
+    );
+</script>
+<!--#end-->
+<!--#if(page.googleAuth)-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("li#googleAuthBar").html('<div id="googleAuthBtn"><img src="/style/google/base.png"></div>');
+    });
+
+    (function () {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js?onload=render';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+
+    function render() {
+        gapi.signin.render('googleAuthBtn', {
+            'callback': 'loginCallback',
+            'clientid': '${page.googleAuth.id}',
+            'cookiepolicy': 'single_host_origin',
+            'requestvisibleactions': 'http://schemas.google.com/AddActivity',
+            'scope': 'https://www.googleapis.com/auth/plus.login'
+        });
+    }
+    function loginCallback(authResult) {
+        if (authResult['access_token']) {
+            new Ajax(
+                    "/oauth/google",
+                    "POST",
+                    {
+                        token: authResult['access_token'],
+                        info: authResult['id_token'],
+                        code: authResult['code']
+                    },
+                    function (result) {
+                        if (result.ok) {
+                            draw_person_bar(function () {
+                                if (window.confirm("您确认要退出Google账户么？")) {
+                                    new Ajax("/personal/logout", undefined, undefined, function () {
+                                        window.location.href = "https://accounts.google.com/Logout";
+                                    });
+                                }
+                            });
+                        }
+                    }
+            );
+        }
+        else {
+            console.log('google未登录');
+        }
+    }
+</script>
+<!--#end-->
+<!--#macro($gl_extra_js)--><!--#end-->
+</body>
+</html>

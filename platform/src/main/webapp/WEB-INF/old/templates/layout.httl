@@ -4,66 +4,7 @@ $!{extends("/frame.httl")}
 <!--#set(QQAuthProfile gl_qqAuth)-->
 <!--#set(Boolean gl_debug)-->
 #if(gl_qqAuth.enable)
-<meta property="qc:admins" content="${gl_qqAuth.valid}"/>
-<script type="text/javascript"
-        src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js"
-        data-appid="${gl_qqAuth.id}"
-        data-redirecturi="${gl_qqAuth.uri}" charset="utf-8">
-</script>
-<script type="text/javascript">
-    function qqLogout() {
-        if (window.confirm("您确认要退出QQ登录么？")) {
-            QC.Login.signOut();
-            window.location.href = "/personal/logout";
-        }
-    }
 
-    QC.Login(
-            {
-                //插入按钮的节点id，必选
-                btnId: "qqAuthBar",
-                //用户需要确认的scope授权项，可选，默认all
-                scope: "all",
-                //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
-                size: "B_M"
-            },
-            function (reqData, opts) {
-                QC.Login.getMe(function (openId, accessToken) {
-                    new Ajax(
-                            "/oauth/qq",
-                            'POST',
-                            {
-                                token: accessToken,
-                                id: openId,
-                                name: reqData.nickname,
-                                logo: reqData.figureurl_qq_1
-                            },
-                            function (result) {
-                                if (result.ok) {
-                                    draw_person_bar(function () {
-                                        if (window.confirm("您确认要退出QQ登录么？")) {
-                                            QC.Login.signOut();
-                                            window.location.href = "/personal/logout";
-                                        }
-                                    });
-                                }
-                                else {
-                                    alert('登录失败!' + result.data[0]);
-                                }
-                            });
-                });
-            },
-            function () {
-                console.log('qq互联退出');
-            }
-    );
-</script>
-<style type="text/css">
-    #qqAuthBar a {
-        padding-top: 13px;
-        padding-bottom: 13px;
-    }
-</style>
 #end
 #end
 
@@ -72,68 +13,8 @@ $!{extends("/frame.httl")}
 <!--#set(Boolean gl_debug)-->
 <!--#set(GoogleAuthProfile gl_googleAuth)-->
 #if(gl_googleAuth.enable)
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("li#googleAuthBar").html('<div id="googleAuthBtn"><img src="/style/google/base.png"></div>');
-    });
 
-    (function () {
-        var po = document.createElement('script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://apis.google.com/js/client:plusone.js?onload=render';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(po, s);
-    })();
 
-    function render() {
-        gapi.signin.render('googleAuthBtn', {
-            'callback': 'loginCallback',
-            'clientid': '${gl_googleAuth.id}',
-            'cookiepolicy': 'single_host_origin',
-            'requestvisibleactions': 'http://schemas.google.com/AddActivity',
-            'scope': 'https://www.googleapis.com/auth/plus.login'
-        });
-    }
-    function loginCallback(authResult) {
-        if (authResult['access_token']) {
-            new Ajax(
-                    "/oauth/google",
-                    "POST",
-                    {
-                        token: authResult['access_token'],
-                        info: authResult['id_token'],
-                        code: authResult['code']
-                    },
-                    function (result) {
-                        if (result.ok) {
-                            draw_person_bar(function () {
-                                if (window.confirm("您确认要退出Google账户么？")) {
-                                    new Ajax("/personal/logout", undefined, undefined, function () {
-                                        window.location.href = "https://accounts.google.com/Logout";
-                                    });
-                                }
-                            });
-                        }
-                    }
-            );
-        }
-        else {
-            console.log('google未登录');
-        }
-    }
-</script>
-<style type="text/css">
-    #googleAuthBtn img {
-        width: 88px;
-        padding-top: 10px
-    }
-
-    #googleAuthBtn :hover {
-        cursor: pointer;
-    }
-
-</style>
 #end
 #end
 

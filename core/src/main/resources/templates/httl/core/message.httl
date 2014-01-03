@@ -1,7 +1,31 @@
-${extends("/base.httl")}
-
+<!--#set(Page page)-->
+${extends("/core/layout.httl")}
 <!--#macro(gl_main)-->
-message ${message} <br> ${created}
-${glMain}
+<!--#set(ResponseItem message)-->
+<div class="page-header">
+    <h1>提示信息[${message.created}]：</h1>
+    <p class="lead">[<label id="time">5</label>秒钟之后跳转至首页]</p>
+    <ul class="list-group">
+        <!--#for(msg : message.data)-->
+        <li class="list-group-item">${msg}</li>
+        <!--#end-->
+    </ul>
+    <div ></div>
+</div>
+<!--#end-->
+<!--#macro(gl_extra_js)-->
+<script type="text/javascript">
+    function runtime() {
+        var t = $("label#time");
+        if (t.text() == 1) {
+            window.location.href = "/";
+        }
+        else {
+            t.html(t.text() - 1);
+        }
+        setTimeout("runtime()", 1000);
+    }
+    runtime();
+</script>
 <!--#end-->
 

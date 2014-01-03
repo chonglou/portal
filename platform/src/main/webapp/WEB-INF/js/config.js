@@ -1,18 +1,6 @@
 window.UEDITOR_HOME_URL = "/ueditor/";
 
-function getJSessionId() {
-    var ss = ';jsessionid=';
-    $.ajax({
-        url: "/sessionId",
-        type: "POST",
-        success: function (e) {
-            ss += e;
-        },
-        async: false,
-        cache: false
-    });
-    return ss;
-}
+
 
 /**
  *  ueditor完整配置项
