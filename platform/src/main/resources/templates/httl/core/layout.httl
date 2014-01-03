@@ -8,7 +8,7 @@
     <meta name="description" content="${page.description}">
     <meta name="keywords" content="${page.keywords}">
     <meta name="author" content="${page.author}">
-    <title>${page.title}<!--#if(title)-${title}#endif--></title>
+    <title>${page.title}111<!--#if(title)-${title}#endif--></title>
     <link rel="shortcut icon" href="/style/logo/32x32.ico" type="image/vnd.microsoft.icon">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet"/>

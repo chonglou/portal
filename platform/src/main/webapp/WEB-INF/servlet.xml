@@ -4,26 +4,25 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="platform.propertyConfigurer"
-          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations">
-            <list>
-                <value>classpath:config.properties</value>
-            </list>
-        </property>
-    </bean>
+    <context:property-placeholder location="classpath*:config.properties"/>
 
     <context:component-scan base-package="com.odong">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <mvc:annotation-driven validator="platform.validator"
-                           content-negotiation-manager="platform.contentNegotiationManager"/>
-
     <mvc:interceptors>
         <bean class="com.odong.platform.aop.SecurityInterceptor"/>
         <bean class="com.odong.platform.aop.PluginInterceptor"/>
     </mvc:interceptors>
+
+
+    <bean id="viewResolver" class="httl.web.springmvc.HttlViewResolver">
+        <property name="contentType" value="text/html; charset=UTF-8"/>
+    </bean>
+    <bean id="platform.jsonViewer" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+    <bean id="platform.rssViewer" class="com.odong.web.view.rss.RssView"/>
+
+    <mvc:annotation-driven validator="platform.validator"/>
 
     <bean id="platform.messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages"/>
@@ -32,6 +31,11 @@
     <bean id="platform.validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource" ref="platform.messageSource"/>
     </bean>
+    <!--
+    <mvc:annotation-driven validator="platform.validator"
+                           content-negotiation-manager="platform.contentNegotiationManager"/>
+
+
 
     <bean id="platform.contentNegotiatingViewResolver"
           class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
@@ -66,26 +70,21 @@
         </property>
     </bean>
 
-    <!--支持forward和redirect-->
+
     <bean id="platform.internalResourceViewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver"/>
     <bean id="platform.resourceBundleViewResolver"
           class="org.springframework.web.servlet.view.ResourceBundleViewResolver"/>
 
-    <bean id="platform.jsonViewer" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
-    <bean id="platform.rssViewer" class="com.odong.web.view.rss.RssView"/>
+
 
     <bean id="platform.xmlViewer" class="org.springframework.web.servlet.view.xml.MarshallingView">
         <constructor-arg ref="core.xStreamMarshaller"/>
     </bean>
 
-    <bean id="platform.exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
 
-    <bean id="platform.multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="${upload.max}"/>
-    </bean>
 
-    
+
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
         <property name="ignoreDefaultModelOnRedirect" value="true"/>
         <property name="messageConverters">
@@ -93,5 +92,12 @@
                 <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
             </list>
         </property>
+    </bean>
+    -->
+
+    <bean id="platform.exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
+
+    <bean id="platform.multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="${upload.max}"/>
     </bean>
 </beans>

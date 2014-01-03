@@ -2,6 +2,7 @@ package com.odong.platform.util;
 
 import com.odong.core.service.SiteService;
 import com.odong.web.template.TemplateHelper;
+import httl.web.WebEngine;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +17,7 @@ import java.util.Date;
 public class SiteHelper {
     @PostConstruct
     void init() {
-        templateHelper.addPackage("com.odong.platform.entity","com.odong.platform.model");
+        templateHelper.addPackage("com.odong.platform.entity", "com.odong.platform.model");
         siteService.set("site.startup", new Date());
     }
 

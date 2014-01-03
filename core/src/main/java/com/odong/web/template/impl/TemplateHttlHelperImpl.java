@@ -60,7 +60,7 @@ public class TemplateHttlHelperImpl implements TemplateHelper {
         props.put("cache.capacity", "10240");
         props.put("loaders", "httl.spi.loaders.ClasspathLoader");
         props.put("template.directory", "/templates/httl");
-        props.put("import.macros", "/core/macros.httl");
+        //props.put("import.macros", "/core/macros.httl");
         props.put("import.packages+", StringUtils.join(packages, ","));
 
         logger.debug("HTTL SCAN List:{}", packages);

@@ -32,17 +32,12 @@ import java.util.Map;
  */
 @Controller("platform.c.site")
 public class SiteController {
-    /*
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    void getIndex(HttpServletResponse response) throws IOException{
-        response.sendRedirect("/main");
-    }
-    */
+
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     String getMain(Map<String, Object> map, HttpSession session) {
         Page page = formHelper.getPage(session);
         map.put("page", page);
-        return "/platform/main.httl";
+        return "/platform/main";
     }
 
 
