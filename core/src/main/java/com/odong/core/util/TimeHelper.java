@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by flamen on 13-12-30上午2:29.
  */
-@Component("core.util.time")
+@Component("core.timeHelper")
 public class TimeHelper {
 
     public Date mouthMin(int year, int month) {

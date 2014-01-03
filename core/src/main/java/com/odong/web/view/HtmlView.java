@@ -1,5 +1,6 @@
 package com.odong.web.view;
 
+import com.odong.web.model.Page;
 import com.odong.web.template.TemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,6 @@ public class HtmlView extends AbstractUrlBasedView {
     @Override
     protected void renderMergedOutputModel(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setContentType(CONTENT_TYPE);
-        //response.setHeader("Cache-Control", "no-cache");
         logger.debug("VIEW URL:{}", getUrl());
         templateHelper.render(getUrl(), map, response.getOutputStream());
     }

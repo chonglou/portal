@@ -1,1 +1,33 @@
-install dsfgs
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--#set(Page page)-->
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="${page.description}">
+    <meta name="keywords" content="${page.keywords}">
+    <meta name="author" content="${page.author}">
+    <title>${title}</title>
+    <link rel="shortcut icon" href="/style/logo/32x32.ico" type="image/vnd.microsoft.icon">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet"/>
+    </head>
+<body>
+<div class="container">
+    <div id="gl_root"></div>
+    <div id="gl_message"></div>
+    </div>
+<script type="text/javascript">
+    var gl_captcha = "kaptcha";
+</script>
+<script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/widgets.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+       new Ajax("/install", "PUT");
+    });
+</script>
+</body>
+</html>

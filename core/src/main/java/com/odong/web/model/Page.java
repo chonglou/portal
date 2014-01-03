@@ -38,8 +38,6 @@ public class Page implements Serializable {
     private boolean debug;
     private boolean login;
     private String sessionId;
-    private String userLogo;
-    private String userName;
     private String captcha;
 
     public String getSessionId() {
@@ -48,22 +46,6 @@ public class Page implements Serializable {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
-    }
-
-    public String getUserLogo() {
-        return userLogo;
-    }
-
-    public void setUserLogo(String userLogo) {
-        this.userLogo = userLogo;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public boolean isLogin() {

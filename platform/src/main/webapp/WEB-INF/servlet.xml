@@ -4,7 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="platform.propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="platform.propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>classpath:config.properties</value>
@@ -12,39 +13,49 @@
         </property>
     </bean>
 
-
-
     <context:component-scan base-package="com.odong">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
-    <mvc:annotation-driven validator="platform.validator" content-negotiation-manager="platform.contentNegotiationManager" />
+
+    <mvc:annotation-driven validator="platform.validator"
+                           content-negotiation-manager="platform.contentNegotiationManager"/>
 
     <mvc:interceptors>
         <bean class="com.odong.platform.aop.SecurityInterceptor"/>
         <bean class="com.odong.platform.aop.PluginInterceptor"/>
     </mvc:interceptors>
 
+    <bean id="platform.messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+    </bean>
 
-        <bean id="platform.contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-            <property name="contentNegotiationManager" ref="platform.contentNegotiationManager"/>
-            <property name="viewResolvers">
-                <list>
-                    <bean  class="com.odong.web.resolver.MultiViewResolver">
-                        <property name="cache" value="true"/>
-                        <property name="jsonView" ref="platform.jsonViewer"/>
-                        <property name="xmlView" ref="platform.xmlViewer"/>
-                        <property name="templateHelper" ref="templateHelper"/>
-                    </bean>
-                    <bean id="platform.beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+    <bean id="platform.validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="platform.messageSource"/>
+    </bean>
+
+    <bean id="platform.contentNegotiatingViewResolver"
+          class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="platform.contentNegotiationManager"/>
+        <property name="viewResolvers">
+            <list>
+                <bean class="com.odong.web.resolver.MultiViewResolver">
+                    <property name="cache" value="true"/>
+                    <property name="jsonView" ref="platform.jsonViewer"/>
+                    <property name="xmlView" ref="platform.xmlViewer"/>
+                    <property name="templateHelper" ref="templateHelper"/>
+                </bean>
+                <bean id="platform.beanNameViewResolver"
+                      class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
             </list>
         </property>
     </bean>
-    <bean id="platform.contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+    <bean id="platform.contentNegotiationManager"
+          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="ignoreAcceptHeader" value="true"/>
         <property name="favorPathExtension" value="true"/>
         <property name="favorParameter" value="false"/>
         <property name="useJaf" value="false"/>
-        <property name="defaultContentType"  value="text/html"/>
+        <property name="defaultContentType" value="text/html"/>
         <property name="mediaTypes">
             <map>
                 <entry key="json" value="application/json"/>
@@ -55,31 +66,17 @@
         </property>
     </bean>
 
-    <bean id="platform.messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property name="basename" value="messages"/>
-    </bean>
-
-    <bean id="platform.validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <property name="validationMessageSource" ref="platform.messageSource"/>
-    </bean>
-
+    <!--支持forward和redirect-->
+    <bean id="platform.internalResourceViewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"/>
+    <bean id="platform.resourceBundleViewResolver"
+          class="org.springframework.web.servlet.view.ResourceBundleViewResolver"/>
 
     <bean id="platform.jsonViewer" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
     <bean id="platform.rssViewer" class="com.odong.web.view.rss.RssView"/>
 
     <bean id="platform.xmlViewer" class="org.springframework.web.servlet.view.xml.MarshallingView">
         <constructor-arg ref="core.xStreamMarshaller"/>
-        <!--
-        <constructor-arg>
-            <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-                <property name="packagesToScan">
-                    <list>
-                        <value>com.odong.web.model</value>
-                    </list>
-                </property>
-            </bean>
-        </constructor-arg>
-        -->
     </bean>
 
     <bean id="platform.exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
@@ -88,4 +85,13 @@
         <property name="maxUploadSize" value="${upload.max}"/>
     </bean>
 
+    
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="ignoreDefaultModelOnRedirect" value="true"/>
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
 </beans>

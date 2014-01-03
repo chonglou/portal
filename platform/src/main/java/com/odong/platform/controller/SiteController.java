@@ -1,18 +1,14 @@
 package com.odong.platform.controller;
 
 import com.odong.core.Constants;
-import com.odong.core.entity.User;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;
+import com.odong.core.util.FormHelper;
 import com.odong.platform.util.CacheService;
 import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.form.*;
-
-import com.odong.web.template.TemplateHelper;
-import httl.Engine;
-import httl.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,17 +25,29 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created by flamen on 13-12-30下午9:40.
  */
 @Controller("platform.c.site")
 public class SiteController {
-    //@RequestMapping(value = "/install", method = RequestMethod.GET)
-    String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException {
+    /*
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    void getIndex(HttpServletResponse response) throws IOException{
+        response.sendRedirect("/main");
+    }
+    */
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    String getMain(Map<String, Object> map, HttpSession session) {
+        Page page = formHelper.getPage(session);
+        map.put("page", page);
+        return "/platform/main.httl";
+    }
+
+
+    @RequestMapping(value = "/install", method = RequestMethod.GET)
+    String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException, ParseException {
         if (siteService.get("site.version", String.class) == null) {
             map.put("title", "PORTAL系统安装");
             map.put("author", Constants.AUTHOR);
@@ -47,42 +55,12 @@ public class SiteController {
         } else {
             response.sendRedirect("/main");
         }
-        return "install";
+        return "platform/install";
     }
 
-    @RequestMapping(value = "/install", method = RequestMethod.GET)
-    String getInstall(Map<String,Object> map) throws IOException, ParseException{
-
-        Page page = new Page();
-        page.setDebug(true);
-        page.setTitle("标题");
-        page.setAuthor("zhengjitang@gmail.com");
-        page.setCopyright("@2013");
-        page.setDescription("说明信息");
-        page.setCaptcha("kaptcha");
-
-        map.put("glPage", page);
-        map.put("title", "title");
-        /*
-        logger.debug("#######################################################");
-        logger.debug(templateHelper.evaluate("/core/base.httl", map));
-        logger.debug("#######################################################");
-        logger.debug(templateHelper.evaluate("/platform/install.httl", map));
-        logger.debug("#######################################################");
-        */
-        //map.put("glMain", th.evaluate("/widgets/form.httl", new HashMap<String, Object>()));
-        map.put("created", new Date());
-        return "/core/message.httl";
-    }
-
-    @Resource
-    private TemplateHelper templateHelper;
-
-    public void setTemplateHelper(TemplateHelper templateHelper) {
-        this.templateHelper = templateHelper;
-    }
-    /*
-    Form getInstall(Map<String, Object> map) {
+    @RequestMapping(value = "/install", method = RequestMethod.PUT)
+    @ResponseBody
+    Form putInstall(){
         Form fm = new Form("install", "系统初始化", "/install");
         if (siteService.get("site.version", String.class) == null) {
             logger.debug("数据库尚未初始化");
@@ -123,19 +101,25 @@ public class SiteController {
         return fm;
     }
 
-    */
-
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    ResponseItem getMain() {
-        //pager(map, 1);
-        //map.put("title", "首页");
-        //map.put("defArticles", cacheService.getArticleCardsByTag(cacheService.getTopTag()));
+    @RequestMapping(value = "/install", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postInstall() throws IOException{
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        if (siteService.get("site.version", String.class) == null) {
+            siteService.set("site.init", new Date());
+            siteService.set("site.author", "zhengjitang@gmail.com");
+            siteService.set("site.version", Constants.VERSION);
+
+            ri.setOk(true);
+        }
+        else {
+            ri.addData("已经初始化");
+        }
         return ri;
     }
 
     @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)
-    String getError(@PathVariable int code, Map<String, Object> map) {
+    String getError(@PathVariable int code, Map<String, Object> map, HttpSession session) {
         ResponseItem item = new ResponseItem(ResponseItem.Type.message);
         switch (code) {
             case 400:
@@ -151,37 +135,33 @@ public class SiteController {
                 item.addData("未知错误[" + code + "]");
                 break;
         }
+        Page page = formHelper.getPage(session);
+        map.put("page", page);
+        map.put("message", item);
         return "/core/message.httl";
     }
 
-    /*
-    ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if (siteService.get("site.version", String.class) == null) {
-
-            siteService.set("site.init", new Date());
-            siteService.set("site.author", "zhengjitang@gmail.com");
-            siteService.set("site.version", Constants.VERSION);
-            ri.setOk(true);
-        }
-        else {
-            ri.addData("已经初始化");
-        }
-    @RequestMapping(value = "/install", method = RequestMethod.POST)
-    @ResponseBody
-    ResponseItem getInstall(HttpServletResponse response) throws IOException{
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if (siteService.get("site.version", String.class) == null) {
-
-            siteService.set("site.init", new Date());
-            siteService.set("site.author", "zhengjitang@gmail.com");
-            siteService.set("site.version", Constants.VERSION);
-            ri.setOk(true);
-        }
-        else {
-            ri.addData("已经初始化");
+    @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
+    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String vCode = cacheService.getGoogleValidCode();
+        logger.debug("##### {} {}", vCode, request.getRequestURI().substring(1));
+        if (request.getRequestURI().substring(1).equals(vCode)) {
+            response.getWriter().println("google-site-verification: " + vCode);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
-    */
+    @Resource
+    private FormHelper formHelper;
+
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
+    }
+    /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
+
+
+
+
 
 
 /*
@@ -265,26 +245,16 @@ public class SiteController {
     */
 
 
-    @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
-    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String vCode = cacheService.getGoogleValidCode();
-        logger.debug("##### {} {}", vCode, request.getRequestURI().substring(1));
-        if (request.getRequestURI().substring(1).equals(vCode)) {
-            response.getWriter().println("google-site-verification: " + vCode);
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
 
-    }
+
+
+    /*
 
     @RequestMapping(value = "/sessionId", method = RequestMethod.POST)
     @ResponseBody
     String getSessionId(HttpSession session) {
         return session.getId();
     }
-
-
-    /*
     private void pager(Map<String, Object> map, int index) {
         fillSiteInfo(map);
         map.put("top_nav_key", "main");
