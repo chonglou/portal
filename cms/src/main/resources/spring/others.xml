@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="jsonJackson" class="com.odong.core.json.impl.JsonJacksonHelperImpl" init-method="init"/>
+    <bean id="jsonHelper" class="com.odong.core.json.impl.JsonJacksonHelperImpl" init-method="init"/>
     <!--<bean id="jsonJackson" class="com.odong.core.json.impl.JsonFastjsonHelperImpl" init-method="init"/>-->
 
     <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheEhcacheHelperImpl" init-method="init"

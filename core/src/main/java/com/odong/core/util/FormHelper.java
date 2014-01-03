@@ -11,12 +11,12 @@ import javax.servlet.http.HttpSession;
  * Created by flamen on 14-1-2下午8:47.
  */
 @Component("core.formHelper")
-public class FormHelper  {
-    public Page getPage(HttpSession session){
+public class FormHelper {
+    public Page getPage(HttpSession session) {
         Page page = cacheService.getPage();
         page.setSessionId(session.getId());
-        SessionItem si = (SessionItem)session.getAttribute(SessionItem.KEY);
-        if(si != null){
+        SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
+        if (si != null) {
             page.setLogin(true);
         }
         return page;

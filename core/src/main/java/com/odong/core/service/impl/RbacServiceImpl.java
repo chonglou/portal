@@ -6,14 +6,11 @@ import com.odong.core.entity.rbac.Role;
 import com.odong.core.service.RbacService;
 import com.odong.core.store.JdbcHelper;
 import com.odong.core.util.TimeHelper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.Date;
 
@@ -31,14 +28,14 @@ public class RbacServiceImpl extends JdbcHelper implements RbacService {
         if (bind) {
             Permission p = getPermission(roleId, operationId, resourceId);
             if (p == null) {
-                execute("INSERT INTO permissions(role_, operation_, resource_, startup_, shutdown_, created_) VALUES(?,?,?,?,?,?)",
+                execute("INSERT INTO Permissions(role_, operation_, resource_, startup_, shutdown_, created_) VALUES(?,?,?,?,?,?)",
                         roleId, operationId, resourceId, startup, shutdown, new Date());
             } else {
-                execute("UPDATE permissions SET startup_=?, shutdown_=?,version=version+1 WHERE id=?",
+                execute("UPDATE Permissions SET startup_=?, shutdown_=?,version=version+1 WHERE id=?",
                         startup, shutdown, p.getId());
             }
         } else {
-            execute("DELETE FROM permissions WHERE role_=? AND operation_=? AND resource_=?",
+            execute("DELETE FROM Permissions WHERE role_=? AND operation_=? AND resource_=?",
                     roleId, operationId, resourceId);
         }
 
@@ -52,48 +49,48 @@ public class RbacServiceImpl extends JdbcHelper implements RbacService {
     }
 
     private Permission getPermission(long role, long operation, long resource) {
-        return select("SELECT * FROM permissions WHERE role_=? AND operation_=? AND resource_=?", new Object[]{role, operation, resource}, mapperPermission());
+        return select("SELECT * FROM Permissions WHERE role_=? AND operation_=? AND resource_=?", new Object[]{role, operation, resource}, mapperPermission());
     }
 
     private long getRole(String name) {
-        Long id = select("SELECT id FROM roles WHERE name_=?", new Object[]{name}, Long.class);
+        Long id = select("SELECT id FROM Roles WHERE name_=?", new Object[]{name}, Long.class);
         if (id == null) {
-            return insert("INSERT INTO roles(name_,created_) VALUES(?,?)", new Object[]{name, new Date()}, "id", Long.class);
+            return insert("INSERT INTO Roles(name_,created_) VALUES(?,?)", new Object[]{name, new Date()}, "id", Long.class);
         }
         return id;
     }
 
     private long getOperation(String name) {
-        Long id = select("SELECT id FROM operations WHERE name_=?", new Object[]{name}, Long.class);
+        Long id = select("SELECT id FROM Operations WHERE name_=?", new Object[]{name}, Long.class);
         if (id == null) {
-            return insert("INSERT INTO operations(name_,created_) VALUES(?,?)", new Object[]{name, new Date()}, "id", Long.class);
+            return insert("INSERT INTO Operations(name_,created_) VALUES(?,?)", new Object[]{name, new Date()}, "id", Long.class);
         }
         return id;
     }
 
     private long getResource(String name) {
-        Long id = select("SELECT id FROM resources WHERE name_=?", new Object[]{name}, Long.class);
+        Long id = select("SELECT id FROM Resources WHERE name_=?", new Object[]{name}, Long.class);
         if (id == null) {
-            return insert("INSERT INTO resources(name_,created_) VALUES(?,?)", new Object[]{name, new Date()}, "id", Long.class);
+            return insert("INSERT INTO Resources(name_,created_) VALUES(?,?)", new Object[]{name, new Date()}, "id", Long.class);
         }
         return id;
     }
 
     @PostConstruct
     void init() {
-        install("roles",
+        install("Roles",
                 longIdColumn(),
                 stringColumn("name_", 255, true, true),
                 dateColumn("created_", true));
-        install("operations",
+        install("Operations",
                 longIdColumn(),
                 stringColumn("name_", 255, true, true),
                 dateColumn("created_", true));
-        install("resources",
+        install("Resources",
                 longIdColumn(),
                 stringColumn("name_", 255, true, true),
                 dateColumn("created_", true));
-        install("permissions",
+        install("Permissions",
                 longIdColumn(),
                 longColumn("role_", true),
                 longColumn("resource_", true),
@@ -152,16 +149,6 @@ public class RbacServiceImpl extends JdbcHelper implements RbacService {
 
     @Resource
     private TimeHelper timeHelper;
-
-    @Value("${jdbc.driver}")
-    public void setDriver(String driver) {
-        jdbcDriver = driver;
-    }
-
-    @Resource
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
     public void setTimeHelper(TimeHelper timeHelper) {
         this.timeHelper = timeHelper;

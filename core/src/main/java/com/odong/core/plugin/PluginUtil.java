@@ -11,20 +11,24 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by flamen on 14-1-2下午5:16.
  */
 @Component("core.plugin.util")
 public class PluginUtil implements ApplicationContextAware {
-    public synchronized void register(String name){
-        if(!status.containsKey(name)){
+    public synchronized void register(String name) {
+        if (!status.containsKey(name)) {
             status.put(name, null);
         }
     }
+
     public Map<String, Boolean> status() {
-        Map<String,Boolean> map = new HashMap<>();
+        Map<String, Boolean> map = new HashMap<>();
         map.putAll(status);
         return map;
     }

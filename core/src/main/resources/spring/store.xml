@@ -21,6 +21,8 @@
             <tx:method name="refresh*" propagation="REQUIRED"/>
             <tx:method name="auth*" propagation="REQUIRED"/>
             <tx:method name="bind*" propagation="REQUIRED"/>
+            <tx:method name="load*" propagation="REQUIRED"/>
+            <tx:method name="clear*" propagation="REQUIRED"/>
 
             <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="count*" propagation="REQUIRED" read-only="true"/>

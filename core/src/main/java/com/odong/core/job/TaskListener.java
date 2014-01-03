@@ -132,7 +132,7 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                 default:
                     if (pluginUtil.isEnable(module)) {
                         logger.debug("任务转送至模块[{}]", module);
-                        context.getBean("plugin."+module, Plugin.class).onMessage(message);
+                        context.getBean("plugin." + module, Plugin.class).onMessage(message);
                     } else {
                         logger.debug("模块[{}]未启用", module);
                     }

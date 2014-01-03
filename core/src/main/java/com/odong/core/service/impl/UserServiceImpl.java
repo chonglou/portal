@@ -7,14 +7,11 @@ import com.odong.core.model.Contact;
 import com.odong.core.service.UserService;
 import com.odong.core.store.JdbcHelper;
 import com.odong.core.util.StringHelper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
@@ -33,8 +30,8 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
     }
 
     @Override
-    public void addQqUser(String openId, String accessToken, String username) {
-        addUser(openId, stringHelper.random(8) + "@localhost", username, stringHelper.random(12), accessToken);
+    public long addQqUser(String openId, String accessToken, String username) {
+        return addUser(openId, stringHelper.random(8) + "@localhost", username, stringHelper.random(12), accessToken);
     }
 
     @Override
@@ -43,13 +40,13 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
     }
 
     @Override
-    public void setUserLogin(long user) {
-        execute("UPDATE users SET lastLogin_=?,version=version+1 WHERE id=?", new Date(), user);
+    public void setUserLastLogin(long user) {
+        execute("UPDATE Users SET lastLogin_=?,version=version+1 WHERE id=?", new Date(), user);
     }
 
     @Override
     public void setUserEmail(long user, String email) {
-        execute("UPDATE users SET email_=?,version=version+1 WHERE id=?", email, user);
+        execute("UPDATE Users SET email_=?,version=version+1 WHERE id=?", email, user);
     }
 
     @Override
@@ -65,33 +62,33 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
 
     @Override
     public void setUserContact(long user, Contact contact) {
-        execute("UPDATE users SET contact_=?,version=version+1 WHERE id=?", jsonHelper.object2json(contact), user);
+        execute("UPDATE Users SET contact_=?,version=version+1 WHERE id=?", jsonHelper.object2json(contact), user);
     }
 
     @Override
     public void setUserName(long user, String username) {
-        execute("UPDATE users SET username_=?,version=version+1 WHERE id=?", username, user);
+        execute("UPDATE Users SET username_=?,version=version+1 WHERE id=?", username, user);
     }
 
     @Override
     public void setUserPassword(long user, String password) {
-        execute("UPDATE users SET password_=?,version=version+1 WHERE id=?", encryptHelper.encrypt(password), user);
+        execute("UPDATE Users SET password_=?,version=version+1 WHERE id=?", encryptHelper.encrypt(password), user);
     }
 
     @Override
     public void setUserState(long user, User.State state) {
-        execute("UPDATE users SET state_=?,version=version+1 WHERE id=?", state.name(), user);
+        execute("UPDATE Users SET state_=?,version=version+1 WHERE id=?", state.name(), user);
     }
 
     @Override
     public boolean auth(String email, String password) {
-        String pwd = select("SELECT password_ FROM users WHERE email_=?", new Object[]{email}, String.class);
+        String pwd = select("SELECT password_ FROM Users WHERE email_=?", new Object[]{email}, String.class);
         return pwd != null && encryptHelper.check(password, pwd);
     }
 
     @PostConstruct
     void init() {
-        install("users",
+        install("Users",
                 longIdColumn(),
                 stringColumn("openId_", 255, true, true),
                 stringColumn("email_", 255, true, true),
@@ -126,13 +123,14 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
         };
     }
 
-    private void addUser(String openId, String email, String username, String password, String token) {
-        execute("INSERT INTO users(openId_, email_, username_, password_, extra_, type_, state_, created_) VALUES(?,?,?,?,?,?)",
-                openId, email, username, encryptHelper.encrypt(password), token, User.Type.EMAIL.name(), User.State.SUBMIT.name(), new Date());
+    private long addUser(String openId, String email, String username, String password, String token) {
+        return insert("INSERT INTO Users(openId_, email_, username_, password_, extra_, type_, state_, created_) VALUES(?,?,?,?,?,?)",
+                new Object[]{openId, email, username, encryptHelper.encrypt(password), token, User.Type.EMAIL.name(), User.State.SUBMIT.name(), new Date()},
+                "id", Long.class);
 
     }
 
-    private final String SELECT = "SELECT id,openId_,email_,username_,logo_,created_,type_,lastLogin_,state_ FROM users";
+    private final String SELECT = "SELECT id,openId_,email_,username_,logo_,created_,type_,lastLogin_,state_ FROM Users";
 
     @Resource
     private EncryptHelper encryptHelper;
@@ -153,14 +151,5 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
         this.jsonHelper = jsonHelper;
     }
 
-    @Resource
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Value("${jdbc.driver}")
-    public void setDriver(String driver) {
-        jdbcDriver = driver;
-    }
 
 }

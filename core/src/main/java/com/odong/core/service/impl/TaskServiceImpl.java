@@ -23,7 +23,7 @@ import java.util.List;
 public class TaskServiceImpl extends JdbcHelper implements TaskService {
     @Override
     public void setTaskRequest(long task, String request) {
-        execute("UPDATE tasks SET request=?,version=version+1 WHERE id=?", task);
+        execute("UPDATE Tasks SET request=?,version=version+1 WHERE id=?", request,task);
     }
 
     @Override
@@ -43,12 +43,12 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
 
     @Override
     public String getTaskRequest(long task) {
-        return select("SELECT request_ FROM tasks WHERE id=?", new Object[]{task}, String.class);
+        return select("SELECT request_ FROM Tasks WHERE id=?", new Object[]{task}, String.class);
     }
 
     @Override
     public List<Task> listRunnableTask() {
-        return list("SELECT * FROM tasks WHERE nextRun_<=?", new Object[]{new Date()}, mapperTask());
+        return list("SELECT * FROM Tasks WHERE nextRun_<=?", new Object[]{new Date()}, mapperTask());
     }
 
     @Override
@@ -59,18 +59,18 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
         if (nextRun.compareTo(t.getEnd()) >= 0 || (t.getTotal() != 0 && t.getIndex() + 1 >= t.getTotal())) {
             nextRun = timeHelper.max();
         }
-        execute("UPDATE tasks SET index_=index_+1,nextRun_=? WHERE id=?", nextRun, task);
+        execute("UPDATE Tasks SET index_=index_+1,nextRun_=? WHERE id=?", nextRun, task);
     }
 
     @Override
     public Task getTask(long task) {
-        return select("SELECT * FROM tasks WHERE id=?", new Object[]{task}, mapperTask());
+        return select("SELECT * FROM Tasks WHERE id=?", new Object[]{task}, mapperTask());
     }
 
 
     @PostConstruct
     void init() {
-        install("tasks",
+        install("Tasks",
                 longIdColumn(),
                 charsColumn("module_", 12, false),
                 enumColumn("type_"),
@@ -88,7 +88,7 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
     }
 
     private void addTask(String module, String type, String request, Date begin, Date end, Date nextRun, int space, long total) {
-        execute("INSERT INTO tasks(module_,type_,request_,begin_,end_,nextRun_,space_,total_,created_) VALUES(?,?,?,?,?,?,?,?,?)",
+        execute("INSERT INTO Tasks(module_,type_,request_,begin_,end_,nextRun_,space_,total_,created_) VALUES(?,?,?,?,?,?,?,?,?)",
                 module, type, request, begin, end, nextRun, space, total, new Date());
     }
 
@@ -118,13 +118,4 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
         this.timeHelper = timeHelper;
     }
 
-    @Resource
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Value("${jdbc.driver}")
-    public void setDriver(String driver) {
-        jdbcDriver = driver;
-    }
 }

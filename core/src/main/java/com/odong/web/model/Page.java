@@ -39,6 +39,15 @@ public class Page implements Serializable {
     private boolean login;
     private String sessionId;
     private String captcha;
+    private String reCaptchaKey;
+
+    public String getReCaptchaKey() {
+        return reCaptchaKey;
+    }
+
+    public void setReCaptchaKey(String reCaptchaKey) {
+        this.reCaptchaKey = reCaptchaKey;
+    }
 
     public String getSessionId() {
         return sessionId;

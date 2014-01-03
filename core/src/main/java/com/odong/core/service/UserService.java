@@ -11,11 +11,11 @@ import java.util.List;
 public interface UserService {
     void addGoogleUser(String openId, String token);
 
-    void addQqUser(String openId, String accessToken, String username);
+    long addQqUser(String openId, String accessToken, String username);
 
     List<User> listUser();
 
-    void setUserLogin(long user);
+    void setUserLastLogin(long user);
 
     void setUserEmail(long user, String email);
 

@@ -7,8 +7,8 @@ import java.util.Date;
  * Created by flamen on 14-1-2下午8:42.
  */
 public class SessionItem implements Serializable {
-    public SessionItem(long ssId, String ssUsername, String ssLogo, String ssEmail) {
-        this.ssId = ssId;
+    public SessionItem(long ssUserId, String ssUsername, String ssLogo, String ssEmail) {
+        this.ssUserId = ssUserId;
         this.ssUsername = ssUsername;
         this.ssLogo = ssLogo;
         this.ssEmail = ssEmail;
@@ -21,7 +21,7 @@ public class SessionItem implements Serializable {
 
     private static final long serialVersionUID = 5020654086102364246L;
     public final static String KEY="j8l0i4h7w3";
-    private long ssId;
+    private long ssUserId;
     private String ssUsername;
     private String ssLogo;
     private String ssEmail;
@@ -37,12 +37,12 @@ public class SessionItem implements Serializable {
         this.ssType = ssType;
     }
 
-    public long getSsId() {
-        return ssId;
+    public long getSsUserId() {
+        return ssUserId;
     }
 
-    public void setSsId(long ssId) {
-        this.ssId = ssId;
+    public void setSsUserId(long ssUserId) {
+        this.ssUserId = ssUserId;
     }
 
     public String getSsUsername() {
