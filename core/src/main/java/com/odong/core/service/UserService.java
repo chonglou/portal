@@ -9,7 +9,9 @@ import java.util.List;
  * Created by flamen on 13-12-30下午3:50.
  */
 public interface UserService {
-    void addGoogleUser(String openId, String token);
+    User getUser(String openId, User.Type type);
+    long addGoogleUser(String openId, String token);
+    long addEmailUser(String email, String username, String password);
 
     long addQqUser(String openId, String accessToken, String username);
 
@@ -21,7 +23,6 @@ public interface UserService {
 
     User getUser(long id);
 
-    void addUser(String email, String username, String password);
 
     void setUserContact(long user, Contact contact);
 
@@ -30,6 +31,8 @@ public interface UserService {
     void setUserPassword(long user, String password);
 
     void setUserState(long user, User.State state);
+
+    void setUserExtra(long user, String extra);
 
     boolean auth(String email, String password);
 }

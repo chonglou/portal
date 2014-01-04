@@ -26,8 +26,7 @@ import java.util.Map;
  */
 @Controller("c.cms.tag")
 @RequestMapping(value = "/tag")
-@SessionAttributes(SessionItem.KEY)
-public class TagController extends PageController {
+public class TagController  {
     @RequestMapping(value = "/{tagId}", method = RequestMethod.GET)
     String getTag(Map<String, Object> map, @PathVariable long tagId, HttpServletResponse response) throws IOException {
 

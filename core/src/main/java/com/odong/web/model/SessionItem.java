@@ -1,5 +1,7 @@
 package com.odong.web.model;
 
+import com.odong.core.entity.User;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,20 +22,19 @@ public class SessionItem implements Serializable {
     }
 
     private static final long serialVersionUID = 5020654086102364246L;
-    public final static String KEY="j8l0i4h7w3";
     private long ssUserId;
     private String ssUsername;
     private String ssLogo;
     private String ssEmail;
-    private String ssType;
+    private User.Type ssType;
     private boolean ssAdmin;
     private Date ssCreated;
 
-    public String getSsType() {
+    public User.Type getSsType() {
         return ssType;
     }
 
-    public void setSsType(String ssType) {
+    public void setSsType(User.Type ssType) {
         this.ssType = ssType;
     }
 

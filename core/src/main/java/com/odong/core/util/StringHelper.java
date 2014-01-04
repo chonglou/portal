@@ -2,6 +2,7 @@ package com.odong.core.util;
 
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +57,7 @@ public class StringHelper {
         return sb.toString();
     }
 
+    @PostConstruct
     public void init() {
         random = new Random();
     }

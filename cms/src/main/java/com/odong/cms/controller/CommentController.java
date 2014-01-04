@@ -1,15 +1,5 @@
 package com.odong.cms.controller;
 
-import com.odong.portal.controller.PageController;
-import com.odong.portal.entity.Log;
-import com.odong.portal.entity.cms.Article;
-import com.odong.portal.entity.cms.Comment;
-import com.odong.portal.form.cms.CommentForm;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.HiddenField;
-import com.odong.portal.web.form.TextAreaField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +17,6 @@ import java.io.IOException;
  */
 @Controller("c.cms.comment")
 @RequestMapping(value = "/comment")
-@SessionAttributes(SessionItem.KEY)
 public class CommentController extends PageController {
 
 

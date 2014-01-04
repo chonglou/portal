@@ -1,8 +1,8 @@
 package com.odong.cms.controller;
 
-import com.odong.portal.entity.cms.Statics;
-import com.odong.portal.service.ContentService;
-import com.odong.portal.util.CacheService;
+import com.odong.cms.entity.Statics;
+import com.odong.cms.service.ContentService;
+import com.odong.cms.util.CacheService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +18,8 @@ import java.util.Map;
  * Created by flamen on 13-12-9.
  */
 @Controller("c.cms.statics")
+@RequestMapping(value = "/cms")
 public class StaticsController {
-
     @RequestMapping(value = "/player/{id}", method = RequestMethod.GET)
     String getPlayer(Map<String, Object> map, @PathVariable int id) {
         Statics s = contentService.getStatics(id);
@@ -29,15 +29,11 @@ public class StaticsController {
         return "player";
     }
 
-    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    @RequestMapping(value = "/apk", method = RequestMethod.GET)
     @ResponseBody
     Map<String, Object> getStatus() {
-        HashMap info = cacheService.getSiteInfo();
         Map<String, Object> map = new HashMap<>();
-        map.put("title", info.get("title"));
-        map.put("description", info.get("description"));
-        map.put("aboutMe", cacheService.getAboutMe());
-        map.put("version", info.get("apkVersion"));
+        map.put("version", cacheService.getApkVersion());
         return map;
     }
 

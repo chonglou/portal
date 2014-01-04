@@ -6,6 +6,17 @@ import java.io.Serializable;
  * Created by flamen on 13-12-30下午9:45.
  */
 public class SmtpProfile implements Serializable {
+    public SmtpProfile(String host, int port, String username, String password) {
+        this.host = host;
+        this.username = username;
+        this.password = password;
+        this.port = port;
+    }
+
+    @Deprecated
+    public SmtpProfile(){
+
+    }
     private static final long serialVersionUID = 759955314067258522L;
     private String host;
     private String username;

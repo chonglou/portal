@@ -1,8 +1,8 @@
 package com.odong.cms.service;
 
 import com.odong.cms.entity.Article;
-import com.odong.cms.entity.ArticleTag;
 import com.odong.cms.entity.Comment;
+import com.odong.cms.entity.Statics;
 import com.odong.cms.entity.Tag;
 
 import java.util.Date;
@@ -12,7 +12,9 @@ import java.util.List;
  * Created by flamen on 13-12-31下午6:08.
  */
 public interface ContentService {
+    Statics getStatics(long id);
 
+    List<Statics> listStatics(Statics.Type type);
 
     int countTag();
 

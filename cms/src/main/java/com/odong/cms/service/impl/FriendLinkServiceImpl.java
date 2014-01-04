@@ -3,14 +3,10 @@ package com.odong.cms.service.impl;
 import com.odong.cms.entity.FriendLink;
 import com.odong.cms.service.FriendLinkService;
 import com.odong.core.store.JdbcHelper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
@@ -23,29 +19,29 @@ public class FriendLinkServiceImpl extends JdbcHelper implements FriendLinkServi
 
     @Override
     public void addFriendLink(String name, String url, String logo) {
-        execute("INSERT INTO friendLinks(name_, url_, logo_, created_) VALUES(?,?,?,?)",
+        execute("INSERT INTO FriendLinks(name_, url_, logo_, created_) VALUES(?,?,?,?)",
                 name, url, logo, new Date());
     }
 
     @Override
     public void setFriendLink(long id, String name, String url, String logo) {
-        execute("UPDATE friendLinks set name_=?, url_=?, logo_=? WHERE id=?",
+        execute("UPDATE FriendLinks set name_=?, url_=?, logo_=? WHERE id=?",
                 name, url, logo, id);
     }
 
     @Override
     public List<FriendLink> listFriendLink() {
-        return list("SELECT * FROM friendLinks", mapper());
+        return list("SELECT * FROM FriendLinks", mapper());
     }
 
     @Override
     public FriendLink getFriendLink(long id) {
-        return select("SELECT * FROM friendLinks WHERE id=?", new Object[]{id}, mapper());
+        return select("SELECT * FROM FriendLinks WHERE id=?", new Object[]{id}, mapper());
     }
 
     @PostConstruct
     void init() {
-        install("friendLinks",
+        install("FriendLinks",
                 longIdColumn(),
                 stringColumn("name_", 255, true, false),
                 stringColumn("url_", 255, true, false),
@@ -66,14 +62,5 @@ public class FriendLinkServiceImpl extends JdbcHelper implements FriendLinkServi
         };
     }
 
-    @Value("${jdbc.driver}")
-    public void setDriver(String driver) {
-        jdbcDriver = driver;
-    }
-
-    @Resource
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
 }

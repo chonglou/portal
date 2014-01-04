@@ -10,15 +10,36 @@ public class InstallForm implements Serializable {
     private String domain;
     private String keywords;
     private String description;
+
     private String email;
+    private String username;
     private String password;
+
     private String smtpHost;
     private int smtpPort;
     private String smtpUsername;
     private String smtpPassword;
     private boolean smtpSsl;
     private String smtpBcc;
+    private String smtpFrom;
+
     private boolean agree;
+
+    public String getSmtpFrom() {
+        return smtpFrom;
+    }
+
+    public void setSmtpFrom(String smtpFrom) {
+        this.smtpFrom = smtpFrom;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getDomain() {
         return domain;

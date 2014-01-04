@@ -24,14 +24,19 @@ import java.util.UUID;
 public class UserServiceImpl extends JdbcHelper implements UserService {
 
     @Override
-    public void addGoogleUser(String openId, String token) {
+    public User getUser(String openId, User.Type type) {
+        return select(SELECT +"WHERE openId_=? AND type_=?", new Object[]{openId, type.name()}, mapperUser());
+    }
+
+    @Override
+    public long addGoogleUser(String openId, String token) {
         String username = stringHelper.random(8);
-        addUser(openId, username + "@localhost", username, stringHelper.random(12), null);
+        return addUser(openId, User.Type.GOOGLE, username + "@localhost", username, stringHelper.random(12), token);
     }
 
     @Override
     public long addQqUser(String openId, String accessToken, String username) {
-        return addUser(openId, stringHelper.random(8) + "@localhost", username, stringHelper.random(12), accessToken);
+        return addUser(openId, User.Type.QQ, stringHelper.random(8) + "@localhost", username, stringHelper.random(12), accessToken);
     }
 
     @Override
@@ -51,12 +56,12 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
 
     @Override
     public User getUser(long id) {
-        return select(SELECT + " WHERE id=?", new Object[]{id}, mapperUser());
+        return select(SELECT + "WHERE id=?", new Object[]{id}, mapperUser());
     }
 
     @Override
-    public void addUser(String email, String username, String password) {
-        addUser(UUID.randomUUID().toString(), email, username, password, null);
+    public long addEmailUser(String email, String username, String password) {
+        return addUser(email, User.Type.EMAIL, email, username, password, null);
     }
 
 
@@ -81,8 +86,13 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
     }
 
     @Override
+    public void setUserExtra(long user, String extra) {
+        execute("UPDATE Users SET extra_=?,version=version+1 WHERE id=?", extra, user);
+    }
+
+    @Override
     public boolean auth(String email, String password) {
-        String pwd = select("SELECT password_ FROM Users WHERE email_=?", new Object[]{email}, String.class);
+        String pwd = select("SELECT password_ FROM Users WHERE email_=? AND type_=?", new Object[]{email, User.Type.EMAIL.name()}, String.class);
         return pwd != null && encryptHelper.check(password, pwd);
     }
 
@@ -119,18 +129,19 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
             u.setLastLogin(rs.getTimestamp("lastLogin_"));
             u.setVisits(rs.getLong("visits_"));
             u.setState(User.State.valueOf(rs.getString("state_")));
+            u.setExtra(rs.getString("extra_"));
             return u;
         };
     }
 
-    private long addUser(String openId, String email, String username, String password, String token) {
-        return insert("INSERT INTO Users(openId_, email_, username_, password_, extra_, type_, state_, created_) VALUES(?,?,?,?,?,?)",
-                new Object[]{openId, email, username, encryptHelper.encrypt(password), token, User.Type.EMAIL.name(), User.State.SUBMIT.name(), new Date()},
+    private long addUser(String openId, User.Type type, String email, String username, String password, String token) {
+        return insert("INSERT INTO Users(openId_, type_, email_, username_, password_, extra_, type_, state_, created_) VALUES(?,?,?,?,?,?)",
+                new Object[]{openId, type.name(), email, username, encryptHelper.encrypt(password), token, User.Type.EMAIL.name(), User.State.SUBMIT.name(), new Date()},
                 "id", Long.class);
 
     }
 
-    private final String SELECT = "SELECT id,openId_,email_,username_,logo_,created_,type_,lastLogin_,state_ FROM Users";
+    private final String SELECT = "SELECT id,openId_,email_,username_,logo_,created_,type_,lastLogin_,state_ FROM Users ";
 
     @Resource
     private EncryptHelper encryptHelper;

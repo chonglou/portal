@@ -1,22 +1,14 @@
 package com.odong.platform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.odong.core.entity.Log;
 import com.odong.core.entity.User;
 import com.odong.core.model.GoogleAuthProfile;
 import com.odong.core.model.QqAuthProfile;
-import com.odong.core.service.LogService;
 import com.odong.core.service.UserService;
+import com.odong.core.util.FormHelper;
+import com.odong.core.util.HttpClient;
 import com.odong.platform.util.CacheService;
 import com.odong.web.model.ResponseItem;
-import com.odong.web.model.SessionItem;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -27,9 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -51,29 +41,36 @@ public class OauthController {
             @RequestParam("code") String code,
             HttpSession session) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        if (formHelper.isLogin(session)) {
+            ri.addData("已经登录");
+            ri.setOk(true);
+            return ri;
+        }
         GoogleAuthProfile gap = cacheService.getGoogleAuthProfile();
         if (gap != null && gap.isEnable()) {
             logger.debug("Google 登录\ninfo={}\ntoken={}\ncode={}", info, token, code);
 
-            String check = call(new HttpGet("https://www.googleapis.com/oauth2/v1/tokeninfo?id_token=" + info));
+            String check = httpClient.get("https://www.googleapis.com/oauth2/v1/tokeninfo?id_token=" + info);
             ObjectMapper mapper = new ObjectMapper();
 
             try {
                 Map<String, String> map = mapper.readValue(check, Map.class);
                 if (map != null && map.get("error") == null) {
                     String id = map.get("user_id");
-                    OpenId oi = cacheService.getOpenId(id, OpenId.Type.GOOGLE);
+
+                    User user = userService.getUser(id, User.Type.GOOGLE);
                     long uid;
-                    if (oi == null) {
-                        uid = accountService.addGoogleUser(id, token);
+                    if (user == null) {
+                        uid = userService.addGoogleUser(id, token);
+                        user = userService.getUser(uid);
                     } else {
-                        uid = oi.getUser();
-                        if (!token.equals(oi.getToken())) {
-                            accountService.setOpenIdToken(oi.getId(), token);
+                        uid = user.getId();
+                        if (!token.equals(user.getExtra())) {
+                            userService.setUserExtra(uid, token);
                             logger.debug("更新google用户{}的token", id);
                         }
                     }
-                    login(uid, null, "google", session);
+                    formHelper.login(session, User.Type.GOOGLE, uid, user.getUsername(), user.getLogo(), user.getEmail());
                     ri.setOk(true);
                     return ri;
 
@@ -89,6 +86,7 @@ public class OauthController {
         } else {
             ri.addData("未启用google登录验证");
         }
+
         return ri;
     }
 
@@ -106,7 +104,7 @@ public class OauthController {
                         HttpSession session) {
 
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if (session.getAttribute(SessionItem.KEY) != null) {
+        if (formHelper.isLogin(session)) {
             ri.addData("已经登录");
             ri.setOk(true);
             return ri;
@@ -118,72 +116,34 @@ public class OauthController {
         }
 
         logger.debug("QQ登录 openid={} token={} name={}", id, token, name);
-        OpenId oi = cacheService.getOpenId(id, OpenId.Type.QQ);
 
+        User user = userService.getUser(id, User.Type.QQ);
         long uid;
-        if (oi == null) {
+        if (user == null) {
             uid = userService.addQqUser(id, token, name);
         } else {
-            uid = oi.getUser();
-            User user = cacheService.getUser(uid);
+            uid = user.getId();
+
             if (!name.equals(user.getUsername())) {
-                accountService.setUserName(uid, name);
-                cacheService.popUser(uid);
+                userService.setUserName(uid, name);
                 logger.info("更新用户{}的昵称", id);
             }
-            if (!token.equals(oi.getToken())) {
-                accountService.setOpenIdToken(oi.getId(), token);
-                cacheService.popOpenId(id, OpenId.Type.QQ);
+            if (!token.equals(user.getExtra())) {
+                userService.setUserExtra(uid, token);
                 logger.info("更新Q用户{}的token", id);
             }
         }
 
-        login(uid, logo, "qq", session);
+        formHelper.login(session, User.Type.QQ, uid, name, logo, user == null ? null : user.getEmail());
         ri.setOk(true);
         return ri;
     }
 
-    void login(long uid, String logo, String type, HttpSession session) {
-        User user = userService.getUser(uid);
-        SessionItem si = new SessionItem(user.getId(), user.getEmail(), user.getUsername(), logo);
-        si.setSsType(type);
-        session.setAttribute(SessionItem.KEY, si);
-        userService.setUserLastLogin(user.getId());
-        logService.add(user.getId(), "用户登陆", Log.Type.INFO);
-    }
-
-
-    private String call(HttpUriRequest request) {
-
-
-        try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse response = client.execute(request)) {
-            //logger.debug("请求{} 返回状态{}", url, response.getStatusLine());
-            HttpEntity entity = response.getEntity();
-            BufferedReader in = new BufferedReader(new InputStreamReader(entity.getContent()));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                sb.append(line);
-            }
-            EntityUtils.consume(entity);
-
-            String callback = sb.toString();
-            logger.debug("返回内容{}", callback);
-            return callback;
-
-        } catch (IOException e) {
-            logger.error("HTTP Client出错", e);
-        }
-
-        return null;
-    }
 
     private boolean checkQqOpenId(String token, String openId) {
         QqAuthProfile qap = cacheService.getQqAuthProfile();
         if (qap != null && qap.isEnable()) {
-            String url = String.format("https://graph.qq.com/oauth2.0/me?access_token=%s", token);
-            String callback = call(new HttpGet(url));
+            String callback = httpClient.get("https://graph.qq.com/oauth2.0/me?access_token=" + token);
             return callback != null && callback.contains(openId) && callback.contains(qap.getId());
         } else {
             logger.error("未启用qq互联");
@@ -196,16 +156,22 @@ public class OauthController {
     @Resource
     private CacheService cacheService;
     @Resource
-    private LogService logService;
-    @Resource
     private UserService userService;
+    @Resource
+    private FormHelper formHelper;
+    @Resource
+    private HttpClient httpClient;
+
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
+    }
 
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
-    public void setLogService(LogService logService) {
-        this.logService = logService;
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     public void setCacheService(CacheService cacheService) {

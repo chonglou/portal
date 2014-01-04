@@ -1,10 +1,13 @@
 package com.odong.platform.controller;
 
 import com.odong.core.Constants;
+import com.odong.core.entity.User;
+import com.odong.core.model.SmtpProfile;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;
 import com.odong.core.util.FormHelper;
+import com.odong.platform.form.InstallForm;
 import com.odong.platform.util.CacheService;
 import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
@@ -13,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,9 +26,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -69,16 +75,17 @@ public class SiteController {
             fm.addField(description);
 
             fm.addField(new SplitterField("管理员信息"));
-            fm.addField(new TextField<String>("email", "管理员邮箱"));
+            fm.addField(new TextField<String>("username", "用户名"));
+            fm.addField(new TextField<String>("email", "邮箱"));
             fm.addField(new TextField<String>("password", "登录密码"));
 
             fm.addField(new SplitterField("邮件系统"));
-            fm.addField(new TextField<>("smtpHost", "主机"));
-            fm.addField(new TextField<>("smtpPort", "端口"));
-            fm.addField(new TextField<>("smtpUsername", "用户名"));
-            fm.addField(new TextField<>("smtpPassword", "密码"));
+            fm.addField(new TextField<String>("smtpHost", "主机"));
+            fm.addField(new TextField<String>("smtpPort", "端口"));
+            fm.addField(new TextField<String>("smtpUsername", "用户名"));
+            fm.addField(new TextField<String>("smtpPassword", "密码"));
+            fm.addField(new TextField<String>("smtpFrom","发送者"));
             RadioField<Boolean> ssl = new RadioField<>("smtpSsl", "启用SSL", false);
-
             ssl.addOption("是", true);
             ssl.addOption("否", false);
             fm.addField(ssl);
@@ -98,18 +105,43 @@ public class SiteController {
 
     @RequestMapping(value = "/install", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postInstall() throws IOException{
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if (siteService.get("site.version", String.class) == null) {
-            siteService.set("site.init", new Date());
-            siteService.set("site.author", "zhengjitang@gmail.com");
-            siteService.set("site.version", Constants.VERSION);
-
-            ri.setOk(true);
+    ResponseItem postInstall(@Valid InstallForm form, BindingResult result, HttpServletRequest request) throws IOException{
+        ResponseItem ri = formHelper.check(result, request, true);
+        if(!ri.isOk()){
+            return ri;
         }
-        else {
+        if (siteService.get("site.version", String.class) != null) {
+            ri.setOk(false);
             ri.addData("已经初始化");
+            return ri;
         }
+        logger.info("设置站点信息");
+        siteService.set("site.init", new Date());
+        siteService.set("site.author", "zhengjitang@gmail.com");
+        siteService.set("site.domain", form.getDomain());
+        siteService.set("site.keywords", form.getKeywords());
+        siteService.set("site.description", form.getDescription());
+        siteService.set("search.space", 30);
+
+        logger.info("设置管理员信息");
+        long uid = userService.addEmailUser(form.getEmail(), form.getUsername(), form.getPassword());
+        userService.setUserState(uid, User.State.ENABLE);
+
+        logger.info("设置SMTP信息");
+        SmtpProfile sp = new SmtpProfile(form.getSmtpHost(), form.getSmtpPort(), form.getUsername(), form.getPassword());
+        sp.setSsl(form.isSmtpSsl());
+        sp.setBcc(form.getSmtpBcc());
+        sp.setFrom(form.getSmtpFrom());
+        siteService.set("site.smtp", sp, true);
+
+        logger.info("设置定时任务");
+        taskService.addTask(null, "gc", null, 2);
+        taskService.addTask(null, "rss", null, 3);
+        taskService.addTask(null, "sitemap", null, 3);
+        taskService.addTask(null, "db_backup", null, 3);
+        logger.info("安装完毕");
+        siteService.set("site.version", Constants.VERSION);
+        ri.setOk(true);
         return ri;
     }
 
@@ -146,20 +178,7 @@ public class SiteController {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
-    @Resource
-    private FormHelper formHelper;
 
-    public void setFormHelper(FormHelper formHelper) {
-        this.formHelper = formHelper;
-    }
-    /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
-
-
-
-
-
-
-/*
     @RequestMapping(value = "/page/{pgId}", method = RequestMethod.GET)
     String getPage(Map<String, Object> map, @PathVariable int pgId) {
         pager(map, pgId);
@@ -169,31 +188,28 @@ public class SiteController {
 
 
     @RequestMapping(value = "sitemap", method = RequestMethod.GET)
-    String getSitemap(Map<String, Object> map) {
-        map.put("userList", cacheService.getUserCards());
-        map.put("tagList", cacheService.getTagPages());
-        map.put("navBars", getNavBars());
-        fillSiteInfo(map);
-        map.put("title", "网站地图");
-        map.put("top_nav_key", "sitemap");
+    String getSitemap(Map<String, Object> map, HttpSession session) {
+        Page page = formHelper.getPage(session);
+        page.setTitle("网站地图");
+        page.setIndex("/sitemap");
+        map.put("page", page);
+        //FIXME 通过cache系统获得页面信息
         return "sitemap";
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     String postSearch(Map<String, Object> map, HttpServletRequest request, HttpSession session) {
+        Page page = formHelper.getPage(session);
+        String key = request.getParameter("keyword");
+        page.setTitle("搜索-[" + key + "]的结果");
+        map.put("page", page);
+        //FIXME 使用google搜索
+        return "search";
+        /*
         Date last = (Date) session.getAttribute("lastSearch");
         session.setAttribute("lastSearch", new Date());
+        if (last == null || last.getTime() + 1000 * siteService.get("search.space", Integer.class) < new Date().getTime()) {
 
-        map.put("navBars", getNavBars());
-        fillSiteInfo(map);
-        String key = request.getParameter("keyword");
-        map.put("key", key);
-        map.put("title", "搜索-[" + key + "]");
-
-        if (last == null || last.getTime() + 1000 * searchSpace < new Date().getTime()) {
-            //FIXME like查找性能
-            map.put("articleList", cacheService.getArticleCardsBySearch(key));
-            map.put("google", cacheService.getGoogleSearch());
             return "search";
         } else {
             ResponseItem item = new ResponseItem(ResponseItem.Type.message);
@@ -201,56 +217,24 @@ public class SiteController {
             map.put("item", item);
             return "message";
         }
+        */
     }
 
     @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
-    String getAboutMe(Map<String, Object> map) {
+    String getAboutMe(Map<String, Object> map, HttpSession session) {
 
-        map.put("navBars", getNavBars());
-        fillSiteInfo(map);
-
-        map.put("title", "关于我们");
-        map.put("top_nav_key", "aboutMe");
-
-
+        Page page = formHelper.getPage(session);
+        page.setTitle("关于我们");
+        page.setIndex("/aboutMe");
+        map.put("page", page);
         map.put("logList", cacheService.getLogList());
         map.put("aboutMe", cacheService.getAboutMe());
         return "aboutMe";
     }
 
-
-
-    */
-    /*
-    @ResponseBody
-    Map<String, Object> getError(@PathVariable int code) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("code", code);
-        switch (code) {
-            case 404:
-                map.put("message", "找不到文件");
-                break;
-            case 500:
-                map.put("message", "服务器内部错误");
-                break;
-        }
-        map.put("created", new Date());
-        return map;
-    }
-    */
-
-
-
-
-
-    /*
-
-    @RequestMapping(value = "/sessionId", method = RequestMethod.POST)
-    @ResponseBody
-    String getSessionId(HttpSession session) {
-        return session.getId();
-    }
     private void pager(Map<String, Object> map, int index) {
+        //FIXME 从cache中读取数据
+        /*
         fillSiteInfo(map);
         map.put("top_nav_key", "main");
         map.put("navBars", getNavBars());
@@ -265,22 +249,29 @@ public class SiteController {
         map.put("pager", pager);
 
         map.put("articleList", cacheService.getArticleCardsByPager(index, pager.getSize()));
+        */
     }
-    */
+
 
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
+
     @Resource
     private CacheService cacheService;
-
     @Resource
     private SiteService siteService;
     @Resource
+    private UserService userService;
+    @Resource
     private TaskService taskService;
     @Resource
-    private UserService userService;
+    private FormHelper formHelper;
     @Value("${app.agreement}")
     private String agreement;
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     public void setAgreement(String agreement) {
         this.agreement = agreement;
@@ -290,9 +281,6 @@ public class SiteController {
         this.siteService = siteService;
     }
 
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
-    }
 
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -300,5 +288,8 @@ public class SiteController {
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
+    }
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
     }
 }

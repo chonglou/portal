@@ -4,14 +4,10 @@ import com.odong.cms.entity.Wiki;
 import com.odong.cms.service.WikiService;
 import com.odong.core.store.JdbcHelper;
 import com.odong.web.model.Link;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
@@ -24,31 +20,31 @@ public class WikiServiceImpl extends JdbcHelper implements WikiService {
 
     @Override
     public Wiki getWiki(String name) {
-        List<Wiki> list = list("SELECT * FROM wikis WHERE name_=? ORDER BY id DESC", new Object[]{name}, mapperWiki());
+        List<Wiki> list = list("SELECT * FROM Wikis WHERE name_=? ORDER BY id DESC", new Object[]{name}, mapperWiki());
         return list.size() > 0 ? list.get(0) : null;
     }
 
     @Override
     public List<Link> listWiki() {
-        return list("SELECT DISTINCT name_, title_ FROM wikis",
+        return list("SELECT DISTINCT name_, title_ FROM Wikis",
                 (ResultSet rs, int i) -> new Link(rs.getString("title_"), rs.getString("name_"))
         );
     }
 
     @Override
     public void setWiki(long user, String name, String title, String body, int version) {
-        Long id = select("SELECT id FROM wikis WHERE user_=? AND name_=? AND version=?", new Object[]{user, name, version}, Long.class);
+        Long id = select("SELECT id FROM Wikis WHERE user_=? AND name_=? AND version=?", new Object[]{user, name, version}, Long.class);
         if (id == null) {
-            execute("INSERT INTO wikis(user_, name_, title_, body_, created_, version) VALUES(?,?,?,?,?,?)",
+            execute("INSERT INTO Wikis(user_, name_, title_, body_, created_, version) VALUES(?,?,?,?,?,?)",
                     user, name, title, body, new Date(), version);
         } else {
-            execute("UPDATE wikis SET title_=?, body=? WHERE id=?", title, body, id);
+            execute("UPDATE Wikis SET title_=?, body_=? WHERE id=?", title, body, id);
         }
     }
 
     @PostConstruct
     void init() {
-        install("wikis",
+        install("Wikis",
                 longIdColumn(),
                 longColumn("user_", true),
                 stringColumn("name_", 255, true, false),
@@ -72,14 +68,5 @@ public class WikiServiceImpl extends JdbcHelper implements WikiService {
         };
     }
 
-    @Value("${jdbc.driver}")
-    public void setDriver(String driver) {
-        jdbcDriver = driver;
-    }
-
-    @Resource
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
 }

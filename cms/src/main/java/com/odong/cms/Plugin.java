@@ -1,7 +1,6 @@
 package com.odong.cms;
 
 import com.odong.core.plugin.PluginUtil;
-import com.odong.web.template.TemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -40,18 +39,17 @@ public class Plugin implements com.odong.core.plugin.Plugin {
     public void uninstall() {
         logger.info("卸载模块[{}]", name());
     }
+
     @PostConstruct
-    void init(){
+    void init() {
         pluginUtil.register(name());
-        templateHelper.addPackage("com.odong.cms.entity","com.odong.cms.model");
     }
 
     @Override
     public void onMessage(MapMessage message) throws JMSException {
         logger.debug("丢弃的消息[{}]", message);
     }
-    @Resource
-    private TemplateHelper templateHelper;
+
     @Resource
     private PluginUtil pluginUtil;
     private final static Logger logger = LoggerFactory.getLogger(Plugin.class);
@@ -60,7 +58,5 @@ public class Plugin implements com.odong.core.plugin.Plugin {
         this.pluginUtil = pluginUtil;
     }
 
-    public void setTemplateHelper(TemplateHelper templateHelper) {
-        this.templateHelper = templateHelper;
-    }
+
 }
