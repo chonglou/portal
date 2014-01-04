@@ -36,6 +36,7 @@
 
     <logger name="httl" level="WARN"/>
 
+    <logger name="com.odong.core.store.JdbcHelper" level="DEBUG"/>
 
     <root level="DEBUG">
         <appender-ref ref="stdout"/>

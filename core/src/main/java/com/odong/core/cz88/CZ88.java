@@ -8,8 +8,8 @@ import java.io.Serializable;
 public class CZ88 implements Serializable {
     private static final long serialVersionUID = 41122664325886317L;
     private long id;
-    private String ipStart;
-    private String ipEnd;
+    private long ipStart;
+    private long ipEnd;
     private String ext1;
     private String ext2;
 
@@ -21,19 +21,19 @@ public class CZ88 implements Serializable {
         this.id = id;
     }
 
-    public String getIpStart() {
+    public long getIpStart() {
         return ipStart;
     }
 
-    public void setIpStart(String ipStart) {
+    public void setIpStart(long ipStart) {
         this.ipStart = ipStart;
     }
 
-    public String getIpEnd() {
+    public long getIpEnd() {
         return ipEnd;
     }
 
-    public void setIpEnd(String ipEnd) {
+    public void setIpEnd(long ipEnd) {
         this.ipEnd = ipEnd;
     }
 

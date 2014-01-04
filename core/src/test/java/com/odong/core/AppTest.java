@@ -15,12 +15,16 @@ import java.util.Date;
 
 public class AppTest {
 
-   // @Test
+    //@Test
     public void testCZ(){
         try {
+            Date begin = new Date();
             CZ88Helper cz = ctx.getBean(CZ88Helper.class);
+
             cz.load("/tmp/ip.txt");
-            log(cz.count());
+            cz.clear();
+            Date end = new Date();
+            log(cz.count(), begin, end);
         } catch (Exception e) {
             e.printStackTrace();
         }
