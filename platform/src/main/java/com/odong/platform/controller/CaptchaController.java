@@ -3,6 +3,7 @@ package com.odong.platform.controller;
 
 import com.google.code.kaptcha.Constants;
 import com.odong.core.service.SiteService;
+import com.odong.core.util.CacheService;
 import com.odong.platform.util.CaptchaHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import java.io.IOException;
 public class CaptchaController {
     @RequestMapping(value = "/captcha", method = RequestMethod.GET)
     void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        switch (siteService.get("site.captcha", String.class)) {
+        switch (cacheService.getCaptcha()) {
             case "reCaptcha":
                 buildReCaptcha(request, response);
                 break;
@@ -96,7 +97,13 @@ public class CaptchaController {
     private SiteService siteService;
     @Resource
     private CaptchaHelper captchaHelper;
+    @Resource
+    private CacheService cacheService;
     private final static Logger logger = LoggerFactory.getLogger(CaptchaController.class);
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     public void setCaptchaHelper(CaptchaHelper captchaHelper) {
         this.captchaHelper = captchaHelper;

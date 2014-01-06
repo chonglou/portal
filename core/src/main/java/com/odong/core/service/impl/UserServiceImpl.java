@@ -139,8 +139,8 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
     }
 
     private long addUser(String openId, User.Type type, String email, String username, String password, String token) {
-        return insert("INSERT INTO Users(openId_, type_, email_, username_, password_, extra_, type_, state_, created_) VALUES(?,?,?,?,?,?)",
-                new Object[]{openId, type.name(), email, username, encryptHelper.encrypt(password), token, User.Type.EMAIL.name(), User.State.SUBMIT.name(), new Date()},
+        return insert("INSERT INTO Users(openId_,  email_, username_, password_, extra_, type_, state_, contact_, created_) VALUES(?,?,?,?,?,?,?,?,?)",
+                new Object[]{openId, email, username, encryptHelper.encrypt(password), token, type.name(), User.State.SUBMIT.name(), jsonHelper.object2json(new Contact()), new Date()},
                 "id", Long.class);
 
     }

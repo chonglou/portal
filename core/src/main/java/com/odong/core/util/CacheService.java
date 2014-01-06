@@ -18,6 +18,18 @@ import javax.annotation.Resource;
  */
 @Component("core.cacheService")
 public class CacheService {
+    public String getCaptcha(){
+        return cacheHelper.get("site/captcha", String.class, null, ()->siteService.get("site.captcha", String.class));
+    }
+    public void popCaptcha(){
+        cacheHelper.delete("site/captcha");
+    }
+    public String getDefaultPlugin(){
+        return cacheHelper.get("site/plugin/default", String.class, null, ()->siteService.get("site.plugin.default", String.class));
+    }
+    public void popDefaultPlugin(){
+        cacheHelper.delete("site/plugin/default");
+    }
     public String getSiteDomain() {
         return cacheHelper.get("site/domain", String.class, null, () -> siteService.get("site.domain", String.class));
     }

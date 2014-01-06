@@ -22,7 +22,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
         ri.addData(ex.getMessage());
         Map<String, Object> map = new HashMap<>();
         map.put("message", ri);
-        return new ModelAndView("/core/message.httl", map);
+        return new ModelAndView("/core/message", map);
     }
 
     private final static Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);

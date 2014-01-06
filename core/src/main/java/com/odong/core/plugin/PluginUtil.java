@@ -23,6 +23,10 @@ public class PluginUtil implements ApplicationContextAware {
         void execute(Plugin plugin);
     }
 
+    public String getDefaultPlugin(){
+        return siteService.get("site.plugin.default", String.class);
+    }
+
     public Plugin getPlugin(String name) {
         return context.getBean("plug." + name, Plugin.class);
     }

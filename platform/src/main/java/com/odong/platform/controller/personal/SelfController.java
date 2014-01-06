@@ -73,6 +73,7 @@ public class SelfController {
 
         if (si.isSsAdmin()) {
             SideBar nbSite = new SideBar("站点管理");
+            nbSite.add("插件管理", "/admin/plugin/");
             nbSite.add("运行状态", "/admin/state/");
             nbSite.add("站点信息", "/admin/site/");
             nbSite.add("用户管理", "/admin/user/");

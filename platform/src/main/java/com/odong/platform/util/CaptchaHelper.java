@@ -33,7 +33,7 @@ public class CaptchaHelper {
             kp.setHeight(56);
             kp.setWidth(100);
             siteService.set("site.kaptcha", kp);
-
+            siteService.set("site.captcha", "kaptcha");
         }
         Properties props = new Properties();
         props.setProperty("kaptcha.image.width", Integer.toString(kp.getWidth()));

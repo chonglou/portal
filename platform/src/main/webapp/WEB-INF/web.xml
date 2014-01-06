@@ -29,6 +29,9 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>httl.spi.loaders.ServletLoader</listener-class>
+    </listener>
 
     <servlet>
         <servlet-name>dispatcher</servlet-name>

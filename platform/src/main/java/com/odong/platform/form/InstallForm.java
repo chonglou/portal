@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class InstallForm implements Serializable {
     private static final long serialVersionUID = 4672279306007435739L;
+    private String title;
     private String domain;
     private String keywords;
     private String description;
@@ -24,6 +25,14 @@ public class InstallForm implements Serializable {
     private String smtpFrom;
 
     private boolean agree;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getSmtpFrom() {
         return smtpFrom;

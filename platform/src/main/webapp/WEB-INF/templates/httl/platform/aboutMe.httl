@@ -1,0 +1,26 @@
+$!{extends("/layout.httl")}
+
+#macro(main)
+
+<div class="col-lg-9">
+    <h3>关于我们</h3>
+    <hr/>
+    $!{aboutMe}
+    <!--#set(List<String> logList) -->
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <td>大事记[${logList.size}]</td>
+        </tr>
+        </thead>
+        <tbody>
+        #for(i : logList)
+        <tr>
+            <td>${i}</td>
+        </tr>
+        #end
+        </tbody>
+    </table>
+    <br/>
+</div>
+#end

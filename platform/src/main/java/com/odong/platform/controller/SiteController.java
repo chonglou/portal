@@ -45,8 +45,13 @@ import java.util.Map;
 @Controller("platform.c.site")
 public class SiteController {
 
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    void getMain(HttpServletResponse response) throws IOException{
+        String name = coreCacheService.getDefaultPlugin();
+        response.sendRedirect(name == null?"/aboutMe":"/"+name+"/");
+    }
     @RequestMapping(value = "/install", method = RequestMethod.GET)
-    String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException, ParseException {
+    String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException {
         if (siteService.get("site.version", String.class) == null) {
             map.put("title", "PORTAL系统安装");
             map.put("author", Constants.AUTHOR);
@@ -64,6 +69,7 @@ public class SiteController {
         if (siteService.get("site.version", String.class) == null) {
             logger.debug("数据库尚未初始化");
             fm.addField(new SplitterField("站点信息"));
+            fm.addField(new TextField<String>("title", "标题"));
             fm.addField(new TextField<String>("domain", "域名"));
             TextField<String> keywords = new TextField<>("keywords", "关键字");
             keywords.setWidth(800);
@@ -79,7 +85,7 @@ public class SiteController {
 
             fm.addField(new SplitterField("邮件系统"));
             fm.addField(new TextField<String>("smtpHost", "主机"));
-            fm.addField(new TextField<String>("smtpPort", "端口"));
+            fm.addField(new TextField<Integer>("smtpPort", "端口", 25));
             fm.addField(new TextField<String>("smtpUsername", "用户名"));
             fm.addField(new TextField<String>("smtpPassword", "密码"));
             fm.addField(new TextField<String>("smtpFrom", "发送者"));
@@ -105,6 +111,10 @@ public class SiteController {
     @ResponseBody
     ResponseItem postInstall(@Valid InstallForm form, BindingResult result, HttpServletRequest request) throws IOException {
         ResponseItem ri = formHelper.check(result, request, true);
+        if(!form.isAgree()){
+            ri.setOk(false);
+            ri.addData("您需要同意协议才能继续");
+        }
         if (!ri.isOk()) {
             return ri;
         }
@@ -116,10 +126,11 @@ public class SiteController {
         logger.info("设置站点信息");
         siteService.set("site.init", new Date());
         siteService.set("site.author", "zhengjitang@gmail.com");
+        siteService.set("site.title", form.getTitle());
         siteService.set("site.domain", form.getDomain());
         siteService.set("site.keywords", form.getKeywords());
         siteService.set("site.description", form.getDescription());
-        siteService.set("search.space", 30);
+        siteService.set("search.space", 60*60*24);
 
         logger.info("设置管理员信息");
         long uid = userService.addEmailUser(form.getEmail(), form.getUsername(), form.getPassword());
@@ -144,6 +155,8 @@ public class SiteController {
         siteService.set("site.linkValid", 60 * 24);
         siteService.set("site.version", Constants.VERSION);
         logger.info("安装完毕");
+        ri.setType(ResponseItem.Type.redirect);
+        ri.addData("/main");
         ri.setOk(true);
         return ri;
     }

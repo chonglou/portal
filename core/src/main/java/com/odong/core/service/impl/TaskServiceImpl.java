@@ -87,7 +87,7 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
                 longIdColumn(),
                 charsColumn("module_", 12, false),
                 enumColumn("type_"),
-                textColumn("request_", true),
+                textColumn("request_", false),
                 dateColumn("begin_", true),
                 dateColumn("end_", true),
                 dateColumn("nextRun_", true),
