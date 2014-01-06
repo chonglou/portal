@@ -12,7 +12,7 @@ public class Contact implements Serializable {
     private String email;
     private String weChat;
     private String weiBo;
-    private String site;
+    private String web;
     private String address;
     private String details;
     private String fax;
@@ -57,12 +57,12 @@ public class Contact implements Serializable {
         this.weiBo = weiBo;
     }
 
-    public String getSite() {
-        return site;
+    public String getWeb() {
+        return web;
     }
 
-    public void setSite(String site) {
-        this.site = site;
+    public void setWeb(String web) {
+        this.web = web;
     }
 
     public String getAddress() {

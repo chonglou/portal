@@ -17,6 +17,10 @@ public class SideBar implements Serializable {
         LIST, MENU
     }
 
+    public void addSplitter() {
+        this.links.add(null);
+    }
+
     public void add(String text, String url) {
 
         String name = Jsoup.parse(text).body().text();
@@ -24,12 +28,12 @@ public class SideBar implements Serializable {
             name = name.substring(0, MAX_LEN - 3) + "...";
         }
 
-        this.pages.add(new Link(name, url));
+        this.links.add(new Link(name, url));
     }
 
     public SideBar(String title) {
         this.title = title;
-        this.pages = new ArrayList<>();
+        this.links = new ArrayList<>();
         this.type = Type.MENU;
     }
 
@@ -38,7 +42,7 @@ public class SideBar implements Serializable {
     private Type type;
     private String title;
     private boolean ajax;
-    private List<Link> pages;
+    private List<Link> links;
 
     public Type getType() {
         return type;
@@ -64,11 +68,11 @@ public class SideBar implements Serializable {
         this.title = title;
     }
 
-    public List<Link> getPages() {
-        return pages;
+    public List<Link> getLinks() {
+        return links;
     }
 
-    public void setPages(List<Link> pages) {
-        this.pages = pages;
+    public void setLinks(List<Link> links) {
+        this.links = links;
     }
 }

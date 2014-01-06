@@ -1,5 +1,6 @@
 package com.odong.platform.ueditor;
 
+import com.odong.core.util.FormHelper;
 import com.odong.web.model.SessionItem;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItemIterator;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
@@ -201,7 +203,6 @@ public class FileUploader {
 
     private Attachment uploadBase64(HttpServletRequest request, String fieldName, String[] fileTypes) {
 
-
         //FIXME 文件后缀名
         String fileName = getSelfPath(request.getSession()) + "/" + getDatePath() + "/" + getFileName("");
         String path = checkPhysicalPath(fileName);
@@ -301,7 +302,7 @@ public class FileUploader {
 
 
     private String getSelfPath(HttpSession session) {
-        SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
+        SessionItem si = formHelper.getSessionItem(session);
         return si == null ? "guest" : "u" + si.getSsUserId();
     }
 
@@ -344,10 +345,16 @@ public class FileUploader {
     private String[] upTypes;
     @Value("${app.store}")
     private String appStore;
-    @Value("${upload.size}")
+    @Value("${upload.max}")
     private int maxSize;
+    @Resource
+    private FormHelper formHelper;
     private final static DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private final static Logger logger = LoggerFactory.getLogger(FileUploader.class);
+
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
+    }
 
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;

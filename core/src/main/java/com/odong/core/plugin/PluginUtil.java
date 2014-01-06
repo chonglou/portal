@@ -12,15 +12,31 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by flamen on 14-1-2下午5:16.
  */
 @Component("core.plugin.util")
 public class PluginUtil implements ApplicationContextAware {
+    public interface Callback {
+        void execute(Plugin plugin);
+    }
+
+    public Plugin getPlugin(String name) {
+        return context.getBean("plug." + name, Plugin.class);
+    }
+
+    public void foreach(Callback callback) {
+        for (String name : status.keySet()) {
+            if (Boolean.TRUE.equals(status.get(name))) {
+                callback.execute(getPlugin(name));
+            } else {
+                logger.debug("模块[{}]未启用", name);
+            }
+        }
+    }
+
     public synchronized void register(String name) {
         if (!status.containsKey(name)) {
             status.put(name, null);
@@ -55,7 +71,6 @@ public class PluginUtil implements ApplicationContextAware {
 
     @PostConstruct
     void init() {
-        available = new LinkedHashSet<>();
         status = jsonHelper.json2map(siteService.get("site.plugins", String.class), String.class, Boolean.class);
     }
 
@@ -65,7 +80,7 @@ public class PluginUtil implements ApplicationContextAware {
     private JsonHelper jsonHelper;
     private ApplicationContext context;
     private Map<String, Boolean> status;
-    private Set<String> available;
+
     private final static Logger logger = LoggerFactory.getLogger(PluginUtil.class);
 
     public void setSiteService(SiteService siteService) {

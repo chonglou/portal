@@ -19,72 +19,75 @@ import java.util.*;
  */
 @Component("core.redisHelper")
 public final class RedisHelper {
-    public void setHash(String key, String field, Object value){
-        execute((Jedis client)->{
+    public void setHash(String key, String field, Object value) {
+        execute((Jedis client) -> {
             client.hset(key(key), field, object2json(value));
             return null;
         });
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String,Object> getHashMap(String key){
-        return (Map) execute((Jedis client)->{
+    public Map<String, Object> getHashMap(String key) {
+        return (Map) execute((Jedis client) -> {
             String k = key(key);
             Map<String, Object> map = new HashMap<>();
-            for(String f : client.hkeys(k)){
+            for (String f : client.hkeys(k)) {
                 map.put(f, json2object(client.hget(k, f)));
             }
             return map;
         });
     }
+
     @SuppressWarnings("unchecked")
-    public List<Object> getHashSortedValues(String key){
-        return (List) execute((Jedis client)->{
+    public List<Object> getHashSortedValues(String key) {
+        return (List) execute((Jedis client) -> {
             String k = key(key);
             TreeSet<String> fields = new TreeSet<>(client.hkeys(k));
             fields.comparator();
             List<Object> list = new ArrayList<>();
-            for(String f : fields){
+            for (String f : fields) {
                 list.add(json2object(client.hget(k, f)));
             }
             return list;
         });
     }
+
     @SuppressWarnings("unchecked")
-    public Set<String> getHashFields(String key){
-        return (Set)execute((Jedis client)->client.hkeys(key(key)));
+    public Set<String> getHashFields(String key) {
+        return (Set) execute((Jedis client) -> client.hkeys(key(key)));
     }
+
     @SuppressWarnings("unchecked")
-    public List<Object> getHashValues(String key){
-        return (List) execute((Jedis client)->{
+    public List<Object> getHashValues(String key) {
+        return (List) execute((Jedis client) -> {
             List<Object> list = new ArrayList<>();
-            for(String json : client.hvals(key(key))){
+            for (String json : client.hvals(key(key))) {
                 list.add(json2object(json));
             }
             return list;
         });
     }
 
-    public Object getHash(String key, String field){
-        return execute((Jedis client)->json2object(client.hget(key(key), field)));
+    public Object getHash(String key, String field) {
+        return execute((Jedis client) -> json2object(client.hget(key(key), field)));
     }
 
     @SuppressWarnings("unchecked")
-    public Set<String> search(String pattern){
-        return (Set<String>)execute((Jedis client)->client.keys(key(pattern)));
+    public Set<String> search(String pattern) {
+        return (Set<String>) execute((Jedis client) -> client.keys(key(pattern)));
     }
 
 
-    public void del(String key){
-        execute((Jedis client)->{
-           client.del(key(key));
+    public void del(String key) {
+        execute((Jedis client) -> {
+            client.del(key(key));
             return null;
         });
     }
 
     public void set(String key, Object value) {
         execute((Jedis client) -> {
-                client.set( key(key), object2json(value));
+            client.set(key(key), object2json(value));
             return null;
         });
     }

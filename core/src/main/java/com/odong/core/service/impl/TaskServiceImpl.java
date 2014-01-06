@@ -4,15 +4,11 @@ import com.odong.core.entity.Task;
 import com.odong.core.service.TaskService;
 import com.odong.core.store.JdbcHelper;
 import com.odong.core.util.TimeHelper;
-import com.sun.swing.internal.plaf.basic.resources.basic_es;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +20,7 @@ import java.util.List;
 public class TaskServiceImpl extends JdbcHelper implements TaskService {
     @Override
     public void setTaskRequest(long task, String request) {
-        execute("UPDATE Tasks SET request=?,version=version+1 WHERE id=?", request,task);
+        execute("UPDATE Tasks SET request=?,version=version+1 WHERE id=?", request, task);
     }
 
     @Override
@@ -49,12 +45,12 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
 
     @Override
     public void setTaskRequest(long task, String request, int clock) {
-setTask(task, request, new Date(), timeHelper.max(), timeHelper.nextDay(clock), 24*60*60, 0);
+        setTask(task, request, new Date(), timeHelper.max(), timeHelper.nextDay(clock), 24 * 60 * 60, 0);
     }
 
     @Override
     public void setTaskRequest(long task, String request, Date begin, Date end, int space) {
-setTask(task, request, begin, end, timeHelper.plus(begin, space), space, 0);
+        setTask(task, request, begin, end, timeHelper.plus(begin, space), space, 0);
     }
 
     @Override
@@ -104,9 +100,9 @@ setTask(task, request, begin, end, timeHelper.plus(begin, space), space, 0);
 
     }
 
-    private void setTask(long id, String request, Date begin, Date end, Date nextRun, int space, long total){
+    private void setTask(long id, String request, Date begin, Date end, Date nextRun, int space, long total) {
         execute("UPDATE Tasks SET request_=?, begin_=?, end_=?, nextRun_=?, space_=?, total_=? WHERE id=?",
-                request, begin,end,nextRun, space, total, id);
+                request, begin, end, nextRun, space, total, id);
     }
 
     private long addTask(String module, String type, String request, Date begin, Date end, Date nextRun, int space, long total) {

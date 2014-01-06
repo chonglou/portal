@@ -17,6 +17,11 @@ import java.util.List;
 @Service("core.logService")
 public class LogServiceImpl extends JdbcHelper implements LogService {
     @Override
+    public List<Log> least(Long user, int size) {
+        return list("SELECT * FROM Logs WHERE user_=? ORDER BY id DESC", new Object[]{user}, size, mapperLog());
+    }
+
+    @Override
     public List<Log> list(Long user, long start, int size) {
         return list("SELECT * FROM Logs WHERE user_=? AND id<? ORDER BY id DESC", new Object[]{user, start}, size, mapperLog());
     }

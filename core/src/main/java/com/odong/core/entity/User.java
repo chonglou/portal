@@ -26,6 +26,15 @@ public class User extends IdEntity {
     private State state;
     private int version;
     private long visits;
+    private String contact;
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 
     public long getVisits() {
         return visits;

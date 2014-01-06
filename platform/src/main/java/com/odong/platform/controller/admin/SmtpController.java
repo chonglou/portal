@@ -8,13 +8,14 @@ import com.odong.core.util.CacheService;
 import com.odong.core.util.FormHelper;
 import com.odong.platform.form.admin.SmtpForm;
 import com.odong.web.model.ResponseItem;
-import com.odong.web.model.SessionItem;
 import com.odong.web.model.form.Form;
 import com.odong.web.model.form.RadioField;
 import com.odong.web.model.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -48,7 +49,7 @@ public class SmtpController {
         ssl.addOption("是", true);
         ssl.addOption("否", false);
         fm.addField(ssl);
-        fm.addField(new TextField<String>("smtpFrom","发送者"));
+        fm.addField(new TextField<String>("smtpFrom", "发送者"));
         TextField<String> bcc = new TextField<>("bcc", "密送", profile.getBcc());
         bcc.setRequired(false);
         fm.addField(bcc);

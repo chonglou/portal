@@ -2,6 +2,7 @@ package com.odong.core.cz88;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
@@ -203,7 +204,6 @@ public class IPSeeker {
     }
 
 
-
     public void init() {
         ipCache = new HashMap<>();
         loc = new IPLocation();
@@ -218,7 +218,7 @@ public class IPSeeker {
                 ipFile.close();
                 ipFile = null;
             }
-        } catch (IOException|NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             log.error("IP地址信息文件格式有错误，IP显示功能将无法使用", e);
             ipFile = null;
         }

@@ -14,7 +14,9 @@ import com.odong.web.model.form.RadioField;
 import com.odong.web.model.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -32,7 +34,7 @@ public class CaptchaController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getCaptcha() {
-        return "admin/captcha";
+        return "/platform/admin/captcha";
     }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)

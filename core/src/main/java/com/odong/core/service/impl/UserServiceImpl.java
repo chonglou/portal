@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by flamen on 13-12-31下午3:22.
@@ -25,7 +24,7 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
 
     @Override
     public User getUser(String openId, User.Type type) {
-        return select(SELECT +"WHERE openId_=? AND type_=?", new Object[]{openId, type.name()}, mapperUser());
+        return select(SELECT + "WHERE openId_=? AND type_=?", new Object[]{openId, type.name()}, mapperUser());
     }
 
     @Override
@@ -57,6 +56,11 @@ public class UserServiceImpl extends JdbcHelper implements UserService {
     @Override
     public User getUser(long id) {
         return select(SELECT + "WHERE id=?", new Object[]{id}, mapperUser());
+    }
+
+    @Override
+    public String getUserContact(long user) {
+        return select("SELECT contact_ FROM Users WHERE id=?", new Object[]{user}, String.class);
     }
 
     @Override

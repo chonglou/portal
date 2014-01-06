@@ -23,12 +23,10 @@ import com.redfin.sitemapgenerator.WebSitemapUrl;
 import com.sun.syndication.feed.synd.*;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -42,13 +40,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
  * Created by flamen on 13-12-30下午8:10.
  */
 @Component("core.job.listener")
-public class TaskListener implements MessageListener, ApplicationContextAware {
+public class TaskListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
         if (message instanceof TextMessage) {
@@ -59,11 +58,6 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
             logger.error("未知的消息类型");
         }
 
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
     }
 
     @SuppressWarnings("unchecked")
@@ -157,10 +151,12 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                                 feed.setDescription(siteService.get("site.description", String.class));
                                 List<SyndEntry> entries = new ArrayList<>();
 
-                                entries.add(createRssSyndEntry(domain+"/aboutMe", "关于我们", siteService.get("site.aboutMe", String.class), siteService.get("site.init", Date.class)));
-                                for(RssItem ri : siteHelper.getRss()){
-                                    entries.add(createRssSyndEntry(ri.getUrl(), ri.getTitle(), ri.getSummary(), ri.getPublish()));
-                                }
+                                entries.add(createRssSyndEntry(domain + "/aboutMe", "关于我们", siteService.get("site.aboutMe", String.class), siteService.get("site.init", Date.class)));
+                                pluginUtil.foreach((Plugin plugin) -> {
+                                    for (RssItem ri : plugin.getRssItems()) {
+                                        entries.add(createRssSyndEntry(ri.getUrl(), ri.getTitle(), ri.getSummary(), ri.getPublish()));
+                                    }
+                                });
 
                                 feed.setEntries(entries);
                                 SyndFeedOutput output = new SyndFeedOutput();
@@ -210,16 +206,28 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                         try {
                             String domain = "http://" + siteService.get("site.domain", String.class);
                             WebSitemapGenerator wsg = WebSitemapGenerator.builder(domain, new File(appStoreDir + "/seo/")).gzip(true).build();
-                            wsg.addUrl(new WebSitemapUrl.Options(domain + "/main").lastMod(new Date()).priority(1.0).changeFreq(ChangeFreq.HOURLY).build());
                             wsg.addUrl(new WebSitemapUrl.Options(domain + "/aboutMe").lastMod(siteService.get("site.init", Date.class)).priority(0.9).changeFreq(ChangeFreq.YEARLY).build());
                             wsg.addUrl(new WebSitemapUrl.Options(domain + "/sitemap").lastMod(new Date()).priority(0.9).changeFreq(ChangeFreq.DAILY).build());
-                            for(SitemapItem si : siteHelper.getSitemap()){
-                                wsg.addUrl(new WebSitemapUrl.Options(si.getUrl()).lastMod(si.getPublish()).priority(si.getPriority()).changeFreq(ChangeFreq.valueOf(si.getChangeFreq())).build());
+
+                            pluginUtil.foreach((Plugin plugin) -> {
+                                for (SitemapItem si : plugin.getSitemapItems()) {
+                                    try {
+                                        wsg.addUrl(new WebSitemapUrl.Options(si.getUrl()).lastMod(si.getPublish()).priority(si.getPriority()).changeFreq(ChangeFreq.valueOf(si.getChangeFreq())).build());
+                                    } catch (MalformedURLException e) {
+                                        logger.error("创建sitemap.xml出错", e);
+                                    }
+                                }
+                            });
+
+                            DateTime now = new DateTime();
+                            for (DateTime dt = new DateTime(siteService.get("site.init", Date.class)); dt.compareTo(now) <= 0; dt = dt.plusMonths(1)) {
+                                wsg.addUrl(new WebSitemapUrl.Options(domain + "/archive/" + dt.toString("yyyy/MM")).lastMod(dt.toDate()).priority(0.2).changeFreq(ChangeFreq.MONTHLY).build());
                             }
+
 
                             wsg.write();
                         } catch (IOException e) {
-                            logger.error("创建网站地图出错", e);
+                            logger.error("创建sitemap.xml出错", e);
                         }
                     });
                     break;
@@ -232,7 +240,7 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                 default:
                     if (pluginUtil.isEnable(module)) {
                         logger.debug("任务转送至模块[{}]", module);
-                        context.getBean("plugin." + module, Plugin.class).onMessage(message);
+                        pluginUtil.getPlugin(module).onMessage(message);
                     } else {
                         logger.debug("模块[{}]未启用", module);
                     }
@@ -260,17 +268,17 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
     @Resource
     private CacheService cacheService;
     @Resource
-    private PluginUtil pluginUtil;
-    @Resource
     private DbUtil dbUtil;
     @Resource
     private SiteService siteService;
     @Resource
     private SiteHelper siteHelper;
+    @Resource
+    private PluginUtil pluginUtil;
     @Value("${app.store}")
     private String appStoreDir;
-    private ApplicationContext context;
     private final static Logger logger = LoggerFactory.getLogger(TaskListener.class);
+
 
     public void setAppStoreDir(String appStoreDir) {
         this.appStoreDir = appStoreDir;

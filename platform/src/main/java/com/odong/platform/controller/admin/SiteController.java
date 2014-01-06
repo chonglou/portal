@@ -42,7 +42,7 @@ public class SiteController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getInfo() {
-        return "admin/info";
+        return "/platform/admin/site";
     }
 
     @RequestMapping(value = "/domain", method = RequestMethod.GET)
@@ -63,7 +63,7 @@ public class SiteController {
             siteService.set("site.domain", domain);
             logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点域名", Log.Type.INFO);
 
-            cacheService.popPage();
+            cacheService.popSiteDomain();
             Path file = Paths.get(appStoreDir + "/seo/robots.txt");
             try (BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"))) {
                 writer.write("User-agent: *\n");
@@ -116,7 +116,7 @@ public class SiteController {
 
     @RequestMapping(value = "/details", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postDetailsForm(@Valid InfoForm form, BindingResult result,HttpSession session) {
+    ResponseItem postDetailsForm(@Valid InfoForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.title", form.getTitle());
@@ -124,11 +124,11 @@ public class SiteController {
             siteService.set("site.description", form.getDescription());
             siteService.set("site.copyright", form.getCopyright());
             logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点基本信息", Log.Type.INFO);
+            cacheService.popSiteTitle();
             cacheService.popPage();
         }
         return ri;
     }
-
 
 
     @RequestMapping(value = "/qrCode", method = RequestMethod.GET)
@@ -150,7 +150,7 @@ public class SiteController {
 
     @RequestMapping(value = "/qrCode", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postQrForm(@Valid QrCodeForm form, BindingResult result,HttpSession session) {
+    ResponseItem postQrForm(@Valid QrCodeForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.qrCode", new QrCodeProfile(form.getContent(), form.getWidth(), form.getHeight()));

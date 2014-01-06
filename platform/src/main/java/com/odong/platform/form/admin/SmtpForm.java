@@ -11,12 +11,12 @@ import java.io.Serializable;
  */
 public class SmtpForm implements Serializable {
     private static final long serialVersionUID = -7553866026073993197L;
-     @Email(message = "{val.email}")
+    @Email(message = "{val.email}")
     private String bcc;
     @NotNull
     private String host;
     private boolean ssl;
-private String from;
+    private String from;
     private int port;
     @NotNull
     @Size(min = 2, max = 20, message = "{val.name}")

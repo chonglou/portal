@@ -12,7 +12,10 @@ import com.odong.web.model.form.HiddenField;
 import com.odong.web.model.form.TextAreaField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -36,7 +39,7 @@ public class ShareController {
             codes.put(s, siteService.get("site.share." + s, String.class));
         }
         map.put("codes", codes);
-        return "admin/share";
+        return "/platform/admin/share";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

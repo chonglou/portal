@@ -39,7 +39,7 @@ public class AdvertController {
             adverts.put(s, siteService.get("site.advert." + s, String.class));
         }
         map.put("adverts", adverts);
-        return "admin/advert";
+        return "/platform/admin/advert";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

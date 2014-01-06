@@ -1,26 +1,24 @@
 package com.odong.platform.controller.personal;
 
 
-import com.odong.portal.controller.PageController;
-import com.odong.portal.entity.Log;
-import com.odong.portal.entity.User;
-import com.odong.portal.job.TaskSender;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.AccountService;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.EncryptHelper;
-import com.odong.portal.util.JsonHelper;
-import com.odong.portal.util.TimeHelper;
-import com.odong.portal.web.ResponseItem;
+import com.odong.core.encrypt.EncryptHelper;
+import com.odong.core.entity.Log;
+import com.odong.core.entity.User;
+import com.odong.core.job.TaskSender;
+import com.odong.core.json.JsonHelper;
+import com.odong.core.service.LogService;
+import com.odong.core.service.UserService;
+import com.odong.core.util.CacheService;
+import com.odong.core.util.FormHelper;
+import com.odong.core.util.TimeHelper;
+import com.odong.web.model.Page;
+import com.odong.web.model.ResponseItem;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -34,14 +32,12 @@ import java.util.Map;
  * Date: 13-8-13
  * Time: 下午2:21
  */
-@Controller("c.personal.valid")
+@Controller("platform.c.personal.valid")
 @RequestMapping(value = "/personal")
-@SessionAttributes(SessionItem.KEY)
-public class ValidController extends PageController {
+public class ValidController {
 
     @RequestMapping(value = "/valid", method = RequestMethod.GET)
     String getValidCode(HttpServletRequest request, Map<String, Object> map) {
-
 
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         Map<String, String> mapA;
@@ -55,22 +51,21 @@ public class ValidController extends PageController {
 
         String email = mapA.get("email");
         String type = mapA.get("type");
-        String created = mapA.get("created");
+        String valid = mapA.get("valid");
 
-        if (email == null || type == null || created == null) {
+        if (email == null || type == null || valid == null) {
             ri.addData("链接信息不全");
-        } else if (timeHelper.plus(new Date(Long.parseLong(created)), 60 * linkValid).compareTo(new Date()) < 0
-                ) {
+        } else if (new Date(Long.parseLong(valid)).compareTo(new Date()) < 0) {
             ri.addData("链接失效，请重新申请。");
         } else {
-            User u = accountService.getUser(email);
+            User u = userService.getUser(email, User.Type.EMAIL);
 
             switch (type) {
                 case "register":
                     if (u != null && u.getState() == User.State.SUBMIT) {
-                        accountService.setUserState(u.getId(), User.State.ENABLE);
+                        userService.setUserState(u.getId(), User.State.ENABLE);
                         logService.add(u.getId(), "账户激活", Log.Type.INFO);
-                        taskSender.email(email, "您在[" + siteService.getString("site.title") + "]上的激活了账户", "欢迎使用", true, null);
+                        taskSender.email(email, "您在[" + cacheService.getSiteTitle() + "]上的激活了账户", "欢迎使用", true, null);
                         ri.setOk(true);
 
                     } else {
@@ -80,9 +75,9 @@ public class ValidController extends PageController {
                 case "reset_pwd":
                     if (u.getState() == User.State.ENABLE) {
                         if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(mapA.get("created"), Date.class), 60 * 30)) <= 0) {
-                            accountService.setUserPassword(u.getId(), mapA.get("password"));
+                            userService.setUserPassword(u.getId(), mapA.get("password"));
                             logService.add(u.getId(), "重置密码", Log.Type.INFO);
-                            taskSender.email(email, "您在[" + siteService.getString("site.domain") + "]上的成功重置了密码",
+                            taskSender.email(email, "您在[" + cacheService.getSiteTitle() + "]上的成功重置了密码",
                                     "如果不是您的操作，请忽略该邮件。", true, null);
                             ri.setOk(true);
                             ri.addData("您成功重置了密码");
@@ -98,15 +93,19 @@ public class ValidController extends PageController {
                     break;
             }
         }
-        map.put("item", ri);
-        map.put("navBars", getNavBars());
-        fillSiteInfo(map);
-        return "message";
+
+        Page page = formHelper.getPage(request.getSession());
+        page.setIndex("/personal/self");
+        map.put("page", page);
+        map.put("message", ri);
+        return "/core/message";
     }
 
 
     @Resource
-    private AccountService accountService;
+    private FormHelper formHelper;
+    @Resource
+    private UserService userService;
     @Resource
     private TimeHelper timeHelper;
     @Resource
@@ -116,36 +115,37 @@ public class ValidController extends PageController {
     @Resource
     private TaskSender taskSender;
     @Resource
-    private SiteService siteService;
-    @Resource
     private EncryptHelper encryptHelper;
-    @Value("${link.valid}")
-    protected int linkValid;
+    @Resource
+    private CacheService cacheService;
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
     private final static Logger logger = LoggerFactory.getLogger(ValidController.class);
 
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
     }
 
     public void setTaskSender(TaskSender taskSender) {
         this.taskSender = taskSender;
     }
 
-    public void setAccountService(AccountService accountService) {
-        this.accountService = accountService;
-    }
-
-    public void setLinkValid(int linkValid) {
-        this.linkValid = linkValid;
-    }
 
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;
     }
 
-    public void setEncryptHelper(EncryptHelper encryptHelper) {
-        this.encryptHelper = encryptHelper;
-    }
 
     public void setTimeHelper(TimeHelper timeHelper) {
         this.timeHelper = timeHelper;

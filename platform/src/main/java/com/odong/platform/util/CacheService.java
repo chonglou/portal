@@ -1,10 +1,7 @@
 package com.odong.platform.util;
 
 import com.odong.core.cache.CacheHelper;
-import com.odong.core.model.GoogleAuthProfile;
-import com.odong.core.model.QqAuthProfile;
 import com.odong.core.service.SiteService;
-import com.odong.platform.util.CacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,7 +16,15 @@ import java.util.ArrayList;
  * Created by flamen on 13-12-31下午10:46.
  */
 @Component("platform.cacheService")
-public class CacheService  {
+public class CacheService {
+    public boolean isSiteAllowLogin() {
+        return cacheHelper.get("site/allowLogin", Boolean.class, null, () -> siteService.get("site.allowLogin", Boolean.class));
+    }
+
+    public void popSiteAllowLogin() {
+        cacheHelper.delete("site/allowLogin");
+    }
+
     public ArrayList getLogList() {
         return cacheHelper.get("logs", ArrayList.class, null, () -> {
             ArrayList<String> logList = new ArrayList<>();

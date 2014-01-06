@@ -1,21 +1,24 @@
 package com.odong.platform.controller.personal;
 
-import com.odong.portal.entity.Log;
-import com.odong.portal.form.personal.SetPwdForm;
-import com.odong.portal.job.TaskSender;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.AccountService;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.PasswordField;
+import com.odong.core.entity.Log;
+import com.odong.core.job.TaskSender;
+import com.odong.core.service.LogService;
+import com.odong.core.service.UserService;
+import com.odong.core.util.CacheService;
+import com.odong.core.util.FormHelper;
+import com.odong.platform.form.personal.SetPwdForm;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.SessionItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.PasswordField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
@@ -26,7 +29,6 @@ import javax.validation.Valid;
  */
 @Controller("c.personal.setPassword")
 @RequestMapping(value = "/personal")
-@SessionAttributes(SessionItem.KEY)
 public class SetPasswordController {
 
     @RequestMapping(value = "/setPwd", method = RequestMethod.GET)
@@ -42,7 +44,7 @@ public class SetPasswordController {
 
     @RequestMapping(value = "/setPwd", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSetPwd(@Valid SetPwdForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSetPwd(@Valid SetPwdForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (!form.getNewPwd().equals(form.getRePwd())) {
             ri.setOk(false);
@@ -50,14 +52,15 @@ public class SetPasswordController {
         }
         if (ri.isOk()) {
 
-            if (accountService.auth(si.getSsEmail(), form.getOldPwd()) == null) {
+            SessionItem si = formHelper.getSessionItem(session);
+            if (userService.auth(si.getSsEmail(), form.getOldPwd())) {
+                userService.setUserPassword(si.getSsUserId(), form.getNewPwd());
+                logService.add(si.getSsUserId(), "变更密码", Log.Type.INFO);
+                taskSender.email(si.getSsEmail(), "您在[" + cacheService.getSiteTitle() + "]上的密码变更记录",
+                        "如果不是您的操作，请忽略该邮件。", true, null);
+            } else {
                 ri.setOk(false);
                 ri.addData("当前密码输入有误");
-            } else {
-                accountService.setUserPassword(si.getSsUserId(), form.getNewPwd());
-                logService.add(si.getSsUserId(), "变更密码", Log.Type.INFO);
-                taskSender.email(si.getSsEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
-                        "如果不是您的操作，请忽略该邮件。", true, null);
             }
         }
         return ri;
@@ -66,11 +69,11 @@ public class SetPasswordController {
 
 
     @Resource
-    private SiteService siteService;
+    private CacheService cacheService;
     @Resource
     private FormHelper formHelper;
     @Resource
-    private AccountService accountService;
+    private UserService userService;
     @Resource
     private LogService logService;
     @Resource
@@ -80,8 +83,13 @@ public class SetPasswordController {
         this.formHelper = formHelper;
     }
 
-    public void setAccountService(AccountService accountService) {
-        this.accountService = accountService;
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setTaskSender(TaskSender taskSender) {
+        this.taskSender = taskSender;
     }
 
     public void setLogService(LogService logService) {
@@ -89,7 +97,4 @@ public class SetPasswordController {
     }
 
 
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 }

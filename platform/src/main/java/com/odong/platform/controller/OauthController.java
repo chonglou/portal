@@ -8,6 +8,7 @@ import com.odong.core.service.UserService;
 import com.odong.core.util.CacheService;
 import com.odong.core.util.FormHelper;
 import com.odong.core.util.HttpClient;
+import com.odong.platform.util.RbacService;
 import com.odong.web.model.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class OauthController {
                             logger.debug("更新google用户{}的token", id);
                         }
                     }
-                    formHelper.login(session, User.Type.GOOGLE, uid, user.getUsername(), user.getLogo(), user.getEmail());
+                    formHelper.login(session, User.Type.GOOGLE, uid, user.getUsername(), user.getLogo(), user.getEmail(), rbacService.isAdmin(uid));
                     ri.setOk(true);
                     return ri;
 
@@ -92,7 +93,7 @@ public class OauthController {
 
     @RequestMapping(value = "/qq", method = RequestMethod.GET)
     String qqAuth() {
-        return "oauth/qq";
+        return "/platform/oauth/qq";
     }
 
     @RequestMapping(value = "/qq", method = RequestMethod.POST)
@@ -134,7 +135,7 @@ public class OauthController {
             }
         }
 
-        formHelper.login(session, User.Type.QQ, uid, name, logo, user == null ? null : user.getEmail());
+        formHelper.login(session, User.Type.QQ, uid, name, logo, user == null ? null : user.getEmail(), rbacService.isAdmin(uid));
         ri.setOk(true);
         return ri;
     }
@@ -161,6 +162,12 @@ public class OauthController {
     private FormHelper formHelper;
     @Resource
     private HttpClient httpClient;
+    @Resource
+    private RbacService rbacService;
+
+    public void setRbacService(RbacService rbacService) {
+        this.rbacService = rbacService;
+    }
 
     public void setFormHelper(FormHelper formHelper) {
         this.formHelper = formHelper;

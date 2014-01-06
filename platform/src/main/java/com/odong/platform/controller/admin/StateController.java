@@ -1,23 +1,18 @@
 package com.odong.platform.controller.admin;
 
 import com.odong.core.entity.Log;
-import com.odong.core.model.GoogleAuthProfile;
-import com.odong.core.model.QqAuthProfile;
 import com.odong.core.service.LogService;
 import com.odong.core.service.SiteService;
-import com.odong.core.util.CacheService;
 import com.odong.core.util.FormHelper;
 import com.odong.platform.form.admin.AllowForm;
-import com.odong.platform.form.admin.GoogleAuthForm;
-import com.odong.platform.form.admin.QqAuthForm;
 import com.odong.web.model.ResponseItem;
-import com.odong.web.model.SessionItem;
 import com.odong.web.model.form.Form;
 import com.odong.web.model.form.RadioField;
-import com.odong.web.model.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -41,9 +36,8 @@ import java.util.Map;
 public class StateController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getStatus() {
-        return "admin/state";
+        return "/platform/admin/state";
     }
-
 
 
     @RequestMapping(value = "/runtime", method = RequestMethod.POST)
@@ -99,7 +93,7 @@ public class StateController {
 
     @RequestMapping(value = "/service", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postAllow(@Valid AllowForm form, BindingResult result,HttpSession session) {
+    ResponseItem postAllow(@Valid AllowForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.allowRegister", form.isAllowRegister());

@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
  */
 @Component("core.httpClient")
 public class HttpClient {
-    public String get(String uri){
+    public String get(String uri) {
         return call(new HttpGet(uri));
     }
 
@@ -49,10 +49,12 @@ public class HttpClient {
 
         return null;
     }
+
     private String encode(String key, String plain) {
         BasicTextEncryptor te = new BasicTextEncryptor();
         te.setPassword(key);
         return te.encrypt(plain);
     }
+
     private final static Logger logger = LoggerFactory.getLogger(HttpClient.class);
 }

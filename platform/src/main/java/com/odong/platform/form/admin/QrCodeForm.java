@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 public class QrCodeForm implements Serializable {
     private static final long serialVersionUID = 7792026939235061979L;
-   private String content;
-private int width;
-private int height;
+    private String content;
+    private int width;
+    private int height;
 
     public String getContent() {
         return content;

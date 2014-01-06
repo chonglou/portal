@@ -15,7 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +34,9 @@ import java.util.Map;
  * Date: 13-8-13
  * Time: 下午12:20
  */
-@Controller("platform.c.admin.database")
-@RequestMapping(value = "/admin/database")
-public class DatabaseController {
+@Controller("platform.c.admin.store")
+@RequestMapping(value = "/admin/store")
+public class StoreController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getCompress(Map<String, Object> map) {
@@ -42,7 +44,7 @@ public class DatabaseController {
         map.put("lastExport", siteService.get("site.lastExport", Date.class));
         map.put("lastBackup", siteService.get("site.lastBackup", Date.class));
         map.put("dbSize", dbUtil.size());
-        return "admin/database";
+        return "/platform/admin/database";
     }
 
     @RequestMapping(value = "/backup", method = RequestMethod.POST)
@@ -83,7 +85,7 @@ public class DatabaseController {
             ri.addData("数据文件[" + form.getUrl() + "]不存在");
         }
         if (ri.isOk()) {
-            Map<String,Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             map.put("url", form.getUrl());
             taskSender.send(null, "import4json", map);
             ri.addData("正在处理，请稍候");
@@ -120,7 +122,7 @@ public class DatabaseController {
     private TaskSender taskSender;
     @Resource
     private DbUtil dbUtil;
-    private final static Logger logger = LoggerFactory.getLogger(DatabaseController.class);
+    private final static Logger logger = LoggerFactory.getLogger(StoreController.class);
 
     public void setDbUtil(DbUtil dbUtil) {
         this.dbUtil = dbUtil;
@@ -141,7 +143,6 @@ public class DatabaseController {
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
     }
-
 
 
     public void setLogService(LogService logService) {

@@ -97,7 +97,9 @@
 
     <bean id="platform.exceptionHandler" class="com.odong.platform.aop.ExceptionHandler"/>
 
+    <!--
     <bean id="platform.multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="${upload.max}"/>
     </bean>
+    -->
 </beans>

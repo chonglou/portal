@@ -11,9 +11,10 @@ import java.util.Date;
 @Component("core.timeHelper")
 public class TimeHelper {
 
-    public int getClock(Date date){
+    public int getClock(Date date) {
         return new DateTime(date).getHourOfDay();
-     }
+    }
+
     public Date mouthMin(int year, int month) {
         return new DateTime().withYear(year).withMonthOfYear(month).dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue().toDate();
     }

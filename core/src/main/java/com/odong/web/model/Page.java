@@ -28,7 +28,6 @@ public class Page implements Serializable {
     private String copyright;
     private String hAd;
     private String vAd;
-    private String calendar;
     private List<Link> topLinks;
     private List<Link> tagCloud;
     private List<Link> personalBar;
@@ -105,13 +104,6 @@ public class Page implements Serializable {
         this.sideBars = sideBars;
     }
 
-    public String getCalendar() {
-        return calendar;
-    }
-
-    public void setCalendar(String calendar) {
-        this.calendar = calendar;
-    }
 
     public String gethAd() {
         return hAd;

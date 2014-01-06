@@ -34,19 +34,6 @@ public class SiteController {
     }
 
 
-    @RequestMapping(value = "sitemap", method = RequestMethod.GET)
-    String getSitemap(Map<String, Object> map, HttpSession session) {
-        Page page = formHelper.getPage(session);
-        page.setTitle("网站地图");
-        page.setIndex("/sitemap");
-        map.put("page", page);
-        //FIXME cache ?
-        map.put("cards", siteHelper.getSitemapCards());
-        map.put("links", siteHelper.getSitemapLinks());
-        return "platform/sitemap";
-    }
-
-
     @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
     void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String vCode = cacheService.getGoogleValidCode();

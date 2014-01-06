@@ -1,14 +1,34 @@
 package com.odong.core.plugin;
 
+import com.odong.web.model.*;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 模块接口定义
+ * <p>
  * 命名规则plugin.module_name
  * Created by flamen on 13-12-30上午2:42.
  */
 public interface Plugin {
+    List<SideBar> getSideBars();
+
+    Map<String, List<Card>> getSitemapCards();
+
+    Map<String, List<Link>> getSitemapLinks();
+
+    List<Link> getTopLinks();
+
+    List<Link> getAdminSideBarLinks();
+
+    SideBar getPersonalSideBar();
+
+    List<RssItem> getRssItems();
+
+    List<SitemapItem> getSitemapItems();
 
     /**
      * @return 名称

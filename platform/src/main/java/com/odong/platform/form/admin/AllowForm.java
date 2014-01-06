@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class AllowForm implements Serializable {
     private static final long serialVersionUID = -9111887003999756817L;
-     private boolean allowRegister;
+    private boolean allowRegister;
     private boolean allowLogin;
     private boolean allowAnonym;
 

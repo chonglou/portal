@@ -1,7 +1,6 @@
 package com.odong.platform.controller.admin;
 
 import com.odong.core.entity.Log;
-import com.odong.core.entity.Task;
 import com.odong.core.json.JsonHelper;
 import com.odong.core.service.LogService;
 import com.odong.core.service.SiteService;
@@ -10,12 +9,13 @@ import com.odong.core.util.FormHelper;
 import com.odong.core.util.TimeHelper;
 import com.odong.platform.form.admin.TaskForm;
 import com.odong.web.model.ResponseItem;
-import com.odong.web.model.SessionItem;
 import com.odong.web.model.form.Form;
 import com.odong.web.model.form.SelectField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -58,7 +58,7 @@ public class TaskController {
     }
 
     private int getTaskClock(String type) {
-        return timeHelper.getClock(taskService.getTask(siteService.get("task."+type, Long.class)).getNextRun());
+        return timeHelper.getClock(taskService.getTask(siteService.get("task." + type, Long.class)).getNextRun());
     }
 
     private void setTaskClock(String type, int clock) {

@@ -2,7 +2,7 @@ package com.odong.platform;
 
 import com.odong.core.json.JsonHelper;
 import com.odong.web.model.Page;
-import com.odong.web.template.TemplateHelper;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.BeforeTest;

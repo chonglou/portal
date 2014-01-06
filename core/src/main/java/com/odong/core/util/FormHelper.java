@@ -3,15 +3,15 @@ package com.odong.core.util;
 import com.google.code.kaptcha.Constants;
 import com.odong.core.entity.Log;
 import com.odong.core.entity.User;
-import com.odong.core.model.GoogleAuthProfile;
-import com.odong.core.model.QqAuthProfile;
+import com.odong.core.plugin.Plugin;
+import com.odong.core.plugin.PluginUtil;
 import com.odong.core.service.LogService;
 import com.odong.core.service.UserService;
+import com.odong.web.model.Link;
 import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.SessionItem;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -26,35 +26,48 @@ import javax.servlet.http.HttpSession;
  */
 @Component("core.formHelper")
 public class FormHelper {
-    public void login(HttpSession session, User.Type type, long userId, String username, String logo, String email){
+    public void login(HttpSession session, User.Type type, long userId, String username, String logo, String email, boolean isAdmin) {
         SessionItem si = new SessionItem(userId, username, logo, email);
         si.setSsType(type);
+        si.setSsAdmin(isAdmin);
         session.setAttribute(sessionKey, si);
         userService.setUserLastLogin(userId);
         logService.add(userId, "用户登陆", Log.Type.INFO);
     }
-    public void logout(HttpSession session){
+
+    public void logout(HttpSession session) {
         SessionItem si = getSessionItem(session);
         session.setAttribute(sessionKey, null);
         logService.add(si.getSsUserId(), "注销登陆", Log.Type.INFO);
     }
-    public void isAdmin(HttpSession session){
 
+    public boolean isLogin(HttpSession session) {
+        return getSessionItem(session) != null;
     }
-    public boolean isLogin(HttpSession session){
-        return getSessionItem(session)!=null;
-    }
+
     public SessionItem getSessionItem(HttpSession session) {
         return (SessionItem) session.getAttribute(sessionKey);
     }
 
     public Page getPage(HttpSession session) {
-        Page page = new Page();
+        Page page = cacheService.getPage();
+
+        page.setDomain(cacheService.getSiteDomain());
+        page.setTitle(cacheService.getSiteTitle());
 
         page.setGoogleAuth(cacheService.getGoogleAuthProfile());
         page.setQqAuth(cacheService.getQqAuthProfile());
-        page.setDebug(appDebug);
 
+        pluginUtil.foreach((Plugin plugin) -> {
+            page.getSideBars().addAll(plugin.getSideBars());
+        });
+
+        pluginUtil.foreach((Plugin plugin) -> {
+            page.getTopLinks().addAll(plugin.getTopLinks());
+        });
+        page.getTopLinks().add(new Link("用户中心", "/personal/self"));
+        page.getTopLinks().add(new Link("网站地图", "/sitemap"));
+        page.getTopLinks().add(new Link("关于我们", "/aboutMe"));
 
         page.setSessionId(session.getId());
         SessionItem si = getSessionItem(session);
@@ -105,11 +118,11 @@ public class FormHelper {
     private UserService userService;
     @Resource
     private LogService logService;
-    @Value("${app.debug}")
-    private boolean appDebug;
+    @Resource
+    private PluginUtil pluginUtil;
 
-    public void setAppDebug(boolean appDebug) {
-        this.appDebug = appDebug;
+    public void setPluginUtil(PluginUtil pluginUtil) {
+        this.pluginUtil = pluginUtil;
     }
 
     public void setUserService(UserService userService) {

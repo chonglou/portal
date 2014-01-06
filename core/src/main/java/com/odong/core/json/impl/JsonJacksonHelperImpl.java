@@ -25,7 +25,7 @@ public class JsonJacksonHelperImpl implements JsonHelper {
 
         try {
             return mapper.writeValueAsString(object);
-        } catch (JsonProcessingException|NullPointerException e) {
+        } catch (JsonProcessingException | NullPointerException e) {
             logger.error("输出JSON出错", e);
         }
         return "{}";

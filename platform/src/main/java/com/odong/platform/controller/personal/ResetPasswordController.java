@@ -1,21 +1,19 @@
 package com.odong.platform.controller.personal;
 
-import com.odong.portal.entity.User;
-import com.odong.portal.form.personal.ResetPwdForm;
-import com.odong.portal.job.TaskSender;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.AccountService;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.PasswordField;
-import com.odong.portal.web.form.TextField;
+import com.odong.core.entity.User;
+import com.odong.core.job.TaskSender;
+import com.odong.core.service.UserService;
+import com.odong.core.util.FormHelper;
+import com.odong.platform.form.personal.ResetPwdForm;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.PasswordField;
+import com.odong.web.model.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +29,6 @@ import java.util.Map;
  */
 @Controller("c.personal.resetPassword")
 @RequestMapping(value = "/personal")
-@SessionAttributes(SessionItem.KEY)
 public class ResetPasswordController {
     @RequestMapping(value = "/resetPwd", method = RequestMethod.POST)
     @ResponseBody
@@ -42,11 +39,11 @@ public class ResetPasswordController {
             ri.addData("两次密码输入不一致");
         }
         if (ri.isOk()) {
-            User u = accountService.getUser(form.getEmail());
+            User u = userService.getUser(form.getEmail(), User.Type.EMAIL);
             if (u != null && u.getState() == User.State.ENABLE) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("password", form.getNewPwd());
-                taskSender.validEmail(form.getEmail(), "reset_pwd", map);
+                taskSender.valid(form.getEmail(), "reset_pwd", "重置密码", "点此激活", map);
                 ri.addData("已向您的邮箱发送了密码重置链接，请进入邮箱进行操作。");
 
             } else {
@@ -75,7 +72,7 @@ public class ResetPasswordController {
     @Resource
     private TaskSender taskSender;
     @Resource
-    private AccountService accountService;
+    private UserService userService;
 
     public void setTaskSender(TaskSender taskSender) {
         this.taskSender = taskSender;
@@ -85,8 +82,7 @@ public class ResetPasswordController {
         this.formHelper = formHelper;
     }
 
-    public void setAccountService(AccountService accountService) {
-        this.accountService = accountService;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
-
 }

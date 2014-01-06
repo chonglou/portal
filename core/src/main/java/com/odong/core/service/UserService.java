@@ -10,7 +10,9 @@ import java.util.List;
  */
 public interface UserService {
     User getUser(String openId, User.Type type);
+
     long addGoogleUser(String openId, String token);
+
     long addEmailUser(String email, String username, String password);
 
     long addQqUser(String openId, String accessToken, String username);
@@ -22,6 +24,8 @@ public interface UserService {
     void setUserEmail(long user, String email);
 
     User getUser(long id);
+
+    String getUserContact(long user);
 
 
     void setUserContact(long user, Contact contact);

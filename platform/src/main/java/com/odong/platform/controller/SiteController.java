@@ -3,13 +3,17 @@ package com.odong.platform.controller;
 import com.odong.core.Constants;
 import com.odong.core.entity.User;
 import com.odong.core.model.SmtpProfile;
+import com.odong.core.plugin.Plugin;
+import com.odong.core.plugin.PluginUtil;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;
 import com.odong.core.util.FormHelper;
-import com.odong.core.util.SiteHelper;
 import com.odong.platform.form.InstallForm;
 import com.odong.platform.util.CacheService;
+import com.odong.platform.util.RbacService;
+import com.odong.web.model.Card;
+import com.odong.web.model.Link;
 import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.form.*;
@@ -32,6 +36,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,12 +54,12 @@ public class SiteController {
         } else {
             response.sendRedirect("/main");
         }
-        return "platform/install";
+        return "/platform/install";
     }
 
     @RequestMapping(value = "/install", method = RequestMethod.PUT)
     @ResponseBody
-    Form putInstall(){
+    Form putInstall() {
         Form fm = new Form("install", "系统初始化", "/install");
         if (siteService.get("site.version", String.class) == null) {
             logger.debug("数据库尚未初始化");
@@ -77,7 +82,7 @@ public class SiteController {
             fm.addField(new TextField<String>("smtpPort", "端口"));
             fm.addField(new TextField<String>("smtpUsername", "用户名"));
             fm.addField(new TextField<String>("smtpPassword", "密码"));
-            fm.addField(new TextField<String>("smtpFrom","发送者"));
+            fm.addField(new TextField<String>("smtpFrom", "发送者"));
             RadioField<Boolean> ssl = new RadioField<>("smtpSsl", "启用SSL", false);
             ssl.addOption("是", true);
             ssl.addOption("否", false);
@@ -98,9 +103,9 @@ public class SiteController {
 
     @RequestMapping(value = "/install", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postInstall(@Valid InstallForm form, BindingResult result, HttpServletRequest request) throws IOException{
+    ResponseItem postInstall(@Valid InstallForm form, BindingResult result, HttpServletRequest request) throws IOException {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(!ri.isOk()){
+        if (!ri.isOk()) {
             return ri;
         }
         if (siteService.get("site.version", String.class) != null) {
@@ -119,21 +124,26 @@ public class SiteController {
         logger.info("设置管理员信息");
         long uid = userService.addEmailUser(form.getEmail(), form.getUsername(), form.getPassword());
         userService.setUserState(uid, User.State.ENABLE);
+        rbacService.setAdmin(uid, true);
+        siteService.set("site.manager", uid, true);
 
         logger.info("设置SMTP信息");
-        SmtpProfile sp = new SmtpProfile(form.getSmtpHost(),  form.getUsername(), form.getPassword(), form.getSmtpBcc());
+        SmtpProfile sp = new SmtpProfile(form.getSmtpHost(), form.getUsername(), form.getPassword(), form.getSmtpBcc());
         sp.setPort(form.getSmtpPort());
         sp.setSsl(form.isSmtpSsl());
         sp.setFrom(form.getSmtpFrom());
         siteService.set("site.smtp", sp, true);
 
         logger.info("设置定时任务");
-       siteService.set("task.gc",taskService.addTask(null, "gc", null, 2));
-        siteService.set("task.backup",taskService.addTask(null, "backup", null, 3));
-        siteService.set("task.rss",taskService.addTask(null, "rss", null, 4));
-        siteService.set("task.sitemap",taskService.addTask(null, "sitemap", null, 4));
-        logger.info("安装完毕");
+        siteService.set("task.gc", taskService.addTask(null, "gc", null, 2));
+        siteService.set("task.backup", taskService.addTask(null, "backup", null, 3));
+        siteService.set("task.rss", taskService.addTask(null, "rss", null, 4));
+        siteService.set("task.sitemap", taskService.addTask(null, "sitemap", null, 4));
+
+        logger.info("设置其它信息");
+        siteService.set("site.linkValid", 60 * 24);
         siteService.set("site.version", Constants.VERSION);
+        logger.info("安装完毕");
         ri.setOk(true);
         return ri;
     }
@@ -158,7 +168,26 @@ public class SiteController {
         Page page = formHelper.getPage(session);
         map.put("page", page);
         map.put("message", item);
-        return "/core/message.httl";
+        return "/core/message";
+    }
+
+
+    @RequestMapping(value = "sitemap", method = RequestMethod.GET)
+    String getSitemap(Map<String, Object> map, HttpSession session) {
+        Page page = formHelper.getPage(session);
+        page.setTitle("网站地图");
+        page.setIndex("/sitemap");
+        map.put("page", page);
+        Map<String, List<Card>> cards = new HashMap<>();
+        Map<String, List<Link>> links = new HashMap<>();
+        pluginUtil.foreach((Plugin plugin) -> {
+            cards.putAll(plugin.getSitemapCards());
+            links.putAll(plugin.getSitemapLinks());
+        });
+
+        map.put("cards", cards);
+        map.put("links", links);
+        return "/platform/sitemap";
     }
 
 
@@ -171,7 +200,7 @@ public class SiteController {
         map.put("page", page);
         map.put("logList", cacheService.getLogList());
         map.put("aboutMe", coreCacheService.getAboutMe());
-        return "platform/aboutMe";
+        return "/platform/aboutMe";
     }
 
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
@@ -189,8 +218,20 @@ public class SiteController {
     private TaskService taskService;
     @Resource
     private FormHelper formHelper;
+    @Resource
+    private PluginUtil pluginUtil;
+    @Resource
+    private RbacService rbacService;
     @Value("${app.agreement}")
     private String agreement;
+
+    public void setPluginUtil(PluginUtil pluginUtil) {
+        this.pluginUtil = pluginUtil;
+    }
+
+    public void setRbacService(RbacService rbacService) {
+        this.rbacService = rbacService;
+    }
 
     public void setCoreCacheService(com.odong.core.util.CacheService coreCacheService) {
         this.coreCacheService = coreCacheService;
@@ -217,6 +258,7 @@ public class SiteController {
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
+
     public void setFormHelper(FormHelper formHelper) {
         this.formHelper = formHelper;
     }

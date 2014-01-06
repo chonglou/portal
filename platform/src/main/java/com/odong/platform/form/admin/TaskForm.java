@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class TaskForm implements Serializable {
     private static final long serialVersionUID = -5842992364254634119L;
-     private int gc;
+    private int gc;
     private int rss;
     private int backup;
     private int sitemap;

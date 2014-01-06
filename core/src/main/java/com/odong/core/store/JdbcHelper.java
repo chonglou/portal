@@ -352,7 +352,7 @@ public abstract class JdbcHelper {
     private JdbcTemplate jdbcTemplate;
     private final static Logger logger = LoggerFactory.getLogger(JdbcHelper.class);
 
-    protected JdbcTemplate getJdbcTemplate(){
+    protected JdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;
     }
 
