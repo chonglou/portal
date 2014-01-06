@@ -16,7 +16,7 @@ public class SmtpForm implements Serializable {
     @NotNull
     private String host;
     private boolean ssl;
-
+private String from;
     private int port;
     @NotNull
     @Size(min = 2, max = 20, message = "{val.name}")
@@ -24,6 +24,14 @@ public class SmtpForm implements Serializable {
     @NotNull
     @Size(min = 6, max = 50, message = "{val.password}")
     private String password;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     public String getBcc() {
         return bcc;

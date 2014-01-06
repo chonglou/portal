@@ -32,7 +32,7 @@ import java.util.Map;
  * Date: 13-8-13
  * Time: 下午12:20
  */
-@Controller("c.admin.user")
+@Controller("platform.c.admin.user")
 @RequestMapping(value = "/admin/user")
 public class UserController {
     @RequestMapping(value = "/", method = RequestMethod.GET)

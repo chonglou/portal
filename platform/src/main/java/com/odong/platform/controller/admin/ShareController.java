@@ -26,7 +26,7 @@ import java.util.Map;
  * Date: 13-10-6
  * Time: 上午9:38
  */
-@Controller("c.admin.share")
+@Controller("platform.c.admin.share")
 @RequestMapping(value = "/admin/share")
 public class ShareController {
     @RequestMapping(value = "/", method = RequestMethod.GET)

@@ -121,17 +121,17 @@ public class SiteController {
         userService.setUserState(uid, User.State.ENABLE);
 
         logger.info("设置SMTP信息");
-        SmtpProfile sp = new SmtpProfile(form.getSmtpHost(), form.getSmtpPort(), form.getUsername(), form.getPassword());
+        SmtpProfile sp = new SmtpProfile(form.getSmtpHost(),  form.getUsername(), form.getPassword(), form.getSmtpBcc());
+        sp.setPort(form.getSmtpPort());
         sp.setSsl(form.isSmtpSsl());
-        sp.setBcc(form.getSmtpBcc());
         sp.setFrom(form.getSmtpFrom());
         siteService.set("site.smtp", sp, true);
 
         logger.info("设置定时任务");
-        taskService.addTask(null, "gc", null, 2);
-        taskService.addTask(null, "rss", null, 3);
-        taskService.addTask(null, "sitemap", null, 3);
-        taskService.addTask(null, "db_backup", null, 3);
+       siteService.set("task.gc",taskService.addTask(null, "gc", null, 2));
+        siteService.set("task.backup",taskService.addTask(null, "backup", null, 3));
+        siteService.set("task.rss",taskService.addTask(null, "rss", null, 4));
+        siteService.set("task.sitemap",taskService.addTask(null, "sitemap", null, 4));
         logger.info("安装完毕");
         siteService.set("site.version", Constants.VERSION);
         ri.setOk(true);
@@ -170,13 +170,15 @@ public class SiteController {
         page.setIndex("/aboutMe");
         map.put("page", page);
         map.put("logList", cacheService.getLogList());
-        map.put("aboutMe", cacheService.getAboutMe());
+        map.put("aboutMe", coreCacheService.getAboutMe());
         return "platform/aboutMe";
     }
 
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
 
+    @Resource
+    private com.odong.core.util.CacheService coreCacheService;
     @Resource
     private CacheService cacheService;
     @Resource
@@ -189,12 +191,11 @@ public class SiteController {
     private FormHelper formHelper;
     @Value("${app.agreement}")
     private String agreement;
-    @Resource
-    private SiteHelper siteHelper;
 
-    public void setSiteHelper(SiteHelper siteHelper) {
-        this.siteHelper = siteHelper;
+    public void setCoreCacheService(com.odong.core.util.CacheService coreCacheService) {
+        this.coreCacheService = coreCacheService;
     }
+
 
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;

@@ -36,7 +36,7 @@ import java.util.Map;
  * Date: 13-9-12
  * Time: 下午4:10
  */
-@Controller("c.admin.state")
+@Controller("platform.c.admin.state")
 @RequestMapping(value = "/admin/state")
 public class StateController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -44,74 +44,6 @@ public class StateController {
         return "admin/state";
     }
 
-    @RequestMapping(value = "/googleAuth", method = RequestMethod.GET)
-    @ResponseBody
-    Form getGoogleAuthForm() {
-        Form fm = new Form("google", "google账户", "/admin/state/googleAuth");
-        GoogleAuthProfile gap = siteService.get("site.googleAuth", GoogleAuthProfile.class, true);
-        if (gap == null) {
-            gap = new GoogleAuthProfile("", "", "");
-        }
-        fm.addField(new TextField<>("id", "CLIENT ID", gap.getId()));
-        fm.addField(new TextField<>("secret", "CLIENT SECRET", gap.getSecret()));
-        fm.addField(new TextField<>("uri", "REDIRECT URI", gap.getUri()));
-        RadioField<Boolean> enable = new RadioField<Boolean>("enable", "状态", gap.isEnable());
-        enable.addOption("启用", Boolean.TRUE);
-        enable.addOption("停用", Boolean.FALSE);
-        fm.addField(enable);
-        fm.setOk(true);
-        return fm;
-    }
-
-    @RequestMapping(value = "/googleAuth", method = RequestMethod.POST)
-    @ResponseBody
-    ResponseItem postGoogleAuthForm(@Valid GoogleAuthForm form, BindingResult result, HttpSession session) {
-        ResponseItem ri = formHelper.check(result);
-        if (ri.isOk()) {
-            GoogleAuthProfile gap = new GoogleAuthProfile(form.getId(), form.getSecret(), form.getUri());
-            gap.setEnable(form.isEnable());
-            siteService.set("site.googleAuth", gap);
-            cacheService.popPage();
-            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
-        }
-        return ri;
-    }
-
-
-    @RequestMapping(value = "/qqAuth", method = RequestMethod.GET)
-    @ResponseBody
-    Form getQqAuthForm() {
-        Form fm = new Form("qq", "二维码信息", "/admin/state/qqAuth");
-        QqAuthProfile qap = siteService.get("site.qqAuth", QqAuthProfile.class, true);
-        if (qap == null) {
-            qap = new QqAuthProfile("", "", "", "");
-        }
-        fm.addField(new TextField<>("valid", "验证代码", qap.getValid()));
-        fm.addField(new TextField<>("id", "APP ID", qap.getId()));
-        fm.addField(new TextField<>("key", "APP KEY", qap.getKey()));
-        fm.addField(new TextField<>("uri", "回调路径", qap.getUri()));
-
-        RadioField<Boolean> enable = new RadioField<Boolean>("enable", "状态", qap.isEnable());
-        enable.addOption("启用", Boolean.TRUE);
-        enable.addOption("停用", Boolean.FALSE);
-        fm.addField(enable);
-        fm.setOk(true);
-        return fm;
-    }
-
-    @RequestMapping(value = "/qqAuth", method = RequestMethod.POST)
-    @ResponseBody
-    ResponseItem postQqAuthForm(@Valid QqAuthForm form, BindingResult result, HttpSession session) {
-        ResponseItem ri = formHelper.check(result);
-        if (ri.isOk()) {
-            QqAuthProfile qap = new QqAuthProfile(form.getValid(), form.getId(), form.getKey(), form.getUri());
-            qap.setEnable(form.isEnable());
-            siteService.set("site.qqAuth", qap, true);
-            cacheService.popPage();
-            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
-        }
-        return ri;
-    }
 
 
     @RequestMapping(value = "/runtime", method = RequestMethod.POST)
@@ -186,12 +118,6 @@ public class StateController {
     @Resource
     private FormHelper formHelper;
 
-    @Resource
-    private CacheService cacheService;
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;

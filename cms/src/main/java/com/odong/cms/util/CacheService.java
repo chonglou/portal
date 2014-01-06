@@ -17,20 +17,7 @@ import java.util.ArrayList;
  */
 @Component("cms.cacheService")
 public class CacheService {
-    public ArrayList getLogList() {
-        return cacheHelper.get("logs", ArrayList.class, null, () -> {
-            ArrayList<String> logList = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    logList.add(line);
-                }
-            } catch (IOException e) {
-                logger.error("加载大事记文件出错", e);
-            }
-            return logList;
-        });
-    }
+
 
 
 

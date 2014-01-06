@@ -4,6 +4,7 @@ import com.odong.core.entity.Task;
 import com.odong.core.service.TaskService;
 import com.odong.core.store.JdbcHelper;
 import com.odong.core.util.TimeHelper;
+import com.sun.swing.internal.plaf.basic.resources.basic_es;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -27,23 +28,38 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
     }
 
     @Override
-    public void addTask(String module, String type, String request, Date begin, int space, int total) {
-        addTask(module, type, request, begin, timeHelper.max(), timeHelper.plus(begin, space), space, total);
+    public long addTask(String module, String type, String request, Date begin, int space, int total) {
+        return addTask(module, type, request, begin, timeHelper.max(), timeHelper.plus(begin, space), space, total);
     }
 
     @Override
-    public void addTask(String module, String type, String request, int clock) {
-        addTask(module, type, request, new Date(), timeHelper.max(), timeHelper.nextDay(clock), 24 * 60 * 60, 0);
+    public long addTask(String module, String type, String request, int clock) {
+        return addTask(module, type, request, new Date(), timeHelper.max(), timeHelper.nextDay(clock), 24 * 60 * 60, 0);
     }
 
     @Override
-    public void addTask(String module, String type, String request, Date begin, Date end, int space) {
-        addTask(module, type, request, begin, end, timeHelper.plus(begin, space), space, 0);
+    public long addTask(String module, String type, String request, Date begin, Date end, int space) {
+        return addTask(module, type, request, begin, end, timeHelper.plus(begin, space), space, 0);
+    }
+
+    @Override
+    public void setTaskRequest(long task, String request, Date begin, int space, int total) {
+        setTask(task, request, begin, timeHelper.max(), timeHelper.plus(begin, space), space, total);
+    }
+
+    @Override
+    public void setTaskRequest(long task, String request, int clock) {
+setTask(task, request, new Date(), timeHelper.max(), timeHelper.nextDay(clock), 24*60*60, 0);
+    }
+
+    @Override
+    public void setTaskRequest(long task, String request, Date begin, Date end, int space) {
+setTask(task, request, begin, end, timeHelper.plus(begin, space), space, 0);
     }
 
     @Override
     public String getTaskRequest(long task) {
-        return select("SELECT request_ FROM Tasks WHERE id=?", new Object[]{task}, String.class);
+        return select("SELECT request_, FROM Tasks WHERE id=?", new Object[]{task}, String.class);
     }
 
     @Override
@@ -61,6 +77,7 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
         }
         execute("UPDATE Tasks SET index_=index_+1,nextRun_=? WHERE id=?", nextRun, task);
     }
+
 
     @Override
     public Task getTask(long task) {
@@ -87,9 +104,14 @@ public class TaskServiceImpl extends JdbcHelper implements TaskService {
 
     }
 
-    private void addTask(String module, String type, String request, Date begin, Date end, Date nextRun, int space, long total) {
-        execute("INSERT INTO Tasks(module_,type_,request_,begin_,end_,nextRun_,space_,total_,created_) VALUES(?,?,?,?,?,?,?,?,?)",
-                module, type, request, begin, end, nextRun, space, total, new Date());
+    private void setTask(long id, String request, Date begin, Date end, Date nextRun, int space, long total){
+        execute("UPDATE Tasks SET request_=?, begin_=?, end_=?, nextRun_=?, space_=?, total_=? WHERE id=?",
+                request, begin,end,nextRun, space, total, id);
+    }
+
+    private long addTask(String module, String type, String request, Date begin, Date end, Date nextRun, int space, long total) {
+        return insert("INSERT INTO Tasks(module_,type_,request_,begin_,end_,nextRun_,space_,total_,created_) VALUES(?,?,?,?,?,?,?,?,?)",
+                new Object[]{module, type, request, begin, end, nextRun, space, total, new Date()}, "id", Long.class);
     }
 
 

@@ -24,6 +24,19 @@ import java.util.*;
 @Component("core.cacheService")
 public class CacheService {
 
+    public QqAuthProfile getQqAuthProfile(){
+        return cacheHelper.get("oauth/google", QqAuthProfile.class, null, ()->siteService.get("site.oauth.qq", QqAuthProfile.class, true));
+    }
+    public void popQqAuthProfile(){
+        cacheHelper.delete("oauth/qq");
+    }
+    public GoogleAuthProfile getGoogleAuthProfile(){
+        return cacheHelper.get("oauth/google", GoogleAuthProfile.class, null, ()->siteService.get("site.oauth.google", GoogleAuthProfile.class, true));
+    }
+    public void popGoogleAuthProfile(){
+        cacheHelper.delete("oauth/google");
+    }
+
     public String getAboutMe(){
         return cacheHelper.get("site/aboutMe", String.class, null, ()->siteService.get("site.aboutMe", String.class));
     }
@@ -33,6 +46,7 @@ public class CacheService {
 
     public Page getPage() {
         return cacheHelper.get("page/model", Page.class, null, () -> {
+            //FIXME 不应在这里出现
             Page page = new Page();
             page.setAuthor(siteService.get("site.author", String.class));
             page.setTitle(siteService.get("site.title", String.class));
@@ -42,16 +56,14 @@ public class CacheService {
             page.sethAd(siteService.get("site.hAd", String.class));
             page.setvAd(siteService.get("site.vAd", String.class));
             page.setCalendar("/archive");
-            page.setGoogleAuth(siteService.get("site.auth.google", GoogleAuthProfile.class, true));
-            page.setQqAuth(siteService.get("site.auth.qq", QqAuthProfile.class, true));
 
+            //FIXME
             page.getTopLinks().add(new Link("站点首页", "/main"));
             page.getTopLinks().add(new Link("用户中心", "/personal/self"));
             page.getTopLinks().add(new Link("网站地图", "/site/map"));
             page.getTopLinks().add(new Link("知识库", "/wiki"));
             page.getTopLinks().add(new Link("关于我们", "/aboutMe"));
 
-            page.setDebug(appDebug);
             return page;
         });
     }
@@ -77,8 +89,6 @@ public class CacheService {
     private SiteService siteService;
     @Resource
     private CacheHelper cacheHelper;
-    @Value("${app.debug}")
-    private boolean appDebug;
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;
     }

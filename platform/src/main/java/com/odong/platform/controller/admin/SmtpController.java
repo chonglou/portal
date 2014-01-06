@@ -26,7 +26,7 @@ import javax.validation.Valid;
  * Date: 13-7-30
  * Time: 下午12:54
  */
-@Controller("c.admin.smtp")
+@Controller("platform.c.admin.smtp")
 @RequestMapping(value = "/admin/smtp")
 public class SmtpController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -48,6 +48,7 @@ public class SmtpController {
         ssl.addOption("是", true);
         ssl.addOption("否", false);
         fm.addField(ssl);
+        fm.addField(new TextField<String>("smtpFrom","发送者"));
         TextField<String> bcc = new TextField<>("bcc", "密送", profile.getBcc());
         bcc.setRequired(false);
         fm.addField(bcc);
@@ -63,6 +64,7 @@ public class SmtpController {
             SmtpProfile profile = new SmtpProfile(form.getHost(), form.getUsername(), form.getPassword(), form.getBcc());
             profile.setPort(form.getPort());
             profile.setSsl(form.isSsl());
+            profile.setFrom(form.getFrom());
             siteService.set("site.smtp", profile, true);
             logService.add(formHelper.getSessionItem(session).getSsUserId(), "设置SMTP信息", Log.Type.INFO);
             cacheService.popSmtp();

@@ -3,12 +3,15 @@ package com.odong.core.util;
 import com.google.code.kaptcha.Constants;
 import com.odong.core.entity.Log;
 import com.odong.core.entity.User;
+import com.odong.core.model.GoogleAuthProfile;
+import com.odong.core.model.QqAuthProfile;
 import com.odong.core.service.LogService;
 import com.odong.core.service.UserService;
 import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.SessionItem;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -46,7 +49,13 @@ public class FormHelper {
     }
 
     public Page getPage(HttpSession session) {
-        Page page = cacheService.getPage();
+        Page page = new Page();
+
+        page.setGoogleAuth(cacheService.getGoogleAuthProfile());
+        page.setQqAuth(cacheService.getQqAuthProfile());
+        page.setDebug(appDebug);
+
+
         page.setSessionId(session.getId());
         SessionItem si = getSessionItem(session);
         if (si != null) {
@@ -96,6 +105,12 @@ public class FormHelper {
     private UserService userService;
     @Resource
     private LogService logService;
+    @Value("${app.debug}")
+    private boolean appDebug;
+
+    public void setAppDebug(boolean appDebug) {
+        this.appDebug = appDebug;
+    }
 
     public void setUserService(UserService userService) {
         this.userService = userService;

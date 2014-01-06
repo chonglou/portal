@@ -2,18 +2,13 @@ package com.odong.platform.controller.admin;
 
 import com.odong.core.entity.Log;
 import com.odong.core.job.TaskSender;
-import com.odong.core.json.JsonHelper;
 import com.odong.core.model.QrCodeProfile;
 import com.odong.core.service.LogService;
 import com.odong.core.service.SiteService;
 import com.odong.core.util.CacheService;
 import com.odong.core.util.FormHelper;
-import com.odong.platform.form.admin.DomainForm;
-import com.odong.platform.form.admin.InfoForm;
-import com.odong.platform.form.admin.QrCodeForm;
-import com.odong.platform.form.admin.RegProtocolForm;
+import com.odong.platform.form.admin.*;
 import com.odong.web.model.ResponseItem;
-import com.odong.web.model.SessionItem;
 import com.odong.web.model.form.Form;
 import com.odong.web.model.form.TextAreaField;
 import com.odong.web.model.form.TextField;
@@ -22,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -37,41 +34,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: flamen
- * Date: 13-8-13
- * Time: 下午12:20
+ * Created by flamen on 14-1-5下午10:16.
  */
-@Controller("c.admin.site")
+@Controller("platform.c.admin.info")
 @RequestMapping(value = "/admin/site")
 public class SiteController {
 
-    @RequestMapping(value = "/regProtocol", method = RequestMethod.GET)
-    @ResponseBody
-    Form getRegProtocolForm() {
-        Form fm = new Form("regProtocol", "用户注册协议", "/admin/site/regProtocol");
-        fm.addField(new TextAreaField("protocol", "用户协议", siteService.get("site.regProtocol", String.class)));
-        fm.setOk(true);
-        return fm;
-    }
-
-    @RequestMapping(value = "/regProtocol", method = RequestMethod.POST)
-    @ResponseBody
-    ResponseItem postRegProtocolForm(@Valid RegProtocolForm form, BindingResult result, HttpSession session) {
-        ResponseItem ri = formHelper.check(result);
-        if (ri.isOk()) {
-            siteService.set("site.regProtocol", form.getProtocol());
-            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改用户注册协议", Log.Type.INFO);
-        }
-        return ri;
-    }
-
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     String getInfo() {
         return "admin/info";
     }
-
-
 
     @RequestMapping(value = "/domain", method = RequestMethod.GET)
     @ResponseBody
@@ -104,6 +76,60 @@ public class SiteController {
         }
         return ri;
     }
+
+    @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
+    @ResponseBody
+    Form getAboutMe() {
+        Form fm = new Form("aboutMe", "设置关于我们", "/admin/site/aboutMe/");
+        fm.addField(new TextAreaField("content", "内容", siteService.get("site.aboutMe", String.class)));
+        fm.setOk(true);
+        return fm;
+    }
+
+    @RequestMapping(value = "/aboutMe", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postAboutMe(@Valid AboutMeForm form, BindingResult result, HttpSession session) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            siteService.set("site.aboutMe", form.getContent());
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "设置关于我们", Log.Type.INFO);
+            cacheService.popAboutMe();
+        }
+        return ri;
+
+    }
+
+
+    @RequestMapping(value = "/details", method = RequestMethod.GET)
+    @ResponseBody
+    Form getDetailsForm() {
+        Form fm = new Form("details", "站点信息编辑", "/admin/site/details");
+        fm.addField(new TextField<>("title", "名称", siteService.get("site.title", String.class)));
+        fm.addField(new TextField<>("keywords", "关键字", siteService.get("site.keywords", String.class), "用空格隔开"));
+        TextAreaField desc = new TextAreaField("description", "说明", siteService.get("site.description", String.class));
+        desc.setHtml(false);
+        fm.addField(desc);
+        fm.addField(new TextField<>("copyright", "版权", siteService.get("site.copyright", String.class)));
+        fm.setOk(true);
+        return fm;
+    }
+
+    @RequestMapping(value = "/details", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postDetailsForm(@Valid InfoForm form, BindingResult result,HttpSession session) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            siteService.set("site.title", form.getTitle());
+            siteService.set("site.keywords", form.getKeywords());
+            siteService.set("site.description", form.getDescription());
+            siteService.set("site.copyright", form.getCopyright());
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点基本信息", Log.Type.INFO);
+            cacheService.popPage();
+        }
+        return ri;
+    }
+
+
 
     @RequestMapping(value = "/qrCode", method = RequestMethod.GET)
     @ResponseBody
@@ -139,31 +165,22 @@ public class SiteController {
     }
 
 
-    @RequestMapping(value = "/details", method = RequestMethod.GET)
+    @RequestMapping(value = "/regProtocol", method = RequestMethod.GET)
     @ResponseBody
-    Form getDetailsForm() {
-        Form fm = new Form("details", "站点信息编辑", "/admin/site/details");
-        fm.addField(new TextField<>("title", "名称", siteService.get("site.title", String.class)));
-        fm.addField(new TextField<>("keywords", "关键字", siteService.get("site.keywords", String.class), "用空格隔开"));
-        TextAreaField desc = new TextAreaField("description", "说明", siteService.get("site.description", String.class));
-        desc.setHtml(false);
-        fm.addField(desc);
-        fm.addField(new TextField<>("copyright", "版权", siteService.get("site.copyright", String.class)));
+    Form getRegProtocolForm() {
+        Form fm = new Form("regProtocol", "用户注册协议", "/admin/site/regProtocol");
+        fm.addField(new TextAreaField("protocol", "用户协议", siteService.get("site.regProtocol", String.class)));
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/details", method = RequestMethod.POST)
+    @RequestMapping(value = "/regProtocol", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postDetailsForm(@Valid InfoForm form, BindingResult result,HttpSession session) {
+    ResponseItem postRegProtocolForm(@Valid RegProtocolForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            siteService.set("site.title", form.getTitle());
-            siteService.set("site.keywords", form.getKeywords());
-            siteService.set("site.description", form.getDescription());
-            siteService.set("site.copyright", form.getCopyright());
-            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点基本信息", Log.Type.INFO);
-            cacheService.popPage();
+            siteService.set("site.regProtocol", form.getProtocol());
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改用户注册协议", Log.Type.INFO);
         }
         return ri;
     }
@@ -178,28 +195,10 @@ public class SiteController {
     @Resource
     private CacheService cacheService;
     @Resource
-    private JsonHelper jsonHelper;
-    @Resource
     private TaskSender taskSender;
     @Value("${app.store}")
     private String appStoreDir;
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
-
-    public void setTaskSender(TaskSender taskSender) {
-        this.taskSender = taskSender;
-    }
-
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
-    }
-
-    public void setAppStoreDir(String appStoreDir) {
-        this.appStoreDir = appStoreDir;
-    }
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -209,8 +208,19 @@ public class SiteController {
         this.siteService = siteService;
     }
 
-
     public void setFormHelper(FormHelper formHelper) {
         this.formHelper = formHelper;
+    }
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
+    public void setTaskSender(TaskSender taskSender) {
+        this.taskSender = taskSender;
+    }
+
+    public void setAppStoreDir(String appStoreDir) {
+        this.appStoreDir = appStoreDir;
     }
 }

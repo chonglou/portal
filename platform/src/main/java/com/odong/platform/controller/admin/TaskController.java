@@ -2,14 +2,23 @@ package com.odong.platform.controller.admin;
 
 import com.odong.core.entity.Log;
 import com.odong.core.entity.Task;
+import com.odong.core.json.JsonHelper;
+import com.odong.core.service.LogService;
+import com.odong.core.service.SiteService;
+import com.odong.core.service.TaskService;
+import com.odong.core.util.FormHelper;
+import com.odong.core.util.TimeHelper;
+import com.odong.platform.form.admin.TaskForm;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.SessionItem;
 import com.odong.web.model.form.Form;
+import com.odong.web.model.form.SelectField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
@@ -18,44 +27,43 @@ import javax.validation.Valid;
  * Date: 13-9-14
  * Time: 下午5:39
  */
-@Controller("c.admin.task")
+@Controller("platform.c.admin.task")
 @RequestMapping(value = "/admin/task")
 public class TaskController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     Form getTask() {
         Form fm = new Form("task", "定时任务", "/admin/task/");
-        fm.addField(getClockField("gc", "垃圾清理", getTaskClock(Task.Type.GC)));
-        fm.addField(getClockField("rss", "RSS", getTaskClock(Task.Type.RSS)));
-        fm.addField(getClockField("sitemap", "SITEMAP", getTaskClock(Task.Type.SITE_MAP)));
-        fm.addField(getClockField("backup", "自动备份", getTaskClock(Task.Type.BACKUP)));
+        fm.addField(getClockField("gc", "垃圾清理", getTaskClock("gc")));
+        fm.addField(getClockField("rss", "RSS", getTaskClock("rss")));
+        fm.addField(getClockField("sitemap", "SITEMAP", getTaskClock("sitemap")));
+        fm.addField(getClockField("backup", "自动备份", getTaskClock("backup")));
         fm.setOk(true);
         return fm;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postTask(@Valid TaskForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postTask(@Valid TaskForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            setTaskClock(Task.Type.GC, form.getGc());
-            setTaskClock(Task.Type.RSS, form.getRss());
-            setTaskClock(Task.Type.SITE_MAP, form.getSitemap());
-            setTaskClock(Task.Type.BACKUP, form.getBackup());
-            logService.add(si.getSsUserId(), "更新定时任务" + jsonHelper.object2json(form), Log.Type.INFO);
+            setTaskClock("gc", form.getGc());
+            setTaskClock("rss", form.getRss());
+            setTaskClock("sitemap", form.getSitemap());
+            setTaskClock("backup", form.getBackup());
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "更新定时任务" + jsonHelper.object2json(form), Log.Type.INFO);
         }
         return ri;
 
     }
 
-    private int getTaskClock(Task.Type type) {
-        return ((ClockRequest) taskService.getTaskRequest(siteService.getString("task." + type))).getClock();
+    private int getTaskClock(String type) {
+        return timeHelper.getClock(taskService.getTask(siteService.get("task."+type, Long.class)).getNextRun());
     }
 
-    private void setTaskClock(Task.Type type, int clock) {
-        String taskId = siteService.getString("task." + type);
-        taskService.setTaskRequest(taskId, new ClockRequest(clock));
-        taskService.setTaskNextRun(taskId, timeHelper.nextDay(clock));
+    private void setTaskClock(String type, int clock) {
+        long taskId = Integer.parseInt(siteService.get("task." + type, String.class));
+        taskService.setTaskRequest(taskId, null, clock);
     }
 
     private SelectField<Integer> getClockField(String id, String name, int value) {

@@ -32,7 +32,7 @@ import java.util.Map;
  * Date: 13-8-13
  * Time: 下午12:20
  */
-@Controller("c.admin.database")
+@Controller("platform.c.admin.database")
 @RequestMapping(value = "/admin/database")
 public class DatabaseController {
 

@@ -29,7 +29,7 @@ import java.util.Map;
  * Date: 13-8-14
  * Time: 下午3:48
  */
-@Controller("c.admin.advert")
+@Controller("platform.c.admin.advert")
 @RequestMapping(value = "/admin/advert")
 public class AdvertController {
     @RequestMapping(value = "/", method = RequestMethod.GET)

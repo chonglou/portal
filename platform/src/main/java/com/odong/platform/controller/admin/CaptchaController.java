@@ -26,7 +26,7 @@ import javax.validation.Valid;
  * Date: 13-5-23
  * Time: 下午12:14
  */
-@Controller("c.admin.captcha")
+@Controller("platform.c.admin.captcha")
 @RequestMapping(value = "/admin/captcha")
 public class CaptchaController {
 
