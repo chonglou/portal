@@ -1,19 +1,10 @@
 package com.odong.platform.controller.admin;
 
-import com.odong.portal.entity.Log;
-import com.odong.portal.entity.Task;
-import com.odong.portal.form.admin.TaskForm;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.model.task.ClockRequest;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.service.TaskService;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.util.JsonHelper;
-import com.odong.portal.util.TimeHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.SelectField;
+import com.odong.core.entity.Log;
+import com.odong.core.entity.Task;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.SessionItem;
+import com.odong.web.model.form.Form;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +20,6 @@ import javax.validation.Valid;
  */
 @Controller("c.admin.task")
 @RequestMapping(value = "/admin/task")
-@SessionAttributes(SessionItem.KEY)
 public class TaskController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody

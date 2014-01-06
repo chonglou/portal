@@ -1,21 +1,24 @@
 package com.odong.platform.controller.admin;
 
-import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.ScriptForm;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheService;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.HiddenField;
-import com.odong.portal.web.form.TextAreaField;
+import com.odong.core.entity.Log;
+import com.odong.core.service.LogService;
+import com.odong.core.service.SiteService;
+import com.odong.core.util.CacheService;
+import com.odong.core.util.FormHelper;
+import com.odong.platform.form.admin.ScriptForm;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.HiddenField;
+import com.odong.web.model.form.TextAreaField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +31,12 @@ import java.util.Map;
  */
 @Controller("c.admin.advert")
 @RequestMapping(value = "/admin/advert")
-@SessionAttributes(SessionItem.KEY)
 public class AdvertController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getAdvert(Map<String, Object> map) {
         Map<String, String> adverts = new HashMap<>();
         for (String s : new String[]{"left", "bottom"}) {
-            adverts.put(s, siteService.getString("site.advert." + s));
+            adverts.put(s, siteService.get("site.advert." + s, String.class));
         }
         map.put("adverts", adverts);
         return "admin/advert";
@@ -45,7 +47,7 @@ public class AdvertController {
     Form getLeft(@PathVariable String id) {
         Form fm = new Form("advert", "编辑广告[" + id + "]", "/admin/advert/");
         fm.addField(new HiddenField<>("id", id));
-        TextAreaField taf = new TextAreaField("script", "脚本", siteService.getString("site.advert." + id));
+        TextAreaField taf = new TextAreaField("script", "脚本", siteService.get("site.advert." + id, String.class));
         taf.setHtml(false);
         fm.addField(taf);
         fm.setOk(true);
@@ -54,12 +56,12 @@ public class AdvertController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteSmtp(@Valid ScriptForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSiteSmtp(@Valid ScriptForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.advert." + form.getId(), form.getScript());
-            logService.add(si.getSsUserId(), "设置广告[" + form.getId() + "]", Log.Type.INFO);
-            cacheService.popSiteInfo();
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "设置广告[" + form.getId() + "]", Log.Type.INFO);
+            cacheService.popPage();
         }
         return ri;
     }

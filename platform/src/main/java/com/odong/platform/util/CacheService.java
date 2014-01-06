@@ -20,48 +20,7 @@ import java.util.ArrayList;
  */
 @Component("platform.cacheService")
 public class CacheService  {
-    public ArrayList getLogList() {
-        return cacheHelper.get("logs", ArrayList.class, null, () -> {
-            ArrayList<String> logList = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    logList.add(line);
-                }
-            } catch (IOException e) {
-                logger.error("加载大事记文件出错", e);
-            }
-            return logList;
-        });
-    }
 
-    public String getAboutMe(){
-        return cacheHelper.get("platform/aboutMe", String.class, null, ()->siteService.get("site.aboutMe", String.class));
-    }
-    public void popAboutMe(){
-        cacheHelper.delete("platform/aboutMe");
-    }
-
-    public QqAuthProfile getQqAuthProfile(){
-        return cacheHelper.get("platform/oauth/qq", QqAuthProfile.class, null, ()->siteService.get("site.oauth.qq", QqAuthProfile.class, true));
-    }
-    public void popQqAuthProfile(){
-        cacheHelper.delete("platform/oauth/qq");
-    }
-    public GoogleAuthProfile getGoogleAuthProfile(){
-        return cacheHelper.get("platform/oauth/google", GoogleAuthProfile.class, null, ()->siteService.get("site.oauth.google", GoogleAuthProfile.class, true));
-    }
-    public void popGoogleAuthProfile(){
-        cacheHelper.delete("platform/oauth/google");
-    }
-    public String getGoogleValidCode() {
-        return cacheHelper.get("platform/googleValidCode", String.class, null, () -> siteService.get("site.googleValidCode", String.class));
-    }
-
-
-    public void popGoogleValidCode() {
-        cacheHelper.delete("platform/googleValidCode");
-    }
 
     @Resource
     private CacheHelper cacheHelper;

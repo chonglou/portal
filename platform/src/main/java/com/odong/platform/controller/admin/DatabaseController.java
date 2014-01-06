@@ -1,16 +1,15 @@
 package com.odong.platform.controller.admin;
 
-import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.ImportForm;
-import com.odong.portal.job.TaskSender;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.DBHelper;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.TextField;
+import com.odong.core.entity.Log;
+import com.odong.core.job.TaskSender;
+import com.odong.core.service.LogService;
+import com.odong.core.service.SiteService;
+import com.odong.core.store.DbUtil;
+import com.odong.core.util.FormHelper;
+import com.odong.platform.form.admin.ImportForm;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,26 +34,25 @@ import java.util.Map;
  */
 @Controller("c.admin.database")
 @RequestMapping(value = "/admin/database")
-@SessionAttributes(SessionItem.KEY)
 public class DatabaseController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getCompress(Map<String, Object> map) {
 
-        map.put("lastExport", siteService.getObject("site.lastExport", Date.class));
-        map.put("lastBackup", siteService.getObject("site.lastBackup", Date.class));
-        map.put("dbSize", dbHelper.getSize());
+        map.put("lastExport", siteService.get("site.lastExport", Date.class));
+        map.put("lastBackup", siteService.get("site.lastBackup", Date.class));
+        map.put("dbSize", dbUtil.size());
         return "admin/database";
     }
 
     @RequestMapping(value = "/backup", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postBackup(@ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postBackup(HttpSession session) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         try {
-            taskSender.backup();
+            taskSender.send(null, "backup", null);
             siteService.set("site.lastBackup", new Date());
-            logService.add(si.getSsUserId(), "备份数据库", Log.Type.INFO);
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "备份数据库", Log.Type.INFO);
             ri.setOk(true);
         } catch (Exception e) {
             ri.setOk(false);
@@ -64,7 +64,8 @@ public class DatabaseController {
 
     @RequestMapping(value = "/import", method = RequestMethod.GET)
     @ResponseBody
-    Form getImport() {
+    Form
+    getImport() {
         Form fm = new Form("database", "导入数据", "/admin/database/import");
         fm.addField(new TextField<String>("url", "路径"));
         fm.setCaptcha(true);
@@ -74,7 +75,7 @@ public class DatabaseController {
 
     @RequestMapping(value = "/import", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postImport(@Valid ImportForm form, BindingResult result, HttpServletRequest request, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postImport(@Valid ImportForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         File file = new File(form.getUrl());
         if (!file.exists()) {
@@ -82,7 +83,9 @@ public class DatabaseController {
             ri.addData("数据文件[" + form.getUrl() + "]不存在");
         }
         if (ri.isOk()) {
-            taskSender.import4json(form.getUrl());
+            Map<String,Object> map = new HashMap<>();
+            map.put("url", form.getUrl());
+            taskSender.send(null, "import4json", map);
             ri.addData("正在处理，请稍候");
         }
         return ri;
@@ -90,13 +93,13 @@ public class DatabaseController {
 
     @RequestMapping(value = "/export", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postExport(@ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postExport(HttpSession session) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
 
         try {
-            taskSender.export2json();
+            taskSender.send(null, "export4json", null);
             siteService.set("site.lastExport", new Date());
-            logService.add(si.getSsUserId(), "导出数据库", Log.Type.INFO);
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "导出数据库", Log.Type.INFO);
             ri.setOk(true);
         } catch (Exception e) {
             ri.setOk(false);
@@ -105,8 +108,6 @@ public class DatabaseController {
         return ri;
     }
 
-    @Resource
-    private DBHelper dbHelper;
     @Resource
     private LogService logService;
     @Resource
@@ -117,7 +118,13 @@ public class DatabaseController {
     private FormHelper formHelper;
     @Resource
     private TaskSender taskSender;
+    @Resource
+    private DbUtil dbUtil;
     private final static Logger logger = LoggerFactory.getLogger(DatabaseController.class);
+
+    public void setDbUtil(DbUtil dbUtil) {
+        this.dbUtil = dbUtil;
+    }
 
     public void setTaskSender(TaskSender taskSender) {
         this.taskSender = taskSender;
@@ -136,9 +143,6 @@ public class DatabaseController {
     }
 
 
-    public void setDbHelper(DBHelper dbHelper) {
-        this.dbHelper = dbHelper;
-    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;

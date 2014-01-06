@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odong.core.json.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +18,14 @@ import java.util.Map;
 /**
  * Created by flamen on 13-12-30上午2:27.
  */
+@Component("core.jsonHelper")
 public class JsonJacksonHelperImpl implements JsonHelper {
     @Override
     public String object2json(Object object) {
+
         try {
             return mapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException|NullPointerException e) {
             logger.error("输出JSON出错", e);
         }
         return "{}";
@@ -65,8 +69,9 @@ public class JsonJacksonHelperImpl implements JsonHelper {
         return new ArrayList<>();
     }
 
-    @Override
-    public void init() {
+
+    @PostConstruct
+    void init() {
         mapper = new ObjectMapper();
         //mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }

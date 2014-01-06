@@ -6,6 +6,17 @@ import java.io.Serializable;
  * Created by flamen on 13-12-31下午2:50.
  */
 public class QqAuthProfile implements Serializable {
+    public QqAuthProfile(String valid, String id, String key, String uri) {
+        this.valid = valid;
+        this.id = id;
+        this.key = key;
+        this.uri = uri;
+    }
+
+    @Deprecated
+    public QqAuthProfile() {
+    }
+
     private static final long serialVersionUID = 1364265699069501727L;
     private String valid;
     private String id;

@@ -28,7 +28,6 @@ import javax.validation.Valid;
  */
 @Controller("c.personal.info")
 @RequestMapping(value = "/personal")
-@SessionAttributes(SessionItem.KEY)
 public class InfoController {
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)

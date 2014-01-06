@@ -1,21 +1,63 @@
 package com.odong.core.store;
 
+import com.odong.core.util.ZipHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by flamen on 13-12-30下午3:45.
  */
 @Component("core.store.db")
 public class DbUtil {
+    public String size() {
+        switch (jdbcDriver) {
+            case Driver.MYSQL:
+                try (Connection conn = getConnection();
+                     Statement stmt = conn.createStatement()) {
+                    ResultSet rs = stmt.executeQuery(String.format("SELECT concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data FROM information_schema.TABLES WHERE table_schema='%s'", jdbcName));
+                    if (rs.next()) {
+                        return rs.getString(1);
+                    }
+                } catch (SQLException e) {
+                    logger.error("查询数据库大小出错");
+                }
+                break;
+        }
+        return "未知大小";
+    }
+
+    public void backup() {
+        switch (jdbcDriver) {
+            case Driver.MYSQL:
+                logger.info("开始备份数据库{}@mysql", jdbcName);
+                try {
+                    String fileName = appStore + "/backup/" + appName + "_" + format.format(new Date()) + ".sql";
+                    Process p = Runtime.getRuntime().exec(String.format("mysqldump -u %s -p %s %s -r %s", jdbcUsername, jdbcPassword, jdbcName, fileName));
+                    if (p.waitFor() == 0) {
+                        logger.info("备份成功,开始压缩文件");
+                        zipHelper.compress(fileName, true);
+                    } else {
+                        logger.error("备份失败");
+                    }
+
+                } catch (IOException | InterruptedException e) {
+                    logger.error("备份数据库{}@mysql出错", jdbcName, e);
+                }
+                return;
+        }
+        logger.error("不支持备份的数据库类型[{}]", jdbcDriver);
+
+    }
 
     @PostConstruct
     void init() throws ClassNotFoundException, SQLException {
@@ -36,6 +78,7 @@ public class DbUtil {
         Class.forName(jdbcDriver);
         checkDatabaseExist();
 
+        format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     }
 
 
@@ -67,6 +110,7 @@ public class DbUtil {
 
 
     private String jdbcUrl;
+    private DateFormat format;
     @Value("${jdbc.driver}")
     private String jdbcDriver;
     @Value("${jdbc.host}")
@@ -83,7 +127,14 @@ public class DbUtil {
     private String appName;
     @Value("${app.store}")
     private String appStore;
+    @Resource
+    private ZipHelper zipHelper;
+
     private final static Logger logger = LoggerFactory.getLogger(DbUtil.class);
+
+    public void setZipHelper(ZipHelper zipHelper) {
+        this.zipHelper = zipHelper;
+    }
 
     public void setJdbcDriver(String jdbcDriver) {
         this.jdbcDriver = jdbcDriver;

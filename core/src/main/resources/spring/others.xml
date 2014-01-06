@@ -3,30 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="jsonHelper" class="com.odong.core.json.impl.JsonJacksonHelperImpl" init-method="init"/>
-    <!--<bean id="jsonJackson" class="com.odong.core.json.impl.JsonFastjsonHelperImpl" init-method="init"/>-->
-
     <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheEhcacheHelperImpl" init-method="init"
           destroy-method="destroy">
         <property name="appName" value="${app.name}"/>
     </bean>
-    <!--
-    <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheRedisHelperImpl" init-method="init" destroy-method="destroy">
-        <property name="appName" value="${app.name}"/>
-        <property name="pool" ref="jedisPool"/>
-    </bean>
-    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
-        <constructor-arg name="poolConfig">
-            <bean class="redis.clients.jedis.JedisPoolConfig">
-                <property name="maxActive" value="${redis.max_conn}"/>
-                <property name="maxIdle" value="20"/>
-                <property name="maxWait" value="10001"/>
-            </bean>
-        </constructor-arg>
-        <constructor-arg name="host" value="${redis.host}"/>
-        <constructor-arg name="port" value="${redis.port}"/>
-    </bean>
-    -->
 
     <!--
     <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheMemcachedHelperImpl"  init-method="init" destroy-method="destroy">

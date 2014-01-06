@@ -1,23 +1,23 @@
 package com.odong.platform.controller.admin;
 
-import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.CaptchaForm;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.model.profile.KaptchaProfile;
-import com.odong.portal.model.profile.ReCaptchaProfile;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CaptchaHelper;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.RadioField;
-import com.odong.portal.web.form.TextField;
+import com.odong.core.entity.Log;
+import com.odong.core.model.KaptchaProfile;
+import com.odong.core.model.ReCaptchaProfile;
+import com.odong.core.service.LogService;
+import com.odong.core.service.SiteService;
+import com.odong.core.util.FormHelper;
+import com.odong.platform.form.admin.CaptchaForm;
+import com.odong.platform.util.CaptchaHelper;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.RadioField;
+import com.odong.web.model.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
@@ -28,7 +28,6 @@ import javax.validation.Valid;
  */
 @Controller("c.admin.captcha")
 @RequestMapping(value = "/admin/captcha")
-@SessionAttributes(SessionItem.KEY)
 public class CaptchaController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -39,10 +38,10 @@ public class CaptchaController {
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
     Form getCaptchaForm() {
-        KaptchaProfile kp = siteService.getObject("site.kaptcha", KaptchaProfile.class);
-        ReCaptchaProfile rp = siteService.getObject("site.reCaptcha", ReCaptchaProfile.class);
+        KaptchaProfile kp = siteService.get("site.kaptcha", KaptchaProfile.class);
+        ReCaptchaProfile rp = siteService.get("site.reCaptcha", ReCaptchaProfile.class, true);
         Form fm = new Form("captcha", "验证码设置", "/admin/captcha/info");
-        RadioField<String> mode = new RadioField<>("mode", "引擎", siteService.getString("site.captcha"));
+        RadioField<String> mode = new RadioField<>("mode", "引擎", siteService.get("site.captcha", String.class));
         mode.addOption("内置(随机图片)", "kaptcha");
         mode.addOption("外部(reCaptcha)", "reCaptcha");
         fm.addField(mode);
@@ -64,7 +63,7 @@ public class CaptchaController {
 
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postCaptchaForm(@Valid CaptchaForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postCaptchaForm(@Valid CaptchaForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             switch (form.getMode()) {
@@ -81,7 +80,7 @@ public class CaptchaController {
                     rp.setIncludeNoScript(form.isIncludeNoScript());
                     rp.setPublicKey(form.getPublicKey());
                     rp.setPrivateKey(form.getPrivateKey());
-                    siteService.set("site.reCaptcha", rp);
+                    siteService.set("site.reCaptcha", rp, true);
                     break;
                 default:
                     ri.setOk(false);
@@ -91,7 +90,7 @@ public class CaptchaController {
         }
         if (ri.isOk()) {
             siteService.set("site.captcha", form.getMode());
-            logService.add(si.getSsUserId(), "更新验证码配置", Log.Type.INFO);
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "更新验证码配置", Log.Type.INFO);
             captchaHelper.reload();
         }
         return ri;

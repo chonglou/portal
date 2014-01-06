@@ -6,14 +6,13 @@ import java.io.Serializable;
  * Created by flamen on 13-12-30下午9:45.
  */
 public class SmtpProfile implements Serializable {
-    public SmtpProfile(String host, int port, String username, String password) {
+    public SmtpProfile(String host,  String username, String password, String bcc) {
         this.host = host;
         this.username = username;
         this.password = password;
-        this.port = port;
+        this.bcc = bcc;
     }
 
-    @Deprecated
     public SmtpProfile(){
 
     }

@@ -6,6 +6,16 @@ import java.io.Serializable;
  * Created by flamen on 13-12-31下午2:50.
  */
 public class GoogleAuthProfile implements Serializable {
+    public GoogleAuthProfile(String id, String uri, String secret) {
+        this.id = id;
+        this.uri = uri;
+        this.secret = secret;
+    }
+
+    @Deprecated
+    public GoogleAuthProfile() {
+    }
+
     private static final long serialVersionUID = -1229352721071877128L;
     private String id;
     private String uri;

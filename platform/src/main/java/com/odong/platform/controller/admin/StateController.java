@@ -1,26 +1,26 @@
 package com.odong.platform.controller.admin;
 
-import com.odong.portal.cache.CacheHelper;
-import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.AllowForm;
-import com.odong.portal.form.admin.GoogleAuthForm;
-import com.odong.portal.form.admin.QqAuthForm;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.model.profile.GoogleAuthProfile;
-import com.odong.portal.model.profile.QQAuthProfile;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheService;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.RadioField;
-import com.odong.portal.web.form.TextField;
+import com.odong.core.entity.Log;
+import com.odong.core.model.GoogleAuthProfile;
+import com.odong.core.model.QqAuthProfile;
+import com.odong.core.service.LogService;
+import com.odong.core.service.SiteService;
+import com.odong.core.util.CacheService;
+import com.odong.core.util.FormHelper;
+import com.odong.platform.form.admin.AllowForm;
+import com.odong.platform.form.admin.GoogleAuthForm;
+import com.odong.platform.form.admin.QqAuthForm;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.SessionItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.RadioField;
+import com.odong.web.model.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -38,7 +38,6 @@ import java.util.Map;
  */
 @Controller("c.admin.state")
 @RequestMapping(value = "/admin/state")
-@SessionAttributes(SessionItem.KEY)
 public class StateController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getStatus() {
@@ -49,7 +48,7 @@ public class StateController {
     @ResponseBody
     Form getGoogleAuthForm() {
         Form fm = new Form("google", "google账户", "/admin/state/googleAuth");
-        GoogleAuthProfile gap = siteService.getObject("site.googleAuth", GoogleAuthProfile.class);
+        GoogleAuthProfile gap = siteService.get("site.googleAuth", GoogleAuthProfile.class, true);
         if (gap == null) {
             gap = new GoogleAuthProfile("", "", "");
         }
@@ -66,14 +65,14 @@ public class StateController {
 
     @RequestMapping(value = "/googleAuth", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postGoogleAuthForm(@Valid GoogleAuthForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postGoogleAuthForm(@Valid GoogleAuthForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             GoogleAuthProfile gap = new GoogleAuthProfile(form.getId(), form.getSecret(), form.getUri());
             gap.setEnable(form.isEnable());
             siteService.set("site.googleAuth", gap);
-            cacheService.popGoogleAuthProfile();
-            logService.add(si.getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
+            cacheService.popPage();
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
         }
         return ri;
     }
@@ -83,9 +82,9 @@ public class StateController {
     @ResponseBody
     Form getQqAuthForm() {
         Form fm = new Form("qq", "二维码信息", "/admin/state/qqAuth");
-        QQAuthProfile qap = siteService.getObject("site.qqAuth", QQAuthProfile.class);
+        QqAuthProfile qap = siteService.get("site.qqAuth", QqAuthProfile.class, true);
         if (qap == null) {
-            qap = new QQAuthProfile("", "", "", "");
+            qap = new QqAuthProfile("", "", "", "");
         }
         fm.addField(new TextField<>("valid", "验证代码", qap.getValid()));
         fm.addField(new TextField<>("id", "APP ID", qap.getId()));
@@ -102,14 +101,14 @@ public class StateController {
 
     @RequestMapping(value = "/qqAuth", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postQqAuthForm(@Valid QqAuthForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postQqAuthForm(@Valid QqAuthForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            QQAuthProfile qap = new QQAuthProfile(form.getValid(), form.getId(), form.getKey(), form.getUri());
+            QqAuthProfile qap = new QqAuthProfile(form.getValid(), form.getId(), form.getKey(), form.getUri());
             qap.setEnable(form.isEnable());
-            siteService.set("site.qqAuth", qap);
-            cacheService.popQQAuthProfile();
-            logService.add(si.getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
+            siteService.set("site.qqAuth", qap, true);
+            cacheService.popPage();
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "修改站点QQ互联信息", Log.Type.INFO);
         }
         return ri;
     }
@@ -119,10 +118,9 @@ public class StateController {
     @ResponseBody
     Map<String, Object> getOsStatus() {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("site.startup", cacheService.getStartUp());
-        map.put("memcached", cacheHelper.status());
-        map.put("jvm.loadedClassCount", ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
+        map.put("site.startup", siteService.get("site.startup", Date.class));
 
+        map.put("jvm.loadedClassCount", ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
         OperatingSystemMXBean osm = ManagementFactory.getOperatingSystemMXBean();
         map.put("os.name", osm.getName());
         map.put("os.arch", osm.getArch());
@@ -150,13 +148,13 @@ public class StateController {
     @ResponseBody
     Form getAllow() {
         Form fm = new Form("siteState", "服务状态", "/admin/state/service");
-        RadioField<Boolean> login = new RadioField<>("allowLogin", "登陆", siteService.getBoolean("site.allowLogin"));
+        RadioField<Boolean> login = new RadioField<>("allowLogin", "登陆", siteService.get("site.allowLogin", Boolean.class));
         login.addOption("允许", true);
         login.addOption("禁止", false);
-        RadioField<Boolean> register = new RadioField<>("allowRegister", "注册", siteService.getBoolean("site.allowRegister"));
+        RadioField<Boolean> register = new RadioField<>("allowRegister", "注册", siteService.get("site.allowRegister", Boolean.class));
         register.addOption("允许", true);
         register.addOption("禁止", false);
-        RadioField<Boolean> anonym = new RadioField<>("allowAnonym", "匿名评论", siteService.getBoolean("site.allowAnonym"));
+        RadioField<Boolean> anonym = new RadioField<>("allowAnonym", "匿名评论", siteService.get("site.allowAnonym", Boolean.class));
         anonym.addOption("允许", true);
         anonym.addOption("禁止", false);
         fm.addField(login);
@@ -169,13 +167,13 @@ public class StateController {
 
     @RequestMapping(value = "/service", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postAllow(@Valid AllowForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postAllow(@Valid AllowForm form, BindingResult result,HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.allowRegister", form.isAllowRegister());
             siteService.set("site.allowLogin", form.isAllowLogin());
             siteService.set("site.allowAnonym", form.isAllowAnonym());
-            logService.add(si.getSsUserId(), "变更站点权限 注册=>[" + form.isAllowRegister() + "] 登陆=>[" + form.isAllowLogin() + "] 匿名用户=>[" + form.isAllowAnonym() + "]", Log.Type.INFO);
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "变更站点权限 注册=>[" + form.isAllowRegister() + "] 登陆=>[" + form.isAllowLogin() + "] 匿名用户=>[" + form.isAllowAnonym() + "]", Log.Type.INFO);
         }
         return ri;
 
@@ -187,17 +185,12 @@ public class StateController {
     private SiteService siteService;
     @Resource
     private FormHelper formHelper;
-    @Resource
-    private CacheHelper cacheHelper;
+
     @Resource
     private CacheService cacheService;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
-    }
-
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
     }
 
     public void setLogService(LogService logService) {

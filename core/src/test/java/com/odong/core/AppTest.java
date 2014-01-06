@@ -1,5 +1,6 @@
 package com.odong.core;
 
+import com.alibaba.fastjson.JSON;
 import com.odong.core.cache.CacheHelper;
 import com.odong.core.cz88.CZ88Helper;
 import com.odong.core.entity.Log;

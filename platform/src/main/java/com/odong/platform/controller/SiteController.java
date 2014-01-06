@@ -7,6 +7,7 @@ import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;
 import com.odong.core.util.FormHelper;
+import com.odong.core.util.SiteHelper;
 import com.odong.platform.form.InstallForm;
 import com.odong.platform.util.CacheService;
 import com.odong.web.model.Page;
@@ -38,14 +39,6 @@ import java.util.Map;
  */
 @Controller("platform.c.site")
 public class SiteController {
-
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    String getMain(Map<String, Object> map, HttpSession session) {
-        Page page = formHelper.getPage(session);
-        map.put("page", page);
-        return "/platform/main";
-    }
-
 
     @RequestMapping(value = "/install", method = RequestMethod.GET)
     String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException, ParseException {
@@ -168,57 +161,6 @@ public class SiteController {
         return "/core/message.httl";
     }
 
-    @RequestMapping(value = "/google*.html", method = RequestMethod.GET)
-    void getGoogleValid(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String vCode = cacheService.getGoogleValidCode();
-        logger.debug("##### {} {}", vCode, request.getRequestURI().substring(1));
-        if (request.getRequestURI().substring(1).equals(vCode)) {
-            response.getWriter().println("google-site-verification: " + vCode);
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
-    }
-
-    @RequestMapping(value = "/page/{pgId}", method = RequestMethod.GET)
-    String getPage(Map<String, Object> map, @PathVariable int pgId) {
-        pager(map, pgId);
-        map.put("title", "第" + pgId + "页");
-        return "cms/page";
-    }
-
-
-    @RequestMapping(value = "sitemap", method = RequestMethod.GET)
-    String getSitemap(Map<String, Object> map, HttpSession session) {
-        Page page = formHelper.getPage(session);
-        page.setTitle("网站地图");
-        page.setIndex("/sitemap");
-        map.put("page", page);
-        //FIXME 通过cache系统获得页面信息
-        return "sitemap";
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
-    String postSearch(Map<String, Object> map, HttpServletRequest request, HttpSession session) {
-        Page page = formHelper.getPage(session);
-        String key = request.getParameter("keyword");
-        page.setTitle("搜索-[" + key + "]的结果");
-        map.put("page", page);
-        //FIXME 使用google搜索
-        return "search";
-        /*
-        Date last = (Date) session.getAttribute("lastSearch");
-        session.setAttribute("lastSearch", new Date());
-        if (last == null || last.getTime() + 1000 * siteService.get("search.space", Integer.class) < new Date().getTime()) {
-
-            return "search";
-        } else {
-            ResponseItem item = new ResponseItem(ResponseItem.Type.message);
-            item.addData("过于频繁的搜索，请过" + searchSpace + "秒钟重试");
-            map.put("item", item);
-            return "message";
-        }
-        */
-    }
 
     @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
     String getAboutMe(Map<String, Object> map, HttpSession session) {
@@ -229,29 +171,8 @@ public class SiteController {
         map.put("page", page);
         map.put("logList", cacheService.getLogList());
         map.put("aboutMe", cacheService.getAboutMe());
-        return "aboutMe";
+        return "platform/aboutMe";
     }
-
-    private void pager(Map<String, Object> map, int index) {
-        //FIXME 从cache中读取数据
-        /*
-        fillSiteInfo(map);
-        map.put("top_nav_key", "main");
-        map.put("navBars", getNavBars());
-
-        Pager pager = cacheService.getPager();
-        if (index < 1) {
-            index = 1;
-        } else if (pager.getTotal() > 0 && index > pager.getTotal()) {
-            index = pager.getTotal();
-        }
-        pager.setIndex(index);
-        map.put("pager", pager);
-
-        map.put("articleList", cacheService.getArticleCardsByPager(index, pager.getSize()));
-        */
-    }
-
 
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
@@ -268,6 +189,12 @@ public class SiteController {
     private FormHelper formHelper;
     @Value("${app.agreement}")
     private String agreement;
+    @Resource
+    private SiteHelper siteHelper;
+
+    public void setSiteHelper(SiteHelper siteHelper) {
+        this.siteHelper = siteHelper;
+    }
 
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;

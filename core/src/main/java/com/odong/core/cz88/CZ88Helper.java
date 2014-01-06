@@ -3,10 +3,12 @@ package com.odong.core.cz88;
 import com.odong.core.store.JdbcHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.sql.ResultSet;
 
 /**
  * Created by flamen on 14-1-3下午1:43.
@@ -59,8 +61,8 @@ public class CZ88Helper extends JdbcHelper  {
     }
 
     public CZ88 search(String ip) {
-        //TODO
-        return null;
+        long lip = ip2long(ip);
+        return select("SELECT * FROM CZ88 WHERE ipStart<=? AND ipEnd>=?", new Object[]{lip, lip}, mapper());
     }
 
     private long ip2long(String ip){
@@ -85,26 +87,6 @@ public class CZ88Helper extends JdbcHelper  {
         return sb.toString();
 
     }
-    /*
-    private void batch(List<CZ88> list){
-        getJdbcTemplate().batchUpdate("INSERT INTO CZ88(ipStart,ipEnd,ext1,ext2) VALUES(?,?,?,?)", new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                CZ88 cz = list.get(i);
-                ps.setString(1, cz.getIpStart());
-                ps.setString(2, cz.getIpEnd());
-                ps.setString(3, cz.getExt1());
-                ps.setString(4, cz.getExt2());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return list.size();
-            }
-        });
-        list.clear();
-    }
-    */
 
     public void clear() {
         execute("DELETE FROM CZ88");
@@ -119,6 +101,18 @@ public class CZ88Helper extends JdbcHelper  {
                 stringColumn("ext1", 255, true, false),
                 stringColumn("ext2", 255, false, false)
                 );
+    }
+
+    private RowMapper<CZ88> mapper(){
+        return (ResultSet rs, int i) -> {
+            CZ88 cz = new CZ88();
+            cz.setExt1(rs.getString("ext1"));
+            cz.setExt2(rs.getString("ext2"));
+            cz.setId(rs.getLong("id"));
+            cz.setIpEnd(rs.getLong("ipStart"));
+            cz.setIpEnd(rs.getLong("ipEnd"));
+            return cz;
+        };
     }
 
     private final static Logger logger = LoggerFactory.getLogger(CZ88Helper.class);

@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by flamen on 13-12-30下午12:55.
  */
-public class CacheEhcacheHelperImpl implements CacheHelper {
+public final class CacheEhcacheHelperImpl implements CacheHelper {
     @Override
     public void destroy() {
         manager.shutdown();

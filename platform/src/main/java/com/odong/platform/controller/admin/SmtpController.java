@@ -1,23 +1,23 @@
 package com.odong.platform.controller.admin;
 
-import com.odong.portal.entity.Log;
-import com.odong.portal.form.admin.SmtpForm;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.model.profile.SmtpProfile;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.SiteService;
-import com.odong.portal.util.CacheService;
-import com.odong.portal.util.EncryptHelper;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.RadioField;
-import com.odong.portal.web.form.TextField;
+import com.odong.core.entity.Log;
+import com.odong.core.model.SmtpProfile;
+import com.odong.core.service.LogService;
+import com.odong.core.service.SiteService;
+import com.odong.core.util.CacheService;
+import com.odong.core.util.FormHelper;
+import com.odong.platform.form.admin.SmtpForm;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.SessionItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.RadioField;
+import com.odong.web.model.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
@@ -28,12 +28,11 @@ import javax.validation.Valid;
  */
 @Controller("c.admin.smtp")
 @RequestMapping(value = "/admin/smtp")
-@SessionAttributes(SessionItem.KEY)
 public class SmtpController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteSmtp() {
-        SmtpProfile profile = encryptHelper.decode(siteService.getString("site.smtp"), SmtpProfile.class);
+        SmtpProfile profile = siteService.get("site.smtp", SmtpProfile.class, true);
 
         if (profile == null) {
             profile = new SmtpProfile();
@@ -58,14 +57,14 @@ public class SmtpController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteSmtp(@Valid SmtpForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSiteSmtp(@Valid SmtpForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             SmtpProfile profile = new SmtpProfile(form.getHost(), form.getUsername(), form.getPassword(), form.getBcc());
             profile.setPort(form.getPort());
             profile.setSsl(form.isSsl());
-            siteService.set("site.smtp", encryptHelper.encode(profile));
-            logService.add(si.getSsUserId(), "设置SMTP信息", Log.Type.INFO);
+            siteService.set("site.smtp", profile, true);
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "设置SMTP信息", Log.Type.INFO);
             cacheService.popSmtp();
         }
         return ri;
@@ -76,8 +75,7 @@ public class SmtpController {
     private CacheService cacheService;
     @Resource
     private SiteService siteService;
-    @Resource
-    private EncryptHelper encryptHelper;
+
     @Resource
     private FormHelper formHelper;
     @Resource
@@ -91,9 +89,6 @@ public class SmtpController {
         this.siteService = siteService;
     }
 
-    public void setEncryptHelper(EncryptHelper encryptHelper) {
-        this.encryptHelper = encryptHelper;
-    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;

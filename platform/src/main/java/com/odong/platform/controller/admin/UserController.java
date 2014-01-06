@@ -1,18 +1,19 @@
 package com.odong.platform.controller.admin;
 
-import com.odong.portal.entity.Log;
-import com.odong.portal.entity.User;
-import com.odong.portal.form.admin.ManagerForm;
-import com.odong.portal.form.admin.UserForm;
-import com.odong.portal.model.SessionItem;
-import com.odong.portal.service.AccountService;
-import com.odong.portal.service.LogService;
-import com.odong.portal.service.RbacService;
-import com.odong.portal.util.FormHelper;
-import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.RadioField;
-import com.odong.portal.web.form.SelectField;
+import com.odong.core.entity.Log;
+import com.odong.core.entity.User;
+import com.odong.core.service.LogService;
+import com.odong.core.service.RbacService;
+import com.odong.core.service.UserService;
+import com.odong.core.util.FormHelper;
+import com.odong.core.util.TimeHelper;
+import com.odong.platform.form.admin.ManagerForm;
+import com.odong.platform.form.admin.UserForm;
+import com.odong.web.model.ResponseItem;
+import com.odong.web.model.SessionItem;
+import com.odong.web.model.form.Form;
+import com.odong.web.model.form.RadioField;
+import com.odong.web.model.form.SelectField;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -31,24 +34,21 @@ import java.util.Map;
  */
 @Controller("c.admin.user")
 @RequestMapping(value = "/admin/user")
-@SessionAttributes(SessionItem.KEY)
 public class UserController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getList(Map<String, Object> map) {
-
-        map.put("userList", accountService.listUser());
-
+        map.put("userList", userService.listUser());
         return "admin/user";
     }
 
     @RequestMapping(value = "/state", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postState(@Valid UserForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postState(@Valid UserForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         check(ri, form.getId());
         if (ri.isOk()) {
-            accountService.setUserState(form.getId(), form.getState());
-            logService.add(si.getSsUserId(), "变更用户[" + form.getId() + "]=>状态[" + form.getState() + "]", Log.Type.INFO);
+            userService.setUserState(form.getId(), form.getState());
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), "变更用户[" + form.getId() + "]=>状态[" + form.getState() + "]", Log.Type.INFO);
         }
         return ri;
     }
@@ -60,7 +60,7 @@ public class UserController {
         Form fm = new Form("bind", "管理员权限管理", "/admin/user/bind");
 
         SelectField<Long> users = new SelectField<>("userId", "用户");
-        for (User user : accountService.listUser()) {
+        for (User user : userService.listUser()) {
             users.addOption(user.toString(), user.getId());
         }
         users.setWidth(320);
@@ -76,18 +76,18 @@ public class UserController {
 
     @RequestMapping(value = "/bind", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postBind(@Valid ManagerForm form, BindingResult result, HttpServletRequest request, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postBind(@Valid ManagerForm form, BindingResult result, HttpSession session) {
         ResponseItem ri = formHelper.check(result);
         check(ri, form.getUserId());
         if (ri.isOk()) {
-            rbacService.bindAdmin(form.getUserId(), form.isBind());
-            logService.add(si.getSsUserId(), form.isBind() ? "绑定" : "解绑" + "用户[" + form.getUserId() + "]到管理员组", Log.Type.INFO);
+            rbacService.bind("user://"+form.getUserId(), "manager", "resource://site",new Date(), timeHelper.max(), form.isBind());
+            logService.add(formHelper.getSessionItem(session).getSsUserId(), form.isBind() ? "绑定" : "解绑" + "用户[" + form.getUserId() + "]到管理员组", Log.Type.INFO);
         }
         return ri;
     }
 
     private void check(ResponseItem ri, long userId) {
-        if (manager.equals(accountService.getUser(userId).getEmail())) {
+        if (manager.equals(userService.getUser(userId).getEmail())) {
             ri.setOk(false);
             ri.addData("不能修改超级管理员");
         }
@@ -96,13 +96,19 @@ public class UserController {
     @Resource
     private RbacService rbacService;
     @Resource
-    private AccountService accountService;
+    private UserService userService;
     @Resource
     private FormHelper formHelper;
     @Resource
     private LogService logService;
     @Value("${app.manager}")
     private String manager;
+    @Resource
+    private TimeHelper timeHelper;
+
+    public void setTimeHelper(TimeHelper timeHelper) {
+        this.timeHelper = timeHelper;
+    }
 
     public void setManager(String manager) {
         this.manager = manager;
@@ -120,7 +126,7 @@ public class UserController {
         this.formHelper = formHelper;
     }
 
-    public void setAccountService(AccountService accountService) {
-        this.accountService = accountService;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

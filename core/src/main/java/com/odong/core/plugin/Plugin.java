@@ -9,6 +9,7 @@ import javax.jms.MapMessage;
  * Created by flamen on 13-12-30上午2:42.
  */
 public interface Plugin {
+
     /**
      * @return 名称
      */

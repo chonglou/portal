@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by flamen on 13-12-30上午2:26.
  */
-public class CacheMemcachedHelperImpl implements CacheHelper {
+public final class CacheMemcachedHelperImpl implements CacheHelper {
     @Override
     public void destroy() {
 

@@ -1,25 +1,36 @@
 package com.odong.core.util;
 
 import com.odong.core.cache.CacheHelper;
+import com.odong.core.cache.RedisHelper;
 import com.odong.core.encrypt.EncryptHelper;
 import com.odong.core.json.JsonHelper;
 import com.odong.core.model.GoogleAuthProfile;
 import com.odong.core.model.QqAuthProfile;
 import com.odong.core.model.SmtpProfile;
 import com.odong.core.service.SiteService;
-import com.odong.core.util.CacheService;
+import com.odong.web.model.Card;
 import com.odong.web.model.Link;
 import com.odong.web.model.Page;
+import com.odong.web.model.RssItem;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * Created by flamen on 13-12-31下午2:34.
  */
 @Component("core.cacheService")
 public class CacheService {
+
+    public String getAboutMe(){
+        return cacheHelper.get("site/aboutMe", String.class, null, ()->siteService.get("site.aboutMe", String.class));
+    }
+    public void popAboutMe(){
+        cacheHelper.delete("site/aboutMe");
+    }
+
     public Page getPage() {
         return cacheHelper.get("page/model", Page.class, null, () -> {
             Page page = new Page();
@@ -68,7 +79,6 @@ public class CacheService {
     private CacheHelper cacheHelper;
     @Value("${app.debug}")
     private boolean appDebug;
-
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;
     }

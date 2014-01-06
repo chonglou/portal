@@ -1,12 +1,32 @@
 package com.odong.core.job;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.odong.core.model.QrCodeProfile;
 import com.odong.core.model.SmtpProfile;
 import com.odong.core.plugin.Plugin;
 import com.odong.core.plugin.PluginUtil;
+import com.odong.core.service.SiteService;
+import com.odong.core.store.DbUtil;
 import com.odong.core.util.CacheService;
+import com.odong.core.util.SiteHelper;
+import com.odong.web.model.RssItem;
+import com.odong.web.model.SitemapItem;
+import com.redfin.sitemapgenerator.ChangeFreq;
+import com.redfin.sitemapgenerator.WebSitemapGenerator;
+import com.redfin.sitemapgenerator.WebSitemapUrl;
+import com.sun.syndication.feed.synd.*;
+import com.sun.syndication.io.FeedException;
+import com.sun.syndication.io.SyndFeedOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
@@ -18,8 +38,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.jms.*;
 import javax.mail.internet.MimeMessage;
-import java.util.Map;
-import java.util.Properties;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * Created by flamen on 13-12-30下午8:10.
@@ -121,13 +144,90 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
                     System.gc();
                     break;
                 case "rss":
-                    //FIXME
+                    taskExecutor.execute(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try (Writer writer = new FileWriter(appStoreDir + "/seo/rss.xml")) {
+                                String domain = "http://" + siteService.get("site.domain", String.class);
+                                SyndFeed feed = new SyndFeedImpl();
+                                feed.setFeedType("rss_2.0");
+                                feed.setTitle(siteService.get("site.title", String.class));
+                                feed.setLink(domain);
+                                feed.setDescription(siteService.get("site.description", String.class));
+                                List<SyndEntry> entries = new ArrayList<>();
+
+                                entries.add(createRssSyndEntry(domain+"/aboutMe", "关于我们", siteService.get("site.aboutMe", String.class), siteService.get("site.init", Date.class)));
+                                for(RssItem ri : siteHelper.getRss()){
+                                    entries.add(createRssSyndEntry(ri.getUrl(), ri.getTitle(), ri.getSummary(), ri.getPublish()));
+                                }
+
+                                feed.setEntries(entries);
+                                SyndFeedOutput output = new SyndFeedOutput();
+                                output.output(feed, writer);
+                            } catch (IOException | FeedException e) {
+                                logger.error("生成RSS出错", e);
+                            }
+                        }
+
+                        private SyndEntry createRssSyndEntry(String url, String title, String body, Date publishedDate) {
+                            SyndEntry entry = new SyndEntryImpl();
+                            entry.setTitle(title);
+                            entry.setLink(url);
+                            entry.setPublishedDate(publishedDate);
+                            SyndContent aboutDesc = new SyndContentImpl();
+                            aboutDesc.setType("text/html");
+                            aboutDesc.setValue(body);
+                            entry.setDescription(aboutDesc);
+                            return entry;
+                        }
+                    });
                     break;
                 case "qrcode":
-                    //FIXME
+                    taskExecutor.execute(() -> {
+                        Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
+                        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+                        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+                        QrCodeProfile qcp = siteService.get("site.qrCode", QrCodeProfile.class);
+                        try {
+
+                            BitMatrix matrix = new MultiFormatWriter().encode(
+                                    qcp.getContent(),
+                                    BarcodeFormat.QR_CODE,
+                                    qcp.getWidth(),
+                                    qcp.getHeight(),
+                                    hints);
+                            MatrixToImageWriter.writeToFile(matrix,
+                                    "png",
+                                    new File(appStoreDir + "/site.png"));
+                        } catch (IOException | WriterException e) {
+                            logger.error("生成二维码出错", e);
+                        }
+                    });
                     break;
                 case "sitemap":
-                    //FIXME
+                    taskExecutor.execute(() -> {
+                        try {
+                            String domain = "http://" + siteService.get("site.domain", String.class);
+                            WebSitemapGenerator wsg = WebSitemapGenerator.builder(domain, new File(appStoreDir + "/seo/")).gzip(true).build();
+                            wsg.addUrl(new WebSitemapUrl.Options(domain + "/main").lastMod(new Date()).priority(1.0).changeFreq(ChangeFreq.HOURLY).build());
+                            wsg.addUrl(new WebSitemapUrl.Options(domain + "/aboutMe").lastMod(siteService.get("site.init", Date.class)).priority(0.9).changeFreq(ChangeFreq.YEARLY).build());
+                            wsg.addUrl(new WebSitemapUrl.Options(domain + "/sitemap").lastMod(new Date()).priority(0.9).changeFreq(ChangeFreq.DAILY).build());
+                            for(SitemapItem si : siteHelper.getSitemap()){
+                                wsg.addUrl(new WebSitemapUrl.Options(si.getUrl()).lastMod(si.getPublish()).priority(si.getPriority()).changeFreq(ChangeFreq.valueOf(si.getChangeFreq())).build());
+                            }
+
+                            wsg.write();
+                        } catch (IOException e) {
+                            logger.error("创建网站地图出错", e);
+                        }
+                    });
+                    break;
+                case "backup":
+                    taskExecutor.execute(() -> {
+                        dbUtil.backup();
+                        siteService.set("site.lastBackup", new Date());
+                    });
                     break;
                 default:
                     if (pluginUtil.isEnable(module)) {
@@ -155,14 +255,34 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
         }
     }
 
-    @Resource
+    @Resource(name = "core.taskExecutor")
     private TaskExecutor taskExecutor;
     @Resource
     private CacheService cacheService;
     @Resource
     private PluginUtil pluginUtil;
+    @Resource
+    private DbUtil dbUtil;
+    @Resource
+    private SiteService siteService;
+    @Resource
+    private SiteHelper siteHelper;
+    @Value("${app.store}")
+    private String appStoreDir;
     private ApplicationContext context;
     private final static Logger logger = LoggerFactory.getLogger(TaskListener.class);
+
+    public void setAppStoreDir(String appStoreDir) {
+        this.appStoreDir = appStoreDir;
+    }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setDbUtil(DbUtil dbUtil) {
+        this.dbUtil = dbUtil;
+    }
 
     public void setPluginUtil(PluginUtil pluginUtil) {
         this.pluginUtil = pluginUtil;
@@ -176,4 +296,7 @@ public class TaskListener implements MessageListener, ApplicationContextAware {
         this.taskExecutor = taskExecutor;
     }
 
+    public void setSiteHelper(SiteHelper siteHelper) {
+        this.siteHelper = siteHelper;
+    }
 }
