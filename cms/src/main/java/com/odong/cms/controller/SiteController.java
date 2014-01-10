@@ -47,28 +47,6 @@ public class SiteController {
 
 
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
-    String postSearch(Map<String, Object> map, HttpServletRequest request, HttpSession session) {
-        Page page = formHelper.getPage(session);
-        String key = request.getParameter("keyword");
-        page.setTitle("搜索-[" + key + "]的结果");
-        map.put("page", page);
-        //FIXME google?
-        return "search";
-        /*
-        Date last = (Date) session.getAttribute("lastSearch");
-        session.setAttribute("lastSearch", new Date());
-        if (last == null || last.getTime() + 1000 * siteService.get("search.space", Integer.class) < new Date().getTime()) {
-
-            return "search";
-        } else {
-            ResponseItem item = new ResponseItem(ResponseItem.Type.message);
-            item.addData("过于频繁的搜索，请过" + searchSpace + "秒钟重试");
-            map.put("item", item);
-            return "message";
-        }
-        */
-    }
 
 
 

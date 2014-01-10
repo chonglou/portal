@@ -1,4 +1,4 @@
-package com.odong.cms.controller;
+package com.odong.platform.controller;
 
 import com.odong.core.job.TaskSender;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,9 +13,9 @@ import javax.annotation.Resource;
 import java.io.File;
 
 /**
- * Created by flamen on 14-1-1下午4:02.
+ * Created by flamen on 14-1-10下午12:17.
  */
-@Controller("cms.c.seo")
+@Controller("platform.c.seo")
 public class SeoController {
     @RequestMapping(value = "/robots.txt", method = RequestMethod.GET)
     @ResponseBody
@@ -73,5 +73,4 @@ public class SeoController {
     public void setAppStoreDir(String appStoreDir) {
         this.appStoreDir = appStoreDir;
     }
-
 }

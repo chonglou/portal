@@ -28,7 +28,7 @@ function bind_left_nav_click() {
 }
 
 function draw_person_bar(fn_logout) {
-    new Ajax("/personal/bar.json", undefined, undefined, function (result) {
+    new Ajax("/personal/bar", undefined, undefined, function (result) {
         var title = '登录/注册';
         var items = [];
         for (var k in result.items) {

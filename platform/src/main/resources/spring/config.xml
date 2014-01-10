@@ -3,12 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+
     <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheEhcacheHelperImpl" init-method="init"
           destroy-method="destroy">
         <property name="appName" value="${app.name}"/>
     </bean>
 
-    <!--
+
+<!--
     <bean id="cacheHelper" class="com.odong.core.cache.impl.CacheMemcachedHelperImpl"  init-method="init" destroy-method="destroy">
         <property name="appName" value="${app.name}"/>
         <property name="client" ref="memcachedClient"/>
@@ -27,7 +29,7 @@
             <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder"/>
         </property>
     </bean>
-    -->
+-->
 
     <bean id="encryptHelper" class="com.odong.core.encrypt.impl.EncryptJasyptHelperImpl" init-method="init">
         <property name="key" value="${app.key}"/>

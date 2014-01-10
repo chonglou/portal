@@ -1,7 +1,6 @@
 package com.odong.core.service;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by flamen on 13-12-30下午3:50.

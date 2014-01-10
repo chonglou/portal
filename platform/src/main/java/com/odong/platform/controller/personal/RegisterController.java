@@ -4,6 +4,7 @@ import com.odong.core.entity.User;
 import com.odong.core.job.TaskSender;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.UserService;
+import com.odong.core.util.CacheService;
 import com.odong.core.util.FormHelper;
 import com.odong.platform.form.personal.ActiveForm;
 import com.odong.platform.form.personal.RegisterForm;
@@ -37,7 +38,7 @@ public class RegisterController {
     Form getActive() {
         Form fm = new Form("active", "激活账户", "/personal/active");
         fm.addField(new TextField("email", "邮箱"));
-        fm.addField(new AgreeField("agree", "用户协议", siteService.get("site.regProtocol", String.class)));
+        fm.addField(new AgreeField("agree", "用户协议", cacheService.getRegProtocol()));
         fm.setCaptcha(true);
         fm.setOk(true);
         return fm;
@@ -72,7 +73,7 @@ public class RegisterController {
         fm.addField(new TextField("username", "用户名"));
         fm.addField(new PasswordField("newPwd", "登陆密码"));
         fm.addField(new PasswordField("rePwd", "再次输入"));
-        fm.addField(new AgreeField("agree", "用户协议", siteService.get("site.regProtocol", String.class)));
+        fm.addField(new AgreeField("agree", "用户协议", cacheService.getRegProtocol()));
         fm.setCaptcha(true);
         fm.setOk(true);
         return fm;
@@ -116,6 +117,12 @@ public class RegisterController {
     private SiteService siteService;
     @Resource
     private TaskSender taskSender;
+    @Resource
+    private CacheService cacheService;
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     public void setTaskSender(TaskSender taskSender) {
         this.taskSender = taskSender;

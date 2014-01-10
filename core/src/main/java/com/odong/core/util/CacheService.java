@@ -5,8 +5,12 @@ import com.odong.core.encrypt.EncryptHelper;
 import com.odong.core.json.JsonHelper;
 import com.odong.core.model.GoogleAuthProfile;
 import com.odong.core.model.QqAuthProfile;
+import com.odong.core.model.ReCaptchaProfile;
 import com.odong.core.model.SmtpProfile;
+import com.odong.core.plugin.Plugin;
+import com.odong.core.plugin.PluginUtil;
 import com.odong.core.service.SiteService;
+import com.odong.web.model.Link;
 import com.odong.web.model.Page;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,18 +22,38 @@ import javax.annotation.Resource;
  */
 @Component("core.cacheService")
 public class CacheService {
-    public String getCaptcha(){
-        return cacheHelper.get("site/captcha", String.class, null, ()->siteService.get("site.captcha", String.class));
+    public ReCaptchaProfile getReCaptcha() {
+        return cacheHelper.get("site/reCaptcha", ReCaptchaProfile.class, null, () -> siteService.get("site.reCaptcha", ReCaptchaProfile.class, true));
     }
-    public void popCaptcha(){
+
+    public void popReCaptcha() {
+        cacheHelper.delete("site/reCaptcha");
+    }
+
+    public String getCaptcha() {
+        return cacheHelper.get("site/captcha", String.class, null, () -> siteService.get("site.captcha", String.class));
+    }
+
+    public void popCaptcha() {
         cacheHelper.delete("site/captcha");
     }
-    public String getDefaultPlugin(){
-        return cacheHelper.get("site/plugin/default", String.class, null, ()->siteService.get("site.plugin.default", String.class));
+
+    public String getDefaultPlugin() {
+        return cacheHelper.get("site/plugin/default", String.class, null, () -> siteService.get("site.plugin.default", String.class));
     }
-    public void popDefaultPlugin(){
+
+    public void popDefaultPlugin() {
         cacheHelper.delete("site/plugin/default");
     }
+
+    public String getRegProtocol() {
+        return cacheHelper.get("site/regProtocol", String.class, null, () -> siteService.get("site.regProtocol", String.class));
+    }
+
+    public void popRegProtocol() {
+        cacheHelper.delete("site/regProtocol");
+    }
+
     public String getSiteDomain() {
         return cacheHelper.get("site/domain", String.class, null, () -> siteService.get("site.domain", String.class));
     }
@@ -46,6 +70,13 @@ public class CacheService {
         cacheHelper.delete("site/title");
     }
 
+    public int getSearchSpace() {
+        return cacheHelper.get("site/searchSpace", Integer.class, null, () -> siteService.get("site.searchSpace", Integer.class));
+    }
+
+    public void popSearchSpace() {
+        cacheHelper.delete("site/searchSpace");
+    }
     public int getLinkValid() {
         return cacheHelper.get("site/linkValid", Integer.class, null, () -> siteService.get("site.linkValid", Integer.class));
     }
@@ -56,7 +87,7 @@ public class CacheService {
 
 
     public QqAuthProfile getQqAuthProfile() {
-        return cacheHelper.get("oauth/google", QqAuthProfile.class, null, () -> siteService.get("site.oauth.qq", QqAuthProfile.class, true));
+        return cacheHelper.get("oauth/qq", QqAuthProfile.class, null, () -> siteService.get("site.oauth.qq", QqAuthProfile.class, true));
     }
 
     public void popQqAuthProfile() {
@@ -87,8 +118,19 @@ public class CacheService {
             page.setKeywords(siteService.get("site.keywords", String.class));
             page.setDescription(siteService.get("site.description", String.class));
             page.setCopyright(siteService.get("site.copyright", String.class));
-            page.sethAd(siteService.get("site.hAd", String.class));
-            page.setvAd(siteService.get("site.vAd", String.class));
+            page.setAdLeft(siteService.get("site.ad.left", String.class));
+            page.setAdBottom(siteService.get("site.ad.bottom", String.class));
+
+            pluginUtil.foreach((Plugin plugin) -> {
+                page.getTopLinks().addAll(plugin.getTopLinks());
+                page.getSideBars().addAll(plugin.getSideBars());
+                page.getTagCloud().addAll(plugin.getTagCloud());
+            });
+
+            page.getTopLinks().add(new Link("用户中心", "/personal/self"));
+            page.getTopLinks().add(new Link("网站地图", "/sitemap"));
+            page.getTopLinks().add(new Link("关于我们", "/aboutMe"));
+            page.getTagCloud().add(new Link("LATROP内容管理系统", "https://code.google.com/p/latrop/"));
 
             page.setDebug(appDebug);
             return page;
@@ -118,6 +160,12 @@ public class CacheService {
     private CacheHelper cacheHelper;
     @Value("${app.debug}")
     private boolean appDebug;
+    @Resource
+    private PluginUtil pluginUtil;
+
+    public void setPluginUtil(PluginUtil pluginUtil) {
+        this.pluginUtil = pluginUtil;
+    }
 
     public void setAppDebug(boolean appDebug) {
         this.appDebug = appDebug;

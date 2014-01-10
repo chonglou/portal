@@ -6,6 +6,15 @@ import java.io.Serializable;
  * Created by flamen on 14-1-3上午10:02.
  */
 public class ReCaptchaProfile implements Serializable {
+    public ReCaptchaProfile(String publicKey, String privateKey) {
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+    }
+
+    @Deprecated
+    public ReCaptchaProfile() {
+    }
+
     private static final long serialVersionUID = -1170051234521804541L;
     private String privateKey;
     private String publicKey;

@@ -14,7 +14,6 @@ import com.odong.core.plugin.PluginUtil;
 import com.odong.core.service.SiteService;
 import com.odong.core.store.DbUtil;
 import com.odong.core.util.CacheService;
-import com.odong.core.util.SiteHelper;
 import com.odong.web.model.RssItem;
 import com.odong.web.model.SitemapItem;
 import com.redfin.sitemapgenerator.ChangeFreq;
@@ -33,6 +32,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.jms.*;
 import javax.mail.internet.MimeMessage;
@@ -153,7 +153,7 @@ public class TaskListener implements MessageListener {
 
                                 entries.add(createRssSyndEntry(domain + "/aboutMe", "关于我们", siteService.get("site.aboutMe", String.class), siteService.get("site.init", Date.class)));
                                 pluginUtil.foreach((Plugin plugin) -> {
-                                    for (RssItem ri : plugin.getRssItems()) {
+                                    for (RssItem ri : plugin.rss()) {
                                         entries.add(createRssSyndEntry(ri.getUrl(), ri.getTitle(), ri.getSummary(), ri.getPublish()));
                                     }
                                 });
@@ -185,8 +185,10 @@ public class TaskListener implements MessageListener {
                         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
                         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
                         QrCodeProfile qcp = siteService.get("site.qrCode", QrCodeProfile.class);
+                        if (qcp == null) {
+                            qcp = new QrCodeProfile("https://code.google.com/p/latrop/", 300, 300);
+                        }
                         try {
-
                             BitMatrix matrix = new MultiFormatWriter().encode(
                                     qcp.getContent(),
                                     BarcodeFormat.QR_CODE,
@@ -210,7 +212,7 @@ public class TaskListener implements MessageListener {
                             wsg.addUrl(new WebSitemapUrl.Options(domain + "/sitemap").lastMod(new Date()).priority(0.9).changeFreq(ChangeFreq.DAILY).build());
 
                             pluginUtil.foreach((Plugin plugin) -> {
-                                for (SitemapItem si : plugin.getSitemapItems()) {
+                                for (SitemapItem si : plugin.sitemap()) {
                                     try {
                                         wsg.addUrl(new WebSitemapUrl.Options(si.getUrl()).lastMod(si.getPublish()).priority(si.getPriority()).changeFreq(ChangeFreq.valueOf(si.getChangeFreq())).build());
                                     } catch (MalformedURLException e) {
@@ -255,6 +257,19 @@ public class TaskListener implements MessageListener {
 
     }
 
+    @PostConstruct
+    void init() {
+        for (String s : new String[]{"seo", "backup", "attach"}) {
+            File file = new File(appStoreDir + "/" + s);
+            if (!file.exists()) {
+                logger.info("目录[{}]不存在", file.getAbsolutePath());
+                if (!file.mkdirs()) {
+                    logger.error("创建数据目录[{}]失败", file.getAbsolutePath());
+                }
+            }
+        }
+    }
+
     private void text(TextMessage message) {
         try {
             logger.debug("收到文本消息[{}]", message.getText());
@@ -271,8 +286,6 @@ public class TaskListener implements MessageListener {
     private DbUtil dbUtil;
     @Resource
     private SiteService siteService;
-    @Resource
-    private SiteHelper siteHelper;
     @Resource
     private PluginUtil pluginUtil;
     @Value("${app.store}")
@@ -304,7 +317,4 @@ public class TaskListener implements MessageListener {
         this.taskExecutor = taskExecutor;
     }
 
-    public void setSiteHelper(SiteHelper siteHelper) {
-        this.siteHelper = siteHelper;
-    }
 }

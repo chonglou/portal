@@ -8,7 +8,7 @@
     <meta name="description" content="${page.description}">
     <meta name="keywords" content="${page.keywords}">
     <meta name="author" content="${page.author}">
-    <title>${page.title}111<!--#if(title)-${title}#endif--></title>
+    <title>${page.title}<!--#if(title)-${title}#endif--></title>
     <link rel="shortcut icon" href="/style/logo/32x32.ico" type="image/vnd.microsoft.icon">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet"/>
@@ -83,20 +83,61 @@
     </div>
 </div>
 <div class="container">
-    <!--#macro($gl_main)-->
-    <div id="gl_message"></div>
-    <div id="gl_root"></div>
-    <!--#end-->
+    <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-lg-3 sidebar-offcanvas">
+            <br>
+            <!--#if(page.sideBars)-->
+            <div class="well sidebar-nav">
+                <ul class="nav">
+                    #for(SideBar sb:page.sideBars)
+                    <li>${sb.title}</li>
+                    #for(Link l: sb.links)
+                    <li class="warp"><a href="${l.url}" target="_blank">${l.name}</a></li>
+                    #end
+                    #end
+                </ul>
+            </div>
+            <!--#end-->
+            <div id="datePicker"></div>
+            <br/>
+            ${page.adLeft}
+            <br>
+            <div id="tagCanvasContainer">
+                <canvas id="tagCanvas" height="300px">
+                    <p>标签云</p>
+                </canvas>
+            </div>
+            <div id="tags">
+                <ul>
+                    #for(Link l : page.tagCloud)
+                    <li><a href="${l.url}" target="_blank">${l.name}</a></li>
+                    #end
+                </ul>
+            </div>
+            <div>
+                <img src="/site.png" alt="二维码" title="手机扫描二维码获得更多信息">
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div id="gl_message"></div>
+            <div id="gl_root"></div>
+            <!--#macro($gl_main)-->
+            <!--#end-->
+            <br/>
+            ${page.adBottom}
+        </div>
+    </div>
     <hr>
     <footer>
-        <p>${page.copyright}</p>
+        <p>$!{page.copyright}</p>
     </footer>
 </div>
 <script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
     var gl_captcha = "${page.captcha}";
+    var gl_reCaptcha_key = "${page.reCaptcha.publicKey}";
     function getJSessionId() {
-        return ';jsessionid=${gl_session_id}';
+        return ';jsessionid=${page.sessionId}';
     }
 </script>
 <script type="text/javascript" src="/js/config.js${gl_debug_flag}"></script>
@@ -114,7 +155,37 @@
 <script type="text/javascript" src="/js/non-login.js${gl_debug_flag}"></script>
 <!--#end-->
 <script type="application/javascript">
-    draw_person_bar();
+    $(document).ready(function(){
+        draw_person_bar();
+
+        //日历
+        var dt = $("div#datePicker");
+        dt.datepicker({
+            onSelect: function (dateText) {
+                window.open("/archive/" + dateText.split('-').join('/'));
+            }
+        });
+        dt.datepicker($.datepicker.regional[ "zh-CN" ]);
+
+        //标签云
+        if (!$('#tagCanvas').tagcanvas({
+            textColour: '#00f',
+            textHeight: 25,
+            outlineColour: '#ff9999',
+            outlineThickness: 3,
+            pulsateTo: 0.2,
+            pulsateTime: 0.5,
+            wheelZoom: false,
+            reverse: true,
+            decel: 0.9,
+            depth: 0.8,
+            maxSpeed: 0.08,
+            minSpeed: 0.01,
+            shape: "sphere"
+        }, 'tags')) {
+            $("div#tagCanvasContainer").hide();
+        }
+    });
 </script>
 <!--#if(page.qqAuth.enable)-->
 <script type="text/javascript"
@@ -170,7 +241,7 @@
     );
 </script>
 <!--#end-->
-<!--#if(page.googleAuth)-->
+<!--#if(page.googleAuth.enable)-->
 <script type="text/javascript">
     $(document).ready(function () {
         $("li#googleAuthBar").html('<div id="googleAuthBtn"><img src="/style/google/base.png"></div>');

@@ -5,6 +5,7 @@ import com.odong.core.model.KaptchaProfile;
 import com.odong.core.model.ReCaptchaProfile;
 import com.odong.core.service.LogService;
 import com.odong.core.service.SiteService;
+import com.odong.core.util.CacheService;
 import com.odong.core.util.FormHelper;
 import com.odong.platform.form.admin.CaptchaForm;
 import com.odong.platform.util.CaptchaHelper;
@@ -78,11 +79,10 @@ public class CaptchaController {
                     siteService.set("site.kaptcha", kp);
                     break;
                 case "reCaptcha":
-                    ReCaptchaProfile rp = new ReCaptchaProfile();
+                    ReCaptchaProfile rp = new ReCaptchaProfile(form.getPublicKey(), form.getPrivateKey());
                     rp.setIncludeNoScript(form.isIncludeNoScript());
-                    rp.setPublicKey(form.getPublicKey());
-                    rp.setPrivateKey(form.getPrivateKey());
                     siteService.set("site.reCaptcha", rp, true);
+                    cacheService.popReCaptcha();
                     break;
                 default:
                     ri.setOk(false);
@@ -107,7 +107,12 @@ public class CaptchaController {
     private SiteService siteService;
     @Resource
     private FormHelper formHelper;
+    @Resource
+    private CacheService cacheService;
 
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     public void setCaptchaHelper(CaptchaHelper captchaHelper) {
         this.captchaHelper = captchaHelper;

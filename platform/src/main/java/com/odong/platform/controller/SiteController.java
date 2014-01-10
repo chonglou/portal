@@ -2,19 +2,15 @@ package com.odong.platform.controller;
 
 import com.odong.core.Constants;
 import com.odong.core.entity.User;
+import com.odong.core.model.GoogleAuthProfile;
+import com.odong.core.model.QqAuthProfile;
 import com.odong.core.model.SmtpProfile;
-import com.odong.core.plugin.Plugin;
-import com.odong.core.plugin.PluginUtil;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.TaskService;
 import com.odong.core.service.UserService;
 import com.odong.core.util.FormHelper;
 import com.odong.platform.form.InstallForm;
-import com.odong.platform.util.CacheService;
 import com.odong.platform.util.RbacService;
-import com.odong.web.model.Card;
-import com.odong.web.model.Link;
-import com.odong.web.model.Page;
 import com.odong.web.model.ResponseItem;
 import com.odong.web.model.form.*;
 import org.slf4j.Logger;
@@ -22,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,13 +25,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,10 +37,11 @@ import java.util.Map;
 public class SiteController {
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    void getMain(HttpServletResponse response) throws IOException{
+    void getMain(HttpServletResponse response) throws IOException {
         String name = coreCacheService.getDefaultPlugin();
-        response.sendRedirect(name == null?"/aboutMe":"/"+name+"/");
+        response.sendRedirect(name == null ? "/aboutMe" : "/" + name + "/");
     }
+
     @RequestMapping(value = "/install", method = RequestMethod.GET)
     String getInstall(Map<String, Object> map, HttpServletResponse response) throws IOException {
         if (siteService.get("site.version", String.class) == null) {
@@ -111,7 +103,7 @@ public class SiteController {
     @ResponseBody
     ResponseItem postInstall(@Valid InstallForm form, BindingResult result, HttpServletRequest request) throws IOException {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(!form.isAgree()){
+        if (!form.isAgree()) {
             ri.setOk(false);
             ri.addData("您需要同意协议才能继续");
         }
@@ -130,7 +122,8 @@ public class SiteController {
         siteService.set("site.domain", form.getDomain());
         siteService.set("site.keywords", form.getKeywords());
         siteService.set("site.description", form.getDescription());
-        siteService.set("search.space", 60*60*24);
+        siteService.set("site.copyright", "&copy; 2014-2016 使用<a href='https://code.google.com/p/latrop/' target='_blank'>LATROP内容管理系统</a>搭建");
+        siteService.set("search.space", 60 * 60 * 24);
 
         logger.info("设置管理员信息");
         long uid = userService.addEmailUser(form.getEmail(), form.getUsername(), form.getPassword());
@@ -153,7 +146,36 @@ public class SiteController {
 
         logger.info("设置其它信息");
         siteService.set("site.linkValid", 60 * 24);
+        siteService.set("site.searchSpace", 30);
         siteService.set("site.version", Constants.VERSION);
+        siteService.set("site.aboutMe", "关于我们");
+        siteService.set("site.regProtocol", "用户注册协议");
+        siteService.set("site.oauth.google", new GoogleAuthProfile(null, null, null), true);
+        siteService.set("site.oauth.qq", new QqAuthProfile(null, null, null, null), true);
+        siteService.set("site.ad.left", "<script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\n" +
+                "<ins class=\"adsbygoogle\"\n" +
+                "     style=\"display:inline-block;width:300px;height:250px\"\n" +
+                "     data-ad-client=\"ca-pub-5028403610236620\"\n" +
+                "     data-ad-slot=\"6080910921\"></ins>\n" +
+                "<script>\n" +
+                "    (adsbygoogle = window.adsbygoogle || []).push({});\n" +
+                "</script>\n");
+        siteService.set("site.ad.bottom", "<script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\n" +
+                "<ins class=\"adsbygoogle\"\n" +
+                "     style=\"display:inline-block;width:970px;height:90px\"\n" +
+                "     data-ad-client=\"ca-pub-5028403610236620\"\n" +
+                "     data-ad-slot=\"2480307632\"></ins>\n" +
+                "<script>\n" +
+                "    (adsbygoogle = window.adsbygoogle || []).push({});\n" +
+                "</script>\n");
+        coreCacheService.popPage();
+        coreCacheService.popSearchSpace();
+        coreCacheService.popSiteDomain();
+        coreCacheService.popSiteTitle();
+        coreCacheService.popRegProtocol();
+        coreCacheService.popSmtp();
+        coreCacheService.popGoogleAuthProfile();
+        coreCacheService.popQqAuthProfile();
         logger.info("安装完毕");
         ri.setType(ResponseItem.Type.redirect);
         ri.addData("/main");
@@ -161,68 +183,13 @@ public class SiteController {
         return ri;
     }
 
-    @RequestMapping(value = "/error/{code}", method = RequestMethod.GET)
-    String getError(@PathVariable int code, Map<String, Object> map, HttpSession session) {
-        ResponseItem item = new ResponseItem(ResponseItem.Type.message);
-        switch (code) {
-            case 400:
-                item.addData("错误的请求");
-                break;
-            case 404:
-                item.addData("资源不存在");
-                break;
-            case 500:
-                item.addData("服务器内部错误");
-                break;
-            default:
-                item.addData("未知错误[" + code + "]");
-                break;
-        }
-        Page page = formHelper.getPage(session);
-        map.put("page", page);
-        map.put("message", item);
-        return "/core/message";
-    }
-
-
-    @RequestMapping(value = "sitemap", method = RequestMethod.GET)
-    String getSitemap(Map<String, Object> map, HttpSession session) {
-        Page page = formHelper.getPage(session);
-        page.setTitle("网站地图");
-        page.setIndex("/sitemap");
-        map.put("page", page);
-        Map<String, List<Card>> cards = new HashMap<>();
-        Map<String, List<Link>> links = new HashMap<>();
-        pluginUtil.foreach((Plugin plugin) -> {
-            cards.putAll(plugin.getSitemapCards());
-            links.putAll(plugin.getSitemapLinks());
-        });
-
-        map.put("cards", cards);
-        map.put("links", links);
-        return "/platform/sitemap";
-    }
-
-
-    @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
-    String getAboutMe(Map<String, Object> map, HttpSession session) {
-
-        Page page = formHelper.getPage(session);
-        page.setTitle("关于我们");
-        page.setIndex("/aboutMe");
-        map.put("page", page);
-        map.put("logList", cacheService.getLogList());
-        map.put("aboutMe", coreCacheService.getAboutMe());
-        return "/platform/aboutMe";
-    }
 
     private final static Logger logger = LoggerFactory.getLogger(SiteController.class);
 
 
     @Resource
     private com.odong.core.util.CacheService coreCacheService;
-    @Resource
-    private CacheService cacheService;
+
     @Resource
     private SiteService siteService;
     @Resource
@@ -232,15 +199,10 @@ public class SiteController {
     @Resource
     private FormHelper formHelper;
     @Resource
-    private PluginUtil pluginUtil;
-    @Resource
     private RbacService rbacService;
     @Value("${app.agreement}")
     private String agreement;
 
-    public void setPluginUtil(PluginUtil pluginUtil) {
-        this.pluginUtil = pluginUtil;
-    }
 
     public void setRbacService(RbacService rbacService) {
         this.rbacService = rbacService;
@@ -266,10 +228,6 @@ public class SiteController {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
     }
 
     public void setFormHelper(FormHelper formHelper) {

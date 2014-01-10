@@ -37,6 +37,10 @@ public class SideBar implements Serializable {
         this.type = Type.MENU;
     }
 
+    @Deprecated
+    public SideBar() {
+    }
+
     private static final long serialVersionUID = 9005274236641313051L;
     private static final int MAX_LEN = 50;
     private Type type;

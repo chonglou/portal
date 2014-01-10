@@ -45,14 +45,16 @@ public class CaptchaHelper {
         this.kaptcha = kaptcha;
 
 
-        ReCaptchaProfile rp = siteService.get("site.reCaptcha", ReCaptchaProfile.class);
-        if (rp != null) {
-            ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-            reCaptcha.setPrivateKey(rp.getPrivateKey());
-            reCaptcha.setPublicKey(rp.getPublicKey());
-            reCaptcha.setIncludeNoscript(rp.isIncludeNoScript());
-            this.reCaptcha = reCaptcha;
+        ReCaptchaProfile rp = siteService.get("site.reCaptcha", ReCaptchaProfile.class, true);
+        if (rp == null) {
+            rp = new ReCaptchaProfile("", "");
+            siteService.set("site.reCaptcha", rp, true);
         }
+        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+        reCaptcha.setPrivateKey(rp.getPrivateKey());
+        reCaptcha.setPublicKey(rp.getPublicKey());
+        reCaptcha.setIncludeNoscript(rp.isIncludeNoScript());
+        this.reCaptcha = reCaptcha;
         logger.info("重新加载验证码配置");
     }
 

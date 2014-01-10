@@ -6,7 +6,6 @@ import com.odong.core.service.LogService;
 import com.odong.core.service.SiteService;
 import com.odong.core.service.UserService;
 import com.odong.core.util.FormHelper;
-import com.odong.core.util.TimeHelper;
 import com.odong.platform.form.admin.ManagerForm;
 import com.odong.platform.form.admin.UserForm;
 import com.odong.platform.util.RbacService;
@@ -15,7 +14,6 @@ import com.odong.web.model.SessionItem;
 import com.odong.web.model.form.Form;
 import com.odong.web.model.form.RadioField;
 import com.odong.web.model.form.SelectField;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,8 +81,8 @@ public class UserController {
         if (ri.isOk()) {
             SessionItem si = formHelper.getSessionItem(session);
 
-                rbacService.setAdmin(form.getUserId(), form.isBind());
-                logService.add(si.getSsUserId(), form.isBind() ? "绑定" : "解绑" + "用户[" + form.getUserId() + "]到管理员组", Log.Type.INFO);
+            rbacService.setAdmin(form.getUserId(), form.isBind());
+            logService.add(si.getSsUserId(), form.isBind() ? "绑定" : "解绑" + "用户[" + form.getUserId() + "]到管理员组", Log.Type.INFO);
 
         }
         return ri;
@@ -97,6 +95,7 @@ public class UserController {
             ri.addData("不能修改超级管理员");
         }
     }
+
     @Resource
     private RbacService rbacService;
     @Resource

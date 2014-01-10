@@ -14,6 +14,18 @@ import java.util.Map;
  * Created by flamen on 13-12-30上午2:42.
  */
 public interface Plugin {
+
+    List<RssItem> rss();
+
+    List<SitemapItem> sitemap();
+
+    List<Card> search(String key);
+
+    List<Card> archive(int year, int month);
+    List<Card> archive(int year, int month, int day);
+
+    List<Link> getTagCloud();
+
     List<SideBar> getSideBars();
 
     Map<String, List<Card>> getSitemapCards();
@@ -26,9 +38,6 @@ public interface Plugin {
 
     SideBar getPersonalSideBar();
 
-    List<RssItem> getRssItems();
-
-    List<SitemapItem> getSitemapItems();
 
     /**
      * @return 名称

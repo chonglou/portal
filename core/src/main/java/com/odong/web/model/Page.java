@@ -2,6 +2,7 @@ package com.odong.web.model;
 
 import com.odong.core.model.GoogleAuthProfile;
 import com.odong.core.model.QqAuthProfile;
+import com.odong.core.model.ReCaptchaProfile;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ public class Page implements Serializable {
     private String description;
     private String keywords;
     private String copyright;
-    private String hAd;
-    private String vAd;
+    private String adLeft;
+    private String adBottom;
     private List<Link> topLinks;
     private List<Link> tagCloud;
     private List<Link> personalBar;
@@ -38,14 +39,14 @@ public class Page implements Serializable {
     private boolean login;
     private String sessionId;
     private String captcha;
-    private String reCaptchaKey;
+    private ReCaptchaProfile reCaptcha;
 
-    public String getReCaptchaKey() {
-        return reCaptchaKey;
+    public ReCaptchaProfile getReCaptcha() {
+        return reCaptcha;
     }
 
-    public void setReCaptchaKey(String reCaptchaKey) {
-        this.reCaptchaKey = reCaptchaKey;
+    public void setReCaptcha(ReCaptchaProfile reCaptcha) {
+        this.reCaptcha = reCaptcha;
     }
 
     public String getSessionId() {
@@ -105,20 +106,20 @@ public class Page implements Serializable {
     }
 
 
-    public String gethAd() {
-        return hAd;
+    public String getAdLeft() {
+        return adLeft;
     }
 
-    public void sethAd(String hAd) {
-        this.hAd = hAd;
+    public void setAdLeft(String adLeft) {
+        this.adLeft = adLeft;
     }
 
-    public String getvAd() {
-        return vAd;
+    public String getAdBottom() {
+        return adBottom;
     }
 
-    public void setvAd(String vAd) {
-        this.vAd = vAd;
+    public void setAdBottom(String adBottom) {
+        this.adBottom = adBottom;
     }
 
     public List<Link> getTagCloud() {

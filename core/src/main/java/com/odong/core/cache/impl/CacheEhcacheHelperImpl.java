@@ -1,5 +1,7 @@
 package com.odong.core.cache.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.odong.core.cache.CacheHelper;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -52,7 +54,8 @@ public final class CacheEhcacheHelperImpl implements CacheHelper {
     @SuppressWarnings("unchecked")
     public <T> T get(String key, Class<T> clazz) {
         Element e = getCache().get(key(key));
-        return e == null ? null : (T) e.getObjectValue();
+        //return e == null ? null : (T) e.getObjectValue();
+        return e == null ? null : (T) json2object((String) e.getObjectValue());
     }
 
     @Override
@@ -70,12 +73,25 @@ public final class CacheEhcacheHelperImpl implements CacheHelper {
 
     @Override
     public void set(String key, int timeout, Object object) {
-        Element el = new Element(key(key), object);
+        if (object == null) {
+            logger.error("空的缓存内容[{}]", key);
+            return;
+        }
+        Element el = new Element(key(key), object2json(object));
         getCache().put(el);
     }
 
     private String key(String key) {
         return "cache://" + key;
+    }
+
+
+    private String object2json(Object obj) {
+        return JSON.toJSONString(obj, SerializerFeature.WriteClassName);
+    }
+
+    private Object json2object(String json) {
+        return JSON.parse(json);
     }
 
     private Cache getCache() {

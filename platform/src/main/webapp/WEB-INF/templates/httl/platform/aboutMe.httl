@@ -1,8 +1,6 @@
-$!{extends("/layout.httl")}
+$!{extends("/core/layout.httl")}
 
-#macro(main)
-
-<div class="col-lg-9">
+#macro(gl_main)
     <h3>关于我们</h3>
     <hr/>
     $!{aboutMe}
@@ -22,5 +20,4 @@ $!{extends("/layout.httl")}
         </tbody>
     </table>
     <br/>
-</div>
 #end
