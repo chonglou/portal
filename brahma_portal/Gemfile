@@ -38,3 +38,17 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+
+gem 'puma'
+gem 'slim'
+gem 'bootstrap-sass'
+gem 'highline'
+gem 'sequel'
+gem 'redis'
+gem 'connection_pool'
+gem 'brahma_web'
+gem 'brahma_utils'
+gem 'doorkeeper'
+gem 'devise'
+gem 'rerun', group: :development
+

@@ -28,7 +28,27 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     arel (5.0.1.20140414130214)
+    bcrypt (3.1.7)
+    bootstrap-sass (3.1.1.0)
+      sass (~> 3.2)
+    brahma_utils (0.0.1)
+      connection_pool
+      highline
+      mysql2
+      redis
+      sequel
+    brahma_web (0.0.1)
+      bootstrap-sass
+      brahma_utils
+      puma
+      rails (~> 4.1.0)
+      slim
     builder (3.2.2)
+    celluloid (0.15.2)
+      timers (~> 1.1.0)
+    celluloid-io (0.15.0)
+      celluloid (>= 0.15.0)
+      nio4r (>= 0.5.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -36,8 +56,19 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.7.0)
+    connection_pool (2.0.0)
+    devise (3.2.4)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 3.2.6, < 5)
+      thread_safe (~> 0.1)
+      warden (~> 1.2.3)
+    doorkeeper (1.1.0)
+      railties (>= 3.1)
     erubis (2.7.0)
     execjs (2.0.2)
+    ffi (1.9.3)
+    highline (1.6.21)
     hike (1.2.3)
     i18n (0.6.9)
     jbuilder (2.0.6)
@@ -47,6 +78,11 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.1)
+    listen (2.7.1)
+      celluloid (>= 0.15.2)
+      celluloid-io (>= 0.15.0)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -54,7 +90,11 @@ GEM
     minitest (5.3.3)
     multi_json (1.9.2)
     mysql2 (0.3.15)
+    nio4r (1.0.0)
+    orm_adapter (0.5.0)
     polyglot (0.3.4)
+    puma (2.8.1)
+      rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -74,8 +114,14 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.3.1)
+    rb-fsevent (0.9.4)
+    rb-inotify (0.9.3)
+      ffi (>= 0.5.0)
     rdoc (4.1.1)
       json (~> 1.4)
+    redis (3.0.7)
+    rerun (0.9.0)
+      listen (~> 2.7)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)
@@ -85,6 +131,10 @@ GEM
     sdoc (0.4.0)
       json (~> 1.8)
       rdoc (~> 4.0, < 5.0)
+    sequel (4.9.0)
+    slim (2.0.2)
+      temple (~> 0.6.6)
+      tilt (>= 1.3.3, < 2.1)
     spring (1.1.2)
     sprockets (2.11.0)
       hike (~> 1.2)
@@ -95,9 +145,11 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
+    temple (0.6.7)
     thor (0.19.1)
     thread_safe (0.3.3)
     tilt (1.4.1)
+    timers (1.1.0)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -108,18 +160,32 @@ GEM
     uglifier (2.5.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    warden (1.2.3)
+      rack (>= 1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  bootstrap-sass
+  brahma_utils
+  brahma_web
   coffee-rails (~> 4.0.0)
+  connection_pool
+  devise
+  doorkeeper
+  highline
   jbuilder (~> 2.0)
   jquery-rails
   mysql2
+  puma
   rails (= 4.1.0)
+  redis
+  rerun
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
+  sequel
+  slim
   spring
   turbolinks
   uglifier (>= 1.3.0)
