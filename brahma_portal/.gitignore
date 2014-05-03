@@ -2,3 +2,4 @@
 /tmp
 .idea
 config/*.yml
+app/assets/javascripts/config-demo.js

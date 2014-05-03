@@ -1,3 +1,5 @@
 Rails.application.routes.draw do
-  mount BrahmaBodhi:Engine, at:'/core'
+  get 'main/index'
+  mount BrahmaBodhi::Engine, at:'/core'
+  root 'main#index'
 end
