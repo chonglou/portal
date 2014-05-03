@@ -39,6 +39,8 @@ gem 'spring',        group: :development
 # gem 'debugger', group: [:development, :test]
 
 
+#My Add
+gem 'rmagick'
 gem 'puma'
 gem 'slim'
 gem 'bootstrap-sass'
@@ -46,9 +48,14 @@ gem 'highline'
 gem 'sequel'
 gem 'redis'
 gem 'connection_pool'
-gem 'brahma_web'
+gem 'brahma_bodhi', path:'../../bodhi/brahma_bodhi'
 gem 'brahma_utils'
-gem 'doorkeeper'
-gem 'devise'
-gem 'rerun', group: :development
+gem 'brahma_daemon'
+
+
+group :development, :test do
+  gem 'rerun'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+end
 

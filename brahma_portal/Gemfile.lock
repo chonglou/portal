@@ -1,3 +1,15 @@
+PATH
+  remote: ../../bodhi/brahma_bodhi
+  specs:
+    brahma_bodhi (0.0.1)
+      bootstrap-sass
+      brahma_utils
+      mysql2
+      puma
+      rails (~> 4.1.0)
+      rmagick
+      slim
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -28,21 +40,15 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     arel (5.0.1.20140414130214)
-    bcrypt (3.1.7)
     bootstrap-sass (3.1.1.0)
       sass (~> 3.2)
+    brahma_daemon (0.0.1)
     brahma_utils (0.0.1)
       connection_pool
       highline
       mysql2
       redis
       sequel
-    brahma_web (0.0.1)
-      bootstrap-sass
-      brahma_utils
-      puma
-      rails (~> 4.1.0)
-      slim
     builder (3.2.2)
     celluloid (0.15.2)
       timers (~> 1.1.0)
@@ -57,16 +63,14 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     connection_pool (2.0.0)
-    devise (3.2.4)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 3.2.6, < 5)
-      thread_safe (~> 0.1)
-      warden (~> 1.2.3)
-    doorkeeper (1.1.0)
-      railties (>= 3.1)
+    diff-lcs (1.2.5)
     erubis (2.7.0)
     execjs (2.0.2)
+    factory_girl (4.4.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.4.1)
+      factory_girl (~> 4.4.0)
+      railties (>= 3.0.0)
     ffi (1.9.3)
     highline (1.6.21)
     hike (1.2.3)
@@ -91,7 +95,6 @@ GEM
     multi_json (1.9.2)
     mysql2 (0.3.15)
     nio4r (1.0.0)
-    orm_adapter (0.5.0)
     polyglot (0.3.4)
     puma (2.8.1)
       rack (>= 1.1, < 2.0)
@@ -122,6 +125,19 @@ GEM
     redis (3.0.7)
     rerun (0.9.0)
       listen (~> 2.7)
+    rmagick (2.13.2)
+    rspec-core (2.14.8)
+    rspec-expectations (2.14.5)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.14.6)
+    rspec-rails (2.14.2)
+      actionpack (>= 3.0)
+      activemodel (>= 3.0)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec-core (~> 2.14.0)
+      rspec-expectations (~> 2.14.0)
+      rspec-mocks (~> 2.14.0)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)
@@ -160,20 +176,18 @@ GEM
     uglifier (2.5.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    warden (1.2.3)
-      rack (>= 1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bootstrap-sass
+  brahma_bodhi!
+  brahma_daemon
   brahma_utils
-  brahma_web
   coffee-rails (~> 4.0.0)
   connection_pool
-  devise
-  doorkeeper
+  factory_girl_rails
   highline
   jbuilder (~> 2.0)
   jquery-rails
@@ -182,6 +196,8 @@ DEPENDENCIES
   rails (= 4.1.0)
   redis
   rerun
+  rmagick
+  rspec-rails
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   sequel
