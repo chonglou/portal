@@ -13,7 +13,7 @@ module ApplicationHelper
 
   def personal_links
     if current_user
-      {'/personal'=>'个人中心', '/personal/logout'=>'安全退出'}
+      {'/personal'=>'个人中心', '/core/personal/logout'=>'安全退出'}
     else
       auth = Brahma::FACTORY.oauth2
       state = auth.state
