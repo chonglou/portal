@@ -1,13 +1,13 @@
+require 'brahma/factory'
 module ApplicationHelper
   include BrahmaBodhi::ApplicationHelper
-
 
   def nav_links
     links = {'/main' => '本站首页'}
     if current_user
       links['/personal'] = '用户中心'
     end
-    links['/about_me']='关于我们'
+    links['/core/about_me']='关于我们'
     links
   end
 
@@ -15,11 +15,11 @@ module ApplicationHelper
     if current_user
       {'/personal'=>'个人中心', '/personal/logout'=>'安全退出'}
     else
+      auth = Brahma::FACTORY.oauth2
+      state = auth.state
+      oauth2_state! state
       {
-          '/personal/login' => '用户登录',
-          '/personal/register' => '账户注册',
-          '/personal/active' => '激活账户',
-          '/personal/reset_pwd' => '找回密码'
+          auth.authorization(['info'], state) => 'BRAHMA通行证'
       }
     end
   end
