@@ -20,12 +20,14 @@ module Brahma
       @encryptor = Brahma::Utils::Encryptor.new keys.fetch(:key), keys.fetch(:iv)
       @mysql = Brahma::Utils::Database.connect Brahma::Config::Mysql.new("#{Rails.root}/config/database.yml").load(Rails.env)
       @redis = Brahma::Utils::Redis.pool Brahma::Config::Redis.new("#{Rails.root}/config/redis.yml").load(Rails.env)
-      @jobber = Brahma::JobSender.new 'portal', @redis
+
 
       site = Brahma::Config::Site.new.load(Rails.env, :client)
       @oauth2 = Brahma::Oauth2::Client.new site[:app].fetch(:host),
                                            site[:app].fetch(:id), site[:app].fetch(:secret),
                                            "http://#{site.fetch :server}#{site[:app].fetch(:uri)}"
+
+      @jobber = Brahma::JobSender.new site.fetch(:name), @redis
     end
   end
 
