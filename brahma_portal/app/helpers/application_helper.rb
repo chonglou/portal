@@ -7,7 +7,7 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
-    links['/core/about_me']='关于我们'
+    links['/about_me']='关于我们'
     links
   end
 
