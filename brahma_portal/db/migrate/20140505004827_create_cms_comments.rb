@@ -1,8 +1,14 @@
 class CreateCmsComments < ActiveRecord::Migration
   def change
     create_table :cms_comments do |t|
-
-      t.timestamps
+      t.integer :article, null: false
+      t.integer :author, null: false
+      t.integer :comment
+      t.text :content
+      t.integer :visits, null: false, default: 0
+      t.datetime :last_edit, null: false
+      t.datetime :created, null: false
+      t.integer :version, null: false, default: 0
     end
   end
 end
