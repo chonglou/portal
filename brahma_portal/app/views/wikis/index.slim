@@ -1,2 +1,3 @@
-<h1>Wiki#index</h1>
-<p>Find me in app/views/wiki/index.html.erb</p>
+- @index = '/wiki'
+-content_for :content
+  -render partial:'widgets/bodhi/fall_link', locals:{fall_link: @fall_link}
