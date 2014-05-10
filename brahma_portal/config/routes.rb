@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :wikis
 
+
   get 'archive/:year/:month/:day' => 'archive#index'
   get 'archive/:year/:month' => 'archive#index'
   post 'search' => 'search#index'

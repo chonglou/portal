@@ -7,6 +7,8 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
+    links['/cms'] = '内容系统'
+    links['/wiki'] = '知识库'
     links['/about_me']='关于我们'
     links
   end

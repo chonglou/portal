@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140503170309) do
+ActiveRecord::Schema.define(version: 20140505004910) do
 
   create_table "brahma_bodhi_friend_links", force: true do |t|
     t.string   "logo"
@@ -67,5 +67,54 @@ ActiveRecord::Schema.define(version: 20140503170309) do
 
   add_index "brahma_bodhi_users", ["open_id"], name: "index_brahma_bodhi_users_on_open_id", unique: true, using: :btree
   add_index "brahma_bodhi_users", ["token"], name: "index_brahma_bodhi_users_on_token", unique: true, using: :btree
+
+  create_table "cms_article_tags", force: true do |t|
+    t.integer  "article", null: false
+    t.integer  "tag",     null: false
+    t.datetime "created", null: false
+  end
+
+  create_table "cms_articles", force: true do |t|
+    t.integer  "author",                null: false
+    t.string   "logo"
+    t.string   "title",                 null: false
+    t.string   "summary"
+    t.text     "body",                  null: false
+    t.integer  "visits",    default: 0, null: false
+    t.datetime "last_edit",             null: false
+    t.datetime "created",               null: false
+    t.integer  "version",   default: 0, null: false
+  end
+
+  create_table "cms_comments", force: true do |t|
+    t.integer  "article",               null: false
+    t.integer  "author",                null: false
+    t.integer  "comment"
+    t.text     "content"
+    t.integer  "visits",    default: 0, null: false
+    t.datetime "last_edit",             null: false
+    t.datetime "created",               null: false
+    t.integer  "version",   default: 0, null: false
+  end
+
+  create_table "cms_tags", force: true do |t|
+    t.string   "name",                null: false
+    t.integer  "visits",  default: 0, null: false
+    t.datetime "created",             null: false
+  end
+
+  add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", unique: true, using: :btree
+
+  create_table "wikis", force: true do |t|
+    t.string   "title",                 null: false
+    t.string   "name",                  null: false
+    t.string   "body",                  null: false
+    t.integer  "author",                null: false
+    t.datetime "last_edit",             null: false
+    t.datetime "created",               null: false
+    t.integer  "version",   default: 0, null: false
+  end
+
+  add_index "wikis", ["name"], name: "index_wikis_on_name", unique: true, using: :btree
 
 end
