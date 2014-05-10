@@ -4,12 +4,12 @@ class PersonalController < ApplicationController
     user = current_user
     if user
       @ctl_links = {
-          '/personal/article' => '文章列表',
-          '/personal/comment' => '评论列表',
+          '/cms/articles' => '文章列表',
+          '/cms/comments' => '评论列表',
           '/wikis' => '知识库'
       }
       if admin?
-        @ctl_links['/cms/tag'] = '标签列表'
+        @ctl_links['/cms/tags'] = '标签列表'
         @ctl_links['/core/admin/site'] = '站点参数'
         @ctl_links['/core/admin/advert'] = '广告设置'
         @ctl_links['/core/admin/seo'] = 'SEO设置'

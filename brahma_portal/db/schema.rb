@@ -107,14 +107,11 @@ ActiveRecord::Schema.define(version: 20140505004910) do
 
   create_table "wikis", force: true do |t|
     t.string   "title",                 null: false
-    t.string   "name",                  null: false
     t.string   "body",                  null: false
     t.integer  "author",                null: false
     t.datetime "last_edit",             null: false
     t.datetime "created",               null: false
     t.integer  "version",   default: 0, null: false
   end
-
-  add_index "wikis", ["name"], name: "index_wikis_on_name", unique: true, using: :btree
 
 end

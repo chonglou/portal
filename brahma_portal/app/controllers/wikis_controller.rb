@@ -9,23 +9,22 @@ require 'brahma/services/site'
 
 class WikisController < ApplicationController
   def page
-    if params[:name]
-      @wiki = Wiki.find_by name:params[:name]
-      render 'wikis/show'
-    else
-      @fall_link = Brahma::Web::FallLink.new '知识库列表'
-      Wiki.all.each {|w| @fall_link.add "/wiki/#{w.name}", w.title}
-      render 'wikis/index'
-    end
+    @fall_link = Brahma::Web::FallLink.new '知识库列表'
+    Wiki.select(:id, :title).each { |w| @fall_link.add "/wikis/#{w.id}", w.title }
+    render 'wikis/page'
   end
 
+  #----------------------管理------------------------------------------------
   def index
     user = current_user
     if user
-      wikis = admin? ? Wiki.all : Wiki.find_by(author: user.fetch(:id))
-      tab = Brahma::Web::Table.new '/wikis', '知识库列表', %w(ID 名称 标题 上次编辑)
+      wikis = admin? ?
+          Wiki.select(:id, :title, :last_edit) :
+          Wiki.select(:id, :title, :last_edit).where(author: user.fetch(:id))
+      wikis ||= []
+      tab = Brahma::Web::Table.new '/wikis', '知识库列表', %w(ID 标题 上次编辑)
       wikis.each do |w|
-        tab.insert [w.id, w.name, w.title.truncate(50), w.last_edit], [
+        tab.insert [w.id, w.title.truncate(50), w.last_edit], [
             ['info', 'GOTO', "/wikis/#{w.id}", '查看'],
             ['warning', 'GET', "/wikis/#{w.id}/edit", '编辑'],
             ['danger', 'DELETE', "/wikis/#{w.id}", '删除']
@@ -43,7 +42,7 @@ class WikisController < ApplicationController
     wiki = Wiki.find_by id: params[:id]
     dlg = Brahma::Web::Dialog.new
     if can?(wiki)
-      Brahma::LogService.add "删除知识库[#{wiki.name}]", current_user.fetch(:id)
+      Brahma::LogService.add "删除知识库[#{wiki.id}]", current_user.fetch(:id)
       wiki.destroy
       dlg.ok = true
     else
@@ -92,7 +91,6 @@ class WikisController < ApplicationController
 
   def create
     vat = Brahma::Web::Validator.new params
-    vat.empty? :name, '名称'
     vat.empty? :title, '标题'
     vat.empty? :body, '内容'
 
@@ -100,13 +98,10 @@ class WikisController < ApplicationController
     if user.nil?
       vat.add '没有权限'
     end
-    if params[:name] && Wiki.find_by(name: params[:name])
-      vat.add '名称已存在'
-    end
 
     dlg = Brahma::Web::Dialog.new
     if vat.ok?
-      Wiki.create name: params[:name], title: params[:title], body: params[:body], last_edit: Time.now, created: Time.now, author: user.fetch(:id)
+      Wiki.create title: params[:title], body: params[:body], last_edit: Time.now, created: Time.now, author: user.fetch(:id)
       dlg.ok = true
     else
       dlg.data += vat.messages
@@ -117,7 +112,6 @@ class WikisController < ApplicationController
   def new
     if current_user
       fm = Brahma::Web::Form.new '新增知识库', '/wikis'
-      fm.text 'name', '名称'
       fm.text 'title', '标题', '', 560
       fm.textarea 'body', '内容'
       fm.ok = true
