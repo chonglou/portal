@@ -1,9 +1,5 @@
 - @index = '/wiki'
 -content_for :content
-  - if @wiki
-    h3 #{@wiki.title}
-    hr
-    |#{@wiki.body}
-  - else
-    h3 页面不存在
-    hr
+  h3 #{@title}
+  hr
+  |#{{@body}}

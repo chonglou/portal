@@ -51,6 +51,8 @@ gem 'connection_pool'
 gem 'brahma_bodhi', path:'../../bodhi/brahma_bodhi'
 gem 'brahma_utils'
 gem 'brahma_daemon'
+gem 'redcarpet'
+#gem 'coderay'
 
 
 group :development, :test do

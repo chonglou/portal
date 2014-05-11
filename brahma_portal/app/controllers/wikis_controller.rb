@@ -52,7 +52,14 @@ class WikisController < ApplicationController
   end
 
   def show
-    @wiki = Wiki.find_by id: params[:id]
+    require 'redcarpet/compat'
+    wiki = Wiki.find_by id: params[:id]
+    if wiki
+      @title= wiki.title
+      @body = Markdown.new(wiki.body).to_html
+    else
+      not_found
+    end
   end
 
   def update
