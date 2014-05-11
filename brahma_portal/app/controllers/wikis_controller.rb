@@ -4,12 +4,13 @@ require 'brahma/web/dialog'
 require 'brahma/web/fall'
 require 'brahma/web/validator'
 require 'brahma/web/response'
-require 'brahma/utils/string_helper'
 require 'brahma/services/site'
 
 class WikisController < ApplicationController
   def page
-    @fall_link = Brahma::Web::FallLink.new '知识库列表'
+    title = '知识库列表'
+    @title = title
+    @fall_link = Brahma::Web::FallLink.new title
     Wiki.select(:id, :title).each { |w| @fall_link.add "/wikis/#{w.id}", w.title }
     render 'wikis/page'
   end
@@ -21,7 +22,6 @@ class WikisController < ApplicationController
       wikis = admin? ?
           Wiki.select(:id, :title, :last_edit) :
           Wiki.select(:id, :title, :last_edit).where(author: user.fetch(:id))
-      wikis ||= []
       tab = Brahma::Web::Table.new '/wikis', '知识库列表', %w(ID 标题 上次编辑)
       wikis.each do |w|
         tab.insert [w.id, w.title.truncate(50), w.last_edit], [
