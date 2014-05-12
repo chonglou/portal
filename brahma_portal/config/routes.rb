@@ -8,10 +8,6 @@ Rails.application.routes.draw do
     resources :comments, :tags, :articles
   end
 
-  #-------------------知识库------------
-  get 'wiki' => 'wikis#page'
-  resources :wikis
-
   #----------------其它---------------
   get 'archive/:year/:month/:day' => 'archive#index'
   get 'archive/:year/:month' => 'archive#index'

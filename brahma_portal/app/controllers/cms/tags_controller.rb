@@ -10,12 +10,13 @@ class Cms::TagsController < ApplicationController
   def index
     if admin?
       tab = Brahma::Web::Table.new '/cms/tags', '标签列表', %w(ID 名称 创建时间)
-      Cms::Tag.all.each do |t|
-        tab.insert [t.id, t.name, t.created], [
-            ['info', 'GOTO', "/cms/tags/#{t.id}", '查看'],
-            ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑'],
-            ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
-        ]
+      Cms::Tag.order(id: :desc).all.each do |t|
+        btns = [['info', 'GOTO', "/cms/tags/#{t.id}", '查看']]
+        unless t.keep
+          btns << ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑']
+          btns << ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
+        end
+        tab.insert [t.id, t.name, t.created], btns
       end
       tab.toolbar = [%w(primary GET /cms/tags/new 新增)]
       tab.ok = true
@@ -28,15 +29,15 @@ class Cms::TagsController < ApplicationController
   def destroy
     if admin?
       tag = Cms::Tag.find_by id: params[:id]
-      dlg = Brahma::Web::Dialog.new
-
-      Brahma::LogService.add "删除标签[#{tag.id}]", current_user.fetch(:id)
-      tag.destroy
-      dlg.ok = true
-      render json: dlg.to_h
-    else
-      not_found
+      unless tag.keep
+        dlg = Brahma::Web::Dialog.new
+        Brahma::LogService.add "删除标签[#{tag.id}]", current_user.fetch(:id)
+        tag.destroy
+        dlg.ok = true
+        render(json: dlg.to_h) and return
+      end
     end
+    not_found
   end
 
   def show
@@ -129,4 +130,5 @@ class Cms::TagsController < ApplicationController
       not_found
     end
   end
+
 end

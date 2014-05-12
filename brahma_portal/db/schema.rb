@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140505004910) do
+ActiveRecord::Schema.define(version: 20140512010441) do
+
+  create_table "brahma_bodhi_attachments", force: true do |t|
+    t.integer  "user",                               null: false
+    t.integer  "size",                               null: false
+    t.string   "file_name",                          null: false
+    t.string   "content_type",                       null: false
+    t.string   "original_filename",                  null: false
+    t.binary   "content",           limit: 16777215, null: false
+    t.datetime "last_edit",                          null: false
+    t.datetime "created",                            null: false
+  end
+
+  add_index "brahma_bodhi_attachments", ["file_name"], name: "index_brahma_bodhi_attachments_on_file_name", unique: true, using: :btree
 
   create_table "brahma_bodhi_friend_links", force: true do |t|
     t.string   "logo"
@@ -98,20 +111,12 @@ ActiveRecord::Schema.define(version: 20140505004910) do
   end
 
   create_table "cms_tags", force: true do |t|
-    t.string   "name",                null: false
-    t.integer  "visits",  default: 0, null: false
-    t.datetime "created",             null: false
+    t.string   "name",                    null: false
+    t.integer  "visits",  default: 0,     null: false
+    t.datetime "created",                 null: false
+    t.boolean  "keep",    default: false, null: false
   end
 
   add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", unique: true, using: :btree
-
-  create_table "wikis", force: true do |t|
-    t.string   "title",                 null: false
-    t.string   "body",                  null: false
-    t.integer  "author",                null: false
-    t.datetime "last_edit",             null: false
-    t.datetime "created",               null: false
-    t.integer  "version",   default: 0, null: false
-  end
 
 end
