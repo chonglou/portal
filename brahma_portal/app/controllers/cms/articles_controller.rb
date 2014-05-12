@@ -4,6 +4,7 @@ require 'brahma/web/dialog'
 require 'brahma/web/fall'
 require 'brahma/web/validator'
 require 'brahma/web/response'
+require 'brahma/services/site'
 
 
 class Cms::ArticlesController < ApplicationController
@@ -37,6 +38,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
       if can_edit?(a)
         Brahma::LogService.add "删除文章[#{a.title}]", user.fetch(:id)
+        Cms::ArticleTag.destroy_all article:a.id
         a.destroy
         dlg.ok = true
       else
@@ -77,8 +79,14 @@ class Cms::ArticlesController < ApplicationController
       end
       dlg = Brahma::Web::Dialog.new
       if vat.ok?
-        a.update title: params[:id], summary: params[:summary], body: params[:body],
+        a.update title: params[:title], summary: params[:summary], body: params[:body],
                  last_edit: Time.now
+
+        Cms::ArticleTag.destroy_all article: a.id
+
+        params[:tag].each do |tid|
+          Cms::ArticleTag.create article: a.id, tag: tid, created: Time.now
+        end
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -98,6 +106,9 @@ class Cms::ArticlesController < ApplicationController
         fm.text 'title', '标题', a.title
         fm.textarea 'summary', '摘要', a.summary
         fm.html 'body', '内容', a.body
+        fm.checkbox 'tag', '标签',
+                    Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag }.join('+'),
+                    Cms::Tag.all.map { |t| [t.id, t.name] }
         fm.method = 'PUT'
         fm.ok = true
       else
@@ -119,9 +130,10 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
 
       if vat.ok?
-        Cms::Article.create author: user.fetch(:id),
-                            title: params[:title], summary: params[:summary], body: params[:body],
-                            last_edit: Time.now, created: Time.now
+        a = Cms::Article.create author: user.fetch(:id),
+                                title: params[:title], summary: params[:summary], body: params[:body],
+                                last_edit: Time.now, created: Time.now
+        params[:tag].each { |tid| Cms::ArticleTag.create article: a.id, tag: tid, created: Time.now }
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -138,6 +150,7 @@ class Cms::ArticlesController < ApplicationController
       fm.text 'title', '标题'
       fm.textarea 'summary', '摘要'
       fm.html 'body', '内容'
+      fm.checkbox 'tag', '标签', '', Cms::Tag.all.map { |t| [t.id, t.name] }
       fm.ok = true
       render json: fm.to_h
     else
