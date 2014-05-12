@@ -9,6 +9,7 @@ module ApplicationHelper
     end
     links['/forum'] = '论坛'
     links['/wiki'] = '知识库'
+    links['/user'] = '用户列表'
     links['/about_me']='关于我们'
     links
   end

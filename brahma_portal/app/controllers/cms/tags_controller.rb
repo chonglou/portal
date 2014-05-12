@@ -29,13 +29,16 @@ class Cms::TagsController < ApplicationController
   def destroy
     if admin?
       tag = Cms::Tag.find_by id: params[:id]
-      unless tag.keep
-        dlg = Brahma::Web::Dialog.new
+      size = Cms::ArticleTag.count tag: params[:id]
+      dlg = Brahma::Web::Dialog.new
+      if tag && !tag.keep && size == 0
         Brahma::LogService.add "删除标签[#{tag.id}]", current_user.fetch(:id)
         tag.destroy
         dlg.ok = true
-        render(json: dlg.to_h) and return
+      else
+        dlg.add '没有权限'
       end
+      render(json: dlg.to_h) and return
     end
     not_found
   end
