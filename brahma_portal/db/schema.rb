@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140512010441) do
+ActiveRecord::Schema.define(version: 20140512052244) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user",                               null: false
@@ -74,6 +74,8 @@ ActiveRecord::Schema.define(version: 20140512010441) do
     t.string   "token",                            null: false
     t.integer  "flag",       limit: 1, default: 0, null: false
     t.integer  "state",      limit: 1, default: 0, null: false
+    t.string   "username",                         null: false
+    t.binary   "contact"
     t.datetime "last_login"
     t.datetime "created",                          null: false
   end

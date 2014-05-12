@@ -1,4 +1,9 @@
 -content_for :content
-  h3 #{@article.title}
+  h3 #{@article.title}[#{@article.visits}]
   hr
+  ul
+    li 标签：
+    li 创建日期
+    li 用户
+
   |#{{@article.body}}

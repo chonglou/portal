@@ -9,6 +9,7 @@ class PersonalController < ApplicationController
       }
       if admin?
         @ctl_links['/cms/tags'] = '标签列表'
+        @ctl_links['/core/admin/users'] = '用户列表'
         @ctl_links['/core/admin/site'] = '站点参数'
         @ctl_links['/core/admin/advert'] = '广告设置'
         @ctl_links['/core/admin/seo'] = 'SEO设置'
