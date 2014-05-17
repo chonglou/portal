@@ -48,11 +48,12 @@ gem 'highline'
 gem 'sequel'
 gem 'redis'
 gem 'connection_pool'
-gem 'brahma_bodhi'
+gem 'brahma_bodhi', path: '../bodhi'
 gem 'brahma_utils'
 gem 'brahma_daemon'
 gem 'redcarpet'
 gem 'therubyracer'
+gem 'bootstrap-datepicker-rails'
 #gem 'coderay'
 
 
