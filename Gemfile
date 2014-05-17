@@ -52,6 +52,7 @@ gem 'brahma_bodhi'
 gem 'brahma_utils'
 gem 'brahma_daemon'
 gem 'redcarpet'
+gem 'therubyracer'
 #gem 'coderay'
 
 
