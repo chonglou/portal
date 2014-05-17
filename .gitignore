@@ -1,0 +1,7 @@
+/log/*.log
+/tmp
+.idea
+/config/*.yml
+/app/assets/javascripts/config-demo.js
+/public/3rd
+/public/assets
