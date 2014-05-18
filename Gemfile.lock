@@ -41,6 +41,7 @@ GEM
       redcarpet
       rmagick
       slim
+      therubyracer
       turbolinks
     brahma_daemon (0.0.1)
     brahma_utils (0.0.1)

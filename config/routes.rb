@@ -22,4 +22,5 @@ Rails.application.routes.draw do
 
   root 'main#index'
   mount BrahmaBodhi::Engine, at: '/core'
+
 end
