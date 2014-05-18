@@ -53,7 +53,6 @@ gem 'brahma_utils'
 gem 'brahma_daemon'
 gem 'redcarpet'
 gem 'therubyracer'
-gem 'bootstrap-datepicker-rails'
 #gem 'coderay'
 
 
