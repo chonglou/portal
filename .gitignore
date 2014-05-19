@@ -6,6 +6,5 @@
 /public/3rd
 /public/assets
 /public/robots.txt
-/public/google*.html
-/public/baidu_verify*.html
+/public/*.html
 /public/sitemap.xml.gz
