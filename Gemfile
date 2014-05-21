@@ -40,7 +40,6 @@ gem 'spring',        group: :development
 
 
 #My Add
-gem 'rmagick'
 gem 'puma'
 gem 'slim'
 gem 'bootstrap-sass'

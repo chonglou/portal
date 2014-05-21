@@ -39,7 +39,6 @@ GEM
       puma
       rails (~> 4.1.0)
       redcarpet
-      rmagick
       slim
       turbolinks
     brahma_daemon (0.0.1)
@@ -126,7 +125,6 @@ GEM
     redis (3.0.7)
     rerun (0.10.0)
       listen (~> 2.7, >= 2.7.3)
-    rmagick (2.13.2)
     rspec-core (2.14.8)
     rspec-expectations (2.14.5)
       diff-lcs (>= 1.1.3, < 2.0)
@@ -198,7 +196,6 @@ DEPENDENCIES
   redcarpet
   redis
   rerun
-  rmagick
   rspec-rails
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
