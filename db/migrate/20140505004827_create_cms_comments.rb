@@ -1,7 +1,7 @@
 class CreateCmsComments < ActiveRecord::Migration
   def change
     create_table :cms_comments do |t|
-      t.integer :article, null: false
+      t.integer :article_id, null: false
       t.integer :author, null: false
       t.integer :comment
       t.text :content

@@ -84,9 +84,9 @@ ActiveRecord::Schema.define(version: 20140524204136) do
   add_index "brahma_bodhi_users", ["token"], name: "index_brahma_bodhi_users_on_token", unique: true, using: :btree
 
   create_table "cms_article_tags", force: true do |t|
-    t.integer  "article", null: false
-    t.integer  "tag",     null: false
-    t.datetime "created", null: false
+    t.integer  "article_id", null: false
+    t.integer  "tag_id",     null: false
+    t.datetime "created",    null: false
   end
 
   create_table "cms_articles", force: true do |t|
@@ -102,14 +102,14 @@ ActiveRecord::Schema.define(version: 20140524204136) do
   end
 
   create_table "cms_comments", force: true do |t|
-    t.integer  "article",               null: false
-    t.integer  "author",                null: false
+    t.integer  "article_id",             null: false
+    t.integer  "author",                 null: false
     t.integer  "comment"
     t.text     "content"
-    t.integer  "visits",    default: 0, null: false
-    t.datetime "last_edit",             null: false
-    t.datetime "created",               null: false
-    t.integer  "version",   default: 0, null: false
+    t.integer  "visits",     default: 0, null: false
+    t.datetime "last_edit",              null: false
+    t.datetime "created",                null: false
+    t.integer  "version",    default: 0, null: false
   end
 
   create_table "cms_tags", force: true do |t|

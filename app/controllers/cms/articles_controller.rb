@@ -82,10 +82,10 @@ class Cms::ArticlesController < ApplicationController
         a.update title: params[:title], summary: params[:summary], body: params[:body],
                  last_edit: Time.now
 
-        Cms::ArticleTag.destroy_all article: a.id
+        Cms::ArticleTag.destroy_all article_id: a.id
 
         params[:tag].each do |tid|
-          Cms::ArticleTag.create article: a.id, tag: tid, created: Time.now
+          Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now
         end
         dlg.ok = true
       else
@@ -107,7 +107,7 @@ class Cms::ArticlesController < ApplicationController
         fm.textarea 'summary', '摘要', a.summary
         fm.html 'body', '内容', a.body
         fm.checkbox 'tag', '标签',
-                    Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag }.join('+'),
+                    Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag_id }.join('+'),
                     Cms::Tag.all.map { |t| [t.id, t.name] }
         fm.method = 'PUT'
         fm.ok = true
@@ -133,7 +133,7 @@ class Cms::ArticlesController < ApplicationController
         a = Cms::Article.create author: user.fetch(:id),
                                 title: params[:title], summary: params[:summary], body: params[:body],
                                 last_edit: Time.now, created: Time.now
-        params[:tag].each { |tid| Cms::ArticleTag.create article: a.id, tag: tid, created: Time.now }
+        params[:tag].each { |tid| Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now }
         dlg.ok = true
       else
         dlg.data += vat.messages
