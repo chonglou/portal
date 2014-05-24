@@ -50,12 +50,13 @@ class Cms::TagsController < ApplicationController
       tag = Cms::Tag.find_by id: id
       if tag
         tag.update visits: (tag.visits+1)
-        articles = Cms::ArticleTag.where(tag: id)
-        title = "标签-#{tag.name}[#{articles.size}]"
+        title = "标签-#{tag.name}[#{tag.articles.size}]"
         @title = title
         @fall_card = Brahma::Web::FallCard.new title
+        @index = "/cms/tags/#{tag.id}"
         #todo 需要优化
         tag.articles.each {|a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary,a.logo }
+        render 'cms/articles/list'
       else
         not_found
       end

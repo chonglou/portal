@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   namespace :cms do
     resources :comments, :tags, :articles
   end
+  get 'user' => 'user#index'
+  get 'user/:id' => 'user#show'
 
   #----------------其它---------------
   get 'archive/:year/:month/:day' => 'archive#index'
