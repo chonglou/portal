@@ -38,7 +38,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
       if can_edit?(a)
         Brahma::LogService.add "删除文章[#{a.title}]", user.fetch(:id)
-        Cms::ArticleTag.destroy_all article:a.id
+        Cms::ArticleTag.destroy_all article: a.id
         a.destroy
         dlg.ok = true
       else
@@ -79,7 +79,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
       if vat.ok?
         a.update title: params[:title], summary: params[:summary], body: params[:body],
-                 logo:first_logo(params[:body]), last_edit: Time.now
+                 logo: first_logo(params[:body]), last_edit: Time.now
 
         Cms::ArticleTag.destroy_all article_id: a.id
 
@@ -129,7 +129,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
 
       if vat.ok?
-        a = Cms::Article.create user_id: user.fetch(:id),logo:first_logo(params[:body]),
+        a = Cms::Article.create user_id: user.fetch(:id), logo: first_logo(params[:body]),
                                 title: params[:title], summary: params[:summary], body: params[:body],
                                 last_edit: Time.now, created: Time.now
         params[:tag].each { |tid| Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now }
@@ -161,6 +161,7 @@ class Cms::ArticlesController < ApplicationController
   def can_edit?(article)
     article && ((article.user_id==current_user.fetch(:id))||admin?)
   end
+
   def first_logo(html)
     doc = Nokogiri::HTML(html)
     img = doc.xpath('//img').first

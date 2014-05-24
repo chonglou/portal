@@ -55,7 +55,7 @@ class Cms::TagsController < ApplicationController
         @fall_card = Brahma::Web::FallCard.new title
         @index = "/cms/tags/#{tag.id}"
         #todo 需要优化
-        tag.articles.each {|a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary,a.logo }
+        tag.articles.each { |a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary, a.logo }
         render 'cms/articles/list'
       else
         not_found

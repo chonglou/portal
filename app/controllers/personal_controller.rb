@@ -1,4 +1,3 @@
-
 class PersonalController < ApplicationController
   def index
     user = current_user

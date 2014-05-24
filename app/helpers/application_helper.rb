@@ -16,7 +16,7 @@ module ApplicationHelper
 
   def personal_links
     if current_user
-      {'/personal'=>'个人中心', '/core/personal/logout'=>'安全退出'}
+      {'/personal' => '个人中心', '/core/personal/logout' => '安全退出'}
     else
       auth = Brahma::FACTORY.oauth2
       state = auth.state
@@ -29,12 +29,9 @@ module ApplicationHelper
 
   def tag_links
     links = {}
-    Cms::Tag.all.each {|t| links["/cms/tags/#{t.id}"] = t.name}
-    BrahmaBodhi::FriendLink.all.each {|fl| links["http://#{fl.domain}"] = fl.name}
+    Cms::Tag.all.each { |t| links["/cms/tags/#{t.id}"] = t.name }
+    BrahmaBodhi::FriendLink.all.each { |fl| links["http://#{fl.domain}"] = fl.name }
     links
   end
 
-  def archive_links
-    {}
-  end
 end
