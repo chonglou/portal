@@ -47,12 +47,13 @@ gem 'highline'
 gem 'sequel'
 gem 'redis'
 gem 'connection_pool'
-gem 'brahma_bodhi', path: '../bodhi'
-gem 'brahma_utils'
-gem 'brahma_daemon'
 gem 'redcarpet'
 #gem 'coderay'
 
+
+gem 'brahma_utils', git:'git@github.com:chonglou/utils.git'
+gem 'brahma_daemon', git:'git@github.com:chonglou/daemon.git'
+gem 'brahma_bodhi', git:'git@github.com:chonglou/bodhi.git'
 
 
 group :development, :test do
