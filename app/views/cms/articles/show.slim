@@ -12,3 +12,16 @@
         |作者：
         a href="/user/#{@article.user.id}" #{@article.user.username}
     |#{{@article.body}}
+    h3 评论列表
+    hr
+    - for c in @article.comments
+      a name="comment-#{c.id}"
+      blockquote
+        p #{{c.content}}
+        footer #{c.user.username} - #{c.last_edit}
+    - if current_user
+      div id="new-comment"
+      javascript:
+        $(function(){
+          new Ajax("new-comment", "/cms/comments/new", "GET", {article:"#{@article.id}"});
+        });

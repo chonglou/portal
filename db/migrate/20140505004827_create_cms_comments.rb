@@ -4,7 +4,7 @@ class CreateCmsComments < ActiveRecord::Migration
       t.integer :article_id, null: false
       t.integer :user_id, null: false
       t.integer :comment
-      t.text :content
+      t.text :content, null:false
       t.integer :visits, null: false, default: 0
       t.datetime :last_edit, null: false
       t.datetime :created, null: false
