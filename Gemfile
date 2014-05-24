@@ -62,3 +62,12 @@ group :development, :test do
   gem 'factory_girl_rails'
 end
 
+
+group :development do
+  gem 'capistrano', '~> 3.1'
+  gem 'capistrano-rbenv', '~> 2.0'
+  gem 'capistrano-rails'
+  gem 'capistrano3-puma'
+end
+
+
