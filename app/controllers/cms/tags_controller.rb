@@ -5,6 +5,7 @@ require 'brahma/web/fall'
 require 'brahma/web/validator'
 require 'brahma/web/response'
 require 'brahma/services/site'
+require 'nokogiri'
 
 class Cms::TagsController < ApplicationController
   def index
@@ -53,7 +54,8 @@ class Cms::TagsController < ApplicationController
         title = "标签-#{tag.name}[#{articles.size}]"
         @title = title
         @fall_card = Brahma::Web::FallCard.new title
-        articles.map { |at| Cms::Article.select(:id, :logo, :summary).find_by(id: at.article) }.each { |a| @fall_card.add "/cms/articles/#{a.id}", a.logo, a.title, a.summary }
+        #todo 需要优化
+        tag.articles.each {|a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary,a.logo }
       else
         not_found
       end

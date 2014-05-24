@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 20140524204136) do
   end
 
   create_table "cms_articles", force: true do |t|
-    t.integer  "author",                null: false
+    t.integer  "user_id",               null: false
     t.string   "logo"
     t.string   "title",                 null: false
     t.string   "summary"
@@ -103,7 +103,7 @@ ActiveRecord::Schema.define(version: 20140524204136) do
 
   create_table "cms_comments", force: true do |t|
     t.integer  "article_id",             null: false
-    t.integer  "author",                 null: false
+    t.integer  "user_id",                null: false
     t.integer  "comment"
     t.text     "content"
     t.integer  "visits",     default: 0, null: false

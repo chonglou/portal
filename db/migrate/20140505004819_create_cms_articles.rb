@@ -1,7 +1,7 @@
 class CreateCmsArticles < ActiveRecord::Migration
   def change
     create_table :cms_articles do |t|
-      t.integer :author, null: false
+      t.integer :user_id, null: false
       t.string :logo
       t.string :title, null: false
       t.string :summary

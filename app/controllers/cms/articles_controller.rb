@@ -13,7 +13,7 @@ class Cms::ArticlesController < ApplicationController
     if user
       articles = admin? ?
           Cms::Article.all.order(last_edit: :desc) :
-          Cms::Article.where(author: user.fetch(:id)).order(last_edit: :desc)
+          Cms::Article.where(user_id: user.fetch(:id)).order(last_edit: :desc)
 
       tab = Brahma::Web::Table.new '/cms/articles', '文章列表', %w(ID 标题 上次修改)
       articles.each do |a|
@@ -57,8 +57,7 @@ class Cms::ArticlesController < ApplicationController
       if article
         article.update visits: article.visits+1
         @article = article
-        @tags = {}
-        Cms::ArticleTag.where(article: id).each { |at| @tags[at.tag] = Cms::Tag.find_by(at.tag).name }
+        @tags = article.tags
         render 'cms/articles/show'
       else
         not_found
@@ -80,7 +79,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
       if vat.ok?
         a.update title: params[:title], summary: params[:summary], body: params[:body],
-                 last_edit: Time.now
+                 logo:first_logo(params[:body]), last_edit: Time.now
 
         Cms::ArticleTag.destroy_all article_id: a.id
 
@@ -130,7 +129,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
 
       if vat.ok?
-        a = Cms::Article.create author: user.fetch(:id),
+        a = Cms::Article.create user_id: user.fetch(:id),logo:first_logo(params[:body]),
                                 title: params[:title], summary: params[:summary], body: params[:body],
                                 last_edit: Time.now, created: Time.now
         params[:tag].each { |tid| Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now }
@@ -160,6 +159,11 @@ class Cms::ArticlesController < ApplicationController
 
   private
   def can_edit?(article)
-    article && ((article.author==current_user.fetch(:id))||admin?)
+    article && ((article.user_id==current_user.fetch(:id))||admin?)
+  end
+  def first_logo(html)
+    doc = Nokogiri::HTML(html)
+    img = doc.xpath('//img').first
+    img.attr('src') if img
   end
 end

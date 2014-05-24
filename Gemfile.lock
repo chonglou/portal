@@ -1,3 +1,18 @@
+PATH
+  remote: ../bodhi
+  specs:
+    brahma_bodhi (0.0.1)
+      bootstrap-sass
+      brahma_utils
+      jquery-rails
+      mysql2
+      nokogiri
+      puma
+      rails (~> 4.1.0)
+      redcarpet
+      slim
+      turbolinks
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -30,17 +45,6 @@ GEM
     arel (5.0.1.20140414130214)
     bootstrap-sass (3.1.1.1)
       sass (~> 3.2)
-    brahma_bodhi (0.0.1)
-      bootstrap-sass
-      brahma_utils
-      jquery-rails
-      mysql2
-      nokogiri
-      puma
-      rails (~> 4.1.0)
-      redcarpet
-      slim
-      turbolinks
     brahma_daemon (0.0.1)
     brahma_utils (0.0.1)
       connection_pool
@@ -181,7 +185,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootstrap-sass
-  brahma_bodhi
+  brahma_bodhi!
   brahma_daemon
   brahma_utils
   coffee-rails (~> 4.0.0)

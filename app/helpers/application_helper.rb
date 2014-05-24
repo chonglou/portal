@@ -7,8 +7,8 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
-    links['/forum'] = '论坛'
-    links['/wiki'] = '知识库'
+    links['/cms/tags/2'] = '知识库'
+    links['/cms/tags/3'] = '论坛'
     links['/user'] = '用户列表'
     links['/about_me']='关于我们'
     links
@@ -29,7 +29,7 @@ module ApplicationHelper
 
   def tag_links
     links = {}
-    Cms::Tag.all.each {|t| links["/tag/#{t.id}"] = t.name}
+    Cms::Tag.all.each {|t| links["/cms/tags/#{t.id}"] = t.name}
     BrahmaBodhi::FriendLink.all.each {|fl| links["http://#{fl.domain}"] = fl.name}
     links
   end

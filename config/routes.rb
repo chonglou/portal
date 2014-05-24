@@ -2,9 +2,6 @@ Rails.application.routes.draw do
 
   #-----------------内容系统------------
   namespace :cms do
-    get 'tag/:id' => 'tag#page'
-    get 'article/:id' => 'article#page'
-    get 'comment/:id' => 'comment#page'
     resources :comments, :tags, :articles
   end
 

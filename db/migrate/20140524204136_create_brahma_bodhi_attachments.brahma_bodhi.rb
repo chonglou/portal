@@ -2,7 +2,7 @@
 class CreateBrahmaBodhiAttachments < ActiveRecord::Migration
   def change
     create_table :brahma_bodhi_attachments do |t|
-      t.integer :user, null:false
+      t.integer :user_id, null:false
       t.integer :size, null:false
       t.string :file_name, null:false
       t.string :content_type, null:false
