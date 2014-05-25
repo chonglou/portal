@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: f0315e188ea88c304cfd9f298770d68deccd4e0e
+  revision: 3a9facd7be61f57ae8e55128d6d2af65af65c143
   specs:
     brahma_bodhi (0.0.1)
       bootstrap-sass
