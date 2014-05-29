@@ -5,7 +5,8 @@ Rails.application.routes.draw do
     get 'git'
     post 'git'
   end
-  get 'wiki'=>'wiki#index'
+  get 'wiki' => 'wiki#index'
+  get 'wiki/*name'=>'wiki#show'
   #-----------------内容系统------------
   namespace :cms do
     resources :comments, :tags, :articles

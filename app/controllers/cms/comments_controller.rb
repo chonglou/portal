@@ -106,15 +106,15 @@ class Cms::CommentsController < ApplicationController
       vat = Brahma::Web::Validator.new params
       vat.empty? :content, '内容'
       vat.empty? :article, '文章id'
-      unless Cms::Article.find_by(id:params[:article])
+      unless Cms::Article.find_by(id: params[:article])
         vat.add '文章不存在'
         vat.ok = false
       end
 
       dlg = Brahma::Web::Dialog.new
       if vat.ok?
-        Cms::Comment.create article_id:params[:article], user_id:user.fetch(:id), content:params[:content],
-                               last_edit:Time.now, created:Time.now
+        Cms::Comment.create article_id: params[:article], user_id: user.fetch(:id), content: params[:content],
+                            last_edit: Time.now, created: Time.now
         dlg.ok = true
       else
         dlg.data += vat.messages

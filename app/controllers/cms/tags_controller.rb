@@ -77,7 +77,7 @@ class Cms::TagsController < ApplicationController
 
       if vat.ok?
         tag = Cms::Tag.find_by id: params[:id]
-        tag.update name: name, flag:params[:flag]
+        tag.update name: name, flag: params[:flag]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -116,7 +116,7 @@ class Cms::TagsController < ApplicationController
       end
 
       if vat.ok?
-        Cms::Tag.create name: name, flag:params[:flag], created: Time.now
+        Cms::Tag.create name: name, flag: params[:flag], created: Time.now
         dlg.ok = true
       else
         dlg.data += vat.messages
