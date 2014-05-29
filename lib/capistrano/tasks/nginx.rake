@@ -17,6 +17,7 @@ server {
 
   location ~* ^/(assets|3rd|favicon.ico|attachments)/  {
     expires max;
+    #gzip_static on;
     add_header  Cache-Control public;
   }
 

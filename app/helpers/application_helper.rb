@@ -7,6 +7,7 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
+    #todo
     links['/cms/tags/2'] = '知识库'
     links['/cms/tags/3'] = '论坛'
     links['/user'] = '用户列表'

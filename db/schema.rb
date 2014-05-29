@@ -14,7 +14,7 @@
 ActiveRecord::Schema.define(version: 20140524204136) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
-    t.integer  "user",                               null: false
+    t.integer  "user_id",                            null: false
     t.integer  "size",                               null: false
     t.string   "file_name",                          null: false
     t.string   "content_type",                       null: false
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20140524204136) do
   end
 
   create_table "brahma_bodhi_logs", force: true do |t|
-    t.integer  "user",              default: 0, null: false
+    t.integer  "user_id",                       null: false
     t.string   "message",                       null: false
     t.integer  "flag",    limit: 1, default: 0, null: false
     t.datetime "created",                       null: false
@@ -113,10 +113,10 @@ ActiveRecord::Schema.define(version: 20140524204136) do
   end
 
   create_table "cms_tags", force: true do |t|
-    t.string   "name",                    null: false
-    t.integer  "visits",  default: 0,     null: false
-    t.datetime "created",                 null: false
-    t.boolean  "keep",    default: false, null: false
+    t.string   "name",                          null: false
+    t.integer  "visits",            default: 0, null: false
+    t.datetime "created",                       null: false
+    t.integer  "flag",    limit: 2, default: 0, null: false
   end
 
   add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", unique: true, using: :btree

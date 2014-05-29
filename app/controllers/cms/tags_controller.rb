@@ -14,9 +14,9 @@ class Cms::TagsController < ApplicationController
       Cms::Tag.order(id: :desc).all.each do |t|
         btns = [['info', 'GOTO', "/cms/tags/#{t.id}", '查看']]
         unless t.keep
-          btns << ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑']
           btns << ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
         end
+        btns << ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑']
         tab.insert [t.id, t.name, t.created], btns
       end
       tab.toolbar = [%w(primary GET /cms/tags/new 新增)]
