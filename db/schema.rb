@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20140524204136) do
   end
 
   create_table "brahma_bodhi_logs", force: true do |t|
-    t.integer  "user_id",                       null: false
+    t.integer  "user_id",           default: 0, null: false
     t.string   "message",                       null: false
     t.integer  "flag",    limit: 1, default: 0, null: false
     t.datetime "created",                       null: false
@@ -105,7 +105,7 @@ ActiveRecord::Schema.define(version: 20140524204136) do
     t.integer  "article_id",             null: false
     t.integer  "user_id",                null: false
     t.integer  "comment"
-    t.text     "content"
+    t.text     "content",                null: false
     t.integer  "visits",     default: 0, null: false
     t.datetime "last_edit",              null: false
     t.datetime "created",                null: false

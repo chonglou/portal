@@ -7,9 +7,7 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
-    #todo
-    links['/cms/tags/2'] = '知识库'
-    links['/cms/tags/3'] = '论坛'
+    Cms::Tag.where( flag: Cms::Tag.flags[:top_nav]).each{|t| links["/cms/tags/#{t.id}"] = t.name}
     links['/user'] = '用户列表'
     links['/about_me']='关于我们'
     links

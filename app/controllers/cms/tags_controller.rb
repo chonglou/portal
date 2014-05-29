@@ -10,14 +10,13 @@ require 'nokogiri'
 class Cms::TagsController < ApplicationController
   def index
     if admin?
-      tab = Brahma::Web::Table.new '/cms/tags', '标签列表', %w(ID 名称 创建时间)
+      tab = Brahma::Web::Table.new '/cms/tags', '标签列表', %w(ID 名称 类型 创建时间)
       Cms::Tag.order(id: :desc).all.each do |t|
-        btns = [['info', 'GOTO', "/cms/tags/#{t.id}", '查看']]
-        unless t.keep
-          btns << ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
-        end
-        btns << ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑']
-        tab.insert [t.id, t.name, t.created], btns
+        tab.insert [t.id, t.name, t.flag, t.created], [
+            ['info', 'GOTO', "/cms/tags/#{t.id}", '查看'],
+            ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑'],
+            ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
+        ]
       end
       tab.toolbar = [%w(primary GET /cms/tags/new 新增)]
       tab.ok = true
@@ -32,7 +31,7 @@ class Cms::TagsController < ApplicationController
       tag = Cms::Tag.find_by id: params[:id]
       size = Cms::ArticleTag.count tag: params[:id]
       dlg = Brahma::Web::Dialog.new
-      if tag && !tag.keep && size == 0
+      if tag && size == 0
         Brahma::LogService.add "删除标签[#{tag.id}]", current_user.fetch(:id)
         tag.destroy
         dlg.ok = true
@@ -70,13 +69,15 @@ class Cms::TagsController < ApplicationController
       dlg = Brahma::Web::Dialog.new
 
       name = params[:name]
-      if name && Cms::Tag.find_by(name: name)
+
+      ex = Cms::Tag.find_by(name: name)
+      if ex && ex.id !=params[:id].to_i
         vat.add '名称已存在'
       end
 
       if vat.ok?
         tag = Cms::Tag.find_by id: params[:id]
-        tag.update name: name
+        tag.update name: name, flag:params[:flag]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -95,7 +96,7 @@ class Cms::TagsController < ApplicationController
       tag = Cms::Tag.find_by id: tid
       fm.method = 'PUT'
       fm.text 'name', '名称', tag.name
-
+      fm.radio 'flag', '类型', tag.flag, tag_flag_options
       fm.ok = true
       render json: fm.to_h
     else
@@ -115,7 +116,7 @@ class Cms::TagsController < ApplicationController
       end
 
       if vat.ok?
-        Cms::Tag.create name: name, created: Time.now
+        Cms::Tag.create name: name, flag:params[:flag], created: Time.now
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -130,11 +131,17 @@ class Cms::TagsController < ApplicationController
     if admin?
       fm = Brahma::Web::Form.new '新增标签', '/cms/tags'
       fm.text 'name', '名称'
+      fm.radio 'flag', '类型', 'default', tag_flag_options
       fm.ok = true
       render json: fm.to_h
     else
       not_found
     end
+  end
+
+  private
+  def tag_flag_options
+    [%w(default 默认), %w(top_nav 顶部导航)]
   end
 
 end
