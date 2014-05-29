@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  #----------------知识库--------------------
+  namespace :wiki do
+    get 'git'
+    post 'git'
+  end
+  get 'wiki'=>'wiki#index'
   #-----------------内容系统------------
   namespace :cms do
     resources :comments, :tags, :articles
