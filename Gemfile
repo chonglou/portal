@@ -49,6 +49,7 @@ gem 'redis'
 gem 'connection_pool'
 gem 'redcarpet'
 #gem 'coderay'
+gem 'sitemap_generator'
 
 
 gem 'brahma_utils', git:'git@github.com:chonglou/utils.git'

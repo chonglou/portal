@@ -83,8 +83,10 @@ class Cms::ArticlesController < ApplicationController
 
         Cms::ArticleTag.destroy_all article_id: a.id
 
-        params[:tag].each do |tid|
-          Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now
+        if params[:tag]
+          params[:tag].each do |tid|
+            Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now
+          end
         end
         dlg.ok = true
       else
@@ -132,7 +134,9 @@ class Cms::ArticlesController < ApplicationController
         a = Cms::Article.create user_id: user.fetch(:id), logo: first_logo(params[:body]),
                                 title: params[:title], summary: params[:summary], body: params[:body],
                                 last_edit: Time.now, created: Time.now
-        params[:tag].each { |tid| Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now }
+        if params[:tag]
+          params[:tag].each { |tid| Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now }
+        end
         dlg.ok = true
       else
         dlg.data += vat.messages
