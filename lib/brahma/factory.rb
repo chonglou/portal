@@ -27,7 +27,7 @@ module Brahma
                                            site[:app].fetch(:id), site[:app].fetch(:secret),
                                            "http://#{site.fetch :server}#{site[:app].fetch(:uri)}"
 
-      @jobber = Brahma::JobSender.new site.fetch(:name), @redis
+      @jobber = Brahma::Job::RedisSender.new site.fetch(:name), @redis
     end
   end
 
