@@ -7,7 +7,7 @@ set :application, 'portal'
 set :repo_url, 'git@github.com:chonglou/portal.git'
 set :deploy_to, "/var/www/#{fetch(:domain)}"
 set :linked_files, %w{config/database.yml config/site.yml config/redis.yml config/keys.yml config/secrets.yml}
-set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets public/3rd}
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/wiki tmp/sockets public/3rd}
 set :keep_releases, 7
 set :log_level, :debug
 
