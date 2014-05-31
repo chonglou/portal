@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 27e76b4a3cd6a279f8c452220861d9de587e5bb6
+  revision: 9c8d5bb70d404096b730e5753619c2df0a69d206
   specs:
     brahma_bodhi (0.0.1)
       bootstrap-sass
@@ -22,9 +22,10 @@ GIT
 
 GIT
   remote: git@github.com:chonglou/utils.git
-  revision: 408f9479713a9a818a2ce231009590e10652aca0
+  revision: ae9277f6eadc79014aa04c32454a4b2f99520134
   specs:
     brahma_utils (0.0.1)
+      bunny
       connection_pool
       highline
       mysql2
@@ -62,10 +63,13 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    amq-protocol (1.9.2)
     arel (5.0.1.20140414130214)
     bootstrap-sass (3.1.1.1)
       sass (~> 3.2)
     builder (3.2.2)
+    bunny (1.2.2)
+      amq-protocol (>= 1.9.2)
     capistrano (3.2.1)
       i18n
       rake (>= 10.0.0)
