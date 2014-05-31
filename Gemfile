@@ -50,11 +50,14 @@ gem 'connection_pool'
 gem 'redcarpet'
 #gem 'coderay'
 gem 'sitemap_generator'
+gem 'bunny'
+gem 'mongo'
+gem 'bson_ext'
 
 
 gem 'brahma_utils', git:'git@github.com:chonglou/utils.git'
 gem 'brahma_daemon', git:'git@github.com:chonglou/daemon.git'
-gem 'brahma_bodhi', git:'git@github.com:chonglou/bodhi.git'
+gem 'brahma_bodhi', path:'../bodhi' #, git:'git@github.com:chonglou/bodhi.git'
 
 
 group :development, :test do
