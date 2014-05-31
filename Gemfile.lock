@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 9c8d5bb70d404096b730e5753619c2df0a69d206
+  revision: 7010006882914f206ac30102e3309a01793c2cf7
   specs:
     brahma_bodhi (0.0.1)
       bootstrap-sass
@@ -201,7 +201,7 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
-    sshkit (1.5.0)
+    sshkit (1.5.1)
       colorize
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
