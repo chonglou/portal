@@ -22,7 +22,7 @@ GIT
 
 GIT
   remote: git@github.com:chonglou/utils.git
-  revision: ae9277f6eadc79014aa04c32454a4b2f99520134
+  revision: ca699e26eb1295b06fb601495d8888ad6dd322c7
   specs:
     brahma_utils (0.0.1)
       bunny
