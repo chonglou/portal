@@ -1,4 +1,22 @@
 GIT
+  remote: git@github.com:chonglou/bodhi.git
+  revision: 225525ad2834494a54bf10a8d0a0725074561f24
+  specs:
+    brahma_bodhi (0.0.1)
+      bootstrap-sass
+      brahma_utils
+      bson_ext
+      jquery-rails
+      mongo
+      mysql2
+      nokogiri
+      puma
+      rails (~> 4.1.0)
+      redcarpet
+      slim
+      turbolinks
+
+GIT
   remote: git@github.com:chonglou/daemon.git
   revision: 66f1011575fa48fc48e1d16a842f56df2f16ca99
   specs:
@@ -17,23 +35,6 @@ GIT
       redcarpet
       redis
       sequel
-
-PATH
-  remote: ../bodhi
-  specs:
-    brahma_bodhi (0.0.1)
-      bootstrap-sass
-      brahma_utils
-      bson_ext
-      jquery-rails
-      mongo
-      mysql2
-      nokogiri
-      puma
-      rails (~> 4.1.0)
-      redcarpet
-      slim
-      turbolinks
 
 GEM
   remote: https://rubygems.org/
