@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 5afcbf2991e77bbacab87b33df8c4d6f4006f0b2
+  revision: 5a268958f4d871db05ed598799d82f7fff700cb9
   specs:
     brahma_bodhi (0.0.1)
       bootstrap-sass
@@ -187,7 +187,7 @@ GEM
       rspec-expectations (~> 3.0.0)
       rspec-mocks (~> 3.0.0)
       rspec-support (~> 3.0.0)
-    rspec-support (3.0.1)
+    rspec-support (3.0.2)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)

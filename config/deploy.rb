@@ -27,10 +27,6 @@ namespace :deploy do
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       within release_path do
-        #execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:seo"
-        puts '#'*160
-        puts latest_revision,
-
         execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:stop"
         sleep 10
         execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:start"
