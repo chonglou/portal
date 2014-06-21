@@ -1,5 +1,16 @@
 Rails.application.routes.draw do
 
+  namespace :rss do
+  get 'sites/index'
+  end
+
+  #-------------rss采集---------------
+  namespace :rss do
+    resources :sites
+  end
+  get 'rss'=>'rss#index'
+  get 'rss/show/:id' => 'rss#show'
+
   #----------------知识库--------------------
   namespace :wiki do
     get 'git'
@@ -7,6 +18,7 @@ Rails.application.routes.draw do
   end
   get 'wiki' => 'wiki#index'
   get 'wiki/*name'=>'wiki#show'
+  
   #-----------------内容系统------------
   namespace :cms do
     resources :comments, :tags, :articles

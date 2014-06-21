@@ -29,7 +29,7 @@ class Cms::TagsController < ApplicationController
   def destroy
     if admin?
       tag = Cms::Tag.find_by id: params[:id]
-      size = Cms::ArticleTag.count tag: params[:id]
+      size = Cms::ArticleTag.count tag_id: params[:id]
       dlg = Brahma::Web::Dialog.new
       if tag && size == 0
         Brahma::LogService.add "删除标签[#{tag.id}]", current_user.fetch(:id)

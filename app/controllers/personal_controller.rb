@@ -7,6 +7,7 @@ class PersonalController < ApplicationController
           '/cms/comments' => '评论列表'
       }
       if admin?
+        @ctl_links['/rss/sites'] = 'RSS源'
         @ctl_links['/wiki/git'] = '知识库'
         @ctl_links['/cms/tags'] = '标签列表'
         @ctl_links['/core/admin/users'] = '用户列表'
