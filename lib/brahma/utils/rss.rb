@@ -1,4 +1,9 @@
-require "#{Gem.path[0].sub '/gems/', '/'}/rss"
+Gem.path.each do|p|
+  rs = "#{p.sub '/gems/', '/'}/rss"
+  if File.exist?("#{rs}.rb")
+    require rs
+  end
+end
 require 'open-uri'
 
 module Brahma
