@@ -1,2 +1,17 @@
-<h1>Rss#index</h1>
-<p>Find me in app/views/rss/index.html.erb</p>
+-content_for :content
+  h3 #{@item.title}
+  hr
+  ul
+    li 抓取时间：#{@item.created}
+    li
+      |来源：
+      a href="#{@item.link}" target="_blank" #{@item.site.name}
+  p
+  |#{{@item.content}}
+  p
+  h4 相关文章
+  hr
+  -@items.each do |i|
+    -unless @item.id == i.id
+      blockquote
+        a href="/rss/item/#{i.id}" #{i.title}

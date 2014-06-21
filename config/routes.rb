@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     resources :sites
   end
   get 'rss' => 'rss#index'
-  get 'rss/show/:id' => 'rss#show'
+  get 'rss/item/:id' => 'rss#show'
 
   #----------------知识库--------------------
   namespace :wiki do
