@@ -28,6 +28,7 @@ namespace :deploy do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       within release_path do
         execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:stop"
+        execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:seo"
         sleep 10
         execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:start"
       end
