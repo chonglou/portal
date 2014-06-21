@@ -104,6 +104,7 @@ GEM
     connection_pool (2.0.0)
     diff-lcs (1.2.5)
     erubis (2.7.0)
+    eventmachine (1.0.3)
     execjs (2.2.0)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
@@ -248,6 +249,7 @@ DEPENDENCIES
   capistrano3-puma
   coffee-rails (~> 4.0.0)
   connection_pool
+  eventmachine
   factory_girl_rails
   highline
   jbuilder (~> 2.0)

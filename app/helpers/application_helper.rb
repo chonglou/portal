@@ -9,6 +9,7 @@ module ApplicationHelper
     end
     Cms::Tag.where(flag: Cms::Tag.flags[:top_nav]).each { |t| links["/cms/tags/#{t.id}"] = t.name }
     links['/wiki'] = '知识库'
+    links['/rss'] = '网络文摘'
     links['/user'] = '用户列表'
     links['/about_me']='关于我们'
     links

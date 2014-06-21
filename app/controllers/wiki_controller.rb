@@ -13,7 +13,7 @@ class WikiController < ApplicationController
     @title = '知识库列表'
     @fall_link = Brahma::Web::FallLink.new @title
 
-    Brahma::Utils::WikiHelper.each {|name| @fall_link.add "/wiki/#{name}", name}
+    Brahma::Utils::WikiHelper.each { |name| @fall_link.add "/wiki/#{name}", name }
   end
 
   def show
@@ -36,7 +36,7 @@ class WikiController < ApplicationController
         when 'POST'
           url = params[:url]
           dlg = Brahma::Web::Dialog.new
-          dlg.data += Brahma::Utils::WikiHelper.update(url).split("\n")
+          #dlg.data += Brahma::Utils::WikiHelper.update(url).split("\n")
           sd.set 'site.wiki', {url: url}
           dlg.ok = true
           render(json: dlg.to_h) and return

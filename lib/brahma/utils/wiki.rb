@@ -8,12 +8,14 @@ module Brahma
         #todo 防注入
         Dir.exist?(WIKI_ROOT) ? `cd #{WIKI_ROOT} && git pull` : `git clone #{url} #{WIKI_ROOT}`
       end
+
       def get(name)
         name = "#{WIKI_ROOT}/#{name}.md"
         if File.file?(name)
           File.open(name, 'r') { |f| Brahma::Utils::StringHelper.md2html f.read }
         end
       end
+
       def each
         len = WIKI_ROOT.size
         Dir.glob("#{WIKI_ROOT}/**/*.md").each do |fn|

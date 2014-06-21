@@ -53,6 +53,7 @@ gem 'sitemap_generator'
 gem 'bunny'
 gem 'mongo'
 gem 'bson_ext'
+gem 'eventmachine'
 
 
 gem 'brahma_utils', git:'git@github.com:chonglou/utils.git'

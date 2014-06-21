@@ -5,6 +5,10 @@ require 'brahma/web/dialog'
 require 'brahma/web/table'
 
 class RssController < ApplicationController
+  def index
+
+  end
+
   def show
     #todo
   end

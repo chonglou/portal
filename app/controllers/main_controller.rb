@@ -12,7 +12,7 @@ class MainController < ApplicationController
       end
       fmt.atom do
         @articles=articles
-        render action:'index', layout: false
+        render action: 'index', layout: false
       end
     end
   end

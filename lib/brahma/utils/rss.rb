@@ -1,20 +1,12 @@
-require 'rss'
+require "#{Gem.path[0].sub '/gems/', '/'}/rss"
 require 'open-uri'
-#
-# module RSS
-#   class Rss
-#     install_ns CONTENT_PREFIX, CONTENT_URI
-#     class Channel
-#       class Item; include ContentModel; end
-#     end
-#   end
-# end
 
 module Brahma
   module Utils
     module RssHelper
       module_function
-      def all(url)
+
+      def list(url)
         open(url) do |rss|
           feed = RSS::Parser.parse(rss)
           feed.items.each do |item|
