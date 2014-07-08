@@ -1,9 +1,10 @@
 require 'brahma/factory'
 module ApplicationHelper
   include BrahmaBodhi::ApplicationHelper
+  include ShareHelper
 
   def nav_links
-    links = {'/main' => '本站首页'}
+    links = {main_path => '本站首页'}
     if current_user
       links['/personal'] = '用户中心'
     end
@@ -15,17 +16,20 @@ module ApplicationHelper
     links
   end
 
-  def personal_links
+  def personal_bar
     if current_user
-      {'/personal' => '个人中心', '/core/personal/logout' => '安全退出'}
+      label = "欢迎你, #{session.fetch :username}"
+      links={
+          personal_path => '个人中心',
+         # brahma_bodhi.personal_logout_path => '安全退出'
+      }
     else
-      auth = Brahma::Factory.instance.oauth2
-      state = auth.state
-      oauth2_state! state
-      {
-          auth.authorization(['info'], state) => 'BRAHMA通行证'
+      label = '注册/登录'
+      links={
+          Brahma::Factory.instance.oauth2.authorize_url => 'BRAHMA通行证'
       }
     end
+    {label: label, links: links}
   end
 
   def tag_links
