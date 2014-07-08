@@ -13,7 +13,7 @@ class Cms::ArticlesController < ApplicationController
     if user
       articles = admin? ?
           Cms::Article.all.order(last_edit: :desc) :
-          Cms::Article.where(user_id: user.fetch(:id)).order(last_edit: :desc)
+          Cms::Article.where(user_id: user.id).order(last_edit: :desc)
 
       tab = Brahma::Web::Table.new '/cms/articles', '文章列表', %w(ID 标题 上次修改)
       articles.each do |a|
@@ -37,7 +37,7 @@ class Cms::ArticlesController < ApplicationController
       a = Cms::Article.find_by id: params[:id]
       dlg = Brahma::Web::Dialog.new
       if can_edit?(a)
-        Brahma::LogService.add "删除文章[#{a.title}]", user.fetch(:id)
+        Brahma::LogService.add "删除文章[#{a.title}]", user.id
         Cms::ArticleTag.destroy_all article: a.id
         a.destroy
         dlg.ok = true
@@ -108,7 +108,7 @@ class Cms::ArticlesController < ApplicationController
         fm.textarea 'summary', '摘要', a.summary
         fm.html 'body', '内容', a.body
         fm.checkbox 'tag', '标签',
-                    Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag_id }.join('+'),
+                    Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag_id },
                     Cms::Tag.all.map { |t| [t.id, t.name] }
         fm.method = 'PUT'
         fm.ok = true
@@ -131,7 +131,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
 
       if vat.ok?
-        a = Cms::Article.create user_id: user.fetch(:id), logo: first_logo(params[:body]),
+        a = Cms::Article.create user_id: user.id, logo: first_logo(params[:body]),
                                 title: params[:title], summary: params[:summary], body: params[:body],
                                 last_edit: Time.now, created: Time.now
         if params[:tag]
@@ -163,7 +163,7 @@ class Cms::ArticlesController < ApplicationController
 
   private
   def can_edit?(article)
-    article && ((article.user_id==current_user.fetch(:id))||admin?)
+    article && ((article.user_id==current_user.id)||admin?)
   end
 
   def first_logo(html)

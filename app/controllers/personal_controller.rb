@@ -3,24 +3,27 @@ class PersonalController < ApplicationController
     user = current_user
     if user
       @ctl_links = {
-          '/cms/articles' => '文章列表',
-          '/cms/comments' => '评论列表'
+          cms_articles_path => '文章列表',
+          cms_comments_path => '评论列表'
       }
       if admin?
-        @ctl_links['/rss/sites'] = 'RSS源'
-        @ctl_links['/wiki/git'] = '知识库'
-        @ctl_links['/cms/tags'] = '标签列表'
-        @ctl_links['/core/admin/users'] = '用户列表'
-        @ctl_links['/core/admin/site'] = '站点参数'
-        @ctl_links['/core/admin/advert'] = '广告设置'
-        @ctl_links['/core/admin/seo'] = 'SEO设置'
-        @ctl_links['/core/admin/notices'] = '消息通知'
+        @ctl_links[rss_sites_path] = 'RSS源'
+        @ctl_links[wiki_git_path] = '知识库'
+        @ctl_links[cms_tags_path] = '标签列表'
+
+
+        @ctl_links[brahma_bodhi.admin_site_path] = '站点参数'
+        @ctl_links[brahma_bodhi.admin_advert_path] = '广告设置'
+        @ctl_links[brahma_bodhi.admin_notices_path] = '消息通知'
+        @ctl_links[brahma_bodhi.admin_seo_path] = 'SEO设置'
+        @ctl_links[brahma_bodhi.admin_users_path] = '用户列表'
+
       end
-      @ctl_links['/core/attachments']='附件管理'
-      @ctl_links['/core/user/logs']='日志列表'
-      @index='/personal'
-      goto_admin and return
+      @ctl_links[brahma_bodhi.attachments_path]='附件管理'
+      @ctl_links[brahma_bodhi.user_logs_path]='日志列表'
+      goto_admin
+    else
+      not_found
     end
-    not_found
   end
 end

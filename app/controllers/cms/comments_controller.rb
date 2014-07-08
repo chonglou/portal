@@ -13,7 +13,7 @@ class Cms::CommentsController < ApplicationController
     if user
       comments = admin? ?
           Cms::Comment.all.order(last_edit: :desc) :
-          Cms::Comment.where(user_id: user.fetch(:id)).order(last_edit: :desc)
+          Cms::Comment.where(user_id: user.id).order(last_edit: :desc)
 
       tab = Brahma::Web::Table.new '/cms/comments', '评论列表', %w(ID 内容 上次修改)
       comments.each do |c|
@@ -36,7 +36,7 @@ class Cms::CommentsController < ApplicationController
       c = Cms::Comment.find_by id: params[:id]
       dlg = Brahma::Web::Dialog.new
       if can_edit?(c)
-        Brahma::LogService.add "删除评论[#{c.id}]", user.fetch(:id)
+        Brahma::LogService.add "删除评论[#{c.id}]", user.id
         c.destroy
         dlg.ok = true
       else
@@ -113,7 +113,7 @@ class Cms::CommentsController < ApplicationController
 
       dlg = Brahma::Web::Dialog.new
       if vat.ok?
-        Cms::Comment.create article_id: params[:article], user_id: user.fetch(:id), content: params[:content],
+        Cms::Comment.create article_id: params[:article], user_id: user.id, content: params[:content],
                             last_edit: Time.now, created: Time.now
         dlg.ok = true
       else
@@ -139,7 +139,7 @@ class Cms::CommentsController < ApplicationController
 
   private
   def can_edit?(comment)
-    comment && ((comment.user_id==current_user.fetch(:id))||admin?)
+    comment && ((comment.user_id==current_user.id)||admin?)
   end
 
 end

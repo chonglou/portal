@@ -23,5 +23,5 @@
       div id="new-comment"
       javascript:
         $(function () {
-          new Ajax("new-comment", "/cms/comments/new", "GET", {article: "#{@article.id}"});
+          new Brahma.Ajax("new-comment", "/cms/comments/new", "GET", {article: "#{@article.id}"});
         });

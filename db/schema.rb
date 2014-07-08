@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140708183952) do
+ActiveRecord::Schema.define(version: 20140708194733) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20140708183952) do
 
   create_table "brahma_bodhi_users", force: true do |t|
     t.string   "open_id",                          null: false
+    t.string   "username",                         null: false
     t.integer  "flag",       limit: 1, default: 0, null: false
     t.integer  "state",      limit: 1, default: 0, null: false
     t.binary   "contact",                          null: false

@@ -27,7 +27,7 @@ class Rss::SitesController < ApplicationController
     size = Rss::Item.count site_id: params[:id]
     dlg = Brahma::Web::Dialog.new
     if site && size == 0
-      Brahma::LogService.add "删除RSS源[#{site.id}]", current_user.fetch(:id)
+      Brahma::LogService.add "删除RSS源[#{site.id}]", current_user.id
       site.destroy
       dlg.ok = true
     else

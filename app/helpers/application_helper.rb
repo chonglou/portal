@@ -21,7 +21,7 @@ module ApplicationHelper
       label = "欢迎你, #{session.fetch :username}"
       links={
           personal_path => '个人中心',
-         # brahma_bodhi.personal_logout_path => '安全退出'
+          brahma_bodhi.personal_logout_path => '安全退出'
       }
     else
       label = '注册/登录'

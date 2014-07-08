@@ -32,7 +32,7 @@ class Cms::TagsController < ApplicationController
       size = Cms::ArticleTag.count tag_id: params[:id]
       dlg = Brahma::Web::Dialog.new
       if tag && size == 0
-        Brahma::LogService.add "删除标签[#{tag.id}]", current_user.fetch(:id)
+        Brahma::LogService.add "删除标签[#{tag.id}]", current_user.id
         tag.destroy
         dlg.ok = true
       else
