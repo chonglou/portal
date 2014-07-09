@@ -20,4 +20,5 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  web:
+    copyright: 'USING <a href="https://github.com/chonglou/portal" target="_blank">PORTAL</a> &copy;2014'
