@@ -1,7 +1,9 @@
-Gem.path.each do|p|
-  rs = "#{p.sub '/gems/', '/'}/rss"
-  if File.exist?("#{rs}.rb")
-    require rs
+unless defined?(RSS)
+  $:.each do |p|
+    rs = "#{p.sub '/gems/', '/'}/rss"
+    if File.exist?("#{rs}.rb")
+      require rs
+    end
   end
 end
 require 'open-uri'
