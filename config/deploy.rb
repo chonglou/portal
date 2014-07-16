@@ -29,8 +29,8 @@ namespace :deploy do
       within release_path do
         execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:stop"
         execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:seo"
-        execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:rss"
-        execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:wiki"
+        #execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:rss"
+        #execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:wiki"
         sleep 10
         execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:start"
       end
