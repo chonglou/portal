@@ -1,8 +1,9 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 64d2de74da6e9035a8e95dd0a41b85d7fc485e4b
+  revision: 32ff98f1406ba8109efc404afd47fb3cb3bb657f
   specs:
     brahma_bodhi (0.0.1)
+      autoprefixer-rails
       bootstrap-sass
       brahma_utils
       bson_ext
@@ -75,6 +76,8 @@ GEM
       tzinfo (~> 1.1)
     amq-protocol (1.9.2)
     arel (5.0.1.20140414130214)
+    autoprefixer-rails (2.1.1.20140710)
+      execjs
     bootstrap-sass (3.2.0.0)
       sass (~> 3.2)
     bson (1.10.2)
@@ -292,6 +295,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  autoprefixer-rails
   bootstrap-sass
   brahma_bodhi!
   brahma_daemon!
