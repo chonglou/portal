@@ -1,12 +1,26 @@
 require 'brahma/web/fall'
 
 class RssController < ApplicationController
+  PAGE_SIZE=20
+
   def index
+    redirect_to action: :page, id: 1, status: 301
+  end
+
+  def page
     title = '网络文摘'
     @title = title
-    @index = '/rss'
+    @total = Rss::Item.count/PAGE_SIZE+1
+    @index = (params[:id] || 1).to_i
+    if @index<1
+      @index = 1
+    elsif @index>@total
+      @index = @total
+    end
+
     @fall_card = Brahma::Web::FallCard.new title
-    Rss::Item.select(:id, :title).last(60).each { |i| @fall_card.add "/rss/item/#{i.id}", i.title, nil, nil }
+    Rss::Item.select(:id, :title).order(id: :desc).limit(PAGE_SIZE).offset(PAGE_SIZE*(@index-1)).each { |i| @fall_card.add "/rss/item/#{i.id}", i.title, nil, nil }
+
 
     render 'rss/list'
   end
