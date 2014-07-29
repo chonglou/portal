@@ -1,4 +1,5 @@
 require 'brahma/web/fall'
+require 'brahma/services/site'
 
 class RssController < ApplicationController
   PAGE_SIZE=20
@@ -28,7 +29,13 @@ class RssController < ApplicationController
   def feeds
     list = []
     Rss::Site.all.each { |s| list<<{name: s.name, url: s.url, type: s.flag} }
-    render json: {feeds: list, created: Time.now}
+    bs = Brahma::SettingService
+    render json: {
+        title:bs.get('site.title'),
+        version:bs.version,
+        feeds: list,
+        created: Time.now
+    }
   end
 
   def show
