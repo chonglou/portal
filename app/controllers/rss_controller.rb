@@ -25,6 +25,12 @@ class RssController < ApplicationController
     render 'rss/list'
   end
 
+  def feeds
+    list = []
+    Rss::Site.all.each { |s| list<<{name: s.name, url: s.url, type: s.flag} }
+    render json: {feeds: list, created: Time.now}
+  end
+
   def show
     id = params[:id]
     if id

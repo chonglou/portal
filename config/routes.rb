@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'rss' => 'rss#index'
   get 'rss/item/:id' => 'rss#show'
   get 'rss/page/:id' => 'rss#page'
+  get 'rss/feeds' => 'rss#feeds'
 
   #----------------知识库--------------------
   namespace :wiki do
