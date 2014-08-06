@@ -1,26 +1,6 @@
 GIT
-  remote: git@github.com:chonglou/daemon.git
-  revision: c4cbcae744da5acb0710488c81260aca18b7f359
-  specs:
-    brahma_daemon (0.0.1)
-
-GIT
-  remote: git@github.com:chonglou/utils.git
-  revision: f6a515761a391e6157c03a966251be5fb0b411a3
-  specs:
-    brahma_utils (0.0.1)
-      bunny
-      connection_pool
-      highline
-      iconv
-      mysql2
-      nokogiri
-      redcarpet
-      redis
-      sequel
-
-PATH
-  remote: ../bodhi
+  remote: git@github.com:chonglou/bodhi.git
+  revision: 55f610ba44bef226e44342a948f8ae197946c3c8
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
@@ -43,6 +23,27 @@ PATH
       sass-rails
       slim
       turbolinks
+
+GIT
+  remote: git@github.com:chonglou/daemon.git
+  revision: c4cbcae744da5acb0710488c81260aca18b7f359
+  specs:
+    brahma_daemon (0.0.1)
+
+GIT
+  remote: git@github.com:chonglou/utils.git
+  revision: f6a515761a391e6157c03a966251be5fb0b411a3
+  specs:
+    brahma_utils (0.0.1)
+      bunny
+      connection_pool
+      highline
+      iconv
+      mysql2
+      nokogiri
+      redcarpet
+      redis
+      sequel
 
 GEM
   remote: https://rubygems.org/
