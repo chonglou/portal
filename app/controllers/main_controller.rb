@@ -1,7 +1,14 @@
 require 'brahma/web/fall'
+require 'brahma/services/site'
 
 class MainController < ApplicationController
   def index
+    main = Brahma::SettingService.get 'site.index'
+    if main && !['/main', '', '/'].include?(main)
+      redirect_to main, status: 301
+      return
+    end
+
     articles = Cms::Article.order(created: :desc).limit(20)
 
     respond_to do |fmt|
