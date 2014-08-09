@@ -4,36 +4,46 @@ require 'brahma/web/form'
 require 'brahma/web/dialog'
 require 'brahma/web/table'
 require 'brahma/web/validator'
+require 'brahma/utils/rss'
 
 class Rss::SitesController < ApplicationController
-  before_action :must_admin!
 
   def index
-    tab = Brahma::Web::Table.new '/rss/sites', '站点列表', %w(ID 名称 类型 创建时间)
-    Rss::Site.order(id: :desc).all.each do |s|
-      tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.created], [
-          ['info', 'GET', "/rss/sites/#{s.id}", '查看'],
-          ['warning', 'GET', "/rss/sites/#{s.id}/edit", '编辑'],
-          ['danger', 'DELETE', "/rss/sites/#{s.id}", '删除']
-      ]
+    user = current_user
+    if user
+      tab = Brahma::Web::Table.new '/rss/sites', '站点列表', %w(ID 名称 类型 创建时间)
+      sites = admin? ? Rss::Site.order(id: :desc).all : Rss::UserSite.where(user_id: user.id).order(id: :desc).map { |us| us.site }
+      sites.each do |s|
+        tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.created], [
+            ['info', 'GET', "/rss/sites/#{s.id}", '查看'],
+            ['danger', 'DELETE', "/rss/sites/#{s.id}", '删除']
+        ]
+      end
+      tab.toolbar = [%w(primary GET /rss/sites/new 新增)]
+      tab.ok = true
+      render json: tab.to_h
+    else
+      not_found
     end
-    tab.toolbar = [%w(primary GET /rss/sites/new 新增)]
-    tab.ok = true
-    render json: tab.to_h
   end
 
   def destroy
-    site = Rss::Site.find_by id: params[:id]
-    size = Rss::Item.count site_id: params[:id]
-    dlg = Brahma::Web::Dialog.new
-    if site && size == 0
-      Brahma::LogService.add "删除RSS源[#{site.id}]", current_user.id
-      site.destroy
+    user = current_user
+    if user
+      dlg = Brahma::Web::Dialog.new
+      Rss::UserSite.destroy_all(user_id: user.id, site_id: params[:id])
+
+      site = Rss::Site.find_by id: params[:id]
+      size = Rss::UserSite.count site_id: params[:id]
+      if site && size == 0
+        Rss::Site.update params[:id].to_i, enable: false
+      end
+      Brahma::LogService.add "删除RSS源[#{site.id}]"
       dlg.ok = true
+      render(json: dlg.to_h)
     else
-      dlg.add '没有权限'
+      not_found
     end
-    render(json: dlg.to_h)
   end
 
   def show
@@ -48,62 +58,46 @@ class Rss::SitesController < ApplicationController
     end
   end
 
-  def update
-    vat = Brahma::Web::Validator.new params
-    vat.empty? :name, '名称'
-    vat.empty? :url, '地址'
-    dlg = Brahma::Web::Dialog.new
-
-    url = params[:url]
-    ex = Rss::Site.find_by url: url
-    if ex && ex.id !=params[:id].to_i
-      vat.add '地址已存在'
-    end
-    if vat.ok?
-      s = Rss::Site.find_by id: params[:id]
-      s.update name: params[:name], url: url, flag: params[:flag]
-      dlg.ok = true
-    else
-      dlg.data += vat.messages
-    end
-    render json: dlg.to_h
-  end
-
-  def edit
-    tid = params[:id]
-    fm = Brahma::Web::Form.new "编辑RSS[#{tid}]", "/rss/sites/#{tid}"
-    site = Rss::Site.find_by id: tid
-    fm.method = 'PUT'
-    fm.text 'name', '名称', site.name
-    fm.radio 'flag', '类型', site.flag, rss_flag_options
-    fm.text 'url', '地址', site.url, 720
-    fm.ok = true
-    render json: fm.to_h
-  end
-
   def create
-    vat = Brahma::Web::Validator.new params
-    vat.empty? :name, '名称'
-    vat.empty? :url, '地址'
+    user=current_user
+    if user
+      vat = Brahma::Web::Validator.new params
+      vat.empty? :url, '地址'
 
-    url = params[:url]
-    dlg = Brahma::Web::Dialog.new
-    if url && Rss::Site.find_by(url: url)
-      vat.add '地址已存在'
-    end
+      url = params[:url]
+      name = Brahma::Utils::RssHelper.url2name url
+      dlg = Brahma::Web::Dialog.new
+      unless name
+        vat.add '链接有误'
+      end
 
-    if vat.ok?
-      Rss::Site.create name: params[:name], flag: params[:flag], url: url, created: Time.now
-      dlg.ok = true
+      if vat.ok?
+        site = Rss::Site.find_by url: url
+        unless site
+          Rss::Site.create name: name, flag: params[:flag], url: url, enable: true, created: Time.now
+          site = Rss::Site.find_by url: url
+        end
+        unless site.enable
+          site.update enable:true
+        end
+        if Rss::UserSite.find_by(user_id: user.id, site_id: site.id)
+          dlg.add '地址已存在'
+        else
+          dlg.ok = true
+          Rss::UserSite.create user_id: user.id, site_id: site.id
+        end
+
+      else
+        dlg.data += vat.messages
+      end
+      render json: dlg.to_h
     else
-      dlg.data += vat.messages
+      not_found
     end
-    render json: dlg.to_h
   end
 
   def new
     fm = Brahma::Web::Form.new '新增RSS源', '/rss/sites'
-    fm.text 'name', '名称'
     fm.radio 'flag', '类型', 'rss', rss_flag_options
     fm.text 'url', '地址', '', 720
     fm.ok = true
@@ -111,14 +105,10 @@ class Rss::SitesController < ApplicationController
   end
 
   private
-  def must_admin!
-    unless admin?
-      not_found
-    end
-  end
 
   def rss_flag_options
     [%w(rss RSS), %w(atom ATOM)]
   end
+
 
 end

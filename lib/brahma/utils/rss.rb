@@ -22,6 +22,10 @@ module Brahma
           feed.channel.title
         end
       end
+
+      def url2name(url)
+        'FIXME'
+      end
     end
   end
 end

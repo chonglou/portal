@@ -12,7 +12,7 @@ namespace :brahma do
 
     desc 'RSS采集'
     task rss: :environment do
-      Rss::Site.all.each do |site|
+      Rss::Site.where(enable: true).each do |site|
         require 'brahma/utils/rss'
         i=0
         Brahma::Utils::RssHelper.list(site.url) do |link, title, content|

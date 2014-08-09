@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   #-------------rss采集---------------
   namespace :rss do
-    resources :sites
+    resources :sites, except: [:edit, :update ]
   end
   get 'rss' => 'rss#index'
   get 'rss/item/:id' => 'rss#show'

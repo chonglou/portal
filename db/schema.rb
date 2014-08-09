@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140708194733) do
+ActiveRecord::Schema.define(version: 20140809002021) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -121,15 +121,23 @@ ActiveRecord::Schema.define(version: 20140708194733) do
     t.datetime "created", null: false
   end
 
-  add_index "rss_items", ["title"], name: "index_rss_items_on_title", unique: true, using: :btree
+  add_index "rss_items", ["link"], name: "index_rss_items_on_link", unique: true, using: :btree
 
   create_table "rss_sites", force: true do |t|
-    t.string   "name",                null: false
-    t.integer  "flag",    default: 0, null: false
-    t.string   "url",                 null: false
-    t.datetime "created",             null: false
+    t.string   "name",                    null: false
+    t.integer  "flag",    default: 0,     null: false
+    t.string   "url",                     null: false
+    t.datetime "created",                 null: false
+    t.boolean  "enable",  default: false, null: false
   end
 
-  add_index "rss_sites", ["url"], name: "index_rss_sites_on_url", unique: true, using: :btree
+  add_index "rss_sites", ["url"], name: "index_rss_sites_on_url", using: :btree
+
+  create_table "rss_user_sites", force: true do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "site_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

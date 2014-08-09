@@ -4,10 +4,10 @@ class PersonalController < ApplicationController
     if user
       @ctl_links = {
           cms_articles_path => '文章列表',
-          cms_comments_path => '评论列表'
+          cms_comments_path => '评论列表',
+          rss_sites_path => 'RSS源'
       }
       if admin?
-        @ctl_links[rss_sites_path] = 'RSS源'
         @ctl_links[wiki_git_path] = '知识库'
         @ctl_links[cms_tags_path] = '标签列表'
 
