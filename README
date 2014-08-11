@@ -7,7 +7,7 @@
 
 使用方法（$TOMCAT_HOME为tomacat7的安装目录；如果下载war包则可以省略前两步）
 1：克隆代码
-git clone https://code.google.com/p/latrop/
+git clone git@github.com:chonglou/portal.git
 2：编译打包（需要jdk7 maven3）
 cd latrop
 mvn package
