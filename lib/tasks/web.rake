@@ -15,13 +15,16 @@ namespace :brahma do
       Rss::Site.where(enable: true).each do |site|
         require 'brahma/utils/rss'
         i=0
-        Brahma::Utils::RssHelper.list(site.url) do |link, title, content|
+        name = Brahma::Utils::RssHelper.list(site.url) do |link, title, content|
           unless Rss::Item.find_by(link: link)
             Rss::Item.create site_id: site.id, title: title, link: link, content: content, created: Time.now
             i+=1
           end
         end
-        puts "[抓取#{site.name}] #{i}条"
+        unless name==site.name
+          site.update name: name
+        end
+        puts "抓取[#{name}] #{i}条"
       end
     end
 
@@ -41,7 +44,7 @@ namespace :brahma do
         Cms::Tag.select(:id).all.each { |t| add "/cms/tags/#{t.id}", changefreq: 'monthly' }
         Cms::Article.select(:id).all.each { |a| add "/cms/articles/#{a.id}", changefreq: 'weekly' }
         Brahma::Utils::WikiHelper.each { |w| add "/wiki/#{w}", changefreq: 'monthly' }
-        Rss::Item.select(:id).all.each{|i| add "/rss/item/#{i.id}", changefreq: 'yearly'}
+        Rss::Item.select(:id).all.each { |i| add "/rss/item/#{i.id}", changefreq: 'yearly' }
       end
       puts '生成sitemap完毕'
     end

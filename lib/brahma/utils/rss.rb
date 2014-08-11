@@ -23,9 +23,6 @@ module Brahma
         end
       end
 
-      def url2name(url)
-        'FIXME'
-      end
     end
   end
 end

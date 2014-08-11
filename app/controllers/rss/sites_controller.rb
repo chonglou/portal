@@ -65,7 +65,7 @@ class Rss::SitesController < ApplicationController
       vat.empty? :url, '地址'
 
       url = params[:url]
-      name = Brahma::Utils::RssHelper.url2name url
+      name = 'UNKNOWN'
       dlg = Brahma::Web::Dialog.new
       unless name
         vat.add '链接有误'
