@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 55f610ba44bef226e44342a948f8ae197946c3c8
+  revision: de9f50ec66a5a4f20982ef0b1f609806cca2a534
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
@@ -138,7 +138,7 @@ GEM
       fog-softlayer
       ipaddress (~> 0.5)
       nokogiri (~> 1.5, >= 1.5.11)
-    fog-brightbox (0.2.0)
+    fog-brightbox (0.3.0)
       fog-core (~> 1.22)
       fog-json
       inflecto

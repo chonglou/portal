@@ -59,7 +59,7 @@ gem 'autoprefixer-rails'
 
 gem 'brahma_utils', git:'git@github.com:chonglou/utils.git'
 gem 'brahma_daemon', git:'git@github.com:chonglou/daemon.git'
-gem 'brahma_bodhi', git:'git@github.com:chonglou/bodhi.git' #path:'../bodhi' #
+gem 'brahma_bodhi', git:'git@github.com:chonglou/bodhi.git' # path:'../bodhi' #
 
 
 group :development, :test do
