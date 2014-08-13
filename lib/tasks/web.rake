@@ -4,7 +4,7 @@ namespace :brahma do
     task wiki: :environment do
       require 'brahma/services/site'
       require 'brahma/utils/wiki'
-      wiki = Brahma::SettingService.get('site.wiki')
+      wiki = Brahma::SettingService.get('site.wiki').fetch :url
       if wiki
         puts Brahma::Utils::WikiHelper.update(wiki)
       end
