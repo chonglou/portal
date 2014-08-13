@@ -6,7 +6,7 @@ module Brahma
 
       def update(url)
         #todo 防注入
-        Dir.exist?(WIKI_ROOT) ? `cd #{WIKI_ROOT} && git pull` : `git clone #{url} #{WIKI_ROOT}`
+        Dir.exist?("#{WIKI_ROOT}/.git") ? `cd #{WIKI_ROOT} && git pull` : `git clone #{url} #{WIKI_ROOT}`
       end
 
       def get(name)
