@@ -12,7 +12,7 @@ class WikiController < ApplicationController
     @index = '/wiki'
     @title = '知识库列表'
     @fall_link = Brahma::Web::FallLink.new @title
-
+    puts '#'*160
     Brahma::Utils::WikiHelper.each { |name| @fall_link.add "/wiki/#{name}", name }
   end
 
