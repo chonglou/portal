@@ -9,7 +9,6 @@ class WikiController < ApplicationController
 
 
   def index
-    @index = '/wiki'
     @title = '知识库列表'
     @fall_link = Brahma::Web::FallLink.new @title
     puts '#'*160
@@ -17,10 +16,9 @@ class WikiController < ApplicationController
   end
 
   def show
-    @index = '/wiki'
-    name = params[:name]
-    @title = "知识库-#{name}"
-    @body = Brahma::Utils::WikiHelper.get name
+    @name = params[:name]
+    @title = "知识库-#{@name}"
+    @body = Brahma::Utils::WikiHelper.get @name
   end
 
   def git
