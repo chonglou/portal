@@ -1,4 +1,6 @@
 require 'brahma/factory'
+require 'brahma/utils/string_helper'
+
 module ApplicationHelper
   include BrahmaBodhi::ApplicationHelper
   include ShareHelper
@@ -35,8 +37,24 @@ module ApplicationHelper
   def tag_links
     links = {}
     Cms::Tag.all.each { |t| links["/cms/tags/#{t.id}"] = t.name }
-    BrahmaBodhi::FriendLink.all.each { |fl| links["http://#{fl.domain}"] = fl.name }
+    #BrahmaBodhi::FriendLink.all.each { |fl| links["http://#{fl.domain}"] = fl.name }
     links
+  end
+
+  def hot_bars
+    sh = Brahma::Utils::StringHelper
+    bars = []
+
+    abar = {title:'热门文章', links:[]}
+    Cms::Article.select(:id, :title, :last_edit).order(visits: :desc).limit(12).each {|a| abar[:links] << ["/cms/articles/#{a.id}", a.title.truncate(80), time_ago_in_words(a.last_edit)]}
+    bars << abar
+
+    cbar = {title:'最新评论', links:[]}
+    Cms::Comment.select(:id, :content, :last_edit).order(id: :desc).limit(12).each {|c| cbar[:links] << ["/cms/comments/#{c.id}", sh.html2text(c.content).truncate(80), time_ago_in_words(c.last_edit)]}
+    bars << cbar
+
+    bars << notice_bar
+    bars
   end
 
 end

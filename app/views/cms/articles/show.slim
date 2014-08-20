@@ -7,7 +7,7 @@
         |标签：
         - for t in @article.tags
           a href="/cms/tags/#{t.id}" #{t.name} &nbsp;
-      li 最后更新：#{@article.last_edit}
+      li 最后更新：#{time_ago_in_words @article.last_edit}
       li
         |作者：
         a href="/user/#{@article.user.id}" #{@article.user.username}

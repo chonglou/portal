@@ -16,6 +16,7 @@ class MainController < ApplicationController
         @title = '主页'
         @fall_card = Brahma::Web::FallCard.new nil
         articles.each { |a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary, a.logo }
+        render 'cms/articles/list'
       end
       fmt.atom do
         @articles=articles
@@ -26,5 +27,8 @@ class MainController < ApplicationController
 
   def about_me
     render 'brahma_bodhi/main/about_me'
+  end
+  def notices
+    render 'brahma_bodhi/main/notices'
   end
 end

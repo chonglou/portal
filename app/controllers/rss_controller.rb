@@ -1,6 +1,7 @@
 require 'brahma/web/fall'
 require 'brahma/services/site'
 require 'brahma/config/site'
+require 'brahma/utils/string_helper'
 
 class RssController < ApplicationController
 

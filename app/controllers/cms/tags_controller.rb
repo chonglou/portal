@@ -11,7 +11,7 @@ class Cms::TagsController < ApplicationController
   def index
     if admin?
       tab = Brahma::Web::Table.new '/cms/tags', '标签列表', %w(ID 名称 类型 创建时间)
-      Cms::Tag.order(id: :desc).all.each do |t|
+      Cms::Tag.order(visits: :desc).all.each do |t|
         tab.insert [t.id, t.name, t.flag, t.created], [
             ['info', 'GOTO', "/cms/tags/#{t.id}", '查看'],
             ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑'],

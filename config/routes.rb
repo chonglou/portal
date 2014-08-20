@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   get 'personal' => 'personal#index'
 
   #---------站点其它-------------------------------------------
+  get 'notices' => 'main#notices'
   get 'about_me' => 'main#about_me'
   get 'main' => 'main#index'
 
