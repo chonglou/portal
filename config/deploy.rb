@@ -24,16 +24,16 @@ namespace :deploy do
   after :restart, :'puma:restart'
   after :publishing, :restart
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      within release_path do
-        execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:stop"
-        execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:seo"
-        #execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:rss"
-        #execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:wiki"
-        sleep 10
-        execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:start"
-      end
-    end
-  end
+  # after :restart, :clear_cache do
+  #   on roles(:web), in: :groups, limit: 3, wait: 10 do
+  #     within release_path do
+  #       execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:stop"
+  #       execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:seo"
+  #       #execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:rss"
+  #       #execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:web:wiki"
+  #       sleep 10
+  #       execute :rake, "RAILS_ENV=#{fetch :rails_env} brahma:timer:start"
+  #     end
+  #   end
+  # end
 end

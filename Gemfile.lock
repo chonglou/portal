@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 31a60d300a008f56958b2d2c4f3173f5f13edacd
+  revision: bbd83b038b43be2e425fa9b8f0c1b7ee1e78e323
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
@@ -20,6 +20,7 @@ GIT
       rails
       redcarpet
       redis
+      rufus-scheduler
       sass-rails
       slim
       turbolinks
@@ -249,6 +250,8 @@ GEM
       rspec-mocks (~> 3.0.0)
       rspec-support (~> 3.0.0)
     rspec-support (3.0.4)
+    rufus-scheduler (3.0.8)
+      tzinfo
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)
@@ -287,7 +290,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    turbolinks (2.2.3)
+    turbolinks (2.3.0)
       coffee-rails
     tzinfo (1.2.2)
       thread_safe (~> 0.1)

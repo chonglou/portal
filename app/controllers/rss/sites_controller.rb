@@ -11,10 +11,10 @@ class Rss::SitesController < ApplicationController
   def index
     user = current_user
     if user
-      tab = Brahma::Web::Table.new '/rss/sites', '站点列表', %w(ID 名称 类型 创建时间)
+      tab = Brahma::Web::Table.new '/rss/sites', '站点列表', %w(ID 名称 类型 上次更新)
       sites = admin? ? Rss::Site.order(id: :desc).all : Rss::UserSite.where(user_id: user.id).order(id: :desc).map { |us| us.site }
       sites.each do |s|
-        tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.created], [
+        tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.last_sync], [
             ['info', 'GET', "/rss/sites/#{s.id}", '查看'],
             ['danger', 'DELETE', "/rss/sites/#{s.id}", '删除']
         ]
