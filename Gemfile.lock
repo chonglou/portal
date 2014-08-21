@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: a4570e38f4e22360835590d0a544debd5d7ff169
+  revision: 31a60d300a008f56958b2d2c4f3173f5f13edacd
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
