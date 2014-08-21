@@ -3,6 +3,7 @@ class PersonalController < ApplicationController
     user = current_user
     if user
       @ctl_links = {
+          brahma_bodhi.personal_info_path => '个人信息',
           cms_articles_path => '文章列表',
           cms_comments_path => '评论列表',
           rss_sites_path => 'RSS源'
