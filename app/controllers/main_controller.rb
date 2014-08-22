@@ -28,7 +28,9 @@ class MainController < ApplicationController
   def about_me
     render 'brahma_bodhi/main/about_me'
   end
+
   def notices
     render 'brahma_bodhi/main/notices'
   end
+
 end

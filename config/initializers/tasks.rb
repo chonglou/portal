@@ -2,7 +2,7 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler.new
 
-scheduler.cron '00 03 * * *' do
+scheduler.cron '0 3 * * *' do
   require 'brahma/utils/tasks'
   sch = Brahma::Utils::Scheduler
   sch.wiki
