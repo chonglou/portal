@@ -8,4 +8,5 @@ scheduler.cron '0 3 * * *' do
   sch.wiki
   sch.rss
   sch.sitemap
+  sch.search
 end

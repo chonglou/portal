@@ -4,8 +4,17 @@ module Brahma::Utils
   module Scheduler
     module_function
 
+    def search
+
+    end
+
     def rss
       Rss::Site.where(enable: true).each do |site|
+        # if !site.last_sync.nil? && site.last_sync+60*60*24 >= Time.now
+        #   puts "[#{site.name}]已更新"
+        #   next
+        # end
+        site.update last_sync: Time.now
         begin
           require 'brahma/utils/rss'
           i=0
@@ -15,8 +24,9 @@ module Brahma::Utils
               i+=1
             end
           end
-
-          site.update name: name, last_sync: Time.now
+          unless name == site.name
+            site.update name: name
+          end
           puts "抓取[#{name}] #{i}条"
         rescue OpenURI::HTTPError => e
           puts e

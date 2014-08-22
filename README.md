@@ -5,6 +5,7 @@ portal 网站系统
  * Linux
  * ruby(2.1.2) 建议使用rbenv
  * bundle
+ * imagemagick
 
 ### 安装
     git clone git@github.com:chonglou/portal.git
@@ -16,6 +17,7 @@ portal 网站系统
     rake brahma:setup:redis
     rake brahma:setup:secrets
     rake brahma:setup:site
+    rake brahma:setup:search
     rake brahma:web:compile
 
 ### 启动

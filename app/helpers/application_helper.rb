@@ -6,7 +6,7 @@ module ApplicationHelper
   include ShareHelper
 
   def nav_links
-    links = {main_path => '本站首页'}
+    links = {main_app.main_path => '本站首页'}
     if current_user
       links['/personal'] = '用户中心'
     end

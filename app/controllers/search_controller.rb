@@ -1,11 +1,12 @@
-require 'brahma/config/site'
+require 'brahma/search/helper'
+
 class SearchController < ApplicationController
   def index
-    if Rails.env.protection?
-      keys = params[:keyword].gsub(' ', '+')
-      domain = Brahma::Config::Site.new.load(Rails.env).fetch :host
-      redirect_to "http://www.google.com/search?q=site:#{domain}+#{keys}"
-      #redirect_to "http://www.baidu.com/s?wd=site%3A#{domain}+#{keys}"
+    result = Brahma::Search::Helper.search params[:keyword]
+    if result.key?(:items)
+      @items = result[:items]
+    else
+      redirect_to result.fetch(:url)
     end
   end
 end

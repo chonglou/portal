@@ -25,6 +25,9 @@ module Brahma
 
               @logger.info '生成SEO文件'
               @logger.info `cd #{Rails.root} && rake brahma:web:seo`
+
+              @logger.info '导入搜索数据库'
+              @logger.info `cd #{Rails.root} && rake brahma:web:search`
             rescue => e
               @logger.error e.message
             end

@@ -12,6 +12,12 @@ namespace :brahma do
       Brahma::Utils::Scheduler.rss
     end
 
+    desc '导入搜索库'
+    task search: :environment do
+      require 'brahma/utils/tasks'
+      Brahma::Utils::Scheduler.search
+    end
+
     desc '生成SEO相关文件'
     task seo: :environment do
       require 'brahma/utils/tasks'
