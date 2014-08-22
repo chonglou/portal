@@ -10,7 +10,7 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
-    Cms::Tag.where(flag: Cms::Tag.flags[:top_nav]).each { |t| links["/cms/tags/#{t.id}"] = t.name }
+    links['/cms'] = '资源中心'
     links['/wiki'] = '知识库'
     links['/rss'] = '网络文摘'
     links['/user'] = '用户列表'

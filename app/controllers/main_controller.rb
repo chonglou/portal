@@ -9,17 +9,12 @@ class MainController < ApplicationController
       return
     end
 
-    articles = Cms::Article.order(created: :desc).limit(20)
-
     respond_to do |fmt|
       fmt.html do
-        @title = '主页'
-        @fall_card = Brahma::Web::FallCard.new nil
-        articles.each { |a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary, a.logo }
-        render 'cms/articles/list'
+        render 'main/index'
       end
       fmt.atom do
-        @articles=articles
+        @articles=Cms::Article.order(created: :desc).limit(20)
         render action: 'index', layout: false
       end
     end

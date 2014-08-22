@@ -1,10 +1,6 @@
 Rails.application.routes.draw do
 
-  namespace :rss do
-    get 'sites/index'
-  end
-
-  #-------------rss采集---------------
+  #-------------rss---------------
   namespace :rss do
     resources :sites, except: [:edit, :update ]
   end
@@ -27,7 +23,7 @@ Rails.application.routes.draw do
   end
   get 'user' => 'user#index'
   get 'user/:id' => 'user#show'
-
+  get 'cms' => 'cms#index'
   #----------------其它---------------
   get 'archive/:year/:month/:day' => 'archive#index'
   get 'archive/:year/:month' => 'archive#index'

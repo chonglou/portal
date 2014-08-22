@@ -9,20 +9,30 @@ require 'nokogiri'
 
 class Cms::TagsController < ApplicationController
   def index
-    if admin?
-      tab = Brahma::Web::Table.new '/cms/tags', '标签列表', %w(ID 名称 类型 创建时间)
-      Cms::Tag.order(visits: :desc).all.each do |t|
-        tab.insert [t.id, t.name, t.flag, t.created], [
-            ['info', 'GOTO', "/cms/tags/#{t.id}", '查看'],
-            ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑'],
-            ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
-        ]
+    tags = Cms::Tag.order(visits: :desc).all
+
+    respond_to do |fmt|
+      fmt.json do
+        if admin?
+          tab = Brahma::Web::Table.new '/cms/tags', '标签列表', %w(ID 名称 类型 创建时间)
+          tags.each do |t|
+            tab.insert [t.id, t.name, t.flag, t.created], [
+                ['info', 'GOTO', "/cms/tags/#{t.id}", '查看'],
+                ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑'],
+                ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
+            ]
+          end
+          tab.toolbar = [%w(primary GET /cms/tags/new 新增)]
+          tab.ok = true
+          render json: tab.to_h
+        else
+          not_found
+        end
       end
-      tab.toolbar = [%w(primary GET /cms/tags/new 新增)]
-      tab.ok = true
-      render json: tab.to_h
-    else
-      not_found
+      fmt.html do
+        @fall_link = Brahma::Web::FallLink.new "标签列表[#{tags.size}]"
+        tags.each {|t| @fall_link.add "/cms/tags/#{t.id}", t.name}
+      end
     end
   end
 

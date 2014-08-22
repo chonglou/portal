@@ -1,0 +1,24 @@
+-content_for :content
+  div class="nav-bar"
+    ul class="nav nav-pills nav-pills-sm pull-left"
+      li class="active"
+        a href="/cms/tags" 全部
+      -@tags.each do |t|
+        li
+          a href="/cms/tags/#{t.id}" #{t.name}
+      li
+        a href="/cms/tags" 更多...
+    span class="pull-right dropdown list-sort-dropdown"
+      a id="dm-hot_tags" data-toggle="dropdown" role="button"
+        | 视图
+        span class="caret"
+      ul class="dropdown-menu" role="menu" aria-labelledby="dm-hot_tags"
+        li role="presentation"
+          a role="menuitem" tabindex="-1" 瀑布
+        li role="presentation"
+          a role="menuitem" tabindex="-1" 列表
+  p &nbsp;
+  =render partial:'widgets/bodhi/fall_card', locals:{fall_card: @fall_card}
+
+
+
