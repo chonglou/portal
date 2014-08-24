@@ -11,7 +11,7 @@ module Brahma::Utils
     def rss
       Rss::Site.where(enable: true).each do |site|
         # if !site.last_sync.nil? && site.last_sync+60*60*24 >= Time.now
-        #   puts "[#{site.name}]已更新"
+        #   Rails.logger.info "[#{site.name}]已更新"
         #   next
         # end
         site.update last_sync: Time.now
@@ -27,9 +27,9 @@ module Brahma::Utils
           unless name == site.name
             site.update name: name
           end
-          puts "抓取[#{name}] #{i}条"
-        rescue OpenURI::HTTPError => e
-          puts e
+          Rails.logger.info "抓取[#{name}] #{i}条"
+        rescue => e
+          Rails.logger.error e
         end
 
       end
@@ -40,7 +40,7 @@ module Brahma::Utils
       require 'brahma/utils/wiki'
       wiki = Brahma::SettingService.get('site.wiki')
       if wiki
-        puts Brahma::Utils::WikiHelper.update(wiki.fetch(:url))
+        Rails.logger.info Brahma::Utils::WikiHelper.update(wiki.fetch(:url))
       end
     end
 
@@ -61,7 +61,7 @@ module Brahma::Utils
         Brahma::Utils::WikiHelper.each { |w| add "/wiki/#{w}", changefreq: 'monthly' }
         Rss::Item.select(:id).all.each { |i| add "/rss/item/#{i.id}", changefreq: 'yearly' }
       end
-      puts '生成sitemap完毕'
+      Rails.logger.info '生成sitemap完毕'
     end
   end
 end
