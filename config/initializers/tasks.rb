@@ -1,6 +1,6 @@
 require 'rufus-scheduler'
 
-scheduler = Rufus::Scheduler.new
+scheduler = Rufus::Scheduler.singleton
 
 scheduler.cron '0 3 * * *' do
   require 'brahma/utils/tasks'
