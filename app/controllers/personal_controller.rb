@@ -6,7 +6,7 @@ class PersonalController < ApplicationController
           brahma_bodhi.personal_info_path => '个人信息',
           cms_articles_path => '文章列表',
           cms_comments_path => '评论列表',
-          rss_sites_path => 'RSS源'
+          rss_setup_path => 'RSS设置'
       }
       if admin?
         @ctl_links[wiki_git_path] = '知识库'

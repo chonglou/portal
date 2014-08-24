@@ -1,4 +1,5 @@
 require 'brahma/web/fall'
+require 'brahma/web/response'
 require 'brahma/services/site'
 require 'brahma/config/site'
 require 'brahma/utils/string_helper'
@@ -22,12 +23,13 @@ class RssController < ApplicationController
     end
 
     @fall_card = Brahma::Web::FallCard.new title
-    Rss::Item.select(:id, :title).order(id: :desc).limit(page_size).offset(page_size*(@index-1)).each { |i| @fall_card.add "/rss/item/#{i.id}", i.title, nil, nil }
+    Rss::Item.select(:id, :title).order(id: :desc).limit(page_size).offset(page_size*(@index-1)).each { |i| @fall_card.add "/rss/items/#{i.id}", i.title, nil, nil }
 
     render 'rss/list'
   end
 
   def feeds
+    # todo 用于移动客户端
     page_size=4
     list = []
     title = Brahma::SettingService.get('site.title')
@@ -57,19 +59,15 @@ class RssController < ApplicationController
     # }
   end
 
-  def show
-    id = params[:id]
-    if id
-      i = Rss::Item.find_by id: id
-      if i
-        @title = i.title
-        @index = '/rss'
-        @item = i
-        @items = Rss::Item.select(:id, :title).where('id < ?', i.id+6).last(10)
-        render 'rss/show'
-      else
-        not_found
-      end
+
+  def setup
+    if admin?
+      bg = Brahma::Web::ButtonGroup.new
+      bg.add rss_sites_path, '源列表', 'info'
+      bg.add '/rss/items', '文章管理', 'warning'
+      render(json: bg.to_h)
+    else
+      not_found
     end
   end
 end

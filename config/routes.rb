@@ -3,11 +3,12 @@ Rails.application.routes.draw do
   #-------------rss---------------
   namespace :rss do
     resources :sites, except: [:edit, :update ]
+    resources :items, only:[:index, :destroy, :show]
   end
   get 'rss' => 'rss#index'
-  get 'rss/item/:id' => 'rss#show'
   get 'rss/page/:id' => 'rss#page'
-  get 'rss/feeds' => 'rss#feeds'
+  get 'rss/feeds'
+  get 'rss/setup'
 
   #----------------知识库--------------------
   namespace :wiki do
