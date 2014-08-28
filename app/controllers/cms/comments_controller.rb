@@ -15,13 +15,16 @@ class Cms::CommentsController < ApplicationController
           Cms::Comment.all.order(last_edit: :desc) :
           Cms::Comment.where(user_id: user.id).order(last_edit: :desc)
 
-      tab = Brahma::Web::Table.new '/cms/comments', '评论列表', %w(ID 内容 上次修改)
+      tab = Brahma::Web::Table.new "/cms/comments?site=#{params[:site]}", '评论列表', %w(ID 内容 上次修改)
       comments.each do |c|
-        tab.insert [c.id, c.content, c.last_edit], [
-            ['info', 'GOTO', "/cms/comments/#{c.id}", '查看'],
-            ['warning', 'GET', "/cms/comments/#{c.id}/edit", '编辑'],
-            ['danger', 'DELETE', "/cms/comments/#{c.id}", '删除']
-        ]
+        #todo N+1查询问题
+        if c.article.site_id == params[:site].to_i
+          tab.insert [c.id, c.content, c.last_edit], [
+              ['info', 'GOTO', "/cms/comments/#{c.id}", '查看'],
+              ['warning', 'GET', "/cms/comments/#{c.id}/edit", '编辑'],
+              ['danger', 'DELETE', "/cms/comments/#{c.id}", '删除']
+          ]
+        end
       end
       tab.ok = true
       render json: tab.to_h
