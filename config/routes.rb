@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  #----------域名管理----------------
+  resources :domains
+
   #-------------rss---------------
   namespace :rss do
     resources :sites, except: [:edit, :update ]
