@@ -61,11 +61,13 @@ class RssController < ApplicationController
 
 
   def setup
-    if admin?
+    if current_user
       bg = Brahma::Web::ButtonGroup.new
       flag = "?site=#{params[:site]}"
       bg.add "#{rss_sites_path}#{flag}", '源列表', 'info'
-      bg.add "/rss/items#{flag}", '文章管理', 'warning'
+      if admin?
+        bg.add "/rss/items#{flag}", '文章管理', 'warning'
+      end
       render(json: bg.to_h)
     else
       not_found

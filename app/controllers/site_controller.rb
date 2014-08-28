@@ -51,14 +51,16 @@ class SiteController < ApplicationController
       end
 
       flag = "?site=#{s.id}"
-      bg.add "/site/info#{flag}", '基本信息', 'info'
-      bg.add "#{cms_articles_path}#{flag}", '文章列表', 'primary'
-      bg.add "#{cms_comments_path}#{flag}", '评论列表', 'success'
-      bg.add "#{rss_setup_path}#{flag}", 'RSS设置', 'warning'
+      bg.add "/site/info#{flag}", '参数', 'info'
+      bg.add "#{cms_articles_path}#{flag}", '文章', 'primary'
+      bg.add "#{cms_comments_path}#{flag}", '评论', 'success'
+      bg.add "#{rss_setup_path}#{flag}", 'RSS', 'warning'
 
       if admin?
-        bg.add "#{cms_tags_path}#{flag}", '标签列表', 'danger'
-        #todo bg.add @ctl_links["#{wiki_git_path}#{flag}"] = '知识库', 'info'
+        bg.add "#{cms_tags_path}#{flag}", '标签', 'danger'
+        bg.add "/wiki#{flag}", '知识库', 'info' # todo
+        bg.add "/notices#{flag}", '公告', 'warning' #todo
+        bg.add "/friend_links#{flag}", '友站', 'primary' #todo
       end
 
       render json: bg.to_h
