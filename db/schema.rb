@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140828140226) do
+ActiveRecord::Schema.define(version: 20140828171957) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -22,9 +22,10 @@ ActiveRecord::Schema.define(version: 20140828140226) do
 
   create_table "brahma_bodhi_friend_links", force: true do |t|
     t.string   "logo"
-    t.string   "domain",  null: false
-    t.string   "name",    null: false
-    t.datetime "created", null: false
+    t.string   "domain",              null: false
+    t.string   "name",                null: false
+    t.datetime "created",             null: false
+    t.integer  "site_id", default: 0, null: false
   end
 
   create_table "brahma_bodhi_logs", force: true do |t|
@@ -35,9 +36,10 @@ ActiveRecord::Schema.define(version: 20140828140226) do
   end
 
   create_table "brahma_bodhi_notices", force: true do |t|
-    t.text     "content",   null: false
-    t.datetime "last_edit", null: false
-    t.datetime "created",   null: false
+    t.text     "content",               null: false
+    t.datetime "last_edit",             null: false
+    t.datetime "created",               null: false
+    t.integer  "site_id",   default: 0, null: false
   end
 
   create_table "brahma_bodhi_permissions", force: true do |t|
@@ -137,13 +139,6 @@ ActiveRecord::Schema.define(version: 20140828140226) do
   end
 
   add_index "domains", ["name"], name: "index_domains_on_name", unique: true, using: :btree
-
-  create_table "notices", force: true do |t|
-    t.text     "content",    null: false
-    t.integer  "site_id",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "rss_items", force: true do |t|
     t.text     "content", null: false

@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   get 'site/info'
   post 'site/info'
 
+  resources :friend_links, only: [:new, :create, :index]
+  resources :notices, only: [:new, :create, :index]
+
   #----------域名管理----------------
   resources :domains
 

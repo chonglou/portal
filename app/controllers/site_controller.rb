@@ -58,7 +58,7 @@ class SiteController < ApplicationController
 
       if admin?
         bg.add "#{cms_tags_path}#{flag}", '标签', 'danger'
-        bg.add "/wiki/git#{flag}", '知识库', 'info' # todo
+        bg.add "/wiki/git#{flag}", '知识库', 'info'
         bg.add "/notices#{flag}", '公告', 'warning' #todo
         bg.add "/friend_links#{flag}", '友站', 'primary' #todo
       end
