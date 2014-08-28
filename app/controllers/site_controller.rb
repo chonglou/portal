@@ -52,7 +52,7 @@ class SiteController < ApplicationController
 
       flag = "?site=#{s.id}"
       bg.add "/site/info#{flag}", '基本信息', 'info'
-      bg.add "#{cms_articles_path}#{flag}", '文章列表', 'primary' #todo
+      bg.add "#{cms_articles_path}#{flag}", '文章列表', 'primary'
       bg.add "#{cms_comments_path}#{flag}", '评论列表', 'success' #todo
       bg.add "#{rss_setup_path}#{flag}", 'RSS设置', 'warning' #todo
 

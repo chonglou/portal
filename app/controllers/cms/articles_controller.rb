@@ -12,10 +12,11 @@ class Cms::ArticlesController < ApplicationController
     user = current_user
     if user
       articles = admin? ?
-          Cms::Article.all.order(last_edit: :desc) :
-          Cms::Article.where(user_id: user.id).order(last_edit: :desc)
+          Cms::Article.where(site_id: params[:site]).order(last_edit: :desc) :
+          Cms::Article.where(user_id: user.id, site_id: params[:site]).order(last_edit: :desc)
 
-      tab = Brahma::Web::Table.new '/cms/articles', '文章列表', %w(ID 标题 上次修改)
+      flag="?site=#{params[:site]}"
+      tab = Brahma::Web::Table.new "/cms/articles#{flag}", '文章列表', %w(ID 标题 上次修改)
       articles.each do |a|
         tab.insert [a.id, a.title, a.last_edit], [
             ['info', 'GOTO', "/cms/articles/#{a.id}", '查看'],
@@ -23,7 +24,7 @@ class Cms::ArticlesController < ApplicationController
             ['danger', 'DELETE', "/cms/articles/#{a.id}", '删除']
         ]
       end
-      tab.toolbar = [%w(primary GET /cms/articles/new 新增)]
+      tab.toolbar = [['primary', 'GET', "/cms/articles/new#{flag}", '新增']]
       tab.ok = true
       render json: tab.to_h
     else
@@ -109,7 +110,7 @@ class Cms::ArticlesController < ApplicationController
         fm.html 'body', '内容', a.body
         fm.checkbox 'tag', '标签',
                     Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag_id },
-                    Cms::Tag.all.map { |t| [t.id, t.name] }
+                    Cms::Tag.where(site_id:a.site_id).map { |t| [t.id, t.name] }
         fm.method = 'PUT'
         fm.ok = true
       else
@@ -131,7 +132,7 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
 
       if vat.ok?
-        a = Cms::Article.create user_id: user.id, logo: first_logo(params[:body]),
+        a = Cms::Article.create user_id: user.id, logo: first_logo(params[:body]), site_id: params[:site],
                                 title: params[:title], summary: params[:summary], body: params[:body],
                                 last_edit: Time.now, created: Time.now
         if params[:tag]
@@ -150,10 +151,11 @@ class Cms::ArticlesController < ApplicationController
   def new
     if current_user
       fm = Brahma::Web::Form.new '新增文章', '/cms/articles'
+      fm.hidden 'site', params[:site]
       fm.text 'title', '标题'
       fm.textarea 'summary', '摘要'
       fm.html 'body', '内容'
-      fm.checkbox 'tag', '标签', '', Cms::Tag.all.map { |t| [t.id, t.name] }
+      fm.checkbox 'tag', '标签', '', Cms::Tag.where(site_id:params[:site]).map { |t| [t.id, t.name] }
       fm.ok = true
       render json: fm.to_h
     else
