@@ -9,9 +9,9 @@ module Brahma
 
       def update(url)
         #todo 防注入
-        unless Dir.exist?(WIKI_ROOT)
-          FileUtils.mkpath WIKI_ROOT
-        end
+        # unless Dir.exist?(WIKI_ROOT)
+        #   FileUtils.mkpath WIKI_ROOT
+        # end
         base = "#{WIKI_ROOT}/#{Brahma::Utils::StringHelper.md5 url}"
         Dir.exist?("#{base}/.git") ? `cd #{base} && git pull` : `git clone #{url} #{base}`
       end
