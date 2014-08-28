@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  #-------网站管理-------
+  get 'sites'=>'site#index'
+
   #----------域名管理----------------
   resources :domains
 

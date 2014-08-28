@@ -5,6 +5,7 @@ require 'brahma/web/fall'
 require 'brahma/web/validator'
 require 'brahma/web/response'
 require 'brahma/services/site'
+require 'brahma/locales'
 
 class DomainsController < ApplicationController
   def index
@@ -42,6 +43,7 @@ class DomainsController < ApplicationController
       if d
         lst = Brahma::Web::List.new "域名[#{d.id}]"
         lst.add "名称：#{d.name}"
+        lst.add "默认语言：#{Brahma::Locales.label d.lang}"
         lst.add "创建：#{d.created_at}"
         lst.add "更新：#{d.updated_at}"
         render(json: lst.to_h) and return
@@ -66,7 +68,7 @@ class DomainsController < ApplicationController
 
       if vat.ok?
         d = Domain.find_by id: params[:id]
-        d.update name: name
+        d.update name: name, lang:params[:lang]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -85,6 +87,7 @@ class DomainsController < ApplicationController
       d = Domain.find_by id: did
       fm.method = 'PUT'
       fm.text 'name', '名称', d.name
+      fm.radio 'lang', '默认语言', d.lang, Brahma::Locales.options
       fm.ok = true
       render json: fm.to_h
     else
@@ -104,7 +107,7 @@ class DomainsController < ApplicationController
       end
 
       if vat.ok?
-        Domain.create name: name
+        Domain.create name: name, lang:params[:lang]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -119,6 +122,7 @@ class DomainsController < ApplicationController
     if admin?
       fm = Brahma::Web::Form.new '新增域名', '/domains'
       fm.text 'name', '名称'
+      fm.radio 'lang', '默认语言', Brahma::Locales::ZH_CN, Brahma::Locales.options
       fm.ok = true
       render json: fm.to_h
     else

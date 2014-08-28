@@ -185,6 +185,7 @@ ActiveRecord::Schema.define(version: 20140828113150) do
   end
 
   create_table "sites", force: true do |t|
+    t.string   "home",        null: false
     t.string   "title",       null: false
     t.string   "keywords",    null: false
     t.text     "description", null: false

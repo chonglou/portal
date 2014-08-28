@@ -1,6 +1,7 @@
 class CreateSites < ActiveRecord::Migration
   def change
     create_table :sites do |t|
+      t.string :home, null:false
       t.string :title, null:false
       t.string :keywords, null:false
       t.text :description, null:false
