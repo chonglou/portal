@@ -9,29 +9,31 @@ require 'nokogiri'
 
 class Cms::TagsController < ApplicationController
   def index
-    tags = Cms::Tag.order(visits: :desc).all
 
     respond_to do |fmt|
       fmt.json do
         if admin?
-          tab = Brahma::Web::Table.new '/cms/tags', '标签列表', %w(ID 名称 类型 创建时间)
-          tags.each do |t|
+          flag = "?site=#{params[:site]}"
+          tab = Brahma::Web::Table.new "/cms/tags#{flag}", '标签列表', %w(ID 名称 类型 创建时间)
+          Cms::Tag.where(site_id: params[:site]).each do |t|
             tab.insert [t.id, t.name, t.flag, t.created], [
                 ['info', 'GOTO', "/cms/tags/#{t.id}", '查看'],
                 ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑'],
                 ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
             ]
           end
-          tab.toolbar = [%w(primary GET /cms/tags/new 新增)]
+
+          tab.toolbar = [['primary', 'GET', "/cms/tags/new#{flag}", '新增']]
           tab.ok = true
           render json: tab.to_h
         else
           not_found
         end
       end
+
       fmt.html do
-        @fall_link = Brahma::Web::FallLink.new "标签列表[#{tags.size}]"
-        tags.each {|t| @fall_link.add "/cms/tags/#{t.id}", t.name}
+        @fall_link = Brahma::Web::FallLink.new "标签列表[#{Cms::Tag.order(visits: :desc).all.size}]"
+        tags.each { |t| @fall_link.add "/cms/tags/#{t.id}", t.name }
       end
     end
   end
@@ -80,13 +82,13 @@ class Cms::TagsController < ApplicationController
 
       name = params[:name]
 
-      ex = Cms::Tag.find_by(name: name)
+      tag = Cms::Tag.find_by id: params[:id]
+      ex = Cms::Tag.find_by(name: name, site_id:tag.site_id)
       if ex && ex.id !=params[:id].to_i
         vat.add '名称已存在'
       end
 
       if vat.ok?
-        tag = Cms::Tag.find_by id: params[:id]
         tag.update name: name, flag: params[:flag]
         dlg.ok = true
       else
@@ -121,12 +123,12 @@ class Cms::TagsController < ApplicationController
       name = params[:name]
 
       dlg = Brahma::Web::Dialog.new
-      if name && Cms::Tag.find_by(name: name)
+      if name && Cms::Tag.find_by(name: name, site_id:params[:site])
         vat.add '名称已存在'
       end
 
       if vat.ok?
-        Cms::Tag.create name: name, flag: params[:flag], created: Time.now
+        Cms::Tag.create name: name, flag: params[:flag], site_id:params[:site], created: Time.now
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -140,6 +142,7 @@ class Cms::TagsController < ApplicationController
   def new
     if admin?
       fm = Brahma::Web::Form.new '新增标签', '/cms/tags'
+      fm.hidden 'site', params[:site]
       fm.text 'name', '名称'
       fm.radio 'flag', '类型', 'default', tag_flag_options
       fm.ok = true

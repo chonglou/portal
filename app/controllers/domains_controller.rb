@@ -120,9 +120,10 @@ class DomainsController < ApplicationController
 
   def new
     if admin?
+      bl = Brahma::Locales
       fm = Brahma::Web::Form.new '新增域名', '/domains'
       fm.text 'name', '名称'
-      fm.radio 'lang', '默认语言', Brahma::Locales::ZH_CN, Brahma::Locales.options
+      fm.radio 'lang', '默认语言', bl::ZH_CN, bl.options
       fm.ok = true
       render json: fm.to_h
     else

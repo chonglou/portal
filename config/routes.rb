@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
 
   #-------网站管理-------
-  get 'sites'=>'site#index'
+  get 'site'=>'site#index'
+  get 'site/status'
+  get 'site/setup'
+  get 'site/info'
+  post 'site/info'
 
   #----------域名管理----------------
   resources :domains

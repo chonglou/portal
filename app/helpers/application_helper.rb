@@ -9,7 +9,7 @@ module ApplicationHelper
     links = {main_app.main_path => '本站首页'}
     if current_user
       links['/personal'] = '用户中心'
-      links['/sites'] = '网站中心'
+      links['/site'] = '网站中心'
     end
     links['/cms'] = '资源中心'
     links['/wiki'] = '知识库'
@@ -24,7 +24,7 @@ module ApplicationHelper
       label = "欢迎你, #{session.fetch :username}"
       links={
           personal_path => '个人中心',
-          sites_path => '网站中心',
+          site_path => '网站中心',
           brahma_bodhi.personal_logout_path => '安全退出'
       }
     else

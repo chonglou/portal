@@ -1,6 +1,26 @@
 GIT
-  remote: git@github.com:chonglou/bodhi.git
-  revision: 322128d5707efea55d22de4becb715f09b54916f
+  remote: git@github.com:chonglou/daemon.git
+  revision: c4cbcae744da5acb0710488c81260aca18b7f359
+  specs:
+    brahma_daemon (0.0.1)
+
+GIT
+  remote: git@github.com:chonglou/utils.git
+  revision: f6a515761a391e6157c03a966251be5fb0b411a3
+  specs:
+    brahma_utils (0.0.1)
+      bunny
+      connection_pool
+      highline
+      iconv
+      mysql2
+      nokogiri
+      redcarpet
+      redis
+      sequel
+
+PATH
+  remote: ../bodhi
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
@@ -24,27 +44,6 @@ GIT
       sass-rails
       slim
       turbolinks
-
-GIT
-  remote: git@github.com:chonglou/daemon.git
-  revision: c4cbcae744da5acb0710488c81260aca18b7f359
-  specs:
-    brahma_daemon (0.0.1)
-
-GIT
-  remote: git@github.com:chonglou/utils.git
-  revision: f6a515761a391e6157c03a966251be5fb0b411a3
-  specs:
-    brahma_utils (0.0.1)
-      bunny
-      connection_pool
-      highline
-      iconv
-      mysql2
-      nokogiri
-      redcarpet
-      redis
-      sequel
 
 GEM
   remote: https://rubygems.org/
@@ -139,7 +138,7 @@ GEM
       fog-softlayer
       ipaddress (~> 0.5)
       nokogiri (~> 1.5, >= 1.5.11)
-    fog-brightbox (0.3.0)
+    fog-brightbox (0.4.0)
       fog-core (~> 1.22)
       fog-json
       inflecto

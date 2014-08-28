@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140828113150) do
+ActiveRecord::Schema.define(version: 20140828140226) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -105,8 +105,7 @@ ActiveRecord::Schema.define(version: 20140828113150) do
     t.datetime "last_edit",             null: false
     t.datetime "created",               null: false
     t.integer  "version",   default: 0, null: false
-    t.integer  "domain",                null: false
-    t.integer  "lang",                  null: false
+    t.integer  "site_id",               null: false
   end
 
   create_table "cms_comments", force: true do |t|
@@ -125,16 +124,14 @@ ActiveRecord::Schema.define(version: 20140828113150) do
     t.integer  "visits",            default: 0, null: false
     t.datetime "created",                       null: false
     t.integer  "flag",    limit: 2, default: 0, null: false
-    t.integer  "domain",                        null: false
-    t.integer  "lang",                          null: false
+    t.integer  "site_id",                       null: false
   end
 
-  add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", unique: true, using: :btree
+  add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", using: :btree
 
   create_table "domain_rss_sites", force: true do |t|
     t.integer  "rss_site",   null: false
-    t.integer  "lang",       null: false
-    t.integer  "domain",     null: false
+    t.integer  "site_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -150,8 +147,7 @@ ActiveRecord::Schema.define(version: 20140828113150) do
 
   create_table "notices", force: true do |t|
     t.text     "content",    null: false
-    t.integer  "lang",       null: false
-    t.integer  "domain",     null: false
+    t.integer  "site_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -198,8 +194,7 @@ ActiveRecord::Schema.define(version: 20140828113150) do
 
   create_table "wikis", force: true do |t|
     t.string   "url",        null: false
-    t.integer  "lang",       null: false
-    t.integer  "domain",     null: false
+    t.integer  "site_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
