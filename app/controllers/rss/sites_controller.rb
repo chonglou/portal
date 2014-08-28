@@ -13,13 +13,13 @@ class Rss::SitesController < ApplicationController
     if user
       flag = "?site=#{params[:site]}"
       tab = Brahma::Web::Table.new "/rss/sites#{flag}", '站点列表', %w(ID 名称 类型 上次更新)
-      sites = admin? ? Rss::UserSite.where(site_id:params[:site]).order(id: :desc) : Rss::UserSite.where(site_id:params[:site], user_id: user.id).order(id: :desc)
+      sites = admin? ? Rss::UserSite.where(site_id: params[:site]).order(id: :desc) : Rss::UserSite.where(site_id: params[:site], user_id: user.id).order(id: :desc)
       sites.each do |us|
         s = us.rss_site
-          tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.last_sync], [
-              ['info', 'GET', "/rss/sites/#{s.id}", '查看'],
-              ['danger', 'DELETE', "/rss/sites/#{s.id}", '删除']
-          ]
+        tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.last_sync], [
+            ['info', 'GET', "/rss/sites/#{s.id}", '查看'],
+            ['danger', 'DELETE', "/rss/sites/#{s.id}", '删除']
+        ]
 
       end
       tab.toolbar = [['primary', 'GET', "/rss/sites/new#{flag}", '新增']]
@@ -77,15 +77,15 @@ class Rss::SitesController < ApplicationController
       if vat.ok?
         site = Rss::Site.find_by url: url
         unless site
-          site = Rss::Site.create name: name,  flag: params[:flag], url: url, enable: true, created: Time.now
+          site = Rss::Site.create name: name, flag: params[:flag], url: url, enable: true, created: Time.now
         end
         unless site.enable
-          site.update enable:true
+          site.update enable: true
         end
-        if Rss::UserSite.find_by(user_id: user.id, rss_site_id: site.id, site_id:params[:site] )
+        if Rss::UserSite.find_by(user_id: user.id, rss_site_id: site.id, site_id: params[:site])
           dlg.add '地址已存在'
         else
-          Rss::UserSite.create user_id: user.id, rss_site_id: site.id, site_id:params[:site]
+          Rss::UserSite.create user_id: user.id, rss_site_id: site.id, site_id: params[:site]
           dlg.ok = true
         end
 

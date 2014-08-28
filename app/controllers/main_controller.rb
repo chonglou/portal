@@ -24,8 +24,4 @@ class MainController < ApplicationController
     render 'brahma_bodhi/main/about_me'
   end
 
-  def notices
-    render 'brahma_bodhi/main/notices'
-  end
-
 end

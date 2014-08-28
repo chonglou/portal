@@ -9,7 +9,7 @@ class FriendLinksController < ApplicationController
     if admin?
       flag = "?site=#{params[:site]}"
       tab = Brahma::Web::Table.new "#{friend_links_path}#{flag}", '友情链接列表', %w(ID 名称 地址 图标)
-      BrahmaBodhi::FriendLink.where(site_id:params[:site]).each do |fl|
+      BrahmaBodhi::FriendLink.where(site_id: params[:site]).each do |fl|
         tab.insert [fl.id,
                     fl.name,
                     "<a href='http://#{fl.domain}' target='_blank'>http://#{fl.domain}</a>",

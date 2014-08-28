@@ -110,7 +110,7 @@ class Cms::ArticlesController < ApplicationController
         fm.html 'body', '内容', a.body
         fm.checkbox 'tag', '标签',
                     Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag_id },
-                    Cms::Tag.where(site_id:a.site_id).map { |t| [t.id, t.name] }
+                    Cms::Tag.where(site_id: a.site_id).map { |t| [t.id, t.name] }
         fm.method = 'PUT'
         fm.ok = true
       else
@@ -155,7 +155,7 @@ class Cms::ArticlesController < ApplicationController
       fm.text 'title', '标题'
       fm.textarea 'summary', '摘要'
       fm.html 'body', '内容'
-      fm.checkbox 'tag', '标签', '', Cms::Tag.where(site_id:params[:site]).map { |t| [t.id, t.name] }
+      fm.checkbox 'tag', '标签', '', Cms::Tag.where(site_id: params[:site]).map { |t| [t.id, t.name] }
       fm.ok = true
       render json: fm.to_h
     else

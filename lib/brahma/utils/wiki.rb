@@ -25,7 +25,7 @@ module Brahma
 
       def each(url=nil)
         len = WIKI_ROOT.size
-        Dir.glob("#{WIKI_ROOT}#{url ? "/#{url}": ''}/**/*.md").each do |fn|
+        Dir.glob("#{WIKI_ROOT}#{url ? "/#{url}" : ''}/**/*.md").each do |fn|
           name = fn[len+1, fn.size-len-4]
           yield name
         end

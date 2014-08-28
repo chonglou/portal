@@ -4,6 +4,7 @@ module Brahma
     EN_US=1
 
     module_function
+
     def label(v)
       case v
         when EN_US

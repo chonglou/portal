@@ -5,7 +5,7 @@ class UserController < ApplicationController
     @title = title
     @index = '/user'
     @fall_link = Brahma::Web::FallLink.new title
-    BrahmaBodhi::User.select(:id, :username).all.each { |u| @fall_link.add "/user/#{u.id}", u.username}
+    BrahmaBodhi::User.select(:id, :username).all.each { |u| @fall_link.add "/user/#{u.id}", u.username }
     render 'user/list'
   end
 

@@ -68,7 +68,7 @@ class DomainsController < ApplicationController
 
       if vat.ok?
         d = Domain.find_by id: params[:id]
-        d.update name: name, lang:params[:lang]
+        d.update name: name, lang: params[:lang]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -107,7 +107,7 @@ class DomainsController < ApplicationController
       end
 
       if vat.ok?
-        Domain.create name: name, lang:params[:lang]
+        Domain.create name: name, lang: params[:lang]
         dlg.ok = true
       else
         dlg.data += vat.messages

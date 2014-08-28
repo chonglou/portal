@@ -83,7 +83,7 @@ class Cms::TagsController < ApplicationController
       name = params[:name]
 
       tag = Cms::Tag.find_by id: params[:id]
-      ex = Cms::Tag.find_by(name: name, site_id:tag.site_id)
+      ex = Cms::Tag.find_by(name: name, site_id: tag.site_id)
       if ex && ex.id !=params[:id].to_i
         vat.add '名称已存在'
       end
@@ -123,12 +123,12 @@ class Cms::TagsController < ApplicationController
       name = params[:name]
 
       dlg = Brahma::Web::Dialog.new
-      if name && Cms::Tag.find_by(name: name, site_id:params[:site])
+      if name && Cms::Tag.find_by(name: name, site_id: params[:site])
         vat.add '名称已存在'
       end
 
       if vat.ok?
-        Cms::Tag.create name: name, flag: params[:flag], site_id:params[:site], created: Time.now
+        Cms::Tag.create name: name, flag: params[:flag], site_id: params[:site], created: Time.now
         dlg.ok = true
       else
         dlg.data += vat.messages

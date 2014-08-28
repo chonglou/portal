@@ -1,8 +1,50 @@
+require 'fileutils'
+require 'brahma/locales'
 require 'brahma/utils/scheduler'
 
 module Brahma::Utils
   module Scheduler
     module_function
+
+    def check_dir!(d)
+      unless Dir.exist?(d)
+        FileUtils.mkdir_p d
+        Rails.logger.info "创建目录#{d}"
+      end
+    end
+
+    def export
+      log = Rails.logger
+      bl = Brahma::Locales
+
+      Domain.all.each do |domain|
+        log.info "开始导出[#{domain.name}]"
+
+        release = "#{Rails.root}/tmp/html/#{domain.name}"
+        check_dir! release
+        File.open("#{release}/index.html", 'w') { |f| f.puts "<!DOCTYPE html><html><head><meta http-equiv='refresh' content='0; url=http://#{domain.name}/#{domain.lang}' /></head><body></body></html>" }
+
+        domain.sites.each do |site|
+          log.info "处理语言#{bl.label site.lang}"
+          root="#{release}/#{site.lang}"
+          check_dir! root
+          #todo /404.html /favicon.ico /baidu_verify_aaa.html /google_bbb.html
+          #todo /main
+          #todo /about_me
+          #todo /search
+          #todo /user /user/1
+
+          #todo /cms /cms/tags /cms/articles/1
+          #todo /wiki /wiki/path/name
+          #todo /rss /rss/items/1 /rss/page/1
+          #todo /archive/2014/03 /archive/2014/03/09
+
+          #todo /sitemap.xml.gz /robots.txt
+        end
+
+        log.info '站点导出完毕'
+      end
+    end
 
     def search
 
@@ -37,7 +79,7 @@ module Brahma::Utils
 
     def wiki
       require 'brahma/utils/wiki'
-      Wiki.all.each {|w| Rails.logger.info Brahma::Utils::WikiHelper.update(w.url)}
+      Wiki.all.each { |w| Rails.logger.info Brahma::Utils::WikiHelper.update(w.url) }
     end
 
     def sitemap

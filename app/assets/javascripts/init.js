@@ -1,8 +1,8 @@
 //= require brahma_bodhi/init
 
-$(function(){
+$(function () {
     var uri = window.location.pathname;
-    if(uri == '/'){
+    if (uri == '/') {
         uri = '/main'
     }
     Brahma.active_nav_link(uri);

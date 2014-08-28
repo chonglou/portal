@@ -1,5 +1,11 @@
 namespace :brahma do
   namespace :web do
+    desc '导出静态话站点'
+    task export: :environment do
+      require 'brahma/utils/tasks'
+      Brahma::Utils::Scheduler.export
+    end
+
     desc 'WIKI抓取'
     task wiki: :environment do
       require 'brahma/utils/tasks'

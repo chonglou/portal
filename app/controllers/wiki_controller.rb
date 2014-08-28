@@ -21,7 +21,7 @@ class WikiController < ApplicationController
 
   def git
     if admin?
-      wiki = Wiki.find_by site_id:params[:site]
+      wiki = Wiki.find_by site_id: params[:site]
       case request.method
         when 'GET'
           fm = Brahma::Web::Form.new 'GIT源', '/wiki/git'
@@ -34,9 +34,9 @@ class WikiController < ApplicationController
           dlg = Brahma::Web::Dialog.new
           #dlg.data += Brahma::Utils::WikiHelper.update(url).split("\n")
           if wiki
-            wiki.update url:url
+            wiki.update url: url
           else
-            Wiki.create url:url, site_id:params[:site]
+            Wiki.create url: url, site_id: params[:site]
           end
           dlg.ok = true
           render(json: dlg.to_h) and return
