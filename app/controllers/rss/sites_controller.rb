@@ -11,15 +11,18 @@ class Rss::SitesController < ApplicationController
   def index
     user = current_user
     if user
-      tab = Brahma::Web::Table.new '/rss/sites', '站点列表', %w(ID 名称 类型 上次更新)
-      sites = admin? ? Rss::Site.order(id: :desc).all : Rss::UserSite.where(user_id: user.id).order(id: :desc).map { |us| us.site }
-      sites.each do |s|
-        tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.last_sync], [
-            ['info', 'GET', "/rss/sites/#{s.id}", '查看'],
-            ['danger', 'DELETE', "/rss/sites/#{s.id}", '删除']
-        ]
+      flag = "?site=#{params[:site]}"
+      tab = Brahma::Web::Table.new "/rss/sites#{flag}", '站点列表', %w(ID 名称 类型 上次更新)
+      sites = admin? ? Rss::UserSite.where(site_id:params[:site]).order(id: :desc) : Rss::UserSite.where(site_id:params[:site], user_id: user.id).order(id: :desc)
+      sites.each do |us|
+        s = us.rss_site
+          tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.last_sync], [
+              ['info', 'GET', "/rss/sites/#{s.id}", '查看'],
+              ['danger', 'DELETE', "/rss/sites/#{s.id}", '删除']
+          ]
+
       end
-      tab.toolbar = [%w(primary GET /rss/sites/new 新增)]
+      tab.toolbar = [['primary', 'GET', "/rss/sites/new#{flag}", '新增']]
       tab.ok = true
       render json: tab.to_h
     else
@@ -31,10 +34,10 @@ class Rss::SitesController < ApplicationController
     user = current_user
     if user
       dlg = Brahma::Web::Dialog.new
-      Rss::UserSite.destroy_all(user_id: user.id, site_id: params[:id])
+      Rss::UserSite.destroy_all(user_id: user.id, rss_site_id: params[:id])
 
       site = Rss::Site.find_by id: params[:id]
-      size = Rss::UserSite.count site_id: params[:id]
+      size = Rss::UserSite.count rss_site_id: params[:id]
       if site && size == 0
         Rss::Site.update params[:id].to_i, enable: false
       end
@@ -74,17 +77,16 @@ class Rss::SitesController < ApplicationController
       if vat.ok?
         site = Rss::Site.find_by url: url
         unless site
-          Rss::Site.create name: name, flag: params[:flag], url: url, enable: true, created: Time.now
-          site = Rss::Site.find_by url: url
+          site = Rss::Site.create name: name,  flag: params[:flag], url: url, enable: true, created: Time.now
         end
         unless site.enable
           site.update enable:true
         end
-        if Rss::UserSite.find_by(user_id: user.id, site_id: site.id)
+        if Rss::UserSite.find_by(user_id: user.id, rss_site_id: site.id, site_id:params[:site] )
           dlg.add '地址已存在'
         else
+          Rss::UserSite.create user_id: user.id, rss_site_id: site.id, site_id:params[:site]
           dlg.ok = true
-          Rss::UserSite.create user_id: user.id, site_id: site.id
         end
 
       else
@@ -98,6 +100,7 @@ class Rss::SitesController < ApplicationController
 
   def new
     fm = Brahma::Web::Form.new '新增RSS源', '/rss/sites'
+    fm.hidden 'site', params[:site]
     fm.radio 'flag', '类型', 'rss', rss_flag_options
     fm.text 'url', '地址', '', 720
     fm.ok = true

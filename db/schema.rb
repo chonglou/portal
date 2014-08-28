@@ -129,13 +129,6 @@ ActiveRecord::Schema.define(version: 20140828140226) do
 
   add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", using: :btree
 
-  create_table "domain_rss_sites", force: true do |t|
-    t.integer  "rss_site",   null: false
-    t.integer  "site_id",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "domains", force: true do |t|
     t.string   "name",                   null: false
     t.integer  "lang",       default: 0, null: false
@@ -174,10 +167,11 @@ ActiveRecord::Schema.define(version: 20140828140226) do
   add_index "rss_sites", ["url"], name: "index_rss_sites_on_url", using: :btree
 
   create_table "rss_user_sites", force: true do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "site_id",    null: false
+    t.integer  "user_id",     null: false
+    t.integer  "site_id",     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "rss_site_id", null: false
   end
 
   create_table "sites", force: true do |t|
