@@ -36,12 +36,8 @@ module Brahma::Utils
     end
 
     def wiki
-      require 'brahma/services/site'
       require 'brahma/utils/wiki'
-      wiki = Brahma::SettingService.get('site.wiki')
-      if wiki
-        Rails.logger.info Brahma::Utils::WikiHelper.update(wiki.fetch(:url))
-      end
+      Wiki.all.each {|w| Rails.logger.info Brahma::Utils::WikiHelper.update(w.url)}
     end
 
     def sitemap
