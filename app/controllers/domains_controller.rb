@@ -44,6 +44,8 @@ class DomainsController < ApplicationController
         lst = Brahma::Web::List.new "域名[#{d.id}]"
         lst.add "名称：#{d.name}"
         lst.add "默认语言：#{Brahma::Locales.label d.lang}"
+        lst.add "Google File: google#{d.google}.html"
+        lst.add "百度文件：baidu_verify_#{d.baidu}.html"
         lst.add "创建：#{d.created_at}"
         lst.add "更新：#{d.updated_at}"
         render(json: lst.to_h) and return
@@ -68,7 +70,7 @@ class DomainsController < ApplicationController
 
       if vat.ok?
         d = Domain.find_by id: params[:id]
-        d.update name: name, lang: params[:lang]
+        d.update name: name, lang: params[:lang],baidu:params[:baidu], google:params[:google]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -88,6 +90,8 @@ class DomainsController < ApplicationController
       fm.method = 'PUT'
       fm.text 'name', '名称', d.name
       fm.radio 'lang', '默认语言', d.lang, Brahma::Locales.options
+      fm.text 'google', 'Google ID', d.google
+      fm.text 'baidu', '百度 ID', d.baidu
       fm.ok = true
       render json: fm.to_h
     else
@@ -107,7 +111,7 @@ class DomainsController < ApplicationController
       end
 
       if vat.ok?
-        Domain.create name: name, lang: params[:lang]
+        Domain.create name: name, lang: params[:lang],baidu:params[:baidu], google:params[:google]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -124,6 +128,8 @@ class DomainsController < ApplicationController
       fm = Brahma::Web::Form.new '新增域名', '/domains'
       fm.text 'name', '名称'
       fm.radio 'lang', '默认语言', bl::ZH_CN, bl.options
+      fm.text 'google', 'Google ID'
+      fm.text 'baidu', '百度 ID'
       fm.ok = true
       render json: fm.to_h
     else

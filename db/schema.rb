@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140828171957) do
+ActiveRecord::Schema.define(version: 20140829161840) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -136,6 +136,8 @@ ActiveRecord::Schema.define(version: 20140828171957) do
     t.integer  "lang",       default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "google"
+    t.string   "baidu"
   end
 
   add_index "domains", ["name"], name: "index_domains_on_name", unique: true, using: :btree
