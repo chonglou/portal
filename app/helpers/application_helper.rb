@@ -30,7 +30,7 @@ module ApplicationHelper
     else
       label = '注册/登录'
       links={
-          Brahma::Factory.instance.oauth2.authorize_url => 'BRAHMA通行证'
+          Brahma::Factory.instance.oauth2.authorize_url => '账户登录'
       }
     end
     {label: label, links: links}
