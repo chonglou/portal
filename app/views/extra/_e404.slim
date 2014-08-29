@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    meta charset="utf-8"
+    meta http-equiv="X-UA-Compatible" content="IE=edge"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta name="author" content='jitang.zheng@gmail.com'
+    link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#{image_path 'logo/32x32.ico'}"
+    title 出错了！
+    = stylesheet_link_tag  'main', media: 'all', 'data-turbolinks-track' => true
+  body
+    div class="row"
+      div class="col-sm-2"
+      div class="col-sm-8"
+        div class="panel panel-danger"
+          div class="panel-heading" 发生错误
+          ul class="list-group"
+            li class="list-group-item" 页面不存在
+          div align='center' class="panel-body"
+            iframe scrolling='no' frameborder='0' src='http://yibo.iyiyun.com/Home/Distribute/ad404/key/5423' width='654' height='470' style='display:block;'
+          div class="panel-footer" style="text-align:right"
+            a class="btn btn-primary" href='/index.html' 点此返回首页

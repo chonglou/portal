@@ -32,8 +32,8 @@ class Cms::TagsController < ApplicationController
       end
 
       fmt.html do
-        @fall_link = Brahma::Web::FallLink.new "标签列表[#{Cms::Tag.order(visits: :desc).all.size}]"
-        tags.each { |t| @fall_link.add "/cms/tags/#{t.id}", t.name }
+        @fall_link = Brahma::Web::FallLink.new "标签列表[#{Cms::Tag.count}]"
+        Cms::Tag.select(:id, :name).order(visits: :desc).all.each { |t| @fall_link.add "/cms/tags/#{t.id}", t.name }
       end
     end
   end

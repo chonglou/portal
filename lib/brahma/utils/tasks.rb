@@ -17,19 +17,61 @@ module Brahma::Utils
       log = Rails.logger
       bl = Brahma::Locales
 
+      html = "#{Rails.root}/tmp/html"
+      view = ActionView::Base.new "#{Rails.root}/app/views"
+
       Domain.all.each do |domain|
         log.info "开始导出[#{domain.name}]"
 
-        release = "#{Rails.root}/tmp/html/#{domain.name}"
+        target="#{html}/#{domain.name}"
+        release = "#{html}/#{Time.now.strftime '%Y%m%d%H%M%S'}"
         check_dir! release
-        File.open("#{release}/index.html", 'w') { |f| f.puts "<!DOCTYPE html><html><head><meta http-equiv='refresh' content='0; url=http://#{domain.name}/#{domain.lang}' /></head><body></body></html>" }
+
+        #静态资源
+        %w(3rd assets favicon.ico).each { |r| FileUtils.cp_r "#{Rails.root}/public/#{r}", release }
+        #主页
+        File.open("#{release}/index.html", 'w') { |f| f.puts "<!DOCTYPE html><html><head><meta http-equiv='refresh' content='0; url=http://#{domain.name}/#{domain.lang}/#{domain.home}.html' /></head><body></body></html>" }
+
+        #-------------seo及error文件---------------------
+        File.open("#{release}/google#{domain.google}.html", 'w') { |f| f.write "google-site-verification: google#{domain.google}.html" }
+        File.open("#{release}/baidu_verify_#{domain.baidu}.html", 'w') { |f| f.write domain.baidu }
+        File.open("#{release}/robots.txt", 'w') do |f|
+          f.puts 'User-agent: *'
+          f.puts 'Disallow: '
+          f.puts 'Crawl-delay: 10'
+          f.puts "Sitemap: http://#{domain.name}/sitemap.xml.gz"
+        end
+        File.open("#{release}/404.html", 'w') do |f|
+          f.write view.render('extra/e404')
+        end
+
+        require 'brahma/utils/wiki'
+
+        SitemapGenerator::Sitemap.default_host = "http://#{domain.name}"
+        SitemapGenerator::Sitemap.create do
+          #'always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly' or 'never'
+          add '/main.html', changefreq: 'weekly', priority: 0.9
+          add '/wiki.html', changefreq: 'weekly', priority: 0.9
+          add '/rss.html', changefreq: 'daily', priority: 0.9
+          add '/about_me.html', changefreq: 'yearly', priority: 0.9
+          domain.sites.each do |site|
+            Cms::Tag.select(:id).where(site_id:site.id).each { |t| add "/cms/tags/#{t.id}.html", changefreq: 'monthly' }
+            Cms::Article.select(:id).where(site_id:site.id).each { |a| add "/cms/articles/#{a.id}.html", changefreq: 'weekly' }
+            Wiki.select(:url).where(site_id:site.id).each{|wiki|Brahma::Utils::WikiHelper.each(wiki.url) { |w| add "/wiki/#{w}.html", changefreq: 'monthly' }}
+            Rss::UserSite.select(:rss_site_id).where(site_id:site.id).each{|us| Rss::Item.select(:id).where(site_id:us.rss_site_id).each { |i| add "/rss/items/#{i.id}", changefreq: 'yearly' }}
+          end
+
+        end
+        log.info '生成sitemap完毕'
 
         domain.sites.each do |site|
           log.info "处理语言#{bl.label site.lang}"
           root="#{release}/#{site.lang}"
           check_dir! root
-          #todo /404.html /favicon.ico /baidu_verify_aaa.html /google_bbb.html
-          #todo /main
+
+
+          #---------CMS页面--------------
+
           #todo /about_me
           #todo /search
           #todo /user /user/1
@@ -39,11 +81,21 @@ module Brahma::Utils
           #todo /rss /rss/items/1 /rss/page/1
           #todo /archive/2014/03 /archive/2014/03/09
 
-          #todo /sitemap.xml.gz /robots.txt
+
         end
+
+
+        if Dir.exist?("#{target}-bak")
+          FileUtils.rm_r "#{target}-bak"
+        end
+        if Dir.exist?(target)
+          FileUtils.mv "#{html}/#{domain.name}", "#{html}/#{domain.name}-bak"
+        end
+        FileUtils.mv release, "#{html}/#{domain.name}"
 
         log.info '站点导出完毕'
       end
+
     end
 
     def search
@@ -97,7 +149,7 @@ module Brahma::Utils
         Cms::Tag.select(:id).all.each { |t| add "/cms/tags/#{t.id}", changefreq: 'monthly' }
         Cms::Article.select(:id).all.each { |a| add "/cms/articles/#{a.id}", changefreq: 'weekly' }
         Brahma::Utils::WikiHelper.each { |w| add "/wiki/#{w}", changefreq: 'monthly' }
-        Rss::Item.select(:id).all.each { |i| add "/rss/item/#{i.id}", changefreq: 'yearly' }
+        Rss::Item.select(:id).all.each { |i| add "/rss/items/#{i.id}", changefreq: 'yearly' }
       end
       Rails.logger.info '生成sitemap完毕'
     end
