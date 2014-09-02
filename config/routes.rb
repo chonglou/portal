@@ -39,8 +39,7 @@ Rails.application.routes.draw do
   get 'user/:id' => 'user#show'
   get 'cms' => 'cms#index'
   #----------------其它---------------
-  get 'archive/:year/:month/:day' => 'archive#index'
-  get 'archive/:year/:month' => 'archive#index'
+  get 'archive'=>'archive#index'
   post 'search' => 'search#index'
 
   #----------个人中心------------------------------------------
@@ -49,6 +48,7 @@ Rails.application.routes.draw do
   #---------站点其它-------------------------------------------
   get 'about_me' => 'main#about_me'
   get 'main' => 'main#index'
+  %w(404 422 500 505).each { |e| match "/#{e}" => 'main#errors', id: e, via: [:get, :post, :put, :patch, :delete] }
 
   root 'main#index'
   mount BrahmaBodhi::Engine, at: '/core'

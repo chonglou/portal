@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140829203353) do
+ActiveRecord::Schema.define(version: 20140902163037) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -60,19 +60,22 @@ ActiveRecord::Schema.define(version: 20140829203353) do
   create_table "brahma_bodhi_settings", force: true do |t|
     t.string   "key",                 null: false
     t.binary   "val",                 null: false
-    t.integer  "version", default: 0, null: false
     t.datetime "created",             null: false
-    t.integer  "lang"
+    t.integer  "version", default: 0, null: false
+    t.string   "lang"
   end
 
   add_index "brahma_bodhi_settings", ["key"], name: "index_brahma_bodhi_settings_on_key", using: :btree
 
   create_table "brahma_bodhi_translations", force: true do |t|
-    t.integer  "zh_CN"
-    t.integer  "en_US"
+    t.integer  "zh-CN"
+    t.integer  "en"
+    t.string   "flag",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "brahma_bodhi_translations", ["flag"], name: "index_brahma_bodhi_translations_on_flag", using: :btree
 
   create_table "brahma_bodhi_users", force: true do |t|
     t.string   "open_id",                          null: false
@@ -156,7 +159,7 @@ ActiveRecord::Schema.define(version: 20140829203353) do
     t.datetime "last_sync"
   end
 
-  add_index "rss_sites", ["url"], name: "index_rss_sites_on_url", using: :btree
+  add_index "rss_sites", ["url"], name: "index_rss_sites_on_url", unique: true, using: :btree
 
   create_table "rss_user_sites", force: true do |t|
     t.integer  "user_id",     null: false

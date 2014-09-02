@@ -1,3 +1,30 @@
 zh-CN:
   web:
+    title:
+      main: '本站首页'
+      personal: '用户中心'
+      sites: '网站中心'
+      cms: '资源中心'
+      wiki: '知识库'
+      rss: '网络文摘'
+      users: '用户列表'
+      about_me: '关于我们'
+      hot_articles: '热门文章'
+      recent_comments: '最新评论'
+      archives: '文章列表'
+    link:
+      login: '账户登录'
+      logout: '安全退出'
+      personal_info: '个人信息'
+      site_info: '站点参数'
+      domains: '域名管理'
+      adverts: '广告设置'
+      notices: '公告通知'
+      seo: 'SEO设置'
+      users: '用户列表'
+      attachments: '附件管理'
+      logs: '日志列表'
+    label:
+      register_or_login: '注册/登录'
+      welcome: '欢迎你'
     copyright: '本站使用 <a href="https://github.com/chonglou/portal" target="_blank">PORTAL系统构建</a> &copy;2014'

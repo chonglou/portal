@@ -14,11 +14,10 @@ class ArchiveController < ApplicationController
     end
 
     articles = Cms::Article.where('created>=? AND created<=?', start, stop).all
-    title = "文章列表[#{start.strftime '%Y-%m-%d'}, #{stop.strftime '%Y-%m-%d'}]"
+    title = "#{t('web.title.archives')}[#{start.strftime '%Y-%m-%d'}, #{stop.strftime '%Y-%m-%d'}]"
     @title = title
     @fall_card = Brahma::Web::FallCard.new title
-    @index = '/main'
-    articles.each { |a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary, a.logo }
+    articles.each { |a| @fall_card.add cms_article_path(a.id), a.title, a.summary, a.logo }
     render 'cms/articles/list'
   end
 end

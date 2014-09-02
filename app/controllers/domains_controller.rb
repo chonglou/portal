@@ -10,15 +10,15 @@ require 'brahma/locales'
 class DomainsController < ApplicationController
   def index
     if admin?
-      tab = Brahma::Web::Table.new '/domains', '域名列表', %w(ID 名称 创建时间)
+      tab = Brahma::Web::Table.new domains_path, '域名列表', %w(ID 名称 创建时间)
       Domain.all.each do |d|
         tab.insert [d.id, d.name, d.created_at], [
-            ['info', 'GET', "/domains/#{d.id}", '查看'],
-            ['warning', 'GET', "/domains/#{d.id}/edit", '编辑'],
-            ['danger', 'DELETE', "/domains/#{d.id}", '删除']
+            ['info', 'GET', domain_path(d.id), '查看'],
+            ['warning', 'GET', edit_domain_path(d.id), '编辑'],
+            ['danger', 'DELETE', domain_path(d.id), '删除']
         ]
       end
-      tab.toolbar = [%w(primary GET /domains/new 新增)]
+      tab.toolbar = [['primary', 'GET', new_domain_path, '新增']]
       tab.ok = true
       render json: tab.to_h
     else
@@ -43,7 +43,7 @@ class DomainsController < ApplicationController
       if d
         lst = Brahma::Web::List.new "域名[#{d.id}]"
         lst.add "名称：#{d.name}"
-        lst.add "默认语言：#{Brahma::Locales.label d.lang}"
+        lst.add "默认语言：#{d.lang}"
         lst.add "Google File: google#{d.google}.html"
         lst.add "百度文件：baidu_verify_#{d.baidu}.html"
         lst.add "创建：#{d.created_at}"
@@ -85,11 +85,11 @@ class DomainsController < ApplicationController
   def edit
     if admin?
       did = params[:id]
-      fm = Brahma::Web::Form.new "编辑域名[#{did}]", "/domains/#{did}"
+      fm = Brahma::Web::Form.new "编辑域名[#{did}]", domain_path(did)
       d = Domain.find_by id: did
       fm.method = 'PUT'
       fm.text 'name', '名称', d.name
-      fm.radio 'lang', '默认语言', d.lang, Brahma::Locales.options
+      fm.radio 'lang', '默认语言', d.lang, Brahma::LOCALES_OPTIONS
       fm.text 'google', 'Google ID', d.google
       fm.text 'baidu', '百度 ID', d.baidu
       fm.ok = true
@@ -124,10 +124,9 @@ class DomainsController < ApplicationController
 
   def new
     if admin?
-      bl = Brahma::Locales
-      fm = Brahma::Web::Form.new '新增域名', '/domains'
+      fm = Brahma::Web::Form.new '新增域名', domains_path
       fm.text 'name', '名称'
-      fm.radio 'lang', '默认语言', bl::ZH_CN, bl.options
+      fm.radio 'lang', '默认语言', Brahma::Brahma::LOCALES[0], Brahma::LOCALES_OPTIONS
       fm.text 'google', 'Google ID'
       fm.text 'baidu', '百度 ID'
       fm.ok = true
