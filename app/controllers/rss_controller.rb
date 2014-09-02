@@ -12,7 +12,7 @@ class RssController < ApplicationController
 
   def page
     page_size=20
-    title = '网络文摘'
+    title = t('web.title.rss')
     @title = title
     @total = Rss::Item.count/page_size+1
     @index = (params[:id] || 1).to_i

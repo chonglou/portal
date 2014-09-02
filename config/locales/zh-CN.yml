@@ -27,6 +27,8 @@ zh-CN:
       articles: '文章列表'
       comments: '评论列表'
       rss_setup: 'RSS设置'
+      wiki: 'wiki设置'
+      tags: '标签管理'
     label:
       register_or_login: '注册/登录'
       welcome: '欢迎你'

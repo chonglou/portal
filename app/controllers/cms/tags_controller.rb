@@ -29,8 +29,12 @@ class Cms::TagsController < ApplicationController
       end
 
       fmt.html do
-        @fall_link = Brahma::Web::FallLink.new "标签列表[#{Cms::Tag.count}]"
-        Cms::Tag.select(:id, :name).order(visits: :desc).all.each { |t| @fall_link.add cms_tag_path(t.id), t.name }
+        @fall_link = Brahma::Web::FallLink.new t('web.title.tags')
+        Brahma::TranslationService.each('tag', I18n.locale) do |tr|
+          t = Cms::Tag.find_by id:tr.send(I18n.locale)
+          @fall_link.add cms_tag_path(t.id), t.name
+        end
+
       end
     end
   end

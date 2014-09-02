@@ -27,6 +27,8 @@ en:
       articles: 'Articles'
       comments: 'Comments'
       rss_setup: 'RSS'
+      wiki: 'Wiki'
+      tags: 'Tags'
     label:
       register_or_login: 'Register/Sign In'
       welcome: 'Welcome'

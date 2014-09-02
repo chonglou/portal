@@ -9,11 +9,7 @@ module Brahma
 
       def update(url)
         #todo 防注入
-        # unless Dir.exist?(WIKI_ROOT)
-        #   FileUtils.mkpath WIKI_ROOT
-        # end
-        base = "#{WIKI_ROOT}/#{Brahma::Utils::StringHelper.md5 url}"
-        Dir.exist?("#{base}/.git") ? `cd #{base} && git pull` : `git clone #{url} #{base}`
+        Dir.exist?("#{WIKI_ROOT}/.git") ? `cd #{base} && git pull` : `git clone #{url} #{WIKI_ROOT}`
       end
 
       def get(name)
@@ -23,9 +19,9 @@ module Brahma
         end
       end
 
-      def each(url=nil)
+      def each
         len = WIKI_ROOT.size
-        Dir.glob("#{WIKI_ROOT}#{url ? "/#{Brahma::Utils::StringHelper.md5 url}" : ''}/**/*.md").each do |fn|
+        Dir.glob("#{WIKI_ROOT}/**/*.md").each do |fn|
           name = fn[len+1, fn.size-len-4]
           yield name
         end

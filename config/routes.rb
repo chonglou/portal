@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     post 'git'
   end
   get 'wiki' => 'wiki#index'
-  get 'wiki/*name' => 'wiki#show'
+  get 'wiki/*name' => 'wiki#show', as: :wiki_show
 
   #-----------------内容系统------------
   namespace :cms do
