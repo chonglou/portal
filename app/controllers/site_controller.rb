@@ -2,6 +2,7 @@ require 'brahma/web/response'
 require 'brahma/web/form'
 require 'brahma/web/dialog'
 require 'brahma/locales'
+require 'brahma/services/site'
 
 class SiteController < ApplicationController
   def info
@@ -45,9 +46,14 @@ class SiteController < ApplicationController
     s = Site.find_by domain_id: params[:id], lang: params[:lang]
     if user
       bg = Brahma::Web::ButtonGroup.new
-
       unless s
-        s = Site.create title: '', keywords: '', description: '', home: '/main', about_me: '', domain_id: params[:id], lang: params[:lang]
+        if admin?
+           s = Site.create title: '', keywords: '', description: '', home: '/main', about_me: '', domain_id: params[:id], lang: params[:lang]
+        else
+          bg.ok = false
+          bg.data << '站点不存在'
+          render(json: bg.to_h) and return
+        end
       end
 
       flag = "?site=#{s.id}"
@@ -75,6 +81,7 @@ class SiteController < ApplicationController
       Domain.all.each do |d|
         bl.options.each { |l| @ctl_links["/site/setup?id=#{d.id}&lang=#{l[0]}"] = "#{d.name}（#{l[1]}）" }
       end
+      bl.options.each { |l| @ctl_links["/site/setup?id=0&lang=#{l[0]}"] = "本站（#{l[1]}）" }
       @ctl_links[site_status_path] = '当前状态'
       goto_admin
     else

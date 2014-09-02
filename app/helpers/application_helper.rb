@@ -6,16 +6,16 @@ module ApplicationHelper
   include ShareHelper
 
   def nav_links
-    links = {main_app.main_path => '本站首页'}
+    links = {main_path => '本站首页'}
     if current_user
-      links['/personal'] = '用户中心'
-      links['/site'] = '网站中心'
+      links[personal_path] = '用户中心'
+      links[site_path] = '网站中心'
     end
-    links['/cms'] = '资源中心'
-    links['/wiki'] = '知识库'
-    links['/rss'] = '网络文摘'
-    links['/user'] = '用户列表'
-    links['/about_me']='关于我们'
+    links[cms_path] = '资源中心'
+    links[wiki_path] = '知识库'
+    links[rss_path] = '网络文摘'
+    links[user_path] = '用户列表'
+    links[about_me_path]='关于我们'
     links
   end
 

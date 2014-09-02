@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140829161840) do
+ActiveRecord::Schema.define(version: 20140829203353) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20140829161840) do
     t.datetime "last_edit",             null: false
     t.datetime "created",               null: false
     t.integer  "site_id",   default: 0, null: false
+    t.integer  "tid",                   null: false
   end
 
   create_table "brahma_bodhi_permissions", force: true do |t|
@@ -56,28 +57,22 @@ ActiveRecord::Schema.define(version: 20140829161840) do
   add_index "brahma_bodhi_permissions", ["resource"], name: "index_brahma_bodhi_permissions_on_resource", using: :btree
   add_index "brahma_bodhi_permissions", ["role"], name: "index_brahma_bodhi_permissions_on_role", using: :btree
 
-  create_table "brahma_bodhi_rbacs", force: true do |t|
-    t.string   "resource",                                   null: false
-    t.string   "operation",                                  null: false
-    t.string   "role",                                       null: false
-    t.datetime "startup",    default: '9999-12-31 23:59:59', null: false
-    t.datetime "shutdown",   default: '1000-01-01 00:00:00', null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "brahma_bodhi_rbacs", ["operation"], name: "index_brahma_bodhi_rbacs_on_operation", using: :btree
-  add_index "brahma_bodhi_rbacs", ["resource"], name: "index_brahma_bodhi_rbacs_on_resource", using: :btree
-  add_index "brahma_bodhi_rbacs", ["role"], name: "index_brahma_bodhi_rbacs_on_role", using: :btree
-
   create_table "brahma_bodhi_settings", force: true do |t|
     t.string   "key",                 null: false
     t.binary   "val",                 null: false
     t.integer  "version", default: 0, null: false
     t.datetime "created",             null: false
+    t.integer  "lang"
   end
 
-  add_index "brahma_bodhi_settings", ["key"], name: "index_brahma_bodhi_settings_on_key", unique: true, using: :btree
+  add_index "brahma_bodhi_settings", ["key"], name: "index_brahma_bodhi_settings_on_key", using: :btree
+
+  create_table "brahma_bodhi_translations", force: true do |t|
+    t.integer  "zh_CN"
+    t.integer  "en_US"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "brahma_bodhi_users", force: true do |t|
     t.string   "open_id",                          null: false
