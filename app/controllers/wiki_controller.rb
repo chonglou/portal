@@ -8,7 +8,7 @@ require 'brahma/utils/wiki'
 class WikiController < ApplicationController
 
   def index
-    @title = '知识库列表'
+    @title = t('web.title.wiki')
     @fall_link = Brahma::Web::FallLink.new @title
     Brahma::Utils::WikiHelper.each { |name| @fall_link.add "/wiki/#{name}", name[(name.index('/')+1)..-1] }
   end

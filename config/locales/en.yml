@@ -3,7 +3,6 @@ en:
     title:
       main: 'Main'
       personal: 'Personal Center'
-      sites: 'Sites'
       cms: 'Articles'
       wiki: 'Wiki'
       rss: 'Rss'
@@ -12,6 +11,7 @@ en:
       hot_articles: 'Hot Articles'
       recent_comments: 'Recent Comments'
       archives: 'Archives'
+      tags: 'Tags'
     link:
       login: 'Sign In'
       logout: 'Sign Out'
@@ -24,6 +24,9 @@ en:
       users: 'Users'
       attachments: 'Attachs'
       logs: 'Logs'
+      articles: 'Articles'
+      comments: 'Comments'
+      rss_setup: 'RSS'
     label:
       register_or_login: 'Register/Sign In'
       welcome: 'Welcome'

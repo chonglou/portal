@@ -8,12 +8,11 @@ module ApplicationHelper
     links = {main_path => t('web.title.main')}
     if current_user
       links[personal_path] = t('web.title.personal')
-      links[site_path] = t('web.title.sites')
     end
     links[cms_path] = t('web.title.cms')
     links[wiki_path] = t('web.title.wiki')
     links[rss_path] = t('web.title.rss')
-    links[user_path] = t('web.title.users')
+    links[users_path] = t('web.title.users')
     links[about_me_path]=t('web.title.about_me')
     links
   end
@@ -23,7 +22,6 @@ module ApplicationHelper
       label = "#{t('web.label.welcome')}, #{session.fetch :username}"
       links={
           personal_path => t('web.title.personal'),
-          site_path => t('web.title.sites'),
           brahma_bodhi.personal_logout_path => t('web.link.logout')
       }
     else

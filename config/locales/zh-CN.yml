@@ -3,8 +3,7 @@ zh-CN:
     title:
       main: '本站首页'
       personal: '用户中心'
-      sites: '网站中心'
-      cms: '资源中心'
+      cms: '文章列表'
       wiki: '知识库'
       rss: '网络文摘'
       users: '用户列表'
@@ -12,6 +11,7 @@ zh-CN:
       hot_articles: '热门文章'
       recent_comments: '最新评论'
       archives: '文章列表'
+      tags: '标签列表'
     link:
       login: '账户登录'
       logout: '安全退出'
@@ -24,6 +24,9 @@ zh-CN:
       users: '用户列表'
       attachments: '附件管理'
       logs: '日志列表'
+      articles: '文章列表'
+      comments: '评论列表'
+      rss_setup: 'RSS设置'
     label:
       register_or_login: '注册/登录'
       welcome: '欢迎你'

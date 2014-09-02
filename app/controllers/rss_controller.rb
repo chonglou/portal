@@ -23,7 +23,7 @@ class RssController < ApplicationController
     end
 
     @fall_card = Brahma::Web::FallCard.new title
-    Rss::Item.select(:id, :title).order(id: :desc).limit(page_size).offset(page_size*(@index-1)).each { |i| @fall_card.add "/rss/items/#{i.id}", i.title, nil, nil }
+    Rss::Item.select(:id, :title).order(id: :desc).limit(page_size).offset(page_size*(@index-1)).each { |i| @fall_card.add rss_item_path(i.id), i.title, nil, nil }
 
     render 'rss/list'
   end
@@ -63,10 +63,9 @@ class RssController < ApplicationController
   def setup
     if current_user
       bg = Brahma::Web::ButtonGroup.new
-      flag = "?site=#{params[:site]}"
-      bg.add "#{rss_sites_path}#{flag}", '源列表', 'info'
+      bg.add rss_sites_path, '源列表', 'info'
       if admin?
-        bg.add "/rss/items#{flag}", '文章管理', 'warning'
+        bg.add rss_items_path, '文章管理', 'warning'
       end
       render(json: bg.to_h)
     else

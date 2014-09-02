@@ -1,12 +1,12 @@
 require 'brahma/web/fall'
-class UserController < ApplicationController
+class UsersController < ApplicationController
   def index
     title = '用户列表'
     @title = title
-    @index = '/user'
+
     @fall_link = Brahma::Web::FallLink.new title
-    BrahmaBodhi::User.select(:id, :username).all.each { |u| @fall_link.add "/user/#{u.id}", u.username }
-    render 'user/list'
+    BrahmaBodhi::User.select(:id, :username).all.each { |u| @fall_link.add user_show_path(u.id), u.username }
+    render 'users/list'
   end
 
   def show
@@ -18,9 +18,8 @@ class UserController < ApplicationController
         title = "用户-#{user.username}[#{articles.size}]"
         @title = title
         @fall_card = Brahma::Web::FallCard.new title
-        @index = '/user'
         #todo 需要优化
-        articles.each { |a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary, a.logo }
+        articles.each { |a| @fall_card.add cms_article_path(a.id), a.title, a.summary, a.logo }
         render 'cms/articles/list'
       else
         not_found

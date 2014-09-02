@@ -3,16 +3,13 @@ require 'brahma/web/dialog'
 
 class Rss::ItemsController < ApplicationController
   def index
-    tab = Brahma::Web::Table.new '/rss/items', '站点列表', %w(ID 名称)
+    tab = Brahma::Web::Table.new rss_items_path, '站点列表', %w(ID 名称)
     if admin?
-      Rss::UserSite.where(site_id: params[:site]).each do |drs|
-        Rss::Item.where(site_id: drs.rss_site_id).each do |r|
-          tab.insert [r.id, "<a target='_blank' href='/rss/items/#{r.id}'>#{r.title}</a>"], [
-              ['danger', 'DELETE', "/rss/items/#{r.id}", '删除']
+        Rss::Item.select(:id, :title).order(id: :desc).all.each do |r|
+          tab.insert [r.id, "<a target='_blank' href='#{rss_item_path r.id}'>#{r.title}</a>"], [
+              ['danger', 'DELETE', rss_item_path(r.id), '删除']
           ]
         end
-
-      end
       tab.ok = true
     else
       tab.add '没有权限'

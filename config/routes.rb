@@ -1,17 +1,5 @@
 Rails.application.routes.draw do
 
-  #-------网站管理-------
-  get 'site'=>'site#index'
-  get 'site/status'
-  get 'site/setup'
-  get 'site/info'
-  post 'site/info'
-
-  resources :friend_links, only: [:new, :create, :index]
-  resources :notices, only: [:new, :create, :index]
-
-  #----------域名管理----------------
-  resources :domains
 
   #-------------rss---------------
   namespace :rss do
@@ -35,8 +23,8 @@ Rails.application.routes.draw do
   namespace :cms do
     resources :comments, :tags, :articles
   end
-  get 'user' => 'user#index'
-  get 'user/:id' => 'user#show'
+  get 'users' => 'users#index'
+  get 'users/:id' => 'users#show', as: :user_show
   get 'cms' => 'cms#index'
   #----------------其它---------------
   get 'archive'=>'archive#index'
@@ -51,6 +39,7 @@ Rails.application.routes.draw do
   %w(404 422 500 505).each { |e| match "/#{e}" => 'main#errors', id: e, via: [:get, :post, :put, :patch, :delete] }
 
   root 'main#index'
+
   mount BrahmaBodhi::Engine, at: '/core'
 
 end
