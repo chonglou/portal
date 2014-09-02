@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 20140902163037) do
 
   create_table "cms_articles", force: true do |t|
     t.integer  "user_id",               null: false
+    t.integer  "tid",                   null: false
     t.string   "logo"
     t.string   "title",                 null: false
     t.string   "summary"
@@ -118,6 +119,7 @@ ActiveRecord::Schema.define(version: 20140902163037) do
 
   create_table "cms_tags", force: true do |t|
     t.string   "name",                          null: false
+    t.integer  "tid",                           null: false
     t.integer  "visits",            default: 0, null: false
     t.datetime "created",                       null: false
     t.integer  "flag",    limit: 2, default: 0, null: false

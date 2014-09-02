@@ -9,21 +9,18 @@ require 'nokogiri'
 
 class Cms::TagsController < ApplicationController
   def index
-
     respond_to do |fmt|
       fmt.json do
         if admin?
-          flag = "?site=#{params[:site]}"
-          tab = Brahma::Web::Table.new "/cms/tags#{flag}", '标签列表', %w(ID 名称 类型 创建时间)
-          Cms::Tag.where(site_id: params[:site]).each do |t|
-            tab.insert [t.id, t.name, t.flag, t.created], [
-                ['info', 'GOTO', "/cms/tags/#{t.id}", '查看'],
-                ['warning', 'GET', "/cms/tags/#{t.id}/edit", '编辑'],
-                ['danger', 'DELETE', "/cms/tags/#{t.id}", '删除']
-            ]
+          tab = Brahma::Web::Table.new cms_tags_path, '标签列表', %w(ID 名称 类型 创建时间)
+          Brahma::TranslationService.each('tag', I18n.locale) do |tr|
+            t = Cms::Tag.find_by id:tr.send(I18n.locale)
+            btns = [['info', 'GOTO', cms_tag_path(t.id), '查看']]
+            Brahma::LOCALES_OPTIONS.each {|l| btns << ['warning', 'GET', edit_cms_tag_path(t.id, lang:l[0]), "#{l[1]}版"]}
+            btns << ['danger', 'DELETE', cms_tag_path(t.id), '删除']
+            tab.insert [t.id, t.name, t.flag, t.created], btns
           end
-
-          tab.toolbar = [['primary', 'GET', "/cms/tags/new#{flag}", '新增']]
+          tab.toolbar = [['primary', 'GET', new_cms_tag_path, '新增']]
           tab.ok = true
           render json: tab.to_h
         else
@@ -33,22 +30,20 @@ class Cms::TagsController < ApplicationController
 
       fmt.html do
         @fall_link = Brahma::Web::FallLink.new "标签列表[#{Cms::Tag.count}]"
-        Cms::Tag.select(:id, :name).order(visits: :desc).all.each { |t| @fall_link.add "/cms/tags/#{t.id}", t.name }
+        Cms::Tag.select(:id, :name).order(visits: :desc).all.each { |t| @fall_link.add cms_tag_path(t.id), t.name }
       end
     end
   end
 
   def destroy
     if admin?
-      tag = Cms::Tag.find_by id: params[:id]
-      size = Cms::ArticleTag.count tag_id: params[:id]
       dlg = Brahma::Web::Dialog.new
-      if tag && size == 0
-        Brahma::LogService.add "删除标签[#{tag.id}]", current_user.id
-        tag.destroy
+      tid = params[:id]
+      if Cms::ArticleTag.count(tag_id:tid) == 0
+        Brahma::TranslationService.delete('tag', tid, I18n.locale){|tid| Cms::Tag.destroy tid}
         dlg.ok = true
       else
-        dlg.add '没有权限'
+        dlg.add '非空 不能删除'
       end
       render(json: dlg.to_h) and return
     end
@@ -64,9 +59,8 @@ class Cms::TagsController < ApplicationController
         title = "标签-#{tag.name}[#{tag.articles.size}]"
         @title = title
         @fall_card = Brahma::Web::FallCard.new title
-        @index = "/cms/tags/#{tag.id}"
         #todo 需要优化
-        tag.articles.each { |a| @fall_card.add "/cms/articles/#{a.id}", a.title, a.summary, a.logo }
+        tag.articles.each { |a| @fall_card.add cms_article_path(a.id), a.title, a.summary, a.logo }
         render 'cms/articles/list'
       else
         not_found
@@ -80,16 +74,8 @@ class Cms::TagsController < ApplicationController
       vat.empty? :name, '名称'
       dlg = Brahma::Web::Dialog.new
 
-      name = params[:name]
-
-      tag = Cms::Tag.find_by id: params[:id]
-      ex = Cms::Tag.find_by(name: name, site_id: tag.site_id)
-      if ex && ex.id !=params[:id].to_i
-        vat.add '名称已存在'
-      end
-
       if vat.ok?
-        tag.update name: name, flag: params[:flag]
+        Cms::Tag.update params[:id], name: params[:name], flag: params[:flag]
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -104,8 +90,18 @@ class Cms::TagsController < ApplicationController
   def edit
     if admin?
       tid = params[:id]
-      fm = Brahma::Web::Form.new "编辑标签[#{tid}]", "/cms/tags/#{tid}"
+
       tag = Cms::Tag.find_by id: tid
+      lang = params[:lang]
+       unless lang == I18n.locale
+          tag = Brahma::TranslationService.translate(
+              'tag', tid,
+              I18n.locale, lang,
+              ->(id) { Cms::Tag.find_by id: id },
+              ->(trid) { Cms::Tag.create name: tag.name, tid: trid, flag:tag.flag, created: Time.now }
+          )
+      end
+      fm = Brahma::Web::Form.new "编辑标签[#{tag.id}, #{lang}]", cms_tag_path(tag.id)
       fm.method = 'PUT'
       fm.text 'name', '名称', tag.name
       fm.radio 'flag', '类型', tag.flag, tag_flag_options
@@ -123,12 +119,9 @@ class Cms::TagsController < ApplicationController
       name = params[:name]
 
       dlg = Brahma::Web::Dialog.new
-      if name && Cms::Tag.find_by(name: name, site_id: params[:site])
-        vat.add '名称已存在'
-      end
 
       if vat.ok?
-        Cms::Tag.create name: name, flag: params[:flag], site_id: params[:site], created: Time.now
+        Brahma::TranslationService.create('tag', I18n.locale){|tid| Cms::Tag.create(name: name, tid:tid, flag: params[:flag], created: Time.now).id}
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -141,8 +134,7 @@ class Cms::TagsController < ApplicationController
 
   def new
     if admin?
-      fm = Brahma::Web::Form.new '新增标签', '/cms/tags'
-      fm.hidden 'site', params[:site]
+      fm = Brahma::Web::Form.new '新增标签', cms_tags_path
       fm.text 'name', '名称'
       fm.radio 'flag', '类型', 'default', tag_flag_options
       fm.ok = true
