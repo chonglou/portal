@@ -22,10 +22,9 @@ ActiveRecord::Schema.define(version: 20140902163037) do
 
   create_table "brahma_bodhi_friend_links", force: true do |t|
     t.string   "logo"
-    t.string   "domain",              null: false
-    t.string   "name",                null: false
-    t.datetime "created",             null: false
-    t.integer  "site_id", default: 0, null: false
+    t.string   "domain",  null: false
+    t.string   "name",    null: false
+    t.datetime "created", null: false
   end
 
   create_table "brahma_bodhi_logs", force: true do |t|
@@ -36,11 +35,10 @@ ActiveRecord::Schema.define(version: 20140902163037) do
   end
 
   create_table "brahma_bodhi_notices", force: true do |t|
-    t.text     "content",               null: false
-    t.datetime "last_edit",             null: false
-    t.datetime "created",               null: false
-    t.integer  "site_id",   default: 0, null: false
-    t.integer  "tid",                   null: false
+    t.text     "content",   null: false
+    t.datetime "last_edit", null: false
+    t.datetime "created",   null: false
+    t.integer  "tid",       null: false
   end
 
   create_table "brahma_bodhi_permissions", force: true do |t|
@@ -105,7 +103,6 @@ ActiveRecord::Schema.define(version: 20140902163037) do
     t.datetime "last_edit",             null: false
     t.datetime "created",               null: false
     t.integer  "version",   default: 0, null: false
-    t.integer  "site_id",               null: false
   end
 
   create_table "cms_comments", force: true do |t|
@@ -124,21 +121,9 @@ ActiveRecord::Schema.define(version: 20140902163037) do
     t.integer  "visits",            default: 0, null: false
     t.datetime "created",                       null: false
     t.integer  "flag",    limit: 2, default: 0, null: false
-    t.integer  "site_id",                       null: false
   end
 
   add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", using: :btree
-
-  create_table "domains", force: true do |t|
-    t.string   "name",                   null: false
-    t.integer  "lang",       default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "google"
-    t.string   "baidu"
-  end
-
-  add_index "domains", ["name"], name: "index_domains_on_name", unique: true, using: :btree
 
   create_table "rss_items", force: true do |t|
     t.text     "content", null: false
@@ -162,28 +147,14 @@ ActiveRecord::Schema.define(version: 20140902163037) do
   add_index "rss_sites", ["url"], name: "index_rss_sites_on_url", unique: true, using: :btree
 
   create_table "rss_user_sites", force: true do |t|
-    t.integer  "user_id",     null: false
-    t.integer  "site_id",     null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "rss_site_id", null: false
-  end
-
-  create_table "sites", force: true do |t|
-    t.string   "home",        null: false
-    t.string   "title",       null: false
-    t.string   "keywords",    null: false
-    t.text     "description", null: false
-    t.text     "about_me",    null: false
-    t.integer  "domain_id",   null: false
-    t.integer  "lang",        null: false
+    t.integer  "user_id",    null: false
+    t.integer  "site_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "wikis", force: true do |t|
     t.string   "url",        null: false
-    t.integer  "site_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

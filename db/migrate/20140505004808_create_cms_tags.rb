@@ -7,7 +7,7 @@ class CreateCmsTags < ActiveRecord::Migration
       t.integer :flag, null: false, default: 0, limit: 2
     end
 
-    add_index :cms_tags, :name, unique: true
+    add_index :cms_tags, :name
 
   end
 end

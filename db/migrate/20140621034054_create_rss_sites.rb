@@ -5,6 +5,8 @@ class CreateRssSites < ActiveRecord::Migration
       t.integer :flag, null:false, default:0
       t.string :url, null:false
       t.timestamp :created, null:false
+      t.boolean :enable, null:false, default: false
+      t.datetime :last_sync
     end
     add_index :rss_sites, :url, unique: true
   end

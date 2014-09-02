@@ -7,6 +7,6 @@ class CreateRssItems < ActiveRecord::Migration
       t.integer :site_id, null:false
       t.timestamp :created, null:false
     end
-    add_index :rss_items, :title, unique: true
+    add_index :rss_items, :link, unique: true
   end
 end
