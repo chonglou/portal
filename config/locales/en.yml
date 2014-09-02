@@ -12,6 +12,7 @@ en:
       recent_comments: 'Recent Comments'
       archives: 'Archives'
       tags: 'Tags'
+      tag: "Tag-%{name}[%{size}]"
     link:
       login: 'Sign In'
       logout: 'Sign Out'
@@ -29,6 +30,9 @@ en:
       rss_setup: 'RSS'
       wiki: 'Wiki'
       tags: 'Tags'
+      all: 'All'
+      more: 'More...'
+      views: 'Views'
     label:
       register_or_login: 'Register/Sign In'
       welcome: 'Welcome'

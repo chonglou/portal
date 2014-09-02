@@ -12,6 +12,7 @@ zh-CN:
       recent_comments: '最新评论'
       archives: '文章列表'
       tags: '标签列表'
+      tag: "标签-%{name}[%{size}]"
     link:
       login: '账户登录'
       logout: '安全退出'
@@ -29,6 +30,9 @@ zh-CN:
       rss_setup: 'RSS设置'
       wiki: 'wiki设置'
       tags: '标签管理'
+      all: '全部'
+      more: '更多...'
+      views: '视图'
     label:
       register_or_login: '注册/登录'
       welcome: '欢迎你'

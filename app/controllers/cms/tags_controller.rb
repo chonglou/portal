@@ -53,17 +53,17 @@ class Cms::TagsController < ApplicationController
     id = params[:id]
     tag = Cms::Tag.find_by id: id
     if tag
-      lang = I18n.locale
+      lang = I18n.locale.to_s
       if tag.lang != lang
-        tr = Brahma::Translation.find_by id: tag.tid
-        oid = tr.send :lang
+        tr = BrahmaBodhi::Translation.find_by id: tag.tid
+        oid = tr.send lang
         if oid
           redirect_to(cms_tag_path(oid)) and return
         end
       end
 
       tag.update visits: (tag.visits+1)
-      title = "标签-#{tag.name}[#{tag.articles.size}]"
+      title = t('web.title.tag', name:tag.name, size:tag.articles.size)
       @title = title
       @fall_card = Brahma::Web::FallCard.new title
       #todo 需要优化
@@ -101,7 +101,7 @@ class Cms::TagsController < ApplicationController
 
       tag = Cms::Tag.find_by id: tid
       lang = params[:lang]
-      unless lang == I18n.locale
+      unless lang == I18n.locale.to_s
         tag = Brahma::TranslationService.translate(
             'tag', tid,
             I18n.locale, lang,

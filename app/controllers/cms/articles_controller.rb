@@ -10,20 +10,20 @@ require 'brahma/services/site'
 class Cms::ArticlesController < ApplicationController
   def index
     user = current_user
+    lang = I18n.locale
     if user
       articles = admin? ?
-          Cms::Article.where(site_id: params[:site]).order(last_edit: :desc) :
-          Cms::Article.where(user_id: user.id, site_id: params[:site]).order(last_edit: :desc)
+          Cms::Article.where(lang: lang).order(last_edit: :desc) :
+          Cms::Article.where(user_id: user.id, lang: lang).order(last_edit: :desc)
 
-      tab = Brahma::Web::Table.new "/cms/articles#{flag}", '文章列表', %w(ID 标题 上次修改)
+      tab = Brahma::Web::Table.new cms_articles_path, '文章列表', %w(ID 标题 上次修改)
       articles.each do |a|
-        tab.insert [a.id, a.title, a.last_edit], [
-            ['info', 'GOTO', "/cms/articles/#{a.id}", '查看'],
-            ['warning', 'GET', "/cms/articles/#{a.id}/edit", '编辑'],
-            ['danger', 'DELETE', "/cms/articles/#{a.id}", '删除']
-        ]
+        btns = [['info', 'GOTO', cms_article_path(a.id), '查看']]
+        Brahma::LOCALE_OPTIONS.each {|l| btns<<['warning', 'GET', edit_cms_article_path(a.id, lang:l[0]), "#{l[1]}版"]}
+        btns << ['danger', 'DELETE', cms_article_path(a.id), '删除']
+        tab.insert [a.id, a.title, a.last_edit], btns
       end
-      tab.toolbar = [['primary', 'GET', "/cms/articles/new#{flag}", '新增']]
+      tab.toolbar = [['primary', 'GET', new_cms_article_path, '新增']]
       tab.ok = true
       render json: tab.to_h
     else
@@ -38,8 +38,11 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
       if can_edit?(a)
         Brahma::LogService.add "删除文章[#{a.title}]", user.id
-        Cms::ArticleTag.destroy_all article: a.id
-        a.destroy
+        Brahma::TranslationService.delete('article', a.id, I18n.locale) do |aid|
+          Cms::Article.destroy aid
+          Cms::ArticleTag.destroy_all article: aid
+        end
+
         dlg.ok = true
       else
         dlg.add '没有权限'
@@ -51,18 +54,26 @@ class Cms::ArticlesController < ApplicationController
   end
 
   def show
-    id = params[:id]
-    if id
-      article = Cms::Article.find_by id: id
-      if article
-        article.update visits: article.visits+1
-        @article = article
-        @tags = article.tags
-        render 'cms/articles/show'
-      else
-        not_found
+    article = Cms::Article.find_by id: params[:id]
+    if article
+      lang = I18n.locale.to_s
+      unless article.lang == lang
+        tr = BrahmaBodhi::Translation.find_by id: article.tid
+        oid = tr.send lang
+        if oid
+          redirect_to(cms_article_path(oid)) and return
+        end
       end
+
+      article.update visits: article.visits+1
+      @article = article
+      @tags = article.tags
+      @title = article.title
+      render 'cms/articles/show'
+    else
+      not_found
     end
+
   end
 
   def update
@@ -101,15 +112,27 @@ class Cms::ArticlesController < ApplicationController
   def edit
     user = current_user
     if user
-      a = Cms::Article.find_by id: params[:id]
-      fm = Brahma::Web::Form.new '编辑文章', "/cms/articles/#{params[:id]}"
-      if can_edit?(a)
-        fm.text 'title', '标题', a.title
-        fm.textarea 'summary', '摘要', a.summary
-        fm.html 'body', '内容', a.body
+      article = Cms::Article.find_by id: params[:id]
+      lang = params[:lang]
+
+      if can_edit?(article)
+        unless lang == I18n.locale.to_s
+          article = Brahma::TranslationService.translate(
+              'article', article.id,
+              I18n.locale, lang,
+              ->(id) { Cms::Article.find_by id: id },
+              ->(trid) { Cms::Article.create user_id: user.id, logo: article.logo, title: article.title, summary: article.summary, body: article.body, tid: trid, lang: lang, last_edit: Time.now, created: Time.now }
+          )
+        end
+
+        fm = Brahma::Web::Form.new "编辑文章[#{article.id}, #{lang}]", cms_article_path(article.id)
+
+        fm.text 'title', '标题', article.title
+        fm.textarea 'summary', '摘要', article.summary
+        fm.html 'body', '内容', article.body
         fm.checkbox 'tag', '标签',
                     Cms::ArticleTag.where(article: params[:id]).map { |at| at.tag_id },
-                    Cms::Tag.where(site_id: a.site_id).map { |t| [t.id, t.name] }
+                    Cms::Tag.where(lang: lang).map { |t| [t.id, t.name] }
         fm.method = 'PUT'
         fm.ok = true
       else
@@ -131,11 +154,16 @@ class Cms::ArticlesController < ApplicationController
       dlg = Brahma::Web::Dialog.new
 
       if vat.ok?
-        a = Cms::Article.create user_id: user.id, logo: first_logo(params[:body]), site_id: params[:site],
-                                title: params[:title], summary: params[:summary], body: params[:body],
-                                last_edit: Time.now, created: Time.now
-        if params[:tag]
-          params[:tag].each { |tid| Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now }
+        lang = I18n.locale
+        Brahma::TranslationService.create('article', lang) do |trid|
+          a = Cms::Article.create user_id: user.id, logo: first_logo(params[:body]), lang:lang,
+                                  title: params[:title], summary: params[:summary], body: params[:body], tid: trid,
+                                  last_edit: Time.now, created: Time.now
+
+          if params[:tag]
+            params[:tag].each { |tid| Cms::ArticleTag.create article_id: a.id, tag_id: tid, created: Time.now }
+          end
+          a.id
         end
         dlg.ok = true
       else
@@ -149,12 +177,11 @@ class Cms::ArticlesController < ApplicationController
 
   def new
     if current_user
-      fm = Brahma::Web::Form.new '新增文章', '/cms/articles'
-      fm.hidden 'site', params[:site]
+      fm = Brahma::Web::Form.new '新增文章', cms_articles_path
       fm.text 'title', '标题'
       fm.textarea 'summary', '摘要'
       fm.html 'body', '内容'
-      fm.checkbox 'tag', '标签', '', Cms::Tag.where(site_id: params[:site]).map { |t| [t.id, t.name] }
+      fm.checkbox 'tag', '标签', '', Cms::Tag.where(lang: I18n.locale).map { |t| [t.id, t.name] }
       fm.ok = true
       render json: fm.to_h
     else

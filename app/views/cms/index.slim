@@ -2,15 +2,15 @@
   div class="nav-bar"
     ul class="nav nav-pills nav-pills-sm pull-left"
       li class="active"
-        a href="/cms/tags" 全部
+        a href="#{cms_tags_path}" #{t('web.link.all')}
       -@tags.each do |t|
         li
-          a href="/cms/tags/#{t.id}" #{t.name}
+          a href="#{cms_tag_path t.id}" #{t.name}
       li
-        a href="/cms/tags" 更多...
+        a href="#{cms_tags_path}" #{t('web.link.more')}
     span class="pull-right dropdown list-sort-dropdown"
       a id="dm-hot_tags" data-toggle="dropdown" role="button"
-        | 视图
+        | #{t('web.link.views')}
         span class="caret"
       ul class="dropdown-menu" role="menu" aria-labelledby="dm-hot_tags"
         li role="presentation"

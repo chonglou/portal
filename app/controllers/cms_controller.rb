@@ -3,7 +3,7 @@ require 'brahma/web/fall'
 class CmsController < ApplicationController
   def index
 
-    @title = '主页'
+    @title = t('web.title.cms')
     @fall_card = Brahma::Web::FallCard.new nil
     lang = I18n.locale
     Cms::Article.select(:id, :title, :summary, :logo).where(lang: lang).order(created: :desc).limit(20).each { |a| @fall_card.add cms_article_path(a.id), a.title, a.summary, a.logo }

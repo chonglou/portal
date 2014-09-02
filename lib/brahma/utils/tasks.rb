@@ -99,7 +99,7 @@ module Brahma::Utils
     end
 
     def search
-
+      #todo
     end
 
     def rss
@@ -144,6 +144,7 @@ module Brahma::Utils
       SitemapGenerator::Sitemap.create do
         #'always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly' or 'never'
         add '/main', changefreq: 'weekly', priority: 0.9
+        add '/cms', changefreq: 'weekly', priority: 0.9
         add '/wiki', changefreq: 'weekly', priority: 0.9
         add '/rss', changefreq: 'daily', priority: 0.9
         add '/about_me', changefreq: 'yearly', priority: 0.9
