@@ -35,7 +35,7 @@ module ApplicationHelper
 
   def tag_links
     links = {}
-    Cms::Tag.all.each { |t| links[cms_tag_path(id:t.id)] = t.name }
+    Cms::Tag.where(lang: I18n.locale).each { |t| links[cms_tag_path(id: t.id)] = t.name }
     #BrahmaBodhi::FriendLink.all.each { |fl| links["http://#{fl.domain}"] = fl.name }
     links
   end
@@ -45,11 +45,11 @@ module ApplicationHelper
     bars = []
 
     abar = {title: t('web.title.hot_articles'), links: []}
-    Cms::Article.select(:id, :title, :last_edit).order(visits: :desc).limit(12).each { |a| abar[:links] << [cms_article_path(a.id), a.title.truncate(80), time_ago_in_words(a.last_edit)] }
+    Cms::Article.select(:id, :title, :last_edit).where(lang: I18n.locale).order(visits: :desc).limit(12).each { |a| abar[:links] << [cms_article_path(a.id), a.title.truncate(80), time_ago_in_words(a.last_edit)] }
     bars << abar
 
     cbar = {title: t('web.title.recent_comments'), links: []}
-    Cms::Comment.select(:id, :content, :last_edit).order(id: :desc).limit(12).each { |c| cbar[:links] << [cms_comment_path(a.id), sh.html2text(c.content).truncate(80), time_ago_in_words(c.last_edit)] }
+    Cms::Comment.select(:id, :content, :last_edit).where(lang: I18n.locale).order(id: :desc).limit(12).each { |c| cbar[:links] << [cms_comment_path(a.id), sh.html2text(c.content).truncate(80), time_ago_in_words(c.last_edit)] }
     bars << cbar
 
     bars << notice_bar

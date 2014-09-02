@@ -10,7 +10,7 @@ class WikiController < ApplicationController
   def index
     @title = t('web.title.wiki')
     @fall_link = Brahma::Web::FallLink.new @title
-    Brahma::Utils::WikiHelper.each { |name| @fall_link.add wiki_show_path(name), name}
+    Brahma::Utils::WikiHelper.each { |name| @fall_link.add wiki_show_path(name), name }
   end
 
   def show

@@ -3,6 +3,7 @@ class CreateCmsArticles < ActiveRecord::Migration
     create_table :cms_articles do |t|
       t.integer :user_id, null: false
       t.integer :tid, null:false
+      t.string :lang, null: false, limit:5
       t.string :logo
       t.string :title, null: false
       t.string :summary
@@ -12,5 +13,6 @@ class CreateCmsArticles < ActiveRecord::Migration
       t.datetime :created, null: false
       t.integer :version, null: false, default: 0
     end
+    add_index :cms_articles, :lang
   end
 end

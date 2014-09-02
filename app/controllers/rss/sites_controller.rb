@@ -14,7 +14,7 @@ class Rss::SitesController < ApplicationController
       tab = Brahma::Web::Table.new rss_sites_path, '站点列表', %w(ID 名称 类型 上次更新)
       sites = admin? ? Rss::UserSite.order(id: :desc).all : Rss::UserSite.where(user_id: user.id).order(id: :desc)
       sites.each do |us|
-        s = Rss::Site.find_by id:us.site_id
+        s = Rss::Site.find_by id: us.site_id
         tab.insert [s.id, "<a target='_blank' href='#{s.url}'>#{s.name}</a>", s.flag, s.last_sync], [
             ['info', 'GET', rss_site_path(s.id), '查看'],
             ['danger', 'DELETE', rss_site_path(s.id), '删除']

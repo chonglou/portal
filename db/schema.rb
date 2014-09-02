@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140902163037) do
+ActiveRecord::Schema.define(version: 20140902224142) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -35,11 +35,14 @@ ActiveRecord::Schema.define(version: 20140902163037) do
   end
 
   create_table "brahma_bodhi_notices", force: true do |t|
-    t.text     "content",   null: false
-    t.datetime "last_edit", null: false
-    t.datetime "created",   null: false
-    t.integer  "tid",       null: false
+    t.text     "content",             null: false
+    t.datetime "last_edit",           null: false
+    t.datetime "created",             null: false
+    t.integer  "tid",                 null: false
+    t.string   "lang",      limit: 5, null: false
   end
+
+  add_index "brahma_bodhi_notices", ["lang"], name: "index_brahma_bodhi_notices_on_lang", using: :btree
 
   create_table "brahma_bodhi_permissions", force: true do |t|
     t.string   "resource",              null: false
@@ -94,37 +97,45 @@ ActiveRecord::Schema.define(version: 20140902163037) do
   end
 
   create_table "cms_articles", force: true do |t|
-    t.integer  "user_id",               null: false
-    t.integer  "tid",                   null: false
+    t.integer  "user_id",                         null: false
+    t.integer  "tid",                             null: false
+    t.string   "lang",      limit: 5,             null: false
     t.string   "logo"
-    t.string   "title",                 null: false
+    t.string   "title",                           null: false
     t.string   "summary"
-    t.text     "body",                  null: false
-    t.integer  "visits",    default: 0, null: false
-    t.datetime "last_edit",             null: false
-    t.datetime "created",               null: false
-    t.integer  "version",   default: 0, null: false
+    t.text     "body",                            null: false
+    t.integer  "visits",              default: 0, null: false
+    t.datetime "last_edit",                       null: false
+    t.datetime "created",                         null: false
+    t.integer  "version",             default: 0, null: false
   end
 
+  add_index "cms_articles", ["lang"], name: "index_cms_articles_on_lang", using: :btree
+
   create_table "cms_comments", force: true do |t|
-    t.integer  "article_id",             null: false
-    t.integer  "user_id",                null: false
+    t.integer  "article_id",                       null: false
+    t.integer  "user_id",                          null: false
+    t.string   "lang",       limit: 5,             null: false
     t.integer  "comment"
-    t.text     "content",                null: false
-    t.integer  "visits",     default: 0, null: false
-    t.datetime "last_edit",              null: false
-    t.datetime "created",                null: false
-    t.integer  "version",    default: 0, null: false
+    t.text     "content",                          null: false
+    t.integer  "visits",               default: 0, null: false
+    t.datetime "last_edit",                        null: false
+    t.datetime "created",                          null: false
+    t.integer  "version",              default: 0, null: false
   end
+
+  add_index "cms_comments", ["lang"], name: "index_cms_comments_on_lang", using: :btree
 
   create_table "cms_tags", force: true do |t|
     t.string   "name",                          null: false
+    t.string   "lang",    limit: 5,             null: false
     t.integer  "tid",                           null: false
     t.integer  "visits",            default: 0, null: false
     t.datetime "created",                       null: false
     t.integer  "flag",    limit: 2, default: 0, null: false
   end
 
+  add_index "cms_tags", ["lang"], name: "index_cms_tags_on_lang", using: :btree
   add_index "cms_tags", ["name"], name: "index_cms_tags_on_name", using: :btree
 
   create_table "rss_items", force: true do |t|
@@ -151,12 +162,6 @@ ActiveRecord::Schema.define(version: 20140902163037) do
   create_table "rss_user_sites", force: true do |t|
     t.integer  "user_id",    null: false
     t.integer  "site_id",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "wikis", force: true do |t|
-    t.string   "url",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

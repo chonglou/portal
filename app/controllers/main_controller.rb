@@ -24,9 +24,13 @@ class MainController < ApplicationController
     render 'brahma_bodhi/main/about_me'
   end
 
-   def errors
-      redirect_to brahma_bodhi.main_errors_path(id:params[:id]), status: 301
-    end
+  def errors
+    redirect_to brahma_bodhi.main_errors_path(id: params[:id]), status: 301
+  end
+
+  def notices
+    render 'brahma_bodhi/main/notices'
+  end
 
 
 end

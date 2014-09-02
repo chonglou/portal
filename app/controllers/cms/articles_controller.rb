@@ -15,7 +15,6 @@ class Cms::ArticlesController < ApplicationController
           Cms::Article.where(site_id: params[:site]).order(last_edit: :desc) :
           Cms::Article.where(user_id: user.id, site_id: params[:site]).order(last_edit: :desc)
 
-      flag="?site=#{params[:site]}"
       tab = Brahma::Web::Table.new "/cms/articles#{flag}", '文章列表', %w(ID 标题 上次修改)
       articles.each do |a|
         tab.insert [a.id, a.title, a.last_edit], [

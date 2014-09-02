@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   #---------站点其它-------------------------------------------
   get 'about_me' => 'main#about_me'
   get 'main' => 'main#index'
+  get 'notices' => 'main#notices'
   %w(404 422 500 505).each { |e| match "/#{e}" => 'main#errors', id: e, via: [:get, :post, :put, :patch, :delete] }
 
   root 'main#index'
