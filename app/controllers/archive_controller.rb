@@ -2,7 +2,7 @@ require 'brahma/utils/time_helper'
 require 'brahma/web/fall'
 
 class ArchiveController < ApplicationController
-  def index
+  def show
     year = params[:year].to_i
     month = params[:month].to_i
 

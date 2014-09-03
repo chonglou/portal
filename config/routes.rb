@@ -27,7 +27,8 @@ Rails.application.routes.draw do
   get 'users/:id' => 'users#show', as: :user_show
   get 'cms' => 'cms#index'
   #----------------其它---------------
-  get 'archive'=>'archive#index'
+  get 'archive/:year/:month/:day' => 'archive#show', as: :archive_by_day
+  get 'archive/:year/:month' => 'archive#show', as: :archive_by_month
   post 'search' => 'search#index'
 
   #----------个人中心------------------------------------------
