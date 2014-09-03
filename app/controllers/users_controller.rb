@@ -1,7 +1,7 @@
 require 'brahma/web/fall'
 class UsersController < ApplicationController
   def index
-    title = '用户列表'
+    title = t('web.title.users')
     @title = title
 
     @fall_link = Brahma::Web::FallLink.new title
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
       user = BrahmaBodhi::User.find_by id: id
       if user
         articles = Cms::Article.where(user_id: id).all
-        title = "用户-#{user.username}[#{articles.size}]"
+        title = t('web.title.user', name:user.username, size:articles.size)
         @title = title
         @fall_card = Brahma::Web::FallCard.new title
         #todo 需要优化

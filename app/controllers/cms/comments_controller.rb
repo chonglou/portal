@@ -12,19 +12,18 @@ class Cms::CommentsController < ApplicationController
     user = current_user
     if user
       comments = admin? ?
-          Cms::Comment.all.order(last_edit: :desc) :
+          Cms::Comment.where(lang: I18n.locale).order(last_edit: :desc) :
           Cms::Comment.where(user_id: user.id).order(last_edit: :desc)
 
-      tab = Brahma::Web::Table.new "/cms/comments?site=#{params[:site]}", '评论列表', %w(ID 内容 上次修改)
+      tab = Brahma::Web::Table.new cms_comments_path, '评论列表', %w(ID 内容 上次修改)
       comments.each do |c|
         #todo N+1查询问题
-        if c.article.site_id == params[:site].to_i
-          tab.insert [c.id, c.content, c.last_edit], [
-              ['info', 'GOTO', "/cms/comments/#{c.id}", '查看'],
-              ['warning', 'GET', "/cms/comments/#{c.id}/edit", '编辑'],
-              ['danger', 'DELETE', "/cms/comments/#{c.id}", '删除']
-          ]
-        end
+        tab.insert [c.id, c.content, c.last_edit], [
+            ['info', 'GOTO', cms_comment_path(c.id), '查看'],
+            ['warning', 'GET', edit_cms_comment_path(c.id), '编辑'],
+            ['danger', 'DELETE', cms_comment_path(c.id), '删除']
+        ]
+
       end
       tab.ok = true
       render json: tab.to_h
@@ -56,7 +55,7 @@ class Cms::CommentsController < ApplicationController
     if id
       c = Cms::Comment.find_by id: id
       if c
-        redirect_to "/cms/articles/#{c.article_id}#comment-#{c.id}"
+        redirect_to cms_article_path(c.article_id, anchor: "comment-#{c.id}")
       else
         not_found
       end
@@ -89,7 +88,7 @@ class Cms::CommentsController < ApplicationController
     user = current_user
     if user
       c = Cms::Comment.find_by id: params[:id]
-      fm = Brahma::Web::Form.new '编辑评论', "/cms/comments/#{params[:id]}"
+      fm = Brahma::Web::Form.new '编辑评论', cms_comment_path(params[:id])
       if can_edit?(c)
         fm.html 'content', '内容', c.content
         fm.method = 'PUT'
@@ -117,7 +116,7 @@ class Cms::CommentsController < ApplicationController
       dlg = Brahma::Web::Dialog.new
       if vat.ok?
         Cms::Comment.create article_id: params[:article], user_id: user.id, content: params[:content],
-                            last_edit: Time.now, created: Time.now
+                            lang:I18n.locale, last_edit: Time.now, created: Time.now
         dlg.ok = true
       else
         dlg.data += vat.messages
@@ -130,7 +129,7 @@ class Cms::CommentsController < ApplicationController
 
   def new
     if current_user
-      fm = Brahma::Web::Form.new '发表评论', '/cms/comments'
+      fm = Brahma::Web::Form.new '发表评论', cms_comments_path
       fm.hidden 'article', params[:article]
       fm.html 'content', '内容'
       fm.ok = true

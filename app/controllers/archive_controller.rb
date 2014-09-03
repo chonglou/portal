@@ -13,7 +13,7 @@ class ArchiveController < ApplicationController
       start, stop = Brahma::Utils::TimeHelper.month_r year, month
     end
 
-    articles = Cms::Article.where('created>=? AND created<=?', start, stop).all
+    articles = Cms::Article.where('lang=? AND created>=? AND created<=?',I18n.locale, start, stop).all
     title = "#{t('web.title.archives')}[#{start.strftime '%Y-%m-%d'}, #{stop.strftime '%Y-%m-%d'}]"
     @title = title
     @fall_card = Brahma::Web::FallCard.new title

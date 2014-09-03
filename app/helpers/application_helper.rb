@@ -49,7 +49,7 @@ module ApplicationHelper
     bars << abar
 
     cbar = {title: t('web.title.recent_comments'), links: []}
-    Cms::Comment.select(:id, :content, :last_edit).where(lang: I18n.locale).order(id: :desc).limit(12).each { |c| cbar[:links] << [cms_comment_path(a.id), sh.html2text(c.content).truncate(80), time_ago_in_words(c.last_edit)] }
+    Cms::Comment.select(:id, :content, :last_edit).where(lang: I18n.locale).order(id: :desc).limit(12).each { |c| cbar[:links] << [cms_comment_path(c.id), sh.html2text(c.content).truncate(80), time_ago_in_words(c.last_edit)] }
     bars << cbar
 
     bars << notice_bar

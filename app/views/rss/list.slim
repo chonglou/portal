@@ -1,4 +1,3 @@
 -content_for :content
   == render partial:'widgets/bodhi/fall_card', locals:{fall_card: @fall_card}
-  == render partial:'widgets/bodhi/pager_bar', locals:{total:@total, index:@index, url:'/rss/page'}
-
+  == render partial:'widgets/bodhi/pager_bar', locals:{total:@total, index:@index, url:'rss_page_path'}

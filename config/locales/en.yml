@@ -7,6 +7,7 @@ en:
       wiki: 'Wiki'
       rss: 'Rss'
       users: 'Users'
+      user: "User-%{name} [%{size}]"
       about_me: 'About...'
       hot_articles: 'Hot Articles'
       recent_comments: 'Recent Comments'

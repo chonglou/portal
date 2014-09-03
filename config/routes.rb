@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     resources :items, only:[:index, :destroy, :show]
   end
   get 'rss' => 'rss#index'
-  get 'rss/page/:id' => 'rss#page'
+  get 'rss/page/:id' => 'rss#page', as: :rss_page
   get 'rss/feeds'
   get 'rss/setup'
 

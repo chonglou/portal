@@ -24,7 +24,6 @@ class RssController < ApplicationController
 
     @fall_card = Brahma::Web::FallCard.new title
     Rss::Item.select(:id, :title).order(id: :desc).limit(page_size).offset(page_size*(@index-1)).each { |i| @fall_card.add rss_item_path(i.id), i.title, nil, nil }
-
     render 'rss/list'
   end
 
