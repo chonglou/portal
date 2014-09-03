@@ -12,7 +12,6 @@ set :keep_releases, 7
 set :log_level, :debug
 
 set :rbenv_ruby, '2.1.2'
-set :puma_threads, [0, 4]
 
 namespace :deploy do
 
