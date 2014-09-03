@@ -32,16 +32,15 @@ class Rss::ItemsController < ApplicationController
 
   def show
     id = params[:id]
-    if id
+    if id and current_user
       i = Rss::Item.find_by id: id
       if i
         @title = i.title
         @item = i
         @items = Rss::Item.select(:id, :title).where('id < ?', i.id+6).last(10)
-        render 'rss/items/show'
-      else
-        not_found
+        render( 'rss/items/show') and return
       end
     end
+    not_found
   end
 end

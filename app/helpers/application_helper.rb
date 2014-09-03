@@ -8,10 +8,10 @@ module ApplicationHelper
     links = {main_path => t('web.title.main')}
     if current_user
       links[personal_path] = t('web.title.personal')
+      links[rss_path] = t('web.title.rss')
     end
     links[cms_path] = t('web.title.cms')
     links[wiki_path] = t('web.title.wiki')
-    links[rss_path] = t('web.title.rss')
     links[users_path] = t('web.title.users')
     links[about_me_path]=t('web.title.about_me')
     links

@@ -7,24 +7,32 @@ require 'brahma/utils/string_helper'
 class RssController < ApplicationController
 
   def index
-    redirect_to action: :page, id: 1, status: 301
+    if current_user
+      redirect_to action: :page, id: 1
+    else
+      not_found
+    end
   end
 
   def page
-    page_size=20
-    title = t('web.title.rss')
-    @title = title
-    @total = Rss::Item.count/page_size+1
-    @index = (params[:id] || 1).to_i
-    if @index<1
-      @index = 1
-    elsif @index>@total
-      @index = @total
-    end
+    if current_user
+      page_size=20
+      title = t('web.title.rss')
+      @title = title
+      @total = Rss::Item.count/page_size+1
+      @index = (params[:id] || 1).to_i
+      if @index<1
+        @index = 1
+      elsif @index>@total
+        @index = @total
+      end
 
-    @fall_card = Brahma::Web::FallCard.new title
-    Rss::Item.select(:id, :title).order(id: :desc).limit(page_size).offset(page_size*(@index-1)).each { |i| @fall_card.add rss_item_path(i.id), i.title, nil, nil }
-    render 'rss/list'
+      @fall_card = Brahma::Web::FallCard.new title
+      Rss::Item.select(:id, :title).order(id: :desc).limit(page_size).offset(page_size*(@index-1)).each { |i| @fall_card.add rss_item_path(i.id), i.title, nil, nil }
+      render 'rss/list'
+    else
+      not_found
+    end
   end
 
   def feeds

@@ -146,12 +146,10 @@ module Brahma::Utils
         add '/main', changefreq: 'weekly', priority: 0.9
         add '/cms', changefreq: 'weekly', priority: 0.9
         add '/wiki', changefreq: 'weekly', priority: 0.9
-        add '/rss', changefreq: 'daily', priority: 0.9
         add '/about_me', changefreq: 'yearly', priority: 0.9
         Cms::Tag.select(:id).all.each { |t| add "/cms/tags/#{t.id}", changefreq: 'monthly' }
         Cms::Article.select(:id).all.each { |a| add "/cms/articles/#{a.id}", changefreq: 'weekly' }
         Brahma::Utils::WikiHelper.each { |w| add "/wiki/#{w}", changefreq: 'monthly' }
-        Rss::Item.select(:id).all.each { |i| add "/rss/items/#{i.id}", changefreq: 'yearly' }
       end
       Rails.logger.info '生成sitemap完毕'
     end
