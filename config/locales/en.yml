@@ -14,6 +14,7 @@ en:
       archives: 'Archives'
       tags: 'Tags'
       tag: "Tag-%{name}[%{size}]"
+      qr_code: 'Qr Code Generate'
     link:
       login: 'Sign In'
       logout: 'Sign Out'
@@ -37,4 +38,5 @@ en:
     label:
       register_or_login: 'Register/Sign In'
       welcome: 'Welcome'
+      content: 'Content'
     copyright: 'USING <a href="https://github.com/chonglou/portal" target="_blank">PORTAL</a> &copy;2014'

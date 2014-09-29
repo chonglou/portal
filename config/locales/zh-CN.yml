@@ -14,6 +14,7 @@ zh-CN:
       archives: '文章列表'
       tags: '标签列表'
       tag: "标签-%{name}[%{size}]"
+      qr_code: '生成二维码'
     link:
       login: '账户登录'
       logout: '安全退出'
@@ -37,4 +38,5 @@ zh-CN:
     label:
       register_or_login: '注册/登录'
       welcome: '欢迎你'
+      content: '内容'
     copyright: '本站使用 <a href="https://github.com/chonglou/portal" target="_blank">PORTAL系统构建</a> &copy;2014'

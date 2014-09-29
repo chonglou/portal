@@ -1,0 +1,23 @@
+-@title = t('web.title.qr_code')
+-content_for :content
+  h3 #{@title}
+  hr
+
+  div class="row"
+    div class="col-lg-10 col-lg-offset-1"
+      div class="input-group"
+        span class="input-group-addon"
+          label for='content' #{t('web.label.content')}
+        input type="text" id='content' class="form-control"
+        span class="input-group-btn"
+          button id="submit" type="button" class="btn btn-primary" #{t('web.button.submit')}
+
+  div id='qr_code' style="text-align:center;margin-top: 2cm;"
+  javascript:
+    $(function(){
+      $("button#submit").click(function(){
+        var qr = $("div#qr_code");
+        qr.empty();
+        qr.qrcode($("input#content").val());
+      });
+    });

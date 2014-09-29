@@ -35,9 +35,9 @@ Rails.application.routes.draw do
   get 'personal' => 'personal#index'
 
   #---------站点其它-------------------------------------------
-  get 'about_me' => 'main#about_me'
+  %w(about_me notices qr).each {|u| get u => "main##{u}"}
   get 'main' => 'main#index'
-  get 'notices' => 'main#notices'
+
   %w(404 422 500 505).each { |e| match "/#{e}" => 'main#errors', id: e, via: [:get, :post, :put, :patch, :delete] }
 
   root 'main#index'
