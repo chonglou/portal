@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: f95a04be1daa1916db247e17cd983e0b48720f9e
+  revision: 2020b972ae3bc6f7f855305e458b660466dbc9e0
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
@@ -27,13 +27,13 @@ GIT
 
 GIT
   remote: git@github.com:chonglou/daemon.git
-  revision: c4cbcae744da5acb0710488c81260aca18b7f359
+  revision: ed2f5050f7650291fb325bc966ca87a596cd4b23
   specs:
     brahma_daemon (0.0.1)
 
 GIT
   remote: git@github.com:chonglou/utils.git
-  revision: f6a515761a391e6157c03a966251be5fb0b411a3
+  revision: e6fef8bf8781f71cecb9ff94ac7b86be4d70315e
   specs:
     brahma_utils (0.0.1)
       bunny
