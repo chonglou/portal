@@ -15,6 +15,7 @@ zh-CN:
       tags: '标签列表'
       tag: "标签-%{name}[%{size}]"
       qr_code: '生成二维码'
+      reading: 'RSS在线阅读器'
     link:
       login: '账户登录'
       logout: '安全退出'
@@ -39,4 +40,9 @@ zh-CN:
       register_or_login: '注册/登录'
       welcome: '欢迎你'
       content: '内容'
+      url: '地址'
+    reading:
+      urls_too_more: '空间不足'
+      success: '操作成功'
+      url_already_exist: "地址已存在"
     copyright: '本站使用 <a href="https://github.com/chonglou/portal" target="_blank">PORTAL系统构建</a> &copy;2014'

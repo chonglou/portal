@@ -1,8 +1,8 @@
 -@title = t('web.title.qr_code')
 -content_for :content
+  = javascript_include_tag 'jquery.qrcode.min', 'data-turbolinks-track' => true
   h3 #{@title}
   hr
-
   div class="row"
     div class="col-lg-10 col-lg-offset-1"
       div class="input-group"
@@ -12,7 +12,7 @@
         span class="input-group-btn"
           button id="submit" type="button" class="btn btn-primary" #{t('web.button.submit')}
 
-  div id='qr_code' style="text-align:center;margin-top: 2cm;"
+  div id='qr_code' style="text-align:center;margin-top: 2cm;margin-bottom: 2cm;"
   javascript:
     $(function(){
       $("button#submit").click(function(){

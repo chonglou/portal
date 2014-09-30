@@ -1,0 +1,100 @@
+-@title = t('web.title.reading')
+
+-content_for :content
+  h3
+    | #{@title} &nbsp;
+    button id="refresh" class="btn btn-lg btn-success" #{t('web.button.refresh')}
+  hr
+  div class="row"
+    div class="col-lg-10 col-lg-offset-1"
+      div class="input-group"
+        span class="input-group-addon"
+          label for='url' #{t('web.label.url')}
+        input type="text" id='url' class="form-control"
+        span class="input-group-btn"
+          button id="submit" type="button" class="btn btn-primary" #{t('web.button.new')}
+  div id="feeds" class="row"
+
+
+  javascript:
+    
+    function getCookie(cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1);
+        if (c.indexOf(name) != -1) return JSON.parse(c.substring(name.length, c.length));
+      }
+      return null;
+    }
+    function setCookie(cname, cvalue) {
+      var d = new Date();
+      d.setTime(d.getTime() + (10 * 365 * 24 * 60 * 60 * 1000));
+      var val = JSON.stringify(cvalue);
+      if (val.length < 4 * 1024) {
+        document.cookie = cname + "=" + val + "; expires=" + d.toUTCString();
+      }
+      else {
+        alert("#{t('web.reading.urls_too_more')}");
+      }
+    }
+    function getFeedId(id) {
+      return parseInt(id.split('-')[2]);
+    }
+    function refreshFeeds() {
+      var feeds = getCookie("feeds");
+      var len = feeds.urls.length;
+      var content = "";
+      var i;
+
+      for (i = 0; i < len; i++) {
+        content += "<h4 id='feed-title-" + i + "'><a>" + feeds.urls[i] + "</a> &nbsp; <button id='feed-remove-" + i + "' class='btn btn-danger'>#{t('web.button.remove')}</button></h4><hr/><div id='feed-body-" + i + "'></div>";
+      }
+      $("div#feeds").html(content);
+      $("button[id^='feed-remove-']").click(function () {
+        feeds.urls.splice(getFeedId($(this).attr('id')), 1);
+        setCookie("feeds", feeds);
+        showSuccess();
+      });
+      for (i = 0; i < len; i++) {
+        refreshFeed(i, feeds.urls[i]);
+      }
+    }
+    function showSuccess(){
+      alert("#{t('web.reading.success')}");
+    }
+    function refreshFeed(id, url) {
+      $.get(url, function (data) {
+        $(data).find("entry").each(function () {
+          $("h4#feed-title-" + id + " a").text($(this).find("title").text());
+
+        });
+      });
+    }
+
+    $(function () {
+      var feeds = getCookie("feeds");
+      if (feeds == null) {
+        feeds = {urls: []};
+        setCookie("feeds", feeds);
+      }
+      $("button#submit").click(function () {
+        var url = $("input#url");
+        if ($.inArray(url.val(), feeds.urls) == -1) {
+          feeds.urls.push(url.val());
+          setCookie("feeds", feeds);
+          showSuccess();
+          url.val('');
+        }
+        else {
+          alert("#{t('web.reading.url_already_exist')}");
+        }
+      });
+
+      $("button#refresh").click(function () {
+        refreshFeeds();
+        showSuccess();
+      });
+      refreshFeeds();
+    });

@@ -147,6 +147,8 @@ module Brahma::Utils
         add '/cms', changefreq: 'weekly', priority: 0.9
         add '/wiki', changefreq: 'weekly', priority: 0.9
         add '/about_me', changefreq: 'yearly', priority: 0.9
+        add '/qr', changefreq: 'yearly', priority: 0.9
+        add '/reading', changefreq: 'yearly', priority: 0.9
         Cms::Tag.select(:id).all.each { |t| add "/cms/tags/#{t.id}", changefreq: 'monthly' }
         Cms::Article.select(:id).all.each { |a| add "/cms/articles/#{a.id}", changefreq: 'weekly' }
         Brahma::Utils::WikiHelper.each { |w| add "/wiki/#{w}", changefreq: 'monthly' }

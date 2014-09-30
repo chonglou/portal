@@ -15,6 +15,7 @@ en:
       tags: 'Tags'
       tag: "Tag-%{name}[%{size}]"
       qr_code: 'Qr Code Generate'
+      reading: 'Reading Rss Online'
     link:
       login: 'Sign In'
       logout: 'Sign Out'
@@ -39,4 +40,9 @@ en:
       register_or_login: 'Register/Sign In'
       welcome: 'Welcome'
       content: 'Content'
+      url: 'URL'
+    reading:
+      urls_too_more: 'Not enough space to store!'
+      success: 'SUCCESS'
+      url_already_exist: "URL already exist!"
     copyright: 'USING <a href="https://github.com/chonglou/portal" target="_blank">PORTAL</a> &copy;2014'
