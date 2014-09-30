@@ -1,6 +1,7 @@
 -@title = t('web.title.reading')
 
 -content_for :content
+  = javascript_include_tag 'jquery.cookie', 'data-turbolinks-track' => true
   h3
     | #{@title} &nbsp;
     button id="refresh" class="btn btn-lg btn-success" #{t('web.button.refresh')}
@@ -17,75 +18,78 @@
 
 
   javascript:
-    
-    function getCookie(cname) {
-      var name = cname + "=";
-      var ca = document.cookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1);
-        if (c.indexOf(name) != -1) return JSON.parse(c.substring(name.length, c.length));
-      }
-      return null;
-    }
-    function setCookie(cname, cvalue) {
-      var d = new Date();
-      d.setTime(d.getTime() + (10 * 365 * 24 * 60 * 60 * 1000));
-      var val = JSON.stringify(cvalue);
-      if (val.length < 4 * 1024) {
-        document.cookie = cname + "=" + val + "; expires=" + d.toUTCString();
-      }
-      else {
-        alert("#{t('web.reading.urls_too_more')}");
-      }
-    }
+    $.cookie.json = true;
+    var gl_cookie_key = 'feeds';
+
     function getFeedId(id) {
       return parseInt(id.split('-')[2]);
     }
     function refreshFeeds() {
-      var feeds = getCookie("feeds");
+      var feeds = $.cookie(gl_cookie_key);
       var len = feeds.urls.length;
       var content = "";
       var i;
 
       for (i = 0; i < len; i++) {
-        content += "<h4 id='feed-title-" + i + "'><a>" + feeds.urls[i] + "</a> &nbsp; <button id='feed-remove-" + i + "' class='btn btn-danger'>#{t('web.button.remove')}</button></h4><hr/><div id='feed-body-" + i + "'></div>";
+        content += "<h4 id='feed-title-" + i + "'><a>" + feeds.urls[i] +
+                "</a> &nbsp; <div class='btn-group'><button id='feed-view-" + i +
+                "' class='btn btn-info'>#{t('web.button.view')}</button><button id='feed-remove-" + i
+                + "' class='btn btn-danger'>#{t('web.button.remove')}</button></div></h4><hr/><div id='feed-body-" +
+                i + "'></div>";
       }
       $("div#feeds").html(content);
       $("button[id^='feed-remove-']").click(function () {
         feeds.urls.splice(getFeedId($(this).attr('id')), 1);
-        setCookie("feeds", feeds);
+        $.cookie("feeds", feeds);
         showSuccess();
+      });
+      $("button[id^='feed-view-']").click(function () {
+        var id = getFeedId($(this).attr('id'));
+        var c = $("div#feed-body-" + id);
+        c.toggle();
+        $("button#feed-view-" + id).text(c.is(":visible") ? "#{t('web.button.hide')}" : "#{t('web.button.view')}");
       });
       for (i = 0; i < len; i++) {
         refreshFeed(i, feeds.urls[i]);
       }
     }
-    function showSuccess(){
+    function showSuccess() {
       alert("#{t('web.reading.success')}");
     }
     function refreshFeed(id, url) {
-      $.get(url, function (data) {
-        $(data).find("entry").each(function () {
-          $("h4#feed-title-" + id + " a").text($(this).find("title").text());
-
-        });
+      $.post("#{reading_path}", {url: url}, function (result) {
+        if (result.ok == true) {
+          $("h4#feed-title-" + id + " a").text(result.data[0]);
+          var content = "";
+          var items = result.data[1];
+          var len = items.length;
+          for (var i = 0; i < len; i++) {
+            var item = items[i];
+            content += ("<h4><a href='" + item.link + "' target='_blank'>" + item.title + "</a></h4><hr/><div>" + item.body + "</div>")
+          }
+          var cv = $("div#feed-body-" + id);
+          cv.html(content);
+          cv.hide();
+        }
+        else {
+          alert(result.data[0]);
+        }
       });
     }
 
     $(function () {
-      var feeds = getCookie("feeds");
+      var feeds = $.cookie(gl_cookie_key);
       if (feeds == null) {
         feeds = {urls: []};
-        setCookie("feeds", feeds);
+        $.cookie(gl_cookie_key, feeds);
       }
       $("button#submit").click(function () {
-        var url = $("input#url");
-        if ($.inArray(url.val(), feeds.urls) == -1) {
-          feeds.urls.push(url.val());
-          setCookie("feeds", feeds);
-          showSuccess();
-          url.val('');
+        var urlC = $("input#url");
+        if ($.inArray(urlC.val(), feeds.urls) == -1) {
+          feeds.urls.push(urlC.val());
+          $.cookie(gl_cookie_key, feeds);
+          urlC.val('');
+          refreshFeeds();
         }
         else {
           alert("#{t('web.reading.url_already_exist')}");

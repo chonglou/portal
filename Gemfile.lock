@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 662a267a831f6ac8f5c6c8bc6bb84a9032710a66
+  revision: 009bdb148b7c690e56a013719b81fb8d0594df64
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
@@ -235,7 +235,7 @@ GEM
     redis (3.1.0)
     rerun (0.10.0)
       listen (~> 2.7, >= 2.7.3)
-    rspec-core (3.1.4)
+    rspec-core (3.1.5)
       rspec-support (~> 3.1.0)
     rspec-expectations (3.1.2)
       diff-lcs (>= 1.2.0, < 2.0)

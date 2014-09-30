@@ -1,5 +1,7 @@
+require 'brahma/web/response'
 require 'brahma/web/fall'
 require 'brahma/services/site'
+require 'brahma/utils/rss'
 
 class MainController < ApplicationController
   def index
@@ -18,6 +20,29 @@ class MainController < ApplicationController
         render action: 'index', layout: false
       end
     end
+  end
+
+  def reading
+    case request.method
+      when 'POST'
+        val = Brahma::Web::Response.new
+
+        begin
+          items = []
+          title = Brahma::Utils::RssHelper.list(params.fetch(:url)) { |link, title, body| items << {link: link, title: title, body: body} }
+          val.add title
+          val.add items
+          val.ok = true
+        rescue => e
+          val.add e.message
+        end
+        render json: val.to_json
+      when 'GET'
+        render 'main/reading'
+      else
+        not_found
+    end
+
   end
 
   def about_me
