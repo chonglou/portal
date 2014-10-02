@@ -14,12 +14,13 @@
         input type="text" id='url' class="form-control"
         span class="input-group-btn"
           button id="submit" type="button" class="btn btn-primary" #{t('web.button.new')}
-  div id="feeds" class="row"
+    div id="feeds" class="col-lg-10 col-lg-offset-1"
 
 
   javascript:
     $.cookie.json = true;
     var gl_cookie_key = 'feeds';
+    var gl_cookie_args = {expires:3650,path: '/'};
 
     function getFeedId(id) {
       return parseInt(id.split('-')[2]);
@@ -40,7 +41,7 @@
       $("div#feeds").html(content);
       $("button[id^='feed-remove-']").click(function () {
         feeds.urls.splice(getFeedId($(this).attr('id')), 1);
-        $.cookie("feeds", feeds);
+        $.cookie(gl_cookie_key, feeds, gl_cookie_args);
         showSuccess();
       });
       $("button[id^='feed-view-']").click(function () {
@@ -81,13 +82,13 @@
       var feeds = $.cookie(gl_cookie_key);
       if (feeds == null) {
         feeds = {urls: []};
-        $.cookie(gl_cookie_key, feeds);
+        $.cookie(gl_cookie_key, feeds, gl_cookie_args);
       }
       $("button#submit").click(function () {
         var urlC = $("input#url");
         if ($.inArray(urlC.val(), feeds.urls) == -1) {
           feeds.urls.push(urlC.val());
-          $.cookie(gl_cookie_key, feeds);
+          $.cookie(gl_cookie_key, feeds, gl_cookie_args);
           urlC.val('');
           refreshFeeds();
         }
