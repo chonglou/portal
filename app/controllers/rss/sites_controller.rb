@@ -8,6 +8,16 @@ require 'brahma/utils/rss'
 
 class Rss::SitesController < ApplicationController
 
+  def scan
+    user = current_user
+    if user
+      @sites = Rss::UserSite.where(user_id: user.id).order(id: :desc).map{|us| Rss::Site.find_by(id:us.site_id).url}
+      render 'rss/sites/scan', layout:false
+    else
+      not_found
+    end
+  end
+
   def index
     user = current_user
     if user

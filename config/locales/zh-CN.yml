@@ -15,7 +15,7 @@ zh-CN:
       tags: '标签列表'
       tag: "标签-%{name}[%{size}]"
       qr_code: '生成二维码'
-      reading: 'RSS在线阅读器'
+      reading: '免费在线RSS阅读器(无需登录)'
     link:
       login: '账户登录'
       logout: '安全退出'

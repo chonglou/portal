@@ -71,6 +71,7 @@ class RssController < ApplicationController
     if current_user
       bg = Brahma::Web::ButtonGroup.new
       bg.add rss_sites_path, '源列表', 'info'
+      bg.add rss_sites_scan_path, '扫一扫', 'success'
       if admin?
         bg.add rss_items_path, '文章管理', 'warning'
       end

@@ -1,0 +1,6 @@
+= javascript_include_tag 'jquery.qrcode.min'
+div id='qr_code' style="margin-top: 20px;margin-left: 40px;"
+javascript:
+  $(function(){
+    $("div#qr_code").qrcode("#{@sites.join '\n'}");
+  });

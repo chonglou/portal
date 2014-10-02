@@ -3,8 +3,12 @@ Rails.application.routes.draw do
 
   #-------------rss---------------
   namespace :rss do
+    get 'sites/scan'
     resources :sites, except: [:edit, :update ]
+
+
     resources :items, only:[:index, :destroy, :show]
+
   end
   get 'rss' => 'rss#index'
   get 'rss/page/:id' => 'rss#page', as: :rss_page

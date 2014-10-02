@@ -15,7 +15,7 @@ en:
       tags: 'Tags'
       tag: "Tag-%{name}[%{size}]"
       qr_code: 'Qr Code Generate'
-      reading: 'Reading Rss Online'
+      reading: 'Free Reading Rss Online Tools(No Need Login)'
     link:
       login: 'Sign In'
       logout: 'Sign Out'
