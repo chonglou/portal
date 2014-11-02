@@ -11,7 +11,7 @@ set :linked_dirs, %w{log tmp/pids tmp/cache tmp/wiki tmp/sockets public/3rd}
 set :keep_releases, 7
 set :log_level, :debug
 
-set :rbenv_ruby, '2.1.3'
+set :rbenv_ruby, '2.1.4'
 
 namespace :deploy do
 
